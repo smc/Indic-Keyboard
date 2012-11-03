@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2012, Jishnu Mohan <jishnu7@gmail.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res/in.androidtweak.inputmethod.indic"
+>
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+        >
+
+            <!-- ഓ -->
+            <Key
+                latin:keyLabel="&#x0D13;" />
+
+            <!-- ഏ -->
+            <Key
+                latin:keyLabel="&#x0D0F;" />
+
+            <!-- അ, ം, ഃ -->
+            <Key
+                latin:keyLabel="&#x0D05;"
+                latin:moreKeys="&#x0D02;, &#x0D03;"
+                latin:keyHintLabel="&#x0D02;"
+                />
+
+            <!-- ഇ -->
+            <Key
+                latin:keyLabel="&#x0D07;" />
+
+            <!-- ഉ -->
+            <Key
+                latin:keyLabel="&#x0D09;" />
+
+            <!-- ഫ, -->
+            <Key
+                latin:keyLabel="&#x0D2B;" />
+
+            <!-- റ, ൪, ൃ, ൄ, ഋ -->
+            <Key
+                latin:keyLabel="&#x0D31;"
+                latin:moreKeys="&#x0D6A;, &#x0D43;, &#x0D44;, &#x0D0B;"
+                latin:keyHintLabel="&#x0D6A;"
+                />
+
+            <!-- ഖ -->
+            <Key
+                latin:keyLabel="&#x0D16;" />
+
+            <!-- ഥ -->
+            <Key
+                latin:keyLabel="&#x0D25;" />
+
+            <!-- ച, ച്ച -->
+            <Key
+                latin:keyLabel="&#x0D1A;"
+                latin:moreKeys="&#x0D1A;&#x0D4D;&#x0D1A;"
+                latin:keyHintLabel="&#x0D1A;&#x0D4D;&#x0D1A;"
+                />
+        </case>
+
+        <default>
+
+            <!-- ോ -->
+            <Key
+                latin:keyLabel="&#x0D4B;" />
+
+            <!-- േ -->
+            <Key
+                latin:keyLabel="&#x0D47;" />
+
+            <!-- ് -->
+            <Key
+                latin:keyLabel="&#x0D4D;" />
+
+            <!-- ി -->
+            <Key
+                latin:keyLabel="&#x0D3F;" />
+
+            <!-- ു -->
+            <Key
+                latin:keyLabel="&#x0D41;" 
+                latin:moreKeys="&#x0D43;, &#x0D44;"
+                latin:keyHintLabel="&#x0D43;"
+                />
+
+            <!-- പ, പ്പ-->
+            <Key
+                latin:keyLabel="&#x0D2A;"
+                latin:moreKeys="&#x0D2A;&#x0D4D;&#x0D2A;"
+                latin:keyHintLabel="&#x0D2A;&#x0D4D;&#x0D2A;"
+                />
+
+            <!-- ര, ൪, ഋ, -->
+            <Key
+                latin:keyLabel="&#x0D30;"
+                latin:moreKeys="&#x0D6A;, &#x0D0B;"
+                latin:keyHintLabel="&#x0D60;"
+                />
+
+            <!-- ക, ക്ക, ൿ -->
+            <Key
+                latin:keyLabel="&#x0D15;"
+                latin:moreKeys="&#x0D15;&#x0D4D;&#x0D15;, &#x0D7F;"
+                latin:keyHintLabel="&#x0D15;&#x0D4D;&#x0D15;"
+                />
+
+            <!-- ത, ത്ത-->
+            <Key
+                latin:keyLabel="&#x0D24;"
+                latin:moreKeys="&#x0D24;&#x0D4D;&#x0D24;"
+                latin:keyHintLabel="&#x0D24;&#x0D4D;&#x0D24;"
+                />
+
+            <!-- ഛ -->
+            <Key
+                latin:keyLabel="&#x0D1B;" />
+
+         </default>
+    </switch>
+</merge>
