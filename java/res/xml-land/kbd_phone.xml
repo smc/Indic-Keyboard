@@ -19,7 +19,7 @@
 -->
 
 <Keyboard
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:latin="http://schemas.android.com/apk/res/in.androidtweak.inputmethod.indic"
     latin:keyboardHorizontalEdgesPadding="10%p"
     latin:keyWidth="26.67%p"
 >

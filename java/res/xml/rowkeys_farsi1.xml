@@ -19,7 +19,7 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:latin="http://schemas.android.com/apk/res/in.androidtweak.inputmethod.indic"
 >
     <!-- U+0635: "ص" ARABIC LETTER SAD
          U+0636: "ض" ARABIC LETTER DAD

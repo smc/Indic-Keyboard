@@ -18,3 +18,8 @@ local.properties
 # Eclipse project files
 .classpath
 .project
+
+#native obj files
+native/obj
+native/libs
+

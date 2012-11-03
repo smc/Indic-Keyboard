@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         coreApp="true"
-        package="com.android.inputmethod.latin">
+        package="in.androidtweak.inputmethod.indic">
 
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -13,7 +13,7 @@
             android:backupAgent="BackupAgent"
             android:killAfterRestore="false">
 
-        <service android:name="LatinIME"
+        <service android:name="in.androidtweak.inputmethod.indic.LatinIME"
                 android:label="@string/aosp_android_keyboard_ime_name"
                 android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
@@ -22,7 +22,7 @@
             <meta-data android:name="android.view.im" android:resource="@xml/method" />
         </service>
 
-        <service android:name=".spellcheck.AndroidSpellCheckerService"
+        <service android:name="in.androidtweak.inputmethod.indic.spellcheck.AndroidSpellCheckerService"
                  android:label="@string/spell_checker_service_name"
                  android:permission="android.permission.BIND_TEXT_SERVICE">
             <intent-filter>
@@ -31,27 +31,27 @@
             <meta-data android:name="android.view.textservice.scs" android:resource="@xml/spellchecker" />
         </service>
 
-        <activity android:name="SettingsActivity" android:label="@string/english_ime_settings"
+        <activity android:name="in.androidtweak.inputmethod.indic.SettingsActivity" android:label="@string/english_ime_settings"
                   android:uiOptions="splitActionBarWhenNarrow">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
 
-        <activity android:name="com.android.inputmethod.latin.spellcheck.SpellCheckerSettingsActivity"
+        <activity android:name="in.androidtweak.inputmethod.indic.spellcheck.SpellCheckerSettingsActivity"
                   android:label="@string/android_spell_checker_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
 
-        <activity android:name="DebugSettingsActivity" android:label="@string/english_ime_debug_settings">
+        <activity android:name="in.androidtweak.inputmethod.indic.DebugSettingsActivity" android:label="@string/english_ime_debug_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
 
-        <receiver android:name="SuggestionSpanPickedNotificationReceiver" android:enabled="true">
+        <receiver android:name="in.androidtweak.inputmethod.indic.SuggestionSpanPickedNotificationReceiver" android:enabled="true">
             <intent-filter>
                 <action android:name="android.text.style.SUGGESTION_PICKED" />
             </intent-filter>

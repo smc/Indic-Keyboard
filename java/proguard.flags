@@ -1,34 +1,34 @@
--keep class com.android.inputmethod.latin.BinaryDictionary {
+-keep class in.androidtweak.inputmethod.indic.BinaryDictionary {
   int mDictLength;
   <init>(...);
 }
 
--keep class com.android.inputmethod.latin.Flag {
+-keep class in.androidtweak.inputmethod.indic.Flag {
   *;
 }
 
--keep class com.android.inputmethod.keyboard.ProximityInfo {
-  <init>(com.android.inputmethod.keyboard.ProximityInfo);
+-keep class in.androidtweak.inputmethod.keyboard.ProximityInfo {
+  <init>(in.androidtweak.inputmethod.keyboard.ProximityInfo);
 }
 
--keep class com.android.inputmethod.latin.Suggest {
+-keep class in.androidtweak.inputmethod.indic.Suggest {
   <init>(...);
-  com.android.inputmethod.latin.SuggestedWords getSuggestions(...);
+  in.androidtweak.inputmethod.indic.SuggestedWords getSuggestions(...);
 }
 
--keep class com.android.inputmethod.latin.AutoCorrection {
+-keep class in.androidtweak.inputmethod.indic.AutoCorrection {
   java.lang.CharSequence getAutoCorrectionWord();
 }
 
--keep class com.android.inputmethod.latin.Utils {
+-keep class in.androidtweak.inputmethod.indic.Utils {
   boolean equalsIgnoreCase(...);
 }
 
--keep class com.android.inputmethod.latin.spellcheck.SpellCheckerSettingsFragment {
+-keep class in.androidtweak.inputmethod.indic.spellcheck.SpellCheckerSettingsFragment {
   *;
 }
 
--keep class com.android.inputmethod.keyboard.LatinKeyboardView {
+-keep class in.androidtweak.inputmethod.keyboard.LatinKeyboardView {
   # Keep getter/setter methods for ObjectAnimator
   int getLanguageOnSpacebarAnimAlpha();
   void setLanguageOnSpacebarAnimAlpha(int);
@@ -36,21 +36,21 @@
   void setAltCodeKeyWhileTypingAnimAlpha(int);
 }
 
--keep class com.android.inputmethod.keyboard.MoreKeysKeyboard$Builder$MoreKeysKeyboardParams {
+-keep class in.androidtweak.inputmethod.keyboard.MoreKeysKeyboard$Builder$MoreKeysKeyboardParams {
   <init>(...);
 }
 
--keep class com.android.inputmethod.latin.ResearchLogger {
+-keep class in.androidtweak.inputmethod.indic.ResearchLogger {
   void setLogFileManager(...);
   void clearAll();
-  com.android.inputmethod.latin.ResearchLogger$LogFileManager getLogFileManager();
+  in.androidtweak.inputmethod.indic.ResearchLogger$LogFileManager getLogFileManager();
 }
 
--keep class com.android.inputmethod.latin.ResearchLogger$LogFileManager {
+-keep class in.androidtweak.inputmethod.indic.ResearchLogger$LogFileManager {
   java.lang.String getContents();
 }
 
--keep class com.android.inputmethod.keyboard.KeyboardLayoutSet$Builder {
+-keep class in.androidtweak.inputmethod.keyboard.KeyboardLayoutSet$Builder {
   void setTouchPositionCorrectionEnabled(...);
 }
 

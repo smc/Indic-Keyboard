@@ -19,7 +19,7 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:latin="http://schemas.android.com/apk/res/in.androidtweak.inputmethod.indic"
 >
     <!-- U+03B1: "α" GREEK SMALL LETTER ALPHA
          U+03AC: "ά" GREEK SMALL LETTER ALPHA WITH TONOS -->

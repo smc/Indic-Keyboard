@@ -19,7 +19,7 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    xmlns:latin="http://schemas.android.com/apk/res/in.androidtweak.inputmethod.indic"
 >
     <!-- U+0E51: "๑" THAI DIGIT ONE -->
     <Key

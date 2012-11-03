@@ -19,18 +19,18 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Title for Latin keyboard  -->
-    <string name="english_ime_name">Android keyboard</string>
+    <string name="english_ime_name">Indic keyboard</string>
     <!-- Application name for opensource Android keyboard. AOSP(Android Open Source Project) should not be translated. -->
-    <string name="aosp_android_keyboard_ime_name">Android keyboard (AOSP)</string>
+    <string name="aosp_android_keyboard_ime_name">Indic keyboard</string>
     <!-- Title for Latin keyboard settings activity / dialog -->
-    <string name="english_ime_settings">Android keyboard settings</string>
+    <string name="english_ime_settings">Indic keyboard settings</string>
     <!-- Title for Latin keyboard input options dialog [CHAR LIMIT=25] -->
     <string name="english_ime_input_options">Input options</string>
 
     <!-- Name of Android spell checker service -->
     <string name="spell_checker_service_name">Android spell checker</string>
     <!-- Name of Android spell checker service. AOSP(Android Open Source Project) should not be translated. -->
-    <string name="aosp_spell_checker_service_name">Android spell checker (AOSP)</string>
+    <string name="aosp_spell_checker_service_name">Indic spell checker</string>
 
     <!-- Title for the spell checking service settings screen -->
     <string name="android_spell_checker_settings">Spell checking settings</string>
