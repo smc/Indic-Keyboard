@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-sdk android:minSdkVersion="16" android:targetSdkVersion="16"/>
 
     <application android:label="@string/aosp_android_keyboard_ime_name"
             android:icon="@drawable/ic_ime_settings"
