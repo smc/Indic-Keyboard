@@ -253,10 +253,11 @@ public final class KeyboardTextsSet {
         // U+20AC: "€" EURO SIGN
         // U+00A5: "¥" YEN SIGN
         // U+20B1: "₱" PESO SIGN
-        /* 46 */ "\u00A2,\u00A3,\u20AC,\u00A5,\u20B1",
-        /* 47 */ "\u00A2,\u00A3,$,\u00A5,\u20B1",
-        /* 48 */ "\u00A2,$,\u20AC,\u00A5,\u20B1",
-        /* 49 */ "\u00A2,$,\u20AC,\u00A3,\u00A5,\u20B1",
+        // U+20B9: "₹" RUPEE SIGN
+        /* 46 */ "\u00A2,\u00A3,\u20AC,\u00A5,\u20B1,\u20B9",
+        /* 47 */ "\u00A2,\u00A3,$,\u00A5,\u20B1,\u20B9",
+        /* 48 */ "\u00A2,$,\u20AC,\u00A5,\u20B1,\u20B9",
+        /* 49 */ "\u00A2,$,\u20AC,\u00A3,\u00A5,\u20B1,\u20B9",
         /* 50 */ "!fixedColumnOrder!8,\",\',#,-,:,!,\\,,?,@,&,\\%,+,;,/,(,)",
         // U+2020: "†" DAGGER
         // U+2021: "‡" DOUBLE DAGGER
