@@ -1,0 +1,61 @@
+-keep class com.android.inputmethod.latin.BinaryDictionary {
+  int mDictLength;
+  <init>(...);
+}
+
+-keep class com.android.inputmethod.latin.Flag {
+  *;
+}
+
+-keep class com.android.inputmethod.keyboard.ProximityInfo {
+  <init>(com.android.inputmethod.keyboard.ProximityInfo);
+}
+
+-keep class com.android.inputmethod.latin.Suggest {
+  <init>(...);
+  com.android.inputmethod.latin.SuggestedWords getSuggestions(...);
+}
+
+-keep class com.android.inputmethod.latin.AutoCorrection {
+  java.lang.CharSequence getAutoCorrectionWord();
+}
+
+-keep class com.android.inputmethod.latin.Utils {
+  boolean equalsIgnoreCase(...);
+}
+
+-keep class com.android.inputmethod.latin.spellcheck.SpellCheckerSettingsFragment {
+  *;
+}
+
+-keep class com.android.inputmethod.keyboard.LatinKeyboardView {
+  # Keep getter/setter methods for ObjectAnimator
+  int getLanguageOnSpacebarAnimAlpha();
+  void setLanguageOnSpacebarAnimAlpha(int);
+  int getAltCodeKeyWhileTypingAnimAlpha();
+  void setAltCodeKeyWhileTypingAnimAlpha(int);
+}
+
+-keep class com.android.inputmethod.keyboard.MoreKeysKeyboard$Builder$MoreKeysKeyboardParams {
+  <init>(...);
+}
+
+-keep class com.android.inputmethod.latin.ResearchLogger {
+  void setLogFileManager(...);
+  void clearAll();
+  com.android.inputmethod.latin.ResearchLogger$LogFileManager getLogFileManager();
+}
+
+-keep class com.android.inputmethod.latin.ResearchLogger$LogFileManager {
+  java.lang.String getContents();
+}
+
+-keep class com.android.inputmethod.keyboard.KeyboardLayoutSet$Builder {
+  void setTouchPositionCorrectionEnabled(...);
+}
+
+# The support library contains references to newer platform versions.
+# Don't warn about those in case this app is linking against an older
+# platform version.  We know about them, and they are safe.
+-dontwarn android.support.v4.**
+-dontwarn android.support.v13.**
