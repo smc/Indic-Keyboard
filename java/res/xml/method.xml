@@ -80,12 +80,6 @@
             android:imeSubtypeExtraValue="TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
-            android:label="@string/subtype_en_GB"
-            android:imeSubtypeLocale="en_GB"
-            android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection"
-    />
-    <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
             android:imeSubtypeLocale="hi"
             android:imeSubtypeMode="keyboard"

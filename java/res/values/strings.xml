@@ -30,7 +30,7 @@
     <!-- Name of Android spell checker service -->
     <string name="spell_checker_service_name">Android spell checker</string>
     <!-- Name of Android spell checker service. AOSP(Android Open Source Project) should not be translated. -->
-    <string name="aosp_spell_checker_service_name">Indic spell checker</string>
+    <string name="aosp_spell_checker_service_name">Android spell checker</string>
 
     <!-- Title for the spell checking service settings screen -->
     <string name="android_spell_checker_settings">Spell checking settings</string>
@@ -250,32 +250,11 @@
     <!-- Title of the item to change the keyboard theme [CHAR LIMIT=20]-->
     <string name="keyboard_layout">Keyboard theme</string>
 
-    <!-- Description for English (United Kingdom) keyboard subtype [CHAR LIMIT=25] -->
-    <string name="subtype_en_GB">English (UK)</string>
     <!-- Description for English (United States) keyboard subtype [CHAR LIMIT=25] -->
-    <string name="subtype_en_US">English (US)</string>
-    <!-- Description for Hungarian (QUERTY) keyboard subtype [CHAR LIMIT=25] -->
-    <string name="subtype_hu_ZZ">Hungarian (QUERTY)</string>
-    <!-- Description for English (United Kingdom) keyboard subtype with explicit keyboard layout [CHAR LIMIT=25]
-         This should be identical to subtype_en_GB aside from the trailing (%s). -->
-    <string name="subtype_with_layout_en_GB">English (UK) (<xliff:g id="layout">%s</xliff:g>)</string>
-    <!-- Description for English (United States) keyboard subtype with explicit keyboard layout [CHAR LIMIT=25]
-         This should be identical to subtype_en_US aside from the trailing (%s). -->
+    <string name="subtype_en_US">English</string>
     <string name="subtype_with_layout_en_US">English (US) (<xliff:g id="layout">%s</xliff:g>)</string>
-    <!-- Description for language agnostic keyboard subtype [CHAR LIMIT=25] -->
-    <string name="subtype_no_language">No language</string>
     <!-- Description for language agnostic QWERTY keyboard subtype [CHAR LIMIT=25] -->
-    <string name="subtype_no_language_qwerty">No language (QWERTY)</string>
-    <!-- Description for language agnostic QWERTZ keyboard subtype [CHAR LIMIT=25] -->
-    <string name="subtype_no_language_qwertz">No language (QWERTZ)</string>
-    <!-- Description for language agnostic AZERTY keyboard subtype [CHAR LIMIT=25] -->
-    <string name="subtype_no_language_azerty">No language (AZERTY)</string>
-    <!-- Description for language agnostic Dvorak keyboard subtype [CHAR LIMIT=25] -->
-    <string name="subtype_no_language_dvorak">No language (Dvorak)</string>
-    <!-- Description for language agnostic Colemak keyboard subtype [CHAR LIMIT=25] -->
-    <string name="subtype_no_language_colemak">No language (Colemak)</string>
-    <!-- Description for language agnostic PC QWERTY keyboard subtype [CHAR LIMIT=25] -->
-    <string name="subtype_no_language_pcqwerty">No language (PC)</string>
+    <string name="subtype_no_language_qwerty">No language</string>
 
     <!-- Title of the preference settings for custom input styles (language and keyboard layout pairs) [CHAR LIMIT=35]-->
     <string name="custom_input_styles_title">Custom input styles</string>

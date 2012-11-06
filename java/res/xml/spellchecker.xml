@@ -31,48 +31,4 @@
             android:label="@string/subtype_generic"
             android:subtypeLocale="en_US"
     />
-    <subtype
-            android:label="@string/subtype_generic"
-            android:subtypeLocale="en_GB"
-    />
-    <subtype
-            android:label="@string/subtype_generic"
-            android:subtypeLocale="fr"
-    />
-    <subtype
-            android:label="@string/subtype_generic"
-            android:subtypeLocale="de"
-    />
-    <subtype
-            android:label="@string/subtype_generic"
-            android:subtypeLocale="it"
-    />
-    <subtype
-            android:label="@string/subtype_generic"
-            android:subtypeLocale="es"
-    />
-    <subtype
-            android:label="@string/subtype_generic"
-            android:subtypeLocale="ru"
-    />
-    <subtype
-            android:label="@string/subtype_generic"
-            android:subtypeLocale="cs"
-    />
-    <subtype
-            android:label="@string/subtype_generic"
-            android:subtypeLocale="nl"
-    />
-    <subtype
-            android:label="@string/subtype_generic"
-            android:subtypeLocale="hr"
-    />
-    <subtype
-            android:label="@string/subtype_generic"
-            android:subtypeLocale="pt_BR"
-    />
-    <subtype
-            android:label="@string/subtype_generic"
-            android:subtypeLocale="hu"
-    />
 </spell-checker>
