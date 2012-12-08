@@ -139,13 +139,9 @@
          explicit keyboard layout. The string resource name must be "subtype_with_layout_<locale>. -->
     <string-array name="subtype_locale_exception_keys">
         <item>en_US</item>
-        <item>en_GB</item>
-        <item>hu_ZZ</item>
     </string-array>
     <string-array name="subtype_locale_exception_values">
         <item>English (US)</item>
-        <item>English (UK)</item>
-        <item>Hungarian (QUERTY)</item>
     </string-array>
 
     <!-- Generic subtype label -->
@@ -154,31 +150,16 @@
     <!-- Predefined keyboard layouts for additional subtype -->
     <string-array name="predefined_layouts">
         <item>qwerty</item>
-        <item>qwertz</item>
-        <item>azerty</item>
-        <item>dvorak</item>
-        <item>colemak</item>
-        <item>pcqwerty</item>
     </string-array>
     <!-- Predefined keyboard layout display names -->
     <string-array name="predefined_layout_display_names">
         <item>QWERTY</item>
-        <item>QWERTZ</item>
-        <item>AZERTY</item>
-        <item>Dvorak</item>
-        <item>Colemak</item>
-        <item>PC</item>
     </string-array>
     <!-- Description for generic subtype that has predefined layout.
          The string resource name must be "subtype_generic_<layout name>".
          The string resource with "No language" also must be added to strings.xml and the resource
          name must be "subtype_no_language_<layout name>" -->
     <string name="subtype_generic_qwerty">%s (QWERTY)</string>
-    <string name="subtype_generic_qwertz">%s (QWERTZ)</string>
-    <string name="subtype_generic_azerty">%s (AZERTY)</string>
-    <string name="subtype_generic_dvorak">%s (Dvorak)</string>
-    <string name="subtype_generic_colemak">%s (Colemak)</string>
-    <string name="subtype_generic_pcqwerty">%s (PC)</string>
 
     <!-- Description for Bulgarian (BDS) subtype. -->
     <string name="subtype_bulgarian_bds">%s (BDS)</string>
@@ -186,46 +167,6 @@
     <!-- Compatibility map from subtypeLocale:subtypeExtraValue to keyboardLayoutSet -->
     <string-array name="locale_and_extra_value_to_keyboard_layout_set_map">
         <item>en_US:TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection</item>
-        <item>qwerty</item>
-        <item>en_GB:TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection</item>
-        <item>qwerty</item>
-        <item>ar:SupportTouchPositionCorrection</item>
-        <item>arabic</item>
-        <item>cs:AsciiCapable,SupportTouchPositionCorrection</item>
-        <item>qwertz</item>
-        <item>da:AsciiCapable,SupportTouchPositionCorrection</item>
-        <item>nordic</item>
-        <item>de:AsciiCapable,SupportTouchPositionCorrection</item>
-        <item>qwertz</item>
-        <item>es:AsciiCapable,SupportTouchPositionCorrection</item>
-        <item>spanish</item>
-        <item>fi:AsciiCapable,SupportTouchPositionCorrection</item>
-        <item>nordic</item>
-        <item>fr:AsciiCapable,SupportTouchPositionCorrection</item>
-        <item>azerty</item>
-        <item>fr_CA:AsciiCapable,SupportTouchPositionCorrection</item>
-        <item>qwerty</item>
-        <item>hr:AsciiCapable,SupportTouchPositionCorrection</item>
-        <item>qwertz</item>
-        <item>hu:AsciiCapable,SupportTouchPositionCorrection</item>
-        <item>qwertz</item>
-        <item>it:AsciiCapable,SupportTouchPositionCorrection</item>
-        <item>qwerty</item>
-        <item>iw:SupportTouchPositionCorrection</item>
-        <item>hebrew</item>
-        <item>nb:AsciiCapable,SupportTouchPositionCorrection</item>
-        <item>nordic</item>
-        <item>nl:AsciiCapable,SupportTouchPositionCorrection</item>
-        <item>qwerty</item>
-        <item>pl:AsciiCapable,SupportTouchPositionCorrection</item>
-        <item>qwerty</item>
-        <item>ru:SupportTouchPositionCorrection</item>
-        <item>east_slavic</item>
-        <item>sr:SupportTouchPositionCorrection</item>
-        <item>south_slavic</item>
-        <item>sv:AsciiCapable,SupportTouchPositionCorrection</item>
-        <item>nordic</item>
-        <item>tr:AsciiCapable,SupportTouchPositionCorrection</item>
         <item>qwerty</item>
     </string-array>
 

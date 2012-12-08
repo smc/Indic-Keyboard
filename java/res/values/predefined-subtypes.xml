@@ -19,5 +19,5 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Predefined subtypes (language:layout[:extraValue]) in semicolon separated format -->
-    <string name="predefined_subtypes" translatable="false">de:qwerty:AsciiCapable;fr:qwertz:AsciiCapable</string>
+    <string name="predefined_subtypes" translatable="false"></string>
 </resources>
