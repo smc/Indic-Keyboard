@@ -35,7 +35,7 @@ public class DictionaryPackInstallBroadcastReceiver extends BroadcastReceiver {
      * The action of the intent for publishing that new dictionary data is available.
      */
     /* package */ static final String NEW_DICTIONARY_INTENT_ACTION =
-            "in.androidtweak.inputmethod.indic.dictionarypack.newdict";
+            "com.android.inputmethod.latin.dictionarypack.newdict";
 
     public DictionaryPackInstallBroadcastReceiver(final LatinIME service) {
         mService = service;

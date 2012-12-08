@@ -32,7 +32,7 @@ import java.util.Locale;
 public class BinaryDictionary extends Dictionary {
 
     public static final String DICTIONARY_PACK_AUTHORITY =
-            "in.androidtweak.inputmethod.indic.dictionarypack";
+            "com.android.inputmethod.latin.dictionarypack";
 
     /**
      * There is a difference between what java and native code can handle.
