@@ -24,21 +24,20 @@
     <include
         latin:keyboardLayout="@xml/key_styles_common" />
     <Row
-        latin:keyWidth="7.375%p"
+        latin:keyWidth="8.282%p"
     >
         <Key
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelFlags="alignLeft"
             latin:keyWidth="7.969%p" />
         <include
-            latin:keyboardLayout="@xml/rowkeys_malayalam1"
-            latin:keyLabelFlags="disableAdditionalMoreKeys|disableKeyHintLabel" />
+            latin:keyboardLayout="@xml/rowkeys_malayalam1" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight" />
     </Row>
     <Row
-        latin:keyWidth="7.227%p"
+        latin:keyWidth="8.125%p"
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
@@ -51,7 +50,7 @@
             latin:keyWidth="fillRight" />
     </Row>
     <Row
-        latin:keyWidth="7.000%p"
+        latin:keyWidth="8.047%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
