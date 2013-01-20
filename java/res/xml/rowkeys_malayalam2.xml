@@ -85,9 +85,11 @@
             <!-- ക -->
             <Key
                 latin:keyLabel="&#x0D15;" />
-            <!-- ല -->
+            <!-- ല, ൽ -->
             <Key
-                latin:keyLabel="&#x0D32;" />
+                latin:keyLabel="&#x0D32;"
+                latin:moreKeys="&#x0D7D;"
+                latin:keyHintLabel="&#x0D7D;" />
          </default>
     </switch>
 </merge>
