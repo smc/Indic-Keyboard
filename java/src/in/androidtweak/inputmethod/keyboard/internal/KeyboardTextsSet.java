@@ -499,11 +499,52 @@ public final class KeyboardTextsSet {
         /* 79 */ "\u0D66",
     };
 
+    /* Language ta: Tamil */
+    private static final String[] LANGUAGE_ta = {
+        /* 0~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* ~59 */
+        // U+0BE7: "௧" TAMIL DIGIT ONE
+        /* 60 */ "\u0BE7",
+        // U+0BE8: "௨" TAMIL DIGIT TWO
+        /* 61 */ "\u0BE8",
+        // U+0BE9: "௩" TAMIL DIGIT THREE
+        /* 62 */ "\u0BE9",
+        // U+0BEA: "௪" TAMIL DIGIT FOUR
+        /* 63 */ "\u0BEA",
+        // U+0BEB: "௫" TAMIL DIGIT FIVE
+        /* 64 */ "\u0BEB",
+        // U+0BEC: "௬" TAMIL DIGIT SIX
+        /* 65 */ "\u0BEC",
+        // U+0BED: "௭" TAMIL DIGIT SEVEN
+        /* 66 */ "\u0BED",
+        // U+0BEE: "௮" TAMIL DIGIT EIGHT
+        /* 67 */ "\u0BEE",
+        // U+0BEF: "௯" TAMIL DIGIT NINE
+        /* 68 */ "\u0BEF",
+        // U+0BE6: "௦" TAMIL DIGIT ZERO
+        /* 69 */ "\u0BE6",
+        /* 70 */ "1",
+        /* 71 */ "2",
+        /* 72 */ "3",
+        /* 73 */ "4",
+        /* 74 */ "5",
+        /* 75 */ "6",
+        /* 76 */ "7",
+        /* 77 */ "8",
+        /* 78 */ "9",
+        /* 79 */ "0",
+    };
+
     private static final Object[] LANGUAGES_AND_TEXTS = {
         "DEFAULT", LANGUAGE_DEFAULT, /* default */
         "en", LANGUAGE_en, /* English */
         "hi", LANGUAGE_hi, /* Hindi */
         "ml", LANGUAGE_ml, /* Malayalam */
+        "ta", LANGUAGE_ta, /* Tamil */
     };
 
     static {
