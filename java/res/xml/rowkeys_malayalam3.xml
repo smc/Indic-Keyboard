@@ -25,9 +25,10 @@
         <case
             latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
         >
-            <!-- ശ -->
+            <!-- ശ, ശ്ശ -->
             <Key
-                latin:keyLabel="&#x0D36;" />
+                latin:keyLabel="&#x0D36;"
+                latin:moreKeys="&#x0D36;&#x0D4D;&#x0D36;" />
             <!-- ൻ, ൺ, zwsp -->
             <Key
                 latin:keyLabel="&#x0D7B;"
@@ -44,10 +45,10 @@
             <!-- ‍ഭ -->
             <Key
                 latin:keyLabel="&#x0D2D;" />
-            <!-- ണ, ഞ -->
+            <!-- ണ, ഞ, ഞ്ഞ, ണ്ണ, ൺ -->
             <Key
                 latin:keyLabel="&#x0D23;"
-                latin:moreKeys="&#x0D1E;"
+                latin:moreKeys="&#x0D1E;,&#x0D1E;&#x0D4D;&#x0D1E;,&#x0D23;&#x0D4D;&#x0D23;,&#x0D7A;"
                 latin:keyHintLabel="&#x0D1E;" />
             <!-- ം -->
             <Key
@@ -61,24 +62,28 @@
             <!-- ് -->
             <Key
                 latin:keyLabel="&#x0D4D;" />
-            <!-- ച -->
+            <!-- ച, ച്ച -->
             <Key
-                latin:keyLabel="&#x0D1A;" />
-            <!-- വ -->
+                latin:keyLabel="&#x0D1A;"
+                latin:moreKeys="&#x0D1A;&#x0D4D;&#x0D1A;" />
+            <!-- വ, വ്വ -->
             <Key
-                latin:keyLabel="&#x0D35;" />
-            <!-- ബ -->
+                latin:keyLabel="&#x0D35;"
+                latin:moreKeys="&#x0D35;&#x0D4D;&#x0D35;" />
+            <!-- ബ, ബ്ബ -->
             <Key
-                latin:keyLabel="&#x0D2C;" />
-            <!-- ന, ങ -->
+                latin:keyLabel="&#x0D2C;"
+                latin:moreKeys="&#x0D2C;&#x0D4D;&#x0D2C;" />
+            <!-- ന, ങ, ങ്ങ, ന്ന, ൻ-->
             <Key
                 latin:keyLabel="&#x0D28;" 
-                latin:moreKeys="&#x0D19;"
+                latin:moreKeys="&#x0D19;,&#x0D19;&#x0D4D;&#x0D19;,&#x0D28;&#x0D4D;&#x0D28;,&#x0D7B;"
                 latin:keyHintLabel="&#x0D19;"
                 />
-            <!-- മ -->
+            <!-- മ, മ്മ -->
             <Key
-                latin:keyLabel="&#x0D2E;" />
+                latin:keyLabel="&#x0D2E;"
+                latin:moreKeys="&#x0D2E;&#x0D4D;&#x0D2E;" />
          </default>
     </switch>
 </merge>
