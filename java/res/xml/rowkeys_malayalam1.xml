@@ -67,10 +67,9 @@
                 latin:keyLabel="&#x0D4B;"
                 latin:moreKeys="&#x0D13;"
                 latin:keyHintLabel="&#x0D13;" />
-            <!-- പ, പ്പ -->
+            <!-- മ്പ -->
             <Key
-                latin:keyLabel="&#x0D2A;"
-                latin:moreKeys="&#x0D2A;&#x0D4D;&#x0D2A;" />
+                latin:keyLabel="&#x0D2E;&#x0D4D;&#x0D2A;" />
         </case>
 
         <default>

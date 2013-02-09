@@ -12,7 +12,7 @@
 
     <application android:label="@string/aosp_android_keyboard_ime_name"
             android:icon="@drawable/ic_ime_settings"
-            android:backupAgent="BackupAgent"
+            android:backupAgent="in.androidtweak.inputmethod.indic.BackupAgent"
             android:killAfterRestore="false">
 
         <service android:name="in.androidtweak.inputmethod.indic.LatinIME"
