@@ -24,10 +24,10 @@
     <switch>
         <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
         >
-            <!--ൌ, ഔ -->
+            <!-- ൗ, ൌ, , ഔ -->
             <Key
-                latin:keyLabel="&#x0D14;"
-                latin:moreKeys="&#x0D4C;"
+                latin:keyLabel="&#x0d57;"
+                latin:moreKeys="&#x0D14;, &#x0D4C;"
                 latin:keyHintLabel="&#x0D4C;" />
             <!-- വ, വ്വ -->
             <Key
