@@ -27,7 +27,7 @@
             <!-- ൗ, ൌ, , ഔ -->
             <Key
                 latin:keyLabel="&#x0d57;"
-                latin:moreKeys="&#x0D14;, &#x0D4C;"
+                latin:moreKeys="&#x0D14;,&#x0D4C;"
                 latin:keyHintLabel="&#x0D4C;" />
             <!-- വ, വ്വ -->
             <Key
@@ -38,10 +38,10 @@
                 latin:keyLabel="&#x0D47;"
                 latin:moreKeys="&#x0D0F;"
                 latin:keyHintLabel="&#x0D0F;" />
-            <!-- റ, ഋ,ര്‍‍ -->
+            <!-- റ, ഋ,ര്‍‍, ൎ(dot repha) -->
             <Key
                 latin:keyLabel="&#x0D31;"
-                latin:moreKeys="&#x0D0B;, &#x0D30;&#x0D4D;&#x200D;"
+                latin:moreKeys="&#x0D0B;,&#x0D30;&#x0D4D;&#x200D;,&#x0D4E;"
                 latin:keyHintLabel="&#x0D0B;" />
             <!-- ഥ, ഠ -->
             <Key
@@ -51,7 +51,7 @@
             <!-- യ, യ്യ -->
             <Key
                 latin:keyLabel="&#x0D2F;"
-                latin:moreKeys="&#x0D2F;&#x0D4D;&#x0D2F;"  />
+                latin:moreKeys="&#x0D2F;&#x0D4D;&#x0D2F;" />
             <!-- ൂ, ഊ -->
             <Key
                 latin:keyLabel="&#x0D42;"
