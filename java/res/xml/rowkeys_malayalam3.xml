@@ -29,26 +29,26 @@
             <Key
                 latin:keyLabel="&#x0D36;"
                 latin:moreKeys="&#x0D36;&#x0D4D;&#x0D36;" />
-            <!-- ൻ, ൺ, zwsp -->
+            <!-- ന്‍, ണ്‍, zwsp -->
             <Key
-                latin:keyLabel="&#x0D7B;"
-                latin:moreKeys="&#x0D7A;,&#x200B;"
-                latin:keyHintLabel="&#x0D7A;" />
+                latin:keyLabel="&#x0D28;&#x0D4D;&#x200D;"
+                latin:moreKeys="&#x0D28;&#x0D4D;&#x200D;,&#x200B;"
+                latin:keyHintLabel="&#x0D28;&#x0D4D;&#x200D;" />
             <!-- ‍ഛ -->
             <Key
                 latin:keyLabel="&#x0D1B;" />
-            <!-- ൾ, ൽ, ർ, ൿ, zwnj‍‍‍ -->
+            <!-- ള്‍, ല്‍, ര്‍, zwnj‍‍‍ -->
             <Key
-                latin:keyLabel="&#x0D7E;"
-                latin:moreKeys="&#x0D7D;,&#x0D7C;,&#x0D7F;,&#x200D;"
-                latin:keyHintLabel="&#x0D7D;" />
+                latin:keyLabel="&#x0D33;&#x0D4D;&#x200D;"
+                latin:moreKeys="&#x0d32;&#x0D4D;&#x200D;,&#x200D;"
+                latin:keyHintLabel="&#x0d32;&#x0D4D;&#x200D;" />
             <!-- ‍ഭ -->
             <Key
                 latin:keyLabel="&#x0D2D;" />
-            <!-- ണ, ഞ, ഞ്ഞ, ണ്ണ, ൺ -->
+            <!-- ണ, ഞ, ഞ്ഞ, ണ്ണ, ണ്‍ -->
             <Key
                 latin:keyLabel="&#x0D23;"
-                latin:moreKeys="&#x0D1E;,&#x0D1E;&#x0D4D;&#x0D1E;,&#x0D23;&#x0D4D;&#x0D23;,&#x0D7A;"
+                latin:moreKeys="&#x0D1E;,&#x0D1E;&#x0D4D;&#x0D1E;,&#x0D23;&#x0D4D;&#x0D23;,&#x0d23;&#x0D4D;&#x200D;"
                 latin:keyHintLabel="&#x0D1E;" />
             <!-- ം -->
             <Key
@@ -74,10 +74,10 @@
             <Key
                 latin:keyLabel="&#x0D2C;"
                 latin:moreKeys="&#x0D2C;&#x0D4D;&#x0D2C;" />
-            <!-- ന, ങ, ങ്ങ, ന്ന, ൻ-->
+            <!-- ന, ങ, ങ്ങ, ന്ന, ന്‍-->
             <Key
                 latin:keyLabel="&#x0D28;" 
-                latin:moreKeys="&#x0D19;,&#x0D19;&#x0D4D;&#x0D19;,&#x0D28;&#x0D4D;&#x0D28;,&#x0D7B;"
+                latin:moreKeys="&#x0D19;,&#x0D19;&#x0D4D;&#x0D19;,&#x0D28;&#x0D4D;&#x0D28;,&#x0D28;&#x0D4D;&#x200D;"
                 latin:keyHintLabel="&#x0D19;"
                 />
             <!-- മ, മ്മ -->

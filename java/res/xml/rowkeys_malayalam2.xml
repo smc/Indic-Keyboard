@@ -53,10 +53,10 @@
             <!-- ഖ -->
             <Key
                 latin:keyLabel="&#x0D16;" />
-            <!-- ള, ള്ള, ൾ -->
+            <!-- ള, ള്ള, ള്‍ -->
             <Key
                 latin:keyLabel="&#x0D33;"
-                latin:moreKeys="&#x0D33;&#x0D4D;&#x0D33;,&#x0D7E;" />
+                latin:moreKeys="&#x0D33;&#x0D4D;&#x0D33;,&#x0D33;&#x0D4D;&#x200D;" />
         </case>
 
         <default>
@@ -88,15 +88,15 @@
             <Key
                 latin:keyLabel="&#x0D1C;"
                 latin:moreKeys="&#x0D1C;&#x0D4D;&#x0D1C;" />
-            <!-- ക, ക്ക -->
+            <!-- ക, ക്ക, ക്‍ -->
             <Key
                 latin:keyLabel="&#x0D15;"
-                latin:moreKeys="&#x0D15;&#x0D4D;&#x0D15;" />
-            <!-- ല, ൽ, ല്ല -->
+                latin:moreKeys="&#x0D15;&#x0D4D;&#x0D15;,&#x0d15;&#x0D4D;&#x200D;" />
+            <!-- ല, ല്‍, ല്ല -->
             <Key
                 latin:keyLabel="&#x0D32;"
-                latin:moreKeys="&#x0D7D;,&#x0D32;&#x0D4D;&#x0D32;"
-                latin:keyHintLabel="&#x0D7D;" />
+                latin:moreKeys="&#x0D32;&#x0D4D;&#x200D;,&#x0D32;&#x0D4D;&#x0D32;"
+                latin:keyHintLabel="&#x0D32;&#x0D4D;&#x200D;" />
          </default>
     </switch>
 </merge>

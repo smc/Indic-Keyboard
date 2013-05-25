@@ -38,10 +38,10 @@
                 latin:keyLabel="&#x0D47;"
                 latin:moreKeys="&#x0D0F;"
                 latin:keyHintLabel="&#x0D0F;" />
-            <!-- റ, ഋ, ർ -->
+            <!-- റ, ഋ,ര്‍‍ -->
             <Key
                 latin:keyLabel="&#x0D31;"
-                latin:moreKeys="&#x0D0B;, &#x0D7C;"
+                latin:moreKeys="&#x0D0B;, &#x0D30;&#x0D4D;&#x200D;"
                 latin:keyHintLabel="&#x0D0B;" />
             <!-- ഥ, ഠ -->
             <Key
