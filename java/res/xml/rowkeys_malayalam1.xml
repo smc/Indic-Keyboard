@@ -48,10 +48,10 @@
                 latin:keyLabel="&#x0D25;"
                 latin:moreKeys="&#x0D20;"
                 latin:keyHintLabel="&#x0D20;" />
-            <!-- യ, യ്യ -->
+            <!-- യ, യ്യ, ്യ  -->
             <Key
                 latin:keyLabel="&#x0D2F;"
-                latin:moreKeys="&#x0D2F;&#x0D4D;&#x0D2F;" />
+                latin:moreKeys="&#x0D2F;&#x0D4D;&#x0D2F;,&#x0D4D;&#x0D2F;" />
             <!-- ൂ, ഊ -->
             <Key
                 latin:keyLabel="&#x0D42;"
@@ -97,10 +97,10 @@
                 latin:keyLabel="&#x0D24;"
                 latin:moreKeys="&#x0D1F;,&#x0D1F;&#x0D4D;&#x0D1F;,&#x0D24;&#x0D4D;&#x0D24;,&#x0D23;&#x0D4D;&#x0D1F;,&#x0D28;&#x0D4D;&#x0D24;"
                 latin:keyHintLabel="&#x0D1F;" />
-            <!-- യ, യ്യ -->
+            <!-- യ, യ്യ, ്യ  -->
             <Key
                 latin:keyLabel="&#x0D2F;"
-                latin:moreKeys="&#x0D2F;&#x0D4D;&#x0D2F;"  />
+                latin:moreKeys="&#x0D2F;&#x0D4D;&#x0D2F;,&#x0D4D;&#x0D2F;" />
             <!-- ു, ഉ -->
             <Key
                 latin:keyLabel="&#x0D41;"
