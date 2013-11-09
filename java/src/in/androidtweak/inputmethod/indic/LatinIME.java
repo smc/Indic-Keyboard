@@ -58,6 +58,7 @@ import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodSubtype;
+import android.view.inputmethod.BaseInputConnection;
 
 
 import in.androidtweak.inputmethod.accessibility.AccessibilityUtils;
@@ -81,6 +82,11 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.io.IOException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import org.wikimedia.morelangs.InputMethod;
+import org.xml.sax.SAXException;
 
 /**
  * Input method implementation for Qwerty'ish keyboard.
@@ -185,6 +191,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private boolean mExpectingUpdateSelection;
     private int mDeleteCount;
     private long mLastKeyTime;
+
+    private boolean mTransliterationOn;
 
     private AudioAndHapticFeedbackManager mFeedbackManager;
 
@@ -452,6 +460,22 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         registerReceiver(mDictionaryPackInstallReceiver, newDictFilter);
     }
 
+    void enableTransliteration(String transliterationMethod) {
+        InputMethod im;
+        try {
+            im = InputMethod.fromName(transliterationMethod);
+            mWordComposer.setTransliterationMethod(im);
+            mTransliterationOn = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    void disableTransliteration() {
+        mWordComposer.setTransliterationMethod(null);
+        mTransliterationOn = false;
+    }
     // Has to be package-visible for unit tests
     /* package */ void loadSettings() {
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
@@ -1055,7 +1079,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     public int getCurrentAutoCapsState() {
-        if (!mSettingsValues.mAutoCap) return Constants.TextUtils.CAP_MODE_OFF;
+        if (!mSettingsValues.mAutoCap || mTransliterationOn) {
+            return Constants.TextUtils.CAP_MODE_OFF;
+        }
 
         final EditorInfo ei = getCurrentInputEditorInfo();
         if (ei == null) return Constants.TextUtils.CAP_MODE_OFF;

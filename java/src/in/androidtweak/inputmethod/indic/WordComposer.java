@@ -25,6 +25,8 @@ import in.androidtweak.inputmethod.keyboard.KeyboardActionListener;
 
 import java.util.Arrays;
 
+import org.wikimedia.morelangs.InputMethod;
+
 /**
  * A place to store the currently composing word with information such as adjacent key codes as well
  */
@@ -41,6 +43,7 @@ public class WordComposer {
     private StringBuilder mTypedWord;
     private CharSequence mAutoCorrection;
     private boolean mIsResumed;
+    private InputMethod mTransliterationMethod;
 
     // Cache these values for performance
     private int mCapsCount;
@@ -78,7 +81,12 @@ public class WordComposer {
         mAutoCapitalized = source.mAutoCapitalized;
         mTrailingSingleQuotesCount = source.mTrailingSingleQuotesCount;
         mIsResumed = source.mIsResumed;
+        mTransliterationMethod = source.mTransliterationMethod;
         refreshSize();
+    }
+
+    public void setTransliterationMethod(InputMethod transliterationMethod) {
+        mTransliterationMethod = transliterationMethod;
     }
 
     /**
@@ -91,6 +99,7 @@ public class WordComposer {
         mIsFirstCharCapitalized = false;
         mTrailingSingleQuotesCount = 0;
         mIsResumed = false;
+        mTransliterationMethod = null;
         refreshSize();
     }
 
@@ -149,12 +158,41 @@ public class WordComposer {
         add(primaryCode, keyX, keyY);
     }
 
+    private String context = "";
+    static int firstDivergence(String str1, String str2) {
+        int length = str1.length() > str2.length() ? str2.length() : str1.length();
+        for(int i = 0; i < length; i++) {
+            if(str1.charAt(i) != str2.charAt(i)) {
+                return i;
+            }
+        }
+        return length - 1; // Default
+    }
+
     /**
      * Add a new keystroke, with the pressed key's code point with the touch point coordinates.
      */
     private void add(int primaryCode, int keyX, int keyY) {
         final int newIndex = size();
-        mTypedWord.appendCodePoint(primaryCode);
+
+        /* if we've a transliteration method set, use that. Else just append the code and get on with life */
+        if(mTransliterationMethod != null) {
+
+            String c = new String(Character.toChars(primaryCode));
+            int startPos = mTypedWord.length() > mTransliterationMethod.getMaxKeyLength() ? mTypedWord.length() - mTransliterationMethod.getMaxKeyLength() : 0;
+            String input = mTypedWord.substring(startPos) + c;
+            String replacement = mTransliterationMethod.transliterate(input, context, false);
+            int divIndex = firstDivergence(input, replacement);
+            replacement = replacement.substring(divIndex);
+            mTypedWord.replace(startPos + divIndex, startPos + divIndex + replacement.length() + 1, replacement);
+            context += c;
+            if(context.length() > mTransliterationMethod.getContextLength()) {
+                context = context.substring(context.length() - mTransliterationMethod.getContextLength());
+            }
+        } else {
+            mTypedWord.appendCodePoint(primaryCode);
+        }
+
         refreshSize();
         if (newIndex < BinaryDictionary.MAX_WORD_LENGTH) {
             mPrimaryKeyCodes[newIndex] = primaryCode >= Keyboard.CODE_SPACE

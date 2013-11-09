@@ -97,6 +97,12 @@ public final class Constants {
              */
             public static final String IS_ADDITIONAL_SUBTYPE = "isAdditionalSubtype";
 
+            /**
+             * The subtype extra value used to indicate that the subtype uses a Transliteration
+             * scheme to do it's work
+             */
+            public static final String TRANSLITERATION_METHOD = "TransliterationMethod";
+
             private ExtraValue() {
                 // This utility class is not publicly instantiable.
             }
