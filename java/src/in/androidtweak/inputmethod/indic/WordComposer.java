@@ -99,7 +99,6 @@ public class WordComposer {
         mIsFirstCharCapitalized = false;
         mTrailingSingleQuotesCount = 0;
         mIsResumed = false;
-        mTransliterationMethod = null;
         refreshSize();
     }
 

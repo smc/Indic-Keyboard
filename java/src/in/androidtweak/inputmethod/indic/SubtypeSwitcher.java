@@ -109,6 +109,7 @@ public class SubtypeSwitcher {
 
         final NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
         mIsNetworkConnected = (info != null && info.isConnected());
+        checkForTransliteration();
     }
 
     // Update all parameters stored in SubtypeSwitcher.
@@ -198,6 +199,10 @@ public class SubtypeSwitcher {
         updateShortcutIME();
         mService.onRefreshKeyboard();
 
+        checkForTransliteration();
+    }
+
+    private void checkForTransliteration() {
         if(getCurrentSubtype().containsExtraValueKey(Constants.Subtype.ExtraValue.TRANSLITERATION_METHOD)) {
             InputMethod im;
             try {
