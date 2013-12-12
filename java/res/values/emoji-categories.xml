@@ -108,6 +108,13 @@
         name="emoji_emoticons"
         format="string"
     >
+        <item>:)</item>
+        <item>;)</item>
+        <item>:(</item>
+        <item>:D</item>
+        <item>:P</item>
+        <item>^^</item>
+        <item>-_-</item>
         <item>=-O</item>
         <item>:-P</item>
         <item>;-)</item>

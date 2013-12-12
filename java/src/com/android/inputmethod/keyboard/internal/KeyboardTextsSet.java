@@ -400,7 +400,7 @@ public final class KeyboardTextsSet {
         /* 131 */ ".com",
         // popular web domains for the locale - most popular, displayed on the keyboard
         /* 132 */ "!hasLabels!,.net,.org,.gov,.edu",
-        /* 133 */ "!fixedColumnOrder!5,!hasLabels!,=-O|=-O ,:-P|:-P ,;-)|;-) ,:-(|:-( ,:-)|:-) ,:-!|:-! ,:-$|:-$ ,B-)|B-) ,:O|:O ,:-*|:-* ,:-D|:-D ,:\'(|:\'( ,:-\\\\|:-\\\\ ,O:-)|O:-) ,:-[|:-[ ",
+        /* 133 */ "!fixedColumnOrder!5,!hasLabels!,:)|:) ,;)|;) ,:(|:( ,:D|:D ,:P|:P ,^^|^^ ,-_-|-_- ,=-O|=-O ,:-P|:-P ,;-)|;-) ,:-(|:-( ,:-)|:-) ,:-!|:-! ,:-$|:-$ ,B-)|B-) ,:O|:O ,:-*|:-* ,:-D|:-D ,:\'(|:\'( ,:-\\\\|:-\\\\ ,O:-)|O:-) ,:-[|:-[ ",
         // U+2039: "‹" SINGLE LEFT-POINTING ANGLE QUOTATION MARK
         // U+203A: "›" SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
         // U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
