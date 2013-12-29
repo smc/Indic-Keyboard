@@ -21,19 +21,17 @@
 <resources>
     <bool name="config_use_fullscreen_mode">false</bool>
     <bool name="config_enable_show_voice_key_option">true</bool>
-    <bool name="config_enable_show_popup_on_keypress_option">true</bool>
-    <bool name="config_enable_next_word_suggestions_option">true</bool>
-    <bool name="config_enable_usability_study_mode_option">false</bool>
+    <bool name="config_enable_show_option_of_key_preview_popup">true</bool>
+    <!-- TODO: Disable the following configuration for production. -->
+    <bool name="config_enable_usability_study_mode_option">true</bool>
     <!-- Whether or not Popup on key press is enabled by default -->
-    <bool name="config_default_popup_preview">true</bool>
-    <!-- Default value for next word suggestion: while showing suggestions for a word should we weigh
-         in the previous word? -->
-    <bool name="config_default_next_word_suggestions">true</bool>
+    <bool name="config_default_key_preview_popup">true</bool>
     <!-- Default value for next word prediction: after entering a word and a space only, should we look
          at input history to suggest a hopefully helpful suggestions for the next word? -->
     <bool name="config_default_next_word_prediction">true</bool>
     <bool name="config_default_sound_enabled">false</bool>
     <bool name="config_default_vibration_enabled">true</bool>
+    <integer name="config_max_vibration_duration">100</integer> <!-- milliseconds -->
     <integer name="config_delay_update_suggestions">100</integer>
     <integer name="config_delay_update_old_suggestions">300</integer>
     <integer name="config_delay_update_shift_state">100</integer>
@@ -42,51 +40,83 @@
     <integer name="config_more_keys_keyboard_fadeout_anim_time">100</integer>
     <integer name="config_keyboard_grid_width">32</integer>
     <integer name="config_keyboard_grid_height">16</integer>
-    <integer name="config_double_spaces_turn_into_period_timeout">1100</integer>
+    <integer name="config_double_space_period_timeout">1100</integer>
     <!-- This configuration is the index of the array {@link KeyboardSwitcher.KEYBOARD_THEMES}. -->
-    <string name="config_default_keyboard_theme_index" translatable="false">5</string>
+    <string name="config_default_keyboard_theme_index" translatable="false">0</string>
     <integer name="config_max_more_keys_column">5</integer>
+
     <!--
-         Configuration for KeyboardView
-    -->
-    <integer name="config_key_preview_linger_timeout">70</integer>
-    <!--
-         Configuration for LatinKeyboardView
+         Configuration for MainKeyboardView
     -->
     <dimen name="config_key_hysteresis_distance">8.0dp</dimen>
+    <dimen name="config_key_hysteresis_distance_for_sliding_modifier">8.0dp</dimen>
     <integer name="config_touch_noise_threshold_time">40</integer>
     <dimen name="config_touch_noise_threshold_distance">12.6dp</dimen>
+    <integer name="config_key_preview_linger_timeout">70</integer>
     <bool name="config_sliding_key_input_enabled">true</bool>
+    <!-- Sliding key input preview parameters -->
+    <dimen name="config_sliding_key_input_preview_width">8.0dp</dimen>
+    <!-- Percentages of sliding key input preview body and shadow, in proportion to the width.
+         A negative value of the shadow ratio disables drawing shadow. -->
+    <!-- TODO: May use the shadow to alleviate rugged trail drawing. -->
+    <integer name="config_sliding_key_input_preview_body_ratio">100</integer>
+    <integer name="config_sliding_key_input_preview_shadow_ratio">-1</integer>
     <integer name="config_key_repeat_start_timeout">400</integer>
     <integer name="config_key_repeat_interval">50</integer>
-    <integer name="config_long_press_key_timeout">400</integer>
+    <integer name="config_default_longpress_key_timeout">300</integer>  <!-- milliseconds -->
+    <integer name="config_longpress_timeout_step">10</integer> <!-- milliseconds -->
+    <integer name="config_min_longpress_timeout">100</integer> <!-- milliseconds -->
+    <integer name="config_max_longpress_timeout">700</integer> <!-- milliseconds -->
     <!-- Long pressing shift will invoke caps-lock if > 0, never invoke caps-lock if == 0 -->
-    <integer name="config_long_press_shift_key_timeout">1200</integer>
-    <integer name="config_ignore_alt_code_key_timeout">350</integer>
+    <integer name="config_longpress_shift_lock_timeout">1200</integer> <!-- milliseconds -->
+    <integer name="config_ignore_alt_code_key_timeout">350</integer> <!-- milliseconds -->
     <!-- Showing more keys keyboard, just above the touched point if true, aligned to the key if
          false -->
     <bool name="config_show_more_keys_keyboard_at_touched_point">false</bool>
+    <bool name="config_block_potentially_offensive">true</bool>
+    <integer name="config_gesture_floating_preview_text_linger_timeout">200</integer>
+    <integer name="config_gesture_trail_fadeout_start_delay">100</integer>
+    <integer name="config_gesture_trail_fadeout_duration">800</integer>
+    <integer name="config_gesture_trail_update_interval">20</integer>
+    <!-- Static threshold for gesture after fast typing (msec) -->
+    <integer name="config_gesture_static_time_threshold_after_fast_typing">500</integer>
+    <!-- Static threshold for starting gesture detection (keyWidth%/sec) -->
+    <fraction name="config_gesture_detect_fast_move_speed_threshold">150%</fraction>
+    <!-- Dynamic threshold for gesture after fast typing (msec) -->
+    <integer name="config_gesture_dynamic_threshold_decay_duration">450</integer>
+    <!-- Time based threshold values for gesture detection (msec) -->
+    <integer name="config_gesture_dynamic_time_threshold_from">300</integer>
+    <integer name="config_gesture_dynamic_time_threshold_to">20</integer>
+    <!-- Distance based threshold values for gesture detection (keyWidth%/sec) -->
+    <fraction name="config_gesture_dynamic_distance_threshold_from">600%</fraction>
+    <fraction name="config_gesture_dynamic_distance_threshold_to">50%</fraction>
+    <!-- Parameter for gesture sampling (keyWidth%/sec) -->
+    <fraction name="config_gesture_sampling_minimum_distance">16.6666%</fraction>
+    <!-- Parameters for gesture recognition (msec) and (keyWidth%/sec) -->
+    <integer name="config_gesture_recognition_minimum_time">100</integer>
+    <integer name="config_gesture_recognition_update_time">100</integer>
+    <fraction name="config_gesture_recognition_speed_threshold">550%</fraction>
+    <!-- Suppress showing key preview duration after batch input in millisecond -->
+    <integer name="config_suppress_key_preview_after_batch_input_duration">1000</integer>
     <!--
         Configuration for auto correction
      -->
     <string-array name="auto_correction_threshold_values" translatable="false">
         <!-- Off, When auto correction setting is Off, this value is not used. -->
-        <item></item>
+        <item>floatMaxValue</item>
         <!-- Modest : Suggestion whose normalized score is greater than this value
              will be subject to auto-correction. -->
         <item>0.185</item>
         <!-- Aggressive -->
         <item>0.067</item>
         <!-- Very Aggressive : Suggestion whose normalized score is greater than this value
-             will be subject to auto-correction. -->
-        <item>0</item>
+             will be subject to auto-correction. "floatNegativeInfinity" is a special marker
+             string for Float.NEGATIVE_INFINITY -->
+        <item>floatNegativeInfinity</item>
     </string-array>
     <!-- Threshold of the normalized score of the best suggestion for the spell checker to declare
          a word to be "recommended" -->
     <string name="spellchecker_recommended_threshold_value" translatable="false">0.11</string>
-    <!-- Threshold of the normalized score of any dictionary lookup to be offered as a suggestion
-         by the spell checker -->
-    <string name="spellchecker_suggestion_threshold_value" translatable="false">0.03</string>
     <!--  Screen metrics for logging.
             0 = "mdpi phone screen"
             1 = "hdpi phone screen"
@@ -95,4 +125,13 @@
             4 = ?
     -->
     <integer name="log_screen_metrics">0</integer>
+
+    <!-- Settings for the dictionary pack -->
+    <bool name="allow_over_metered">false</bool>
+    <bool name="allow_over_roaming">false</bool>
+    <bool name="dict_downloads_visible_in_download_UI">false</bool>
+    <bool name="metadata_downloads_visible_in_download_UI">false</bool>
+    <bool name="display_notification_for_auto_update">false</bool>
+    <bool name="display_notification_for_user_requested_update">false</bool>
+
 </resources>

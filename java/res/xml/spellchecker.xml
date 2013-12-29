@@ -21,7 +21,7 @@
      for the spell checker -->
 
 <spell-checker xmlns:android="http://schemas.android.com/apk/res/android"
-        android:label="@string/aosp_spell_checker_service_name"
+        android:label="@string/spell_checker_service_name"
         android:settingsActivity="in.androidtweak.inputmethod.indic.spellcheck.SpellCheckerSettingsActivity">
     <subtype
             android:label="@string/subtype_generic"
@@ -57,22 +57,6 @@
     />
     <subtype
             android:label="@string/subtype_generic"
-            android:subtypeLocale="cs"
-    />
-    <subtype
-            android:label="@string/subtype_generic"
-            android:subtypeLocale="nl"
-    />
-    <subtype
-            android:label="@string/subtype_generic"
-            android:subtypeLocale="hr"
-    />
-    <subtype
-            android:label="@string/subtype_generic"
             android:subtypeLocale="pt_BR"
-    />
-    <subtype
-            android:label="@string/subtype_generic"
-            android:subtypeLocale="hu"
     />
 </spell-checker>

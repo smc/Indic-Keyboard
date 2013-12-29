@@ -20,8 +20,8 @@ import static in.androidtweak.inputmethod.indic.Constants.Subtype.ExtraValue.REQ
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.inputmethodservice.InputMethodService;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -31,38 +31,50 @@ import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
-
-import in.androidtweak.inputmethod.indic.R;
+import in.androidtweak.inputmethod.annotations.UsedForTesting;
 import in.androidtweak.inputmethod.keyboard.KeyboardSwitcher;
+import in.androidtweak.inputmethod.indic.utils.SubtypeLocaleUtils;
 
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class SubtypeSwitcher {
+public final class SubtypeSwitcher {
     private static boolean DBG = LatinImeLogger.sDBG;
     private static final String TAG = SubtypeSwitcher.class.getSimpleName();
 
     private static final SubtypeSwitcher sInstance = new SubtypeSwitcher();
-    private /* final */ LatinIME mService;
-    private /* final */ InputMethodManager mImm;
+
+    private /* final */ RichInputMethodManager mRichImm;
     private /* final */ Resources mResources;
     private /* final */ ConnectivityManager mConnectivityManager;
 
-    /*-----------------------------------------------------------*/
-    // Variants which should be changed only by reload functions.
-    private NeedsToDisplayLanguage mNeedsToDisplayLanguage = new NeedsToDisplayLanguage();
+    private final NeedsToDisplayLanguage mNeedsToDisplayLanguage = new NeedsToDisplayLanguage();
     private InputMethodInfo mShortcutInputMethodInfo;
     private InputMethodSubtype mShortcutSubtype;
     private InputMethodSubtype mNoLanguageSubtype;
-    // Note: This variable is always non-null after {@link #initialize(LatinIME)}.
-    private InputMethodSubtype mCurrentSubtype;
-    private Locale mCurrentSystemLocale;
-    /*-----------------------------------------------------------*/
-
+    private InputMethodSubtype mEmojiSubtype;
     private boolean mIsNetworkConnected;
 
-    static class NeedsToDisplayLanguage {
+    // Dummy no language QWERTY subtype. See {@link R.xml.method}.
+    private static final InputMethodSubtype DUMMY_NO_LANGUAGE_SUBTYPE = new InputMethodSubtype(
+            R.string.subtype_no_language_qwerty, R.drawable.ic_ime_switcher_dark,
+            SubtypeLocaleUtils.NO_LANGUAGE, "keyboard", "KeyboardLayoutSet="
+                    + SubtypeLocaleUtils.QWERTY
+                    + "," + Constants.Subtype.ExtraValue.ASCII_CAPABLE
+                    + ",EnabledWhenDefaultIsNotAsciiCapable,"
+                    + Constants.Subtype.ExtraValue.EMOJI_CAPABLE,
+            false /* isAuxiliary */, false /* overridesImplicitlyEnabledSubtype */);
+    // Caveat: We probably should remove this when we add an Emoji subtype in {@link R.xml.method}.
+    // Dummy Emoji subtype. See {@link R.xml.method}.
+    private static final InputMethodSubtype DUMMY_EMOJI_SUBTYPE = new InputMethodSubtype(
+            R.string.subtype_emoji, R.drawable.ic_ime_switcher_dark,
+            SubtypeLocaleUtils.NO_LANGUAGE, "keyboard", "KeyboardLayoutSet="
+                    + SubtypeLocaleUtils.EMOJI + ","
+                    + Constants.Subtype.ExtraValue.EMOJI_CAPABLE,
+            false /* isAuxiliary */, false /* overridesImplicitlyEnabledSubtype */);
+
+    static final class NeedsToDisplayLanguage {
         private int mEnabledSubtypeCount;
         private boolean mIsSystemLanguageSameAsInputLanguage;
 
@@ -70,11 +82,11 @@ public class SubtypeSwitcher {
             return mEnabledSubtypeCount >= 2 || !mIsSystemLanguageSameAsInputLanguage;
         }
 
-        public void updateEnabledSubtypeCount(int count) {
+        public void updateEnabledSubtypeCount(final int count) {
             mEnabledSubtypeCount = count;
         }
 
-        public void updateIsSystemLanguageSameAsInputLanguage(boolean isSame) {
+        public void updateIsSystemLanguageSameAsInputLanguage(final boolean isSame) {
             mIsSystemLanguageSameAsInputLanguage = isSame;
         }
     }
@@ -83,69 +95,41 @@ public class SubtypeSwitcher {
         return sInstance;
     }
 
-    public static void init(LatinIME service) {
-        SubtypeLocale.init(service);
-        sInstance.initialize(service);
-        sInstance.updateAllParameters();
+    public static void init(final Context context) {
+        SubtypeLocaleUtils.init(context);
+        RichInputMethodManager.init(context);
+        sInstance.initialize(context);
     }
 
     private SubtypeSwitcher() {
         // Intentional empty constructor for singleton.
     }
 
-    private void initialize(LatinIME service) {
-        mService = service;
-        mResources = service.getResources();
-        mImm = ImfUtils.getInputMethodManager(service);
-        mConnectivityManager = (ConnectivityManager) service.getSystemService(
-                Context.CONNECTIVITY_SERVICE);
-        mCurrentSystemLocale = mResources.getConfiguration().locale;
-        mCurrentSubtype = mImm.getCurrentInputMethodSubtype();
-        mNoLanguageSubtype = ImfUtils.findSubtypeByLocaleAndKeyboardLayoutSet(
-                service, SubtypeLocale.NO_LANGUAGE, SubtypeLocale.QWERTY);
-        if (mNoLanguageSubtype == null) {
-            throw new RuntimeException("Can't find no lanugage with QWERTY subtype");
+    private void initialize(final Context context) {
+        if (mResources != null) {
+            return;
         }
+        mResources = context.getResources();
+        mRichImm = RichInputMethodManager.getInstance();
+        mConnectivityManager = (ConnectivityManager) context.getSystemService(
+                Context.CONNECTIVITY_SERVICE);
 
         final NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
         mIsNetworkConnected = (info != null && info.isConnected());
-    }
 
-    // Update all parameters stored in SubtypeSwitcher.
-    // Only configuration changed event is allowed to call this because this is heavy.
-    private void updateAllParameters() {
-        mCurrentSystemLocale = mResources.getConfiguration().locale;
-        updateSubtype(mImm.getCurrentInputMethodSubtype());
+        onSubtypeChanged(getCurrentSubtype());
         updateParametersOnStartInputView();
     }
 
-    // Update parameters which are changed outside LatinIME. This parameters affect UI so they
-    // should be updated every time onStartInputview.
+    /**
+     * Update parameters which are changed outside LatinIME. This parameters affect UI so that they
+     * should be updated every time onStartInputView is called.
+     */
     public void updateParametersOnStartInputView() {
-        updateEnabledSubtypes();
-        updateShortcutIME();
-    }
-
-    // Reload enabledSubtypes from the framework.
-    private void updateEnabledSubtypes() {
-        final InputMethodSubtype currentSubtype = mCurrentSubtype;
-        boolean foundCurrentSubtypeBecameDisabled = true;
         final List<InputMethodSubtype> enabledSubtypesOfThisIme =
-                mImm.getEnabledInputMethodSubtypeList(null, true);
-        for (InputMethodSubtype ims : enabledSubtypesOfThisIme) {
-            if (ims.equals(currentSubtype)) {
-                foundCurrentSubtypeBecameDisabled = false;
-            }
-        }
+                mRichImm.getMyEnabledInputMethodSubtypeList(true);
         mNeedsToDisplayLanguage.updateEnabledSubtypeCount(enabledSubtypesOfThisIme.size());
-        if (foundCurrentSubtypeBecameDisabled) {
-            if (DBG) {
-                Log.w(TAG, "Last subtype: "
-                        + currentSubtype.getLocale() + "/" + currentSubtype.getExtraValue());
-                Log.w(TAG, "Last subtype was disabled. Update to the current one.");
-            }
-            updateSubtype(mImm.getCurrentInputMethodSubtype());
-        }
+        updateShortcutIME();
     }
 
     private void updateShortcutIME() {
@@ -158,11 +142,11 @@ public class SubtypeSwitcher {
         }
         // TODO: Update an icon for shortcut IME
         final Map<InputMethodInfo, List<InputMethodSubtype>> shortcuts =
-                mImm.getShortcutInputMethodsAndSubtypes();
+                mRichImm.getInputMethodManager().getShortcutInputMethodsAndSubtypes();
         mShortcutInputMethodInfo = null;
         mShortcutSubtype = null;
-        for (InputMethodInfo imi : shortcuts.keySet()) {
-            List<InputMethodSubtype> subtypes = shortcuts.get(imi);
+        for (final InputMethodInfo imi : shortcuts.keySet()) {
+            final List<InputMethodSubtype> subtypes = shortcuts.get(imi);
             // TODO: Returns the first found IMI for now. Should handle all shortcuts as
             // appropriate.
             mShortcutInputMethodInfo = imi;
@@ -181,43 +165,44 @@ public class SubtypeSwitcher {
     }
 
     // Update the current subtype. LatinIME.onCurrentInputMethodSubtypeChanged calls this function.
-    public void updateSubtype(InputMethodSubtype newSubtype) {
+    public void onSubtypeChanged(final InputMethodSubtype newSubtype) {
         if (DBG) {
-            Log.w(TAG, "onCurrentInputMethodSubtypeChanged: to: "
-                    + newSubtype.getLocale() + "/" + newSubtype.getExtraValue() + ", from: "
-                    + mCurrentSubtype.getLocale() + "/" + mCurrentSubtype.getExtraValue());
+            Log.w(TAG, "onSubtypeChanged: "
+                    + SubtypeLocaleUtils.getSubtypeNameForLogging(newSubtype));
         }
 
-        final Locale newLocale = SubtypeLocale.getSubtypeLocale(newSubtype);
+        final Locale newLocale = SubtypeLocaleUtils.getSubtypeLocale(newSubtype);
+        final Locale systemLocale = mResources.getConfiguration().locale;
+        final boolean sameLocale = systemLocale.equals(newLocale);
+        final boolean sameLanguage = systemLocale.getLanguage().equals(newLocale.getLanguage());
+        final boolean implicitlyEnabled =
+                mRichImm.checkIfSubtypeBelongsToThisImeAndImplicitlyEnabled(newSubtype);
         mNeedsToDisplayLanguage.updateIsSystemLanguageSameAsInputLanguage(
-                mCurrentSystemLocale.equals(newLocale));
+                sameLocale || (sameLanguage && implicitlyEnabled));
 
-        if (newSubtype.equals(mCurrentSubtype)) return;
-
-        mCurrentSubtype = newSubtype;
         updateShortcutIME();
-        mService.onRefreshKeyboard();
     }
 
     ////////////////////////////
     // Shortcut IME functions //
     ////////////////////////////
 
-    public void switchToShortcutIME() {
+    public void switchToShortcutIME(final InputMethodService context) {
         if (mShortcutInputMethodInfo == null) {
             return;
         }
 
         final String imiId = mShortcutInputMethodInfo.getId();
-        switchToTargetIME(imiId, mShortcutSubtype);
+        switchToTargetIME(imiId, mShortcutSubtype, context);
     }
 
-    private void switchToTargetIME(final String imiId, final InputMethodSubtype subtype) {
-        final IBinder token = mService.getWindow().getWindow().getAttributes().token;
+    private void switchToTargetIME(final String imiId, final InputMethodSubtype subtype,
+            final InputMethodService context) {
+        final IBinder token = context.getWindow().getWindow().getAttributes().token;
         if (token == null) {
             return;
         }
-        final InputMethodManager imm = mImm;
+        final InputMethodManager imm = mRichImm.getInputMethodManager();
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -234,14 +219,8 @@ public class SubtypeSwitcher {
         if (mShortcutSubtype == null) {
             return true;
         }
-        final boolean allowsImplicitlySelectedSubtypes = true;
-        for (final InputMethodSubtype enabledSubtype : mImm.getEnabledInputMethodSubtypeList(
-                mShortcutInputMethodInfo, allowsImplicitlySelectedSubtypes)) {
-            if (enabledSubtype.equals(mShortcutSubtype)) {
-                return true;
-            }
-        }
-        return false;
+        return mRichImm.checkIfSubtypeBelongsToImeAndEnabled(
+                mShortcutInputMethodInfo, mShortcutSubtype);
     }
 
     public boolean isShortcutImeReady() {
@@ -255,7 +234,7 @@ public class SubtypeSwitcher {
         return true;
     }
 
-    public void onNetworkStateChanged(Intent intent) {
+    public void onNetworkStateChanged(final Intent intent) {
         final boolean noConnection = intent.getBooleanExtra(
                 ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
         mIsNetworkConnected = !noConnection;
@@ -267,8 +246,8 @@ public class SubtypeSwitcher {
     // Subtype Switching functions //
     //////////////////////////////////
 
-    public boolean needsToDisplayLanguage(Locale keyboardLocale) {
-        if (keyboardLocale.toString().equals(SubtypeLocale.NO_LANGUAGE)) {
+    public boolean needsToDisplayLanguage(final Locale keyboardLocale) {
+        if (keyboardLocale.toString().equals(SubtypeLocaleUtils.NO_LANGUAGE)) {
             return true;
         }
         if (!keyboardLocale.equals(getCurrentSubtypeLocale())) {
@@ -277,23 +256,45 @@ public class SubtypeSwitcher {
         return mNeedsToDisplayLanguage.getValue();
     }
 
-    public Locale getCurrentSubtypeLocale() {
-        return SubtypeLocale.getSubtypeLocale(mCurrentSubtype);
+    private static Locale sForcedLocaleForTesting = null;
+    @UsedForTesting
+    void forceLocale(final Locale locale) {
+        sForcedLocaleForTesting = locale;
     }
 
-    public void onConfigurationChanged(Configuration conf) {
-        final Locale systemLocale = conf.locale;
-        // If system configuration was changed, update all parameters.
-        if (!systemLocale.equals(mCurrentSystemLocale)) {
-            updateAllParameters();
-        }
+    public Locale getCurrentSubtypeLocale() {
+        if (null != sForcedLocaleForTesting) return sForcedLocaleForTesting;
+        return SubtypeLocaleUtils.getSubtypeLocale(getCurrentSubtype());
     }
 
     public InputMethodSubtype getCurrentSubtype() {
-        return mCurrentSubtype;
+        return mRichImm.getCurrentInputMethodSubtype(getNoLanguageSubtype());
     }
 
     public InputMethodSubtype getNoLanguageSubtype() {
-        return mNoLanguageSubtype;
+        if (mNoLanguageSubtype == null) {
+            mNoLanguageSubtype = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                    SubtypeLocaleUtils.NO_LANGUAGE, SubtypeLocaleUtils.QWERTY);
+        }
+        if (mNoLanguageSubtype != null) {
+            return mNoLanguageSubtype;
+        }
+        Log.w(TAG, "Can't find no lanugage with QWERTY subtype");
+        Log.w(TAG, "No input method subtype found; return dummy subtype: "
+                + DUMMY_NO_LANGUAGE_SUBTYPE);
+        return DUMMY_NO_LANGUAGE_SUBTYPE;
+    }
+
+    public InputMethodSubtype getEmojiSubtype() {
+        if (mEmojiSubtype == null) {
+            mEmojiSubtype = mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(
+                    SubtypeLocaleUtils.NO_LANGUAGE, SubtypeLocaleUtils.EMOJI);
+        }
+        if (mEmojiSubtype != null) {
+            return mEmojiSubtype;
+        }
+        Log.w(TAG, "Can't find Emoji subtype");
+        Log.w(TAG, "No input method subtype found; return dummy subtype: " + DUMMY_EMOJI_SUBTYPE);
+        return DUMMY_EMOJI_SUBTYPE;
     }
 }

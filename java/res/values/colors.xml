@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2012, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Color resources for Gingerbread theme. -->
+    <color name="highlight_color_gb">#FFFCAE00</color>
+    <color name="typed_word_color_gb">@android:color/white</color>
+    <color name="highlight_translucent_color_gb">#99FCAE00</color>
+    <color name="key_text_color_gb">@android:color/white</color>
+    <color name="key_text_shadow_color_gb">#BB000000</color>
+    <color name="key_text_inactivated_color_gb">#66E0E4E5</color>
+    <color name="key_hint_letter_color_gb">#80000000</color>
+    <color name="key_hint_label_color_gb">#E0E0E4E5</color>
+    <color name="key_shifted_letter_hint_inactivated_color_gb">#66E0E4E5</color>
+    <color name="key_shifted_letter_hint_activated_color_gb">#CCE0E4E5</color>
+    <color name="spacebar_text_color_gb">#FFC0C0C0</color>
+    <color name="spacebar_text_shadow_color_gb">#80000000</color>
+    <color name="gesture_floating_preview_color_gb">#C0000000</color>
+    <!-- Color resources for IceCreamSandwich theme. Base color = 33B5E5 -->
+    <!-- android:color/holo_blue_light value is #FF33B5E5 -->
+    <color name="highlight_color_ics">#FF33B5E5</color>
+    <color name="typed_word_color_ics">#D833B5E5</color>
+    <color name="suggested_word_color_ics">#B233B5E5</color>
+    <color name="highlight_translucent_color_ics">#9933B5E5</color>
+    <color name="key_text_shadow_color_ics">@android:color/transparent</color>
+    <color name="key_text_inactivated_color_ics">#66E0E4E5</color>
+    <color name="key_hint_letter_color_ics">#80E0E4E5</color>
+    <color name="key_hint_label_color_ics">#A0FFFFFF</color>
+    <color name="key_shifted_letter_hint_inactivated_color_ics">#66E0E4E5</color>
+    <color name="key_shifted_letter_hint_activated_color_ics">@android:color/white</color>
+    <color name="spacebar_text_color_ics">#FFC0C0C0</color>
+    <color name="spacebar_text_shadow_color_ics">#80000000</color>
+    <color name="gesture_floating_preview_color_ics">#C0000000</color>
+    <!-- Color resources for KLP theme. Base color = F0F0F0 -->
+    <color name="highlight_color_holo">#FFF0F0F0</color>
+    <color name="typed_word_color_holo">#D8F0F0F0</color>
+    <color name="suggested_word_color_holo">#B2F0F0F0</color>
+    <color name="highlight_translucent_color_holo">#99E0E0E0</color>
+    <!-- Color resources for setup wizard and tutorial -->
+    <color name="setup_background">#FFEBEBEB</color>
+    <color name="setup_text_dark">#FF707070</color>
+    <color name="setup_text_action">@android:color/holo_blue_light</color>
+    <color name="setup_step_background">@android:color/background_light</color>
+    <color name="setup_welcome_video_margin_color">#FFCCCCCC</color>
+    <color name="emoji_category_page_id_view_background">#FF000000</color>
+    <color name="emoji_category_page_id_view_foreground">#80FFFFFF</color>
+
+    <!-- TODO: Color which should be included in the theme -->
+    <color name="emoji_key_background_color">#00000000</color>
+    <color name="emoji_key_pressed_background_color">#30FFFFFF</color>
+
+    <color name="key_text_color_normal_ics">@android:color/white</color>
+    <color name="key_text_color_functional_ics">@android:color/white</color>
+</resources>

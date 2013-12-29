@@ -1,15 +1,17 @@
 /*
  * Copyright (C) 2012 The Android Open Source Project
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package in.androidtweak.inputmethod.indic;
@@ -18,21 +20,22 @@ import android.content.Context;
 import android.os.SystemClock;
 import android.util.Log;
 
-import in.androidtweak.inputmethod.indic.makedict.BinaryDictInputOutput;
-import in.androidtweak.inputmethod.indic.makedict.FusionDictionary;
-import in.androidtweak.inputmethod.indic.makedict.FusionDictionary.Node;
-import in.androidtweak.inputmethod.indic.makedict.FusionDictionary.WeightedString;
-import in.androidtweak.inputmethod.indic.makedict.UnsupportedFormatException;
-
-import in.androidtweak.inputmethod.indic.R;
+import in.androidtweak.inputmethod.annotations.UsedForTesting;
 import in.androidtweak.inputmethod.keyboard.ProximityInfo;
+import in.androidtweak.inputmethod.indic.makedict.FormatSpec;
+import in.androidtweak.inputmethod.indic.personalization.DynamicPersonalizationDictionaryWriter;
+import in.androidtweak.inputmethod.indic.SuggestedWords.SuggestedWordInfo;
+import in.androidtweak.inputmethod.indic.utils.AsyncResultHolder;
+import in.androidtweak.inputmethod.indic.utils.CollectionUtils;
+import in.androidtweak.inputmethod.indic.utils.PrioritizedSerialExecutor;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Abstract base class for an expandable dictionary that can be created and updated dynamically
@@ -50,20 +53,33 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     /** Whether to print debug output to log */
     private static boolean DEBUG = false;
 
-    /**
-     * The maximum length of a word in this dictionary. This is the same value as the binary
-     * dictionary.
-     */
-    protected static final int MAX_WORD_LENGTH = BinaryDictionary.MAX_WORD_LENGTH;
+    // TODO: Remove.
+    /** Whether to call binary dictionary dynamically updating methods. */
+    public static boolean ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE = true;
+
+    private static final int TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS = 100;
 
     /**
-     * A static map of locks, each of which controls access to a single binary dictionary file. They
-     * ensure that only one instance can update the same dictionary at the same time. The key for
-     * this map is the filename and the value is the shared dictionary controller associated with
-     * that filename.
+     * The maximum length of a word in this dictionary.
      */
-    private static final HashMap<String, DictionaryController> sSharedDictionaryControllers =
-            new HashMap<String, DictionaryController>();
+    protected static final int MAX_WORD_LENGTH = Constants.DICTIONARY_MAX_WORD_LENGTH;
+
+    private static final int DICTIONARY_FORMAT_VERSION = 3;
+
+    private static final String SUPPORTS_DYNAMIC_UPDATE =
+            FormatSpec.FileHeader.ATTRIBUTE_VALUE_TRUE;
+
+    /**
+     * A static map of update controllers, each of which records the time of accesses to a single
+     * binary dictionary file and tracks whether the file is regenerating. The key for this map is
+     * the filename and the value is the shared dictionary time recorder associated with that
+     * filename.
+     */
+    private static final ConcurrentHashMap<String, DictionaryUpdateController>
+            sFilenameDictionaryUpdateControllerMap = CollectionUtils.newConcurrentHashMap();
+
+    private static final ConcurrentHashMap<String, PrioritizedSerialExecutor>
+            sFilenameExecutorMap = CollectionUtils.newConcurrentHashMap();
 
     /** The application context. */
     protected final Context mContext;
@@ -74,24 +90,34 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     private BinaryDictionary mBinaryDictionary;
 
-    /** The expandable fusion dictionary used to generate the binary dictionary. */
-    private FusionDictionary mFusionDictionary;
-
-    /** The dictionary type id. */
-    public final int mDicTypeId;
+    // TODO: Remove and handle dictionaries in native code.
+    /** The in-memory dictionary used to generate the binary dictionary. */
+    protected AbstractDictionaryWriter mDictionaryWriter;
 
     /**
      * The name of this dictionary, used as the filename for storing the binary dictionary. Multiple
      * dictionary instances with the same filename is supported, with access controlled by
-     * DictionaryController.
+     * DictionaryTimeRecorder.
      */
     private final String mFilename;
 
-    /** Controls access to the shared binary dictionary file across multiple instances. */
-    private final DictionaryController mSharedDictionaryController;
+    /** Whether to support dynamically updating the dictionary */
+    private final boolean mIsUpdatable;
 
-    /** Controls access to the local binary dictionary for this instance. */
-    private final DictionaryController mLocalDictionaryController = new DictionaryController();
+    // TODO: remove, once dynamic operations is serialized
+    /** Controls updating the shared binary dictionary file across multiple instances. */
+    private final DictionaryUpdateController mFilenameDictionaryUpdateController;
+
+    // TODO: remove, once dynamic operations is serialized
+    /** Controls updating the local binary dictionary for this instance. */
+    private final DictionaryUpdateController mPerInstanceDictionaryUpdateController =
+            new DictionaryUpdateController();
+
+    /* A extension for a binary dictionary file. */
+    public static final String DICT_FILE_EXTENSION = ".dict";
+
+    private final AtomicReference<Runnable> mUnfinishedFlushingTask =
+            new AtomicReference<Runnable>();
 
     /**
      * Abstract method for loading the unigrams and bigrams of a given dictionary in a background
@@ -107,16 +133,45 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     protected abstract boolean hasContentChanged();
 
     /**
-     * Gets the shared dictionary controller for the given filename.
+     * Gets the dictionary update controller for the given filename.
      */
-    private static synchronized DictionaryController getSharedDictionaryController(
+    private static DictionaryUpdateController getDictionaryUpdateController(
             String filename) {
-        DictionaryController controller = sSharedDictionaryControllers.get(filename);
-        if (controller == null) {
-            controller = new DictionaryController();
-            sSharedDictionaryControllers.put(filename, controller);
+        DictionaryUpdateController recorder = sFilenameDictionaryUpdateControllerMap.get(filename);
+        if (recorder == null) {
+            synchronized(sFilenameDictionaryUpdateControllerMap) {
+                recorder = new DictionaryUpdateController();
+                sFilenameDictionaryUpdateControllerMap.put(filename, recorder);
+            }
         }
-        return controller;
+        return recorder;
+    }
+
+    /**
+     * Gets the executor for the given filename.
+     */
+    private static PrioritizedSerialExecutor getExecutor(final String filename) {
+        PrioritizedSerialExecutor executor = sFilenameExecutorMap.get(filename);
+        if (executor == null) {
+            synchronized(sFilenameExecutorMap) {
+                executor = new PrioritizedSerialExecutor();
+                sFilenameExecutorMap.put(filename, executor);
+            }
+        }
+        return executor;
+    }
+
+    private static AbstractDictionaryWriter getDictionaryWriter(final Context context,
+            final String dictType, final boolean isDynamicPersonalizationDictionary) {
+        if (isDynamicPersonalizationDictionary) {
+            if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
+                return null;
+            } else {
+                return new DynamicPersonalizationDictionaryWriter(context, dictType);
+            }
+        } else {
+            return new DictionaryWriter(context, dictType);
+        }
     }
 
     /**
@@ -125,20 +180,24 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * @param context The application context of the parent.
      * @param filename The filename for this binary dictionary. Multiple dictionaries with the same
      *        filename is supported.
-     * @param dictType The type of this dictionary.
+     * @param dictType the dictionary type, as a human-readable string
+     * @param isUpdatable whether to support dynamically updating the dictionary. Please note that
+     *        dynamic dictionary has negative effects on memory space and computation time.
      */
-    public ExpandableBinaryDictionary(
-            final Context context, final String filename, final int dictType) {
-        mDicTypeId = dictType;
+    public ExpandableBinaryDictionary(final Context context, final String filename,
+            final String dictType, final boolean isUpdatable) {
+        super(dictType);
         mFilename = filename;
         mContext = context;
+        mIsUpdatable = isUpdatable;
         mBinaryDictionary = null;
-        mSharedDictionaryController = getSharedDictionaryController(filename);
-        clearFusionDictionary();
+        mFilenameDictionaryUpdateController = getDictionaryUpdateController(filename);
+        // Currently, only dynamic personalization dictionary is updatable.
+        mDictionaryWriter = getDictionaryWriter(context, dictType, isUpdatable);
     }
 
     protected static String getFilenameWithLocale(final String name, final String localeStr) {
-        return name + "." + localeStr + ".dict";
+        return name + "." + localeStr + DICT_FILE_EXTENSION;
     }
 
     /**
@@ -146,137 +205,276 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     @Override
     public void close() {
+        getExecutor(mFilename).execute(new Runnable() {
+            @Override
+            public void run() {
+                if (mBinaryDictionary!= null) {
+                    mBinaryDictionary.close();
+                    mBinaryDictionary = null;
+                }
+                if (mDictionaryWriter != null) {
+                    mDictionaryWriter.close();
+                }
+            }
+        });
+    }
+
+    protected void closeBinaryDictionary() {
         // Ensure that no other threads are accessing the local binary dictionary.
-        mLocalDictionaryController.lock();
-        try {
-            if (mBinaryDictionary != null) {
-                mBinaryDictionary.close();
-                mBinaryDictionary = null;
-            }
-        } finally {
-            mLocalDictionaryController.unlock();
-        }
-    }
-
-    /**
-     * Clears the fusion dictionary on the Java side. Note: Does not modify the binary dictionary on
-     * the native side.
-     */
-    public void clearFusionDictionary() {
-        mFusionDictionary = new FusionDictionary(new Node(),
-                new FusionDictionary.DictionaryOptions(new HashMap<String, String>(), false, 
-                        false));
-    }
-
-    /**
-     * Adds a word unigram to the fusion dictionary. Call updateBinaryDictionary when all changes
-     * are done to update the binary dictionary.
-     */
-    // TODO: Create "cache dictionary" to cache fresh words for frequently updated dictionaries,
-    // considering performance regression.
-    protected void addWord(final String word, final String shortcutTarget, final int frequency) {
-        if (shortcutTarget == null) {
-            mFusionDictionary.add(word, frequency, null);
-        } else {
-            // TODO: Do this in the subclass, with this class taking an arraylist.
-            final ArrayList<WeightedString> shortcutTargets = new ArrayList<WeightedString>();
-            shortcutTargets.add(new WeightedString(shortcutTarget, frequency));
-            mFusionDictionary.add(word, frequency, shortcutTargets);
-        }
-    }
-
-    /**
-     * Sets a word bigram in the fusion dictionary. Call updateBinaryDictionary when all changes are
-     * done to update the binary dictionary.
-     */
-    // TODO: Create "cache dictionary" to cache fresh bigrams for frequently updated dictionaries,
-    // considering performance regression.
-    protected void setBigram(final String prevWord, final String word, final int frequency) {
-        mFusionDictionary.setBigram(prevWord, word, frequency);
-    }
-
-    @Override
-    public void getWords(final WordComposer codes, final CharSequence prevWordForBigrams,
-            final WordCallback callback, final ProximityInfo proximityInfo) {
-        asyncReloadDictionaryIfRequired();
-        getWordsInner(codes, prevWordForBigrams, callback, proximityInfo);
-    }
-
-    protected final void getWordsInner(final WordComposer codes,
-            final CharSequence prevWordForBigrams, final WordCallback callback,
-            final ProximityInfo proximityInfo) {
-        // Ensure that there are no concurrent calls to getWords. If there are, do nothing and
-        // return.
-        if (mLocalDictionaryController.tryLock()) {
-            try {
+        getExecutor(mFilename).execute(new Runnable() {
+            @Override
+            public void run() {
                 if (mBinaryDictionary != null) {
-                    mBinaryDictionary.getWords(codes, prevWordForBigrams, callback, proximityInfo);
+                    mBinaryDictionary.close();
+                    mBinaryDictionary = null;
                 }
-            } finally {
-                mLocalDictionaryController.unlock();
+            }
+        });
+    }
+
+    protected Map<String, String> getHeaderAttributeMap() {
+        HashMap<String, String> attributeMap = new HashMap<String, String>();
+        attributeMap.put(FormatSpec.FileHeader.SUPPORTS_DYNAMIC_UPDATE_ATTRIBUTE,
+                SUPPORTS_DYNAMIC_UPDATE);
+        attributeMap.put(FormatSpec.FileHeader.DICTIONARY_ID_ATTRIBUTE, mFilename);
+        return attributeMap;
+    }
+
+    protected void clear() {
+        getExecutor(mFilename).execute(new Runnable() {
+            @Override
+            public void run() {
+                if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE && mDictionaryWriter == null) {
+                    mBinaryDictionary.close();
+                    final File file = new File(mContext.getFilesDir(), mFilename);
+                    BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
+                            DICTIONARY_FORMAT_VERSION, getHeaderAttributeMap());
+                    mBinaryDictionary = new BinaryDictionary(
+                            file.getAbsolutePath(), 0 /* offset */, file.length(),
+                            true /* useFullEditDistance */, null, mDictType, mIsUpdatable);
+                } else {
+                    mDictionaryWriter.clear();
+                }
+            }
+        });
+    }
+
+    /**
+     * Adds a word unigram to the dictionary. Used for loading a dictionary.
+     * @param word The word to add.
+     * @param shortcutTarget A shortcut target for this word, or null if none.
+     * @param frequency The frequency for this unigram.
+     * @param shortcutFreq The frequency of the shortcut (0~15, with 15 = whitelist). Ignored
+     *   if shortcutTarget is null.
+     * @param isNotAWord true if this is not a word, i.e. shortcut only.
+     */
+    protected void addWord(final String word, final String shortcutTarget,
+            final int frequency, final int shortcutFreq, final boolean isNotAWord) {
+        mDictionaryWriter.addUnigramWord(word, shortcutTarget, frequency, shortcutFreq, isNotAWord);
+    }
+
+    /**
+     * Adds a word bigram in the dictionary. Used for loading a dictionary.
+     */
+    protected void addBigram(final String prevWord, final String word, final int frequency,
+            final long lastModifiedTime) {
+        mDictionaryWriter.addBigramWords(prevWord, word, frequency, true /* isValid */,
+                lastModifiedTime);
+    }
+
+    /**
+     * Check whether GC is needed and run GC if required.
+     */
+    protected void runGCIfRequired(final boolean mindsBlockByGC) {
+        if (!ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) return;
+        getExecutor(mFilename).execute(new Runnable() {
+            @Override
+            public void run() {
+                runGCIfRequiredInternalLocked(mindsBlockByGC);
+            }
+        });
+    }
+
+    private void runGCIfRequiredInternalLocked(final boolean mindsBlockByGC) {
+        if (!ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) return;
+        // Calls to needsToRunGC() need to be serialized.
+        if (mBinaryDictionary.needsToRunGC(mindsBlockByGC)) {
+            if (setIsRegeneratingIfNotRegenerating()) {
+                // Run GC after currently existing time sensitive operations.
+                getExecutor(mFilename).executePrioritized(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            mBinaryDictionary.flushWithGC();
+                        } finally {
+                            mFilenameDictionaryUpdateController.mIsRegenerating.set(false);
+                        }
+                    }
+                });
             }
         }
     }
 
-    @Override
-    public void getBigrams(final WordComposer codes, final CharSequence previousWord,
-            final WordCallback callback) {
-        asyncReloadDictionaryIfRequired();
-        getBigramsInner(codes, previousWord, callback);
-    }
-
-    protected void getBigramsInner(final WordComposer codes, final CharSequence previousWord,
-            final WordCallback callback) {
-        if (mLocalDictionaryController.tryLock()) {
-            try {
-                if (mBinaryDictionary != null) {
-                    mBinaryDictionary.getBigrams(codes, previousWord, callback);
-                }
-            } finally {
-                mLocalDictionaryController.unlock();
-            }
+    /**
+     * Dynamically adds a word unigram to the dictionary. May overwrite an existing entry.
+     */
+    protected void addWordDynamically(final String word, final String shortcutTarget,
+            final int frequency, final int shortcutFreq, final boolean isNotAWord) {
+        if (!mIsUpdatable) {
+            Log.w(TAG, "addWordDynamically is called for non-updatable dictionary: " + mFilename);
+            return;
         }
+        getExecutor(mFilename).execute(new Runnable() {
+            @Override
+            public void run() {
+                if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
+                    runGCIfRequiredInternalLocked(true /* mindsBlockByGC */);
+                    mBinaryDictionary.addUnigramWord(word, frequency);
+                } else {
+                    // TODO: Remove.
+                    mDictionaryWriter.addUnigramWord(word, shortcutTarget, frequency, shortcutFreq,
+                            isNotAWord);
+                }
+            }
+        });
+    }
+
+    /**
+     * Dynamically adds a word bigram in the dictionary. May overwrite an existing entry.
+     */
+    protected void addBigramDynamically(final String word0, final String word1,
+            final int frequency, final boolean isValid) {
+        if (!mIsUpdatable) {
+            Log.w(TAG, "addBigramDynamically is called for non-updatable dictionary: "
+                    + mFilename);
+            return;
+        }
+        getExecutor(mFilename).execute(new Runnable() {
+            @Override
+            public void run() {
+                if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
+                    runGCIfRequiredInternalLocked(true /* mindsBlockByGC */);
+                    mBinaryDictionary.addBigramWords(word0, word1, frequency);
+                } else {
+                    // TODO: Remove.
+                    mDictionaryWriter.addBigramWords(word0, word1, frequency, isValid,
+                            0 /* lastTouchedTime */);
+                }
+            }
+        });
+    }
+
+    /**
+     * Dynamically remove a word bigram in the dictionary.
+     */
+    protected void removeBigramDynamically(final String word0, final String word1) {
+        if (!mIsUpdatable) {
+            Log.w(TAG, "removeBigramDynamically is called for non-updatable dictionary: "
+                    + mFilename);
+            return;
+        }
+        getExecutor(mFilename).execute(new Runnable() {
+            @Override
+            public void run() {
+                if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
+                    runGCIfRequiredInternalLocked(true /* mindsBlockByGC */);
+                    mBinaryDictionary.removeBigramWords(word0, word1);
+                } else {
+                    // TODO: Remove.
+                    mDictionaryWriter.removeBigramWords(word0, word1);
+                }
+            }
+        });
     }
 
     @Override
-    public boolean isValidWord(final CharSequence word) {
-        asyncReloadDictionaryIfRequired();
+    public ArrayList<SuggestedWordInfo> getSuggestionsWithSessionId(final WordComposer composer,
+            final String prevWord, final ProximityInfo proximityInfo,
+            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
+            final int sessionId) {
+        reloadDictionaryIfRequired();
+        if (isRegenerating()) {
+            return null;
+        }
+        final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
+        final AsyncResultHolder<ArrayList<SuggestedWordInfo>> holder =
+                new AsyncResultHolder<ArrayList<SuggestedWordInfo>>();
+        getExecutor(mFilename).executePrioritized(new Runnable() {
+            @Override
+            public void run() {
+                if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
+                    if (mBinaryDictionary == null) {
+                        holder.set(null);
+                        return;
+                    }
+                    final ArrayList<SuggestedWordInfo> binarySuggestion =
+                            mBinaryDictionary.getSuggestionsWithSessionId(composer, prevWord,
+                                    proximityInfo, blockOffensiveWords, additionalFeaturesOptions,
+                                    sessionId);
+                    holder.set(binarySuggestion);
+                } else {
+                    final ArrayList<SuggestedWordInfo> inMemDictSuggestion =
+                            composer.isBatchMode() ? null :
+                                    mDictionaryWriter.getSuggestionsWithSessionId(composer,
+                                            prevWord, proximityInfo, blockOffensiveWords,
+                                            additionalFeaturesOptions, sessionId);
+                    // TODO: Remove checking mIsUpdatable and use native suggestion.
+                    if (mBinaryDictionary != null && !mIsUpdatable) {
+                        final ArrayList<SuggestedWordInfo> binarySuggestion =
+                                mBinaryDictionary.getSuggestionsWithSessionId(composer, prevWord,
+                                        proximityInfo, blockOffensiveWords,
+                                        additionalFeaturesOptions, sessionId);
+                        if (inMemDictSuggestion == null) {
+                            holder.set(binarySuggestion);
+                        } else if (binarySuggestion == null) {
+                            holder.set(inMemDictSuggestion);
+                        } else {
+                            binarySuggestion.addAll(inMemDictSuggestion);
+                            holder.set(binarySuggestion);
+                        }
+                    } else {
+                        holder.set(inMemDictSuggestion);
+                    }
+                }
+            }
+        });
+        return holder.get(null, TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS);
+    }
+
+    @Override
+    public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
+            final String prevWord, final ProximityInfo proximityInfo,
+            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions) {
+        return getSuggestionsWithSessionId(composer, prevWord, proximityInfo, blockOffensiveWords,
+                additionalFeaturesOptions, 0 /* sessionId */);
+    }
+
+    @Override
+    public boolean isValidWord(final String word) {
+        reloadDictionaryIfRequired();
         return isValidWordInner(word);
     }
 
-    protected boolean isValidWordInner(final CharSequence word) {
-        if (mLocalDictionaryController.tryLock()) {
-            try {
-                return isValidWordLocked(word);
-            } finally {
-                mLocalDictionaryController.unlock();
-            }
+    protected boolean isValidWordInner(final String word) {
+        if (isRegenerating()) {
+            return false;
         }
-        return false;
+        final AsyncResultHolder<Boolean> holder = new AsyncResultHolder<Boolean>();
+        getExecutor(mFilename).executePrioritized(new Runnable() {
+            @Override
+            public void run() {
+                holder.set(isValidWordLocked(word));
+            }
+        });
+        return holder.get(false, TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS);
     }
 
-    protected boolean isValidWordLocked(final CharSequence word) {
+    protected boolean isValidWordLocked(final String word) {
         if (mBinaryDictionary == null) return false;
         return mBinaryDictionary.isValidWord(word);
     }
 
-    protected boolean isValidBigram(final CharSequence word1, final CharSequence word2) {
-        if (mBinaryDictionary == null) return false;
-        return mBinaryDictionary.isValidBigram(word1, word2);
-    }
-
-    protected boolean isValidBigramInner(final CharSequence word1, final CharSequence word2) {
-        if (mLocalDictionaryController.tryLock()) {
-            try {
-                return isValidBigramLocked(word1, word2);
-            } finally {
-                mLocalDictionaryController.unlock();
-            }
-        }
-        return false;
-    }
-
-    protected boolean isValidBigramLocked(final CharSequence word1, final CharSequence word2) {
+    protected boolean isValidBigramLocked(final String word1, final String word2) {
         if (mBinaryDictionary == null) return false;
         return mBinaryDictionary.isValidBigram(word1, word2);
     }
@@ -286,19 +484,19 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      * dictionary exists, this method will generate one.
      */
     protected void loadDictionary() {
-        mLocalDictionaryController.mLastUpdateRequestTime = SystemClock.uptimeMillis();
-        asyncReloadDictionaryIfRequired();
+        mPerInstanceDictionaryUpdateController.mLastUpdateRequestTime = SystemClock.uptimeMillis();
+        reloadDictionaryIfRequired();
     }
 
     /**
      * Loads the current binary dictionary from internal storage. Assumes the dictionary file
      * exists.
      */
-    protected void loadBinaryDictionary() {
+    private void loadBinaryDictionary() {
         if (DEBUG) {
             Log.d(TAG, "Loading binary dictionary: " + mFilename + " request="
-                    + mSharedDictionaryController.mLastUpdateRequestTime + " update="
-                    + mSharedDictionaryController.mLastUpdateTime);
+                    + mFilenameDictionaryUpdateController.mLastUpdateRequestTime + " update="
+                    + mFilenameDictionaryUpdateController.mLastUpdateTime);
         }
 
         final File file = new File(mContext.getFilesDir(), mFilename);
@@ -306,57 +504,58 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         final long length = file.length();
 
         // Build the new binary dictionary
-        final BinaryDictionary newBinaryDictionary =
-                new BinaryDictionary(mContext, filename, 0, length, true /* useFullEditDistance */,
-                        null);
+        final BinaryDictionary newBinaryDictionary = new BinaryDictionary(filename, 0 /* offset */,
+                length, true /* useFullEditDistance */, null, mDictType, mIsUpdatable);
 
-        if (mBinaryDictionary != null) {
-            // Ensure all threads accessing the current dictionary have finished before swapping in
-            // the new one.
-            final BinaryDictionary oldBinaryDictionary = mBinaryDictionary;
-            mLocalDictionaryController.lock();
-            mBinaryDictionary = newBinaryDictionary;
-            mLocalDictionaryController.unlock();
-            oldBinaryDictionary.close();
-        } else {
-            mBinaryDictionary = newBinaryDictionary;
-        }
+        // Ensure all threads accessing the current dictionary have finished before
+        // swapping in the new one.
+        // TODO: Ensure multi-thread assignment of mBinaryDictionary.
+        final BinaryDictionary oldBinaryDictionary = mBinaryDictionary;
+        getExecutor(mFilename).executePrioritized(new Runnable() {
+            @Override
+            public void run() {
+                mBinaryDictionary = newBinaryDictionary;
+                if (oldBinaryDictionary != null) {
+                    oldBinaryDictionary.close();
+                }
+            }
+        });
     }
 
     /**
-     * Generates and writes a new binary dictionary based on the contents of the fusion dictionary.
+     * Abstract method for checking if it is required to reload the dictionary before writing
+     * a binary dictionary.
      */
-    private void generateBinaryDictionary() {
+    abstract protected boolean needsToReloadBeforeWriting();
+
+    /**
+     * Writes a new binary dictionary based on the contents of the fusion dictionary.
+     */
+    private void writeBinaryDictionary() {
         if (DEBUG) {
             Log.d(TAG, "Generating binary dictionary: " + mFilename + " request="
-                    + mSharedDictionaryController.mLastUpdateRequestTime + " update="
-                    + mSharedDictionaryController.mLastUpdateTime);
+                    + mFilenameDictionaryUpdateController.mLastUpdateRequestTime + " update="
+                    + mFilenameDictionaryUpdateController.mLastUpdateTime);
         }
-
-        loadDictionaryAsync();
-
-        final String tempFileName = mFilename + ".temp";
-        final File file = new File(mContext.getFilesDir(), mFilename);
-        final File tempFile = new File(mContext.getFilesDir(), tempFileName);
-        FileOutputStream out = null;
-        try {
-            out = new FileOutputStream(tempFile);
-            BinaryDictInputOutput.writeDictionaryBinary(out, mFusionDictionary, 1);
-            out.flush();
-            out.close();
-            tempFile.renameTo(file);
-            clearFusionDictionary();
-        } catch (IOException e) {
-            Log.e(TAG, "IO exception while writing file: " + e);
-        } catch (UnsupportedFormatException e) {
-            Log.e(TAG, "Unsupported format: " + e);
-        } finally {
-            if (out != null) {
-                try {
-                    out.close();
-                } catch (IOException e) {
-                    // ignore
+        if (needsToReloadBeforeWriting()) {
+            mDictionaryWriter.clear();
+            loadDictionaryAsync();
+            mDictionaryWriter.write(mFilename, getHeaderAttributeMap());
+        } else {
+            if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
+                if (mBinaryDictionary == null || !mBinaryDictionary.isValidDictionary()) {
+                    final File file = new File(mContext.getFilesDir(), mFilename);
+                    BinaryDictionary.createEmptyDictFile(file.getAbsolutePath(),
+                            DICTIONARY_FORMAT_VERSION, getHeaderAttributeMap());
+                } else {
+                    if (mBinaryDictionary.needsToRunGC(false /* mindsBlockByGC */)) {
+                        mBinaryDictionary.flushWithGC();
+                    } else {
+                        mBinaryDictionary.flush();
+                    }
                 }
+            } else {
+                mDictionaryWriter.write(mFilename, getHeaderAttributeMap());
             }
         }
     }
@@ -370,77 +569,91 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
      */
     protected void setRequiresReload(final boolean requiresRebuild) {
         final long time = SystemClock.uptimeMillis();
-        mLocalDictionaryController.mLastUpdateRequestTime = time;
-        mSharedDictionaryController.mLastUpdateRequestTime = time;
+        mPerInstanceDictionaryUpdateController.mLastUpdateRequestTime = time;
+        mFilenameDictionaryUpdateController.mLastUpdateRequestTime = time;
         if (DEBUG) {
             Log.d(TAG, "Reload request: " + mFilename + ": request=" + time + " update="
-                    + mSharedDictionaryController.mLastUpdateTime);
+                    + mFilenameDictionaryUpdateController.mLastUpdateTime);
         }
-    }
-
-    /**
-     * Reloads the dictionary if required. Reload will occur asynchronously in a separate thread.
-     */
-    void asyncReloadDictionaryIfRequired() {
-        if (!isReloadRequired()) return;
-        if (DEBUG) {
-            Log.d(TAG, "Starting AsyncReloadDictionaryTask: " + mFilename);
-        }
-        new AsyncReloadDictionaryTask().start();
     }
 
     /**
      * Reloads the dictionary if required.
      */
-    protected final void syncReloadDictionaryIfRequired() {
+    public final void reloadDictionaryIfRequired() {
         if (!isReloadRequired()) return;
-        syncReloadDictionaryInternal();
+        if (setIsRegeneratingIfNotRegenerating()) {
+            reloadDictionary();
+        }
     }
 
     /**
      * Returns whether a dictionary reload is required.
      */
     private boolean isReloadRequired() {
-        return mBinaryDictionary == null || mLocalDictionaryController.isOutOfDate();
+        return mBinaryDictionary == null || mPerInstanceDictionaryUpdateController.isOutOfDate();
+    }
+
+    private boolean isRegenerating() {
+        return mFilenameDictionaryUpdateController.mIsRegenerating.get();
+    }
+
+    // Returns whether the dictionary can be regenerated.
+    private boolean setIsRegeneratingIfNotRegenerating() {
+        return mFilenameDictionaryUpdateController.mIsRegenerating.compareAndSet(
+                false /* expect */ , true /* update */);
     }
 
     /**
      * Reloads the dictionary. Access is controlled on a per dictionary file basis and supports
      * concurrent calls from multiple instances that share the same dictionary file.
      */
-    private final void syncReloadDictionaryInternal() {
+    private final void reloadDictionary() {
         // Ensure that only one thread attempts to read or write to the shared binary dictionary
         // file at the same time.
-        mSharedDictionaryController.lock();
-        try {
-            final long time = SystemClock.uptimeMillis();
-            final boolean dictionaryFileExists = dictionaryFileExists();
-            if (mSharedDictionaryController.isOutOfDate() || !dictionaryFileExists) {
-                // If the shared dictionary file does not exist or is out of date, the first
-                // instance that acquires the lock will generate a new one.
-                if (hasContentChanged() || !dictionaryFileExists) {
-                    // If the source content has changed or the dictionary does not exist, rebuild
-                    // the binary dictionary. Empty dictionaries are supported (in the case where
-                    // loadDictionaryAsync() adds nothing) in order to provide a uniform framework.
-                    mSharedDictionaryController.mLastUpdateTime = time;
-                    generateBinaryDictionary();
-                    loadBinaryDictionary();
-                } else {
-                    // If not, the reload request was unnecessary so revert LastUpdateRequestTime
-                    // to LastUpdateTime.
-                    mSharedDictionaryController.mLastUpdateRequestTime =
-                            mSharedDictionaryController.mLastUpdateTime;
+        getExecutor(mFilename).execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final long time = SystemClock.uptimeMillis();
+                    final boolean dictionaryFileExists = dictionaryFileExists();
+                    if (mFilenameDictionaryUpdateController.isOutOfDate()
+                            || !dictionaryFileExists) {
+                        // If the shared dictionary file does not exist or is out of date, the
+                        // first instance that acquires the lock will generate a new one.
+                        if (hasContentChanged() || !dictionaryFileExists) {
+                            // If the source content has changed or the dictionary does not exist,
+                            // rebuild the binary dictionary. Empty dictionaries are supported (in
+                            // the case where loadDictionaryAsync() adds nothing) in order to
+                            // provide a uniform framework.
+                            mFilenameDictionaryUpdateController.mLastUpdateTime = time;
+                            writeBinaryDictionary();
+                            loadBinaryDictionary();
+                        } else {
+                            // If not, the reload request was unnecessary so revert
+                            // LastUpdateRequestTime to LastUpdateTime.
+                            mFilenameDictionaryUpdateController.mLastUpdateRequestTime =
+                                    mFilenameDictionaryUpdateController.mLastUpdateTime;
+                        }
+                    } else if (mBinaryDictionary == null ||
+                            mPerInstanceDictionaryUpdateController.mLastUpdateTime
+                                    < mFilenameDictionaryUpdateController.mLastUpdateTime) {
+                        // Otherwise, if the local dictionary is older than the shared dictionary,
+                        // load the shared dictionary.
+                        loadBinaryDictionary();
+                    }
+                    if (mBinaryDictionary != null && !mBinaryDictionary.isValidDictionary()) {
+                        // Binary dictionary is not valid. Regenerate the dictionary file.
+                        mFilenameDictionaryUpdateController.mLastUpdateTime = time;
+                        writeBinaryDictionary();
+                        loadBinaryDictionary();
+                    }
+                    mPerInstanceDictionaryUpdateController.mLastUpdateTime = time;
+                } finally {
+                    mFilenameDictionaryUpdateController.mIsRegenerating.set(false);
                 }
-            } else if (mBinaryDictionary == null || mLocalDictionaryController.mLastUpdateTime
-                    < mSharedDictionaryController.mLastUpdateTime) {
-                // Otherwise, if the local dictionary is older than the shared dictionary, load the
-                // shared dictionary.
-                loadBinaryDictionary();
             }
-            mLocalDictionaryController.mLastUpdateTime = time;
-        } finally {
-            mSharedDictionaryController.unlock();
-        }
+        });
     }
 
     // TODO: cache the file's existence so that we avoid doing a disk access each time.
@@ -450,26 +663,74 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
     }
 
     /**
-     * Thread class for asynchronously reloading and rewriting the binary dictionary.
+     * Load the dictionary to memory.
      */
-    private class AsyncReloadDictionaryTask extends Thread {
-        @Override
-        public void run() {
-            syncReloadDictionaryInternal();
-        }
+    protected void asyncLoadDictionaryToMemory() {
+        getExecutor(mFilename).executePrioritized(new Runnable() {
+            @Override
+            public void run() {
+                if (!ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
+                    loadDictionaryAsync();
+                }
+            }
+        });
     }
 
     /**
-     * Lock for controlling access to a given binary dictionary and for tracking whether the
-     * dictionary is out of date. Can be shared across multiple dictionary instances that access the
-     * same filename.
+     * Generate binary dictionary using DictionaryWriter.
      */
-    private static class DictionaryController extends ReentrantLock {
-        private volatile long mLastUpdateTime = 0;
-        private volatile long mLastUpdateRequestTime = 0;
+    protected void asyncFlashAllBinaryDictionary() {
+        final Runnable newTask = new Runnable() {
+            @Override
+            public void run() {
+                writeBinaryDictionary();
+            }
+        };
+        final Runnable oldTask = mUnfinishedFlushingTask.getAndSet(newTask);
+        getExecutor(mFilename).replaceAndExecute(oldTask, newTask);
+    }
 
-        private boolean isOutOfDate() {
+    /**
+     * For tracking whether the dictionary is out of date and the dictionary is regenerating.
+     * Can be shared across multiple dictionary instances that access the same filename.
+     */
+    private static class DictionaryUpdateController {
+        public volatile long mLastUpdateTime = 0;
+        public volatile long mLastUpdateRequestTime = 0;
+        public volatile AtomicBoolean mIsRegenerating = new AtomicBoolean();
+
+        public boolean isOutOfDate() {
             return (mLastUpdateRequestTime > mLastUpdateTime);
         }
+    }
+
+    // TODO: Implement native binary methods once the dynamic dictionary implementation is done.
+    @UsedForTesting
+    public boolean isInDictionaryForTests(final String word) {
+        final AsyncResultHolder<Boolean> holder = new AsyncResultHolder<Boolean>();
+        getExecutor(mFilename).executePrioritized(new Runnable() {
+            @Override
+            public void run() {
+                if (mDictType == Dictionary.TYPE_USER_HISTORY) {
+                    if (ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE) {
+                        holder.set(mBinaryDictionary.isValidWord(word));
+                    } else {
+                        holder.set(((DynamicPersonalizationDictionaryWriter) mDictionaryWriter)
+                                .isInBigramListForTests(word));
+                    }
+                }
+            }
+        });
+        return holder.get(false, TIMEOUT_FOR_READ_OPS_IN_MILLISECONDS);
+    }
+
+    @UsedForTesting
+    public void shutdownExecutorForTests() {
+        getExecutor(mFilename).shutdown();
+    }
+
+    @UsedForTesting
+    public boolean isTerminatedForTests() {
+        return getExecutor(mFilename).isTerminated();
     }
 }

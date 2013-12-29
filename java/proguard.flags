@@ -1,61 +1,16 @@
--keep class in.androidtweak.inputmethod.indic.BinaryDictionary {
-  int mDictLength;
-  <init>(...);
+# Keep classes and methods that have the @UsedForTesting annotation
+-keep @in.androidtweak.inputmethod.annotations.UsedForTesting class *
+-keepclassmembers class * {
+    @in.androidtweak.inputmethod.annotations.UsedForTesting *;
 }
 
--keep class in.androidtweak.inputmethod.indic.Flag {
-  *;
+# Keep classes and methods that have the @ExternallyReferenced annotation
+-keep @in.androidtweak.inputmethod.annotations.ExternallyReferenced class *
+-keepclassmembers class * {
+    @in.androidtweak.inputmethod.annotations.ExternallyReferenced *;
 }
 
--keep class in.androidtweak.inputmethod.keyboard.ProximityInfo {
-  <init>(in.androidtweak.inputmethod.keyboard.ProximityInfo);
+# Keep native methods
+-keepclassmembers class * {
+    native <methods>;
 }
-
--keep class in.androidtweak.inputmethod.indic.Suggest {
-  <init>(...);
-  in.androidtweak.inputmethod.indic.SuggestedWords getSuggestions(...);
-}
-
--keep class in.androidtweak.inputmethod.indic.AutoCorrection {
-  java.lang.CharSequence getAutoCorrectionWord();
-}
-
--keep class in.androidtweak.inputmethod.indic.Utils {
-  boolean equalsIgnoreCase(...);
-}
-
--keep class in.androidtweak.inputmethod.indic.spellcheck.SpellCheckerSettingsFragment {
-  *;
-}
-
--keep class in.androidtweak.inputmethod.keyboard.LatinKeyboardView {
-  # Keep getter/setter methods for ObjectAnimator
-  int getLanguageOnSpacebarAnimAlpha();
-  void setLanguageOnSpacebarAnimAlpha(int);
-  int getAltCodeKeyWhileTypingAnimAlpha();
-  void setAltCodeKeyWhileTypingAnimAlpha(int);
-}
-
--keep class in.androidtweak.inputmethod.keyboard.MoreKeysKeyboard$Builder$MoreKeysKeyboardParams {
-  <init>(...);
-}
-
--keep class in.androidtweak.inputmethod.indic.ResearchLogger {
-  void setLogFileManager(...);
-  void clearAll();
-  in.androidtweak.inputmethod.indic.ResearchLogger$LogFileManager getLogFileManager();
-}
-
--keep class in.androidtweak.inputmethod.indic.ResearchLogger$LogFileManager {
-  java.lang.String getContents();
-}
-
--keep class in.androidtweak.inputmethod.keyboard.KeyboardLayoutSet$Builder {
-  void setTouchPositionCorrectionEnabled(...);
-}
-
-# The support library contains references to newer platform versions.
-# Don't warn about those in case this app is linking against an older
-# platform version.  We know about them, and they are safe.
--dontwarn android.support.v4.**
--dontwarn android.support.v13.**

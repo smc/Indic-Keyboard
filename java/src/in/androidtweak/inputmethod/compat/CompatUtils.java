@@ -16,7 +16,6 @@
 
 package in.androidtweak.inputmethod.compat;
 
-import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -24,28 +23,14 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-public class CompatUtils {
+public final class CompatUtils {
     private static final String TAG = CompatUtils.class.getSimpleName();
-    private static final String EXTRA_INPUT_METHOD_ID = "input_method_id";
-    // TODO: Can these be constants instead of literal String constants?
-    private static final String INPUT_METHOD_SUBTYPE_SETTINGS =
-            "android.settings.INPUT_METHOD_SUBTYPE_SETTINGS";
 
-    public static Intent getInputLanguageSelectionIntent(String inputMethodId,
-            int flagsForSubtypeSettings) {
-        // Refer to android.provider.Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS
-        final String action = INPUT_METHOD_SUBTYPE_SETTINGS;
-        final Intent intent = new Intent(action);
-        if (!TextUtils.isEmpty(inputMethodId)) {
-            intent.putExtra(EXTRA_INPUT_METHOD_ID, inputMethodId);
-        }
-        if (flagsForSubtypeSettings > 0) {
-            intent.setFlags(flagsForSubtypeSettings);
-        }
-        return intent;
+    private CompatUtils() {
+        // This utility class is not publicly instantiable.
     }
 
-    public static Class<?> getClass(String className) {
+    public static Class<?> getClass(final String className) {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
@@ -53,8 +38,8 @@ public class CompatUtils {
         }
     }
 
-    public static Method getMethod(Class<?> targetClass, String name,
-            Class<?>... parameterTypes) {
+    public static Method getMethod(final Class<?> targetClass, final String name,
+            final Class<?>... parameterTypes) {
         if (targetClass == null || TextUtils.isEmpty(name)) return null;
         try {
             return targetClass.getMethod(name, parameterTypes);
@@ -66,7 +51,7 @@ public class CompatUtils {
         return null;
     }
 
-    public static Field getField(Class<?> targetClass, String name) {
+    public static Field getField(final Class<?> targetClass, final String name) {
         if (targetClass == null || TextUtils.isEmpty(name)) return null;
         try {
             return targetClass.getField(name);
@@ -78,7 +63,8 @@ public class CompatUtils {
         return null;
     }
 
-    public static Constructor<?> getConstructor(Class<?> targetClass, Class<?> ... types) {
+    public static Constructor<?> getConstructor(final Class<?> targetClass,
+            final Class<?> ... types) {
         if (targetClass == null || types == null) return null;
         try {
             return targetClass.getConstructor(types);
@@ -90,43 +76,44 @@ public class CompatUtils {
         return null;
     }
 
-    public static Object newInstance(Constructor<?> constructor, Object ... args) {
+    public static Object newInstance(final Constructor<?> constructor, final Object ... args) {
         if (constructor == null) return null;
         try {
             return constructor.newInstance(args);
         } catch (Exception e) {
-            Log.e(TAG, "Exception in newInstance: " + e.getClass().getSimpleName());
+            Log.e(TAG, "Exception in newInstance", e);
         }
         return null;
     }
 
-    public static Object invoke(
-            Object receiver, Object defaultValue, Method method, Object... args) {
+    public static Object invoke(final Object receiver, final Object defaultValue,
+            final Method method, final Object... args) {
         if (method == null) return defaultValue;
         try {
             return method.invoke(receiver, args);
         } catch (Exception e) {
-            Log.e(TAG, "Exception in invoke: " + e.getClass().getSimpleName());
+            Log.e(TAG, "Exception in invoke", e);
         }
         return defaultValue;
     }
 
-    public static Object getFieldValue(Object receiver, Object defaultValue, Field field) {
+    public static Object getFieldValue(final Object receiver, final Object defaultValue,
+            final Field field) {
         if (field == null) return defaultValue;
         try {
             return field.get(receiver);
         } catch (Exception e) {
-            Log.e(TAG, "Exception in getFieldValue: " + e.getClass().getSimpleName());
+            Log.e(TAG, "Exception in getFieldValue", e);
         }
         return defaultValue;
     }
 
-    public static void setFieldValue(Object receiver, Field field, Object value) {
+    public static void setFieldValue(final Object receiver, final Field field, final Object value) {
         if (field == null) return;
         try {
             field.set(receiver, value);
         } catch (Exception e) {
-            Log.e(TAG, "Exception in setFieldValue: " + e.getClass().getSimpleName());
+            Log.e(TAG, "Exception in setFieldValue", e);
         }
     }
 }

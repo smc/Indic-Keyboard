@@ -24,15 +24,8 @@
     <dimen name="keyboardHeight">365.4dp</dimen>
     <fraction name="minKeyboardHeight">45%p</fraction>
 
-    <fraction name="keyboard_top_padding">1.896%p</fraction>
-    <fraction name="keyboard_bottom_padding">0.0%p</fraction>
-
-    <fraction name="key_bottom_gap">4.103%p</fraction>
-    <fraction name="key_horizontal_gap">1.034%p</fraction>
-
-    <fraction name="key_bottom_gap_stone">3.379%p</fraction>
-    <fraction name="key_horizontal_gap_stone">1.062%p</fraction>
-
+    <fraction name="keyboard_top_padding_gb">1.896%p</fraction>
+    <fraction name="keyboard_bottom_padding_gb">0.0%p</fraction>
     <fraction name="key_bottom_gap_gb">3.896%p</fraction>
     <fraction name="key_horizontal_gap_gb">1.195%p</fraction>
 
@@ -55,8 +48,26 @@
     <fraction name="spacebar_text_ratio">24.00%</fraction>
     <dimen name="key_preview_height">107.1dp</dimen>
 
+    <!-- For 5-row keyboard -->
+    <fraction name="key_bottom_gap_5row">2.65%p</fraction>
+    <fraction name="key_letter_ratio_5row">53%</fraction>
+    <fraction name="key_uppercase_letter_ratio_5row">30%</fraction>
+
     <dimen name="key_preview_offset_ics">8.0dp</dimen>
 
     <dimen name="suggestions_strip_padding">252.0dp</dimen>
     <fraction name="min_more_suggestions_width">50%</fraction>
+
+    <!-- Gesture floating preview text parameters -->
+    <dimen name="gesture_floating_preview_text_size">32dp</dimen>
+    <dimen name="gesture_floating_preview_text_offset">100dp</dimen>
+    <dimen name="gesture_floating_preview_horizontal_padding">32dp</dimen>
+    <dimen name="gesture_floating_preview_vertical_padding">21dp</dimen>
+
+    <!-- Emoji keyboard -->
+    <fraction name="emoji_keyboard_key_width">7.69%p</fraction>
+    <fraction name="emoji_keyboard_row_height">33%p</fraction>
+    <fraction name="emoji_keyboard_key_letter_size">60%p</fraction>
+    <integer name="emoji_keyboard_max_key_count">39</integer>
+
 </resources>

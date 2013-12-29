@@ -1,17 +1,17 @@
 /*
  * Copyright (C) 2011 The Android Open Source Project
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package in.androidtweak.inputmethod.keyboard.internal;
@@ -20,22 +20,23 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.util.SparseIntArray;
 
 import in.androidtweak.inputmethod.indic.R;
+import in.androidtweak.inputmethod.indic.utils.CollectionUtils;
 
 import java.util.HashMap;
 
-public class KeyboardIconsSet {
+public final class KeyboardIconsSet {
     private static final String TAG = KeyboardIconsSet.class.getSimpleName();
 
     public static final int ICON_UNDEFINED = 0;
     private static final int ATTR_UNDEFINED = 0;
 
-    private static final HashMap<Integer, Integer> ATTR_ID_TO_ICON_ID
-            = new HashMap<Integer, Integer>();
+    private static final SparseIntArray ATTR_ID_TO_ICON_ID = new SparseIntArray();
 
     // Icon name to icon id map.
-    private static final HashMap<String, Integer> sNameToIdsMap = new HashMap<String, Integer>();
+    private static final HashMap<String, Integer> sNameToIdsMap = CollectionUtils.newHashMap();
 
     private static final Object[] NAMES_AND_ATTR_IDS = {
         "undefined",                    ATTR_UNDEFINED,
@@ -55,6 +56,7 @@ public class KeyboardIconsSet {
         "language_switch_key",          R.styleable.Keyboard_iconLanguageSwitchKey,
         "zwnj_key",                     R.styleable.Keyboard_iconZwnjKey,
         "zwj_key",                      R.styleable.Keyboard_iconZwjKey,
+        "emoji_key",                    R.styleable.Keyboard_iconEmojiKey,
     };
 
     private static int NUM_ICONS = NAMES_AND_ATTR_IDS.length / 2;
@@ -76,7 +78,9 @@ public class KeyboardIconsSet {
     }
 
     public void loadIcons(final TypedArray keyboardAttrs) {
-        for (final Integer attrId : ATTR_ID_TO_ICON_ID.keySet()) {
+        final int size = ATTR_ID_TO_ICON_ID.size();
+        for (int index = 0; index < size; index++) {
+            final int attrId = ATTR_ID_TO_ICON_ID.keyAt(index);
             try {
                 final Drawable icon = keyboardAttrs.getDrawable(attrId);
                 setDefaultBounds(icon);

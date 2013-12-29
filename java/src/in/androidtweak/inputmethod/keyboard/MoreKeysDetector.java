@@ -16,7 +16,7 @@
 
 package in.androidtweak.inputmethod.keyboard;
 
-public class MoreKeysDetector extends KeyDetector {
+public final class MoreKeysDetector extends KeyDetector {
     private final int mSlideAllowanceSquare;
     private final int mSlideAllowanceSquareTop;
 
@@ -39,7 +39,7 @@ public class MoreKeysDetector extends KeyDetector {
 
         Key nearestKey = null;
         int nearestDist = (y < 0) ? mSlideAllowanceSquareTop : mSlideAllowanceSquare;
-        for (final Key key : getKeyboard().mKeys) {
+        for (final Key key : getKeyboard().getKeys()) {
             final int dist = key.squaredDistanceToEdge(touchX, touchY);
             if (dist < nearestDist) {
                 nearestKey = key;

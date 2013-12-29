@@ -18,36 +18,58 @@ package in.androidtweak.inputmethod.indic;
 
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
-import android.content.Intent;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
+import android.net.Uri;
+import android.os.Build;
 import android.provider.UserDictionary.Words;
 import android.text.TextUtils;
+import android.util.Log;
 
-import in.androidtweak.inputmethod.indic.R;
+import in.androidtweak.inputmethod.compat.UserDictionaryCompatUtils;
+import in.androidtweak.inputmethod.indic.utils.LocaleUtils;
+import in.androidtweak.inputmethod.indic.utils.SubtypeLocaleUtils;
+
 import java.util.Arrays;
+import java.util.Locale;
 
 /**
- * An expandable dictionary that stores the words in the user unigram dictionary.
- *
- * Largely a copy of UserDictionary, will replace that class in the future.
+ * An expandable dictionary that stores the words in the user dictionary provider into a binary
+ * dictionary file to use it from native code.
  */
 public class UserBinaryDictionary extends ExpandableBinaryDictionary {
+    private static final String TAG = ExpandableBinaryDictionary.class.getSimpleName();
 
-    // TODO: use Words.SHORTCUT when it's public in the SDK
+    // The user dictionary provider uses an empty string to mean "all languages".
+    private static final String USER_DICTIONARY_ALL_LANGUAGES = "";
+    private static final int HISTORICAL_DEFAULT_USER_DICTIONARY_FREQUENCY = 250;
+    private static final int LATINIME_DEFAULT_USER_DICTIONARY_FREQUENCY = 160;
+    // Shortcut frequency is 0~15, with 15 = whitelist. We don't want user dictionary entries
+    // to auto-correct, so we set this to the highest frequency that won't, i.e. 14.
+    private static final int USER_DICT_SHORTCUT_FREQUENCY = 14;
+
+    // TODO: use Words.SHORTCUT when we target JellyBean or above
     final static String SHORTCUT = "shortcut";
-    private static final String[] PROJECTION_QUERY = {
-        Words.WORD,
-        SHORTCUT,
-        Words.FREQUENCY,
-    };
+    private static final String[] PROJECTION_QUERY;
+    static {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            PROJECTION_QUERY = new String[] {
+                Words.WORD,
+                SHORTCUT,
+                Words.FREQUENCY,
+            };
+        } else {
+            PROJECTION_QUERY = new String[] {
+                Words.WORD,
+                Words.FREQUENCY,
+            };
+        }
+    }
 
     private static final String NAME = "userunigram";
-
-    // This is not exported by the framework so we pretty much have to write it here verbatim
-    private static final String ACTION_USER_DICTIONARY_INSERT =
-            "com.android.settings.USER_DICTIONARY_INSERT";
 
     private ContentObserver mObserver;
     final private String mLocale;
@@ -59,9 +81,15 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
 
     public UserBinaryDictionary(final Context context, final String locale,
             final boolean alsoUseMoreRestrictiveLocales) {
-        super(context, getFilenameWithLocale(NAME, locale), Suggest.DIC_USER);
+        super(context, getFilenameWithLocale(NAME, locale), Dictionary.TYPE_USER,
+                false /* isUpdatable */);
         if (null == locale) throw new NullPointerException(); // Catch the error earlier
-        mLocale = locale;
+        if (SubtypeLocaleUtils.NO_LANGUAGE.equals(locale)) {
+            // If we don't have a locale, insert into the "all locales" user dictionary.
+            mLocale = USER_DICTIONARY_ALL_LANGUAGES;
+        } else {
+            mLocale = locale;
+        }
         mAlsoUseMoreRestrictiveLocales = alsoUseMoreRestrictiveLocales;
         // Perform a managed query. The Activity will handle closing and re-querying the cursor
         // when needed.
@@ -69,7 +97,17 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
 
         mObserver = new ContentObserver(null) {
             @Override
-            public void onChange(boolean self) {
+            public void onChange(final boolean self) {
+                // This hook is deprecated as of API level 16 (Build.VERSION_CODES.JELLY_BEAN),
+                // but should still be supported for cases where the IME is running on an older
+                // version of the platform.
+                onChange(self, null);
+            }
+            // The following hook is only available as of API level 16
+            // (Build.VERSION_CODES.JELLY_BEAN), and as such it will only work on JellyBean+
+            // devices. On older versions of the platform, the hook above will be called instead.
+            @Override
+            public void onChange(final boolean self, final Uri uri) {
                 setRequiresReload(true);
             }
         };
@@ -136,12 +174,19 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
         } else {
             requestArguments = localeElements;
         }
-        final Cursor cursor = mContext.getContentResolver().query(
-            Words.CONTENT_URI, PROJECTION_QUERY, request.toString(), requestArguments, null);
+        Cursor cursor = null;
         try {
+            cursor = mContext.getContentResolver().query(
+                Words.CONTENT_URI, PROJECTION_QUERY, request.toString(), requestArguments, null);
             addWords(cursor);
+        } catch (final SQLiteException e) {
+            Log.e(TAG, "SQLiteException in the remote User dictionary process.", e);
         } finally {
-            if (null != cursor) cursor.close();
+            try {
+                if (null != cursor) cursor.close();
+            } catch (final SQLiteException e) {
+                Log.e(TAG, "SQLiteException in the remote User dictionary process.", e);
+            }
         }
     }
 
@@ -159,46 +204,54 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     /**
      * Adds a word to the user dictionary and makes it persistent.
      *
-     * This will call upon the system interface to do the actual work through the intent readied by
-     * the system to this effect.
-     *
      * @param word the word to add. If the word is capitalized, then the dictionary will
      * recognize it as a capitalized word when searched.
-     * @param frequency the frequency of occurrence of the word. A frequency of 255 is considered
-     * the highest.
-     * @TODO use a higher or float range for frequency
      */
-    public synchronized void addWordToUserDictionary(final String word, final int frequency) {
-        // TODO: do something for the UI. With the following, any sufficiently long word will
-        // look like it will go to the user dictionary but it won't.
-        // Safeguard against adding long words. Can cause stack overflow.
-        if (word.length() >= MAX_WORD_LENGTH) return;
-
-        // TODO: Add an argument to the intent to specify the frequency.
-        Intent intent = new Intent(ACTION_USER_DICTIONARY_INSERT);
-        intent.putExtra(Words.WORD, word);
-        intent.putExtra(Words.LOCALE, mLocale);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        mContext.startActivity(intent);
+    public synchronized void addWordToUserDictionary(final String word) {
+        // Update the user dictionary provider
+        final Locale locale;
+        if (USER_DICTIONARY_ALL_LANGUAGES == mLocale) {
+            locale = null;
+        } else {
+            locale = LocaleUtils.constructLocaleFromString(mLocale);
+        }
+        UserDictionaryCompatUtils.addWord(mContext, word,
+                HISTORICAL_DEFAULT_USER_DICTIONARY_FREQUENCY, null, locale);
     }
 
-    private void addWords(Cursor cursor) {
-        clearFusionDictionary();
+    private int scaleFrequencyFromDefaultToLatinIme(final int defaultFrequency) {
+        // The default frequency for the user dictionary is 250 for historical reasons.
+        // Latin IME considers a good value for the default user dictionary frequency
+        // is about 160 considering the scale we use. So we are scaling down the values.
+        if (defaultFrequency > Integer.MAX_VALUE / LATINIME_DEFAULT_USER_DICTIONARY_FREQUENCY) {
+            return (defaultFrequency / HISTORICAL_DEFAULT_USER_DICTIONARY_FREQUENCY)
+                    * LATINIME_DEFAULT_USER_DICTIONARY_FREQUENCY;
+        } else {
+            return (defaultFrequency * LATINIME_DEFAULT_USER_DICTIONARY_FREQUENCY)
+                    / HISTORICAL_DEFAULT_USER_DICTIONARY_FREQUENCY;
+        }
+    }
+
+    private void addWords(final Cursor cursor) {
+        final boolean hasShortcutColumn = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
         if (cursor == null) return;
         if (cursor.moveToFirst()) {
             final int indexWord = cursor.getColumnIndex(Words.WORD);
-            final int indexShortcut = cursor.getColumnIndex(SHORTCUT);
+            final int indexShortcut = hasShortcutColumn ? cursor.getColumnIndex(SHORTCUT) : 0;
             final int indexFrequency = cursor.getColumnIndex(Words.FREQUENCY);
             while (!cursor.isAfterLast()) {
-                String word = cursor.getString(indexWord);
-                String shortcut = cursor.getString(indexShortcut);
-                int frequency = cursor.getInt(indexFrequency);
+                final String word = cursor.getString(indexWord);
+                final String shortcut = hasShortcutColumn ? cursor.getString(indexShortcut) : null;
+                final int frequency = cursor.getInt(indexFrequency);
+                final int adjustedFrequency = scaleFrequencyFromDefaultToLatinIme(frequency);
                 // Safeguard against adding really long words.
                 if (word.length() < MAX_WORD_LENGTH) {
-                    super.addWord(word, null, frequency);
+                    super.addWord(word, null, adjustedFrequency, 0 /* shortcutFreq */,
+                            false /* isNotAWord */);
                 }
                 if (null != shortcut && shortcut.length() < MAX_WORD_LENGTH) {
-                    super.addWord(shortcut, word, frequency);
+                    super.addWord(shortcut, word, adjustedFrequency, USER_DICT_SHORTCUT_FREQUENCY,
+                            true /* isNotAWord */);
                 }
                 cursor.moveToNext();
             }
@@ -207,6 +260,11 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
 
     @Override
     protected boolean hasContentChanged() {
+        return true;
+    }
+
+    @Override
+    protected boolean needsToReloadBeforeWriting() {
         return true;
     }
 }

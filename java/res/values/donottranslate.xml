@@ -18,32 +18,24 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- TODO: these settings depend on the language. They should be put either in the dictionary
+         header, or in the subtype maybe? -->
     <!-- Symbols that are suggested between words -->
     <string name="suggested_punctuations">!,?,\\,,:,;,\",(,),\',-,/,@,_</string>
-    <!-- Symbols that should be swapped with a weak space -->
-    <string name="weak_space_swapping_symbols">.,;:!?)]}\"</string>
-    <!-- Symbols that should strip a weak space -->
-    <string name="weak_space_stripping_symbols">"&#x0009;&#x0020;\n/_\'-"</string>
-    <!-- Symbols that should convert weak spaces into real space -->
-    <string name="phantom_space_promoting_symbols">([*&amp;@{&lt;&gt;+=|</string>
-    <!-- Symbols that do NOT separate words -->
-    <string name="symbols_excluded_from_word_separators">\'-</string>
-    <!-- Word separator list is the union of all symbols except those that are not separators:
-    weak_space_swapping_symbols | weak_space_stripping_symbols
-            \ symbols_excluded_from_word_separators -->
-    <!-- Symbol characters list that should switch back to the main layout -->
-    <!-- U+2018: "‘" LEFT SINGLE QUOTATION MARK
-         U+2019: "’" RIGHT SINGLE QUOTATION MARK
-         U+201A: "‚" SINGLE LOW-9 QUOTATION MARK
-         U+201B: "‛" SINGLE HIGH-REVERSED-9 QUOTATION MARK
-         U+201C: "“" LEFT DOUBLE QUOTATION MARK
-         U+201D: "”" RIGHT DOUBLE QUOTATION MARK
-         U+201E: "„" DOUBLE LOW-9 QUOTATION MARK
-         U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK
-         U+00AB: "«" LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
-         U+00BB: "»" RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK -->
-    <!-- <string name="layout_switch_back_symbols">\"\'&#x2018;&#x2019;&#x201A;&#x201B;&#x201C;&#x201D;&#x201E;&#x201F;&#x00AB;&#x00BB;</string> -->
-    <string name="layout_switch_back_symbols"></string>
+    <!-- Symbols that are normally preceded by a space (used to add an auto-space before these) -->
+    <string name="symbols_preceded_by_space">([{&amp;</string>
+    <!-- Symbols that are normally followed by a space (used to add an auto-space after these) -->
+    <string name="symbols_followed_by_space">.,;:!?)]}&amp;</string>
+    <!-- Symbols that separate words -->
+    <!-- Don't remove the enclosing double quotes, they protect whitespace (not just U+0020) -->
+    <string name="symbols_word_separators">"&#x0009;&#x0020;\n"()[]{}*&amp;&lt;&gt;+=|.,;:!?/_\"</string>
+    <!-- Word connectors -->
+    <string name="symbols_word_connectors">\'-</string>
+    <!-- The sentence separator code point, for capitalization -->
+    <!-- U+002E: "." FULL STOP   ; 2Eh = 46d -->
+    <integer name="sentence_separator">46</integer>
+    <!-- Whether this language uses spaces between words -->
+    <bool name="current_language_has_spaces">true</bool>
 
     <!--  Always show the suggestion strip -->
     <string name="prefs_suggestion_visibility_show_value">0</string>
@@ -67,19 +59,19 @@
 
     <string name="auto_correction_threshold_mode_index_off">0</string>
     <string name="auto_correction_threshold_mode_index_modest">1</string>
-    <string name="auto_correction_threshold_mode_index_aggeressive">2</string>
-    <string name="auto_correction_threshold_mode_index_very_aggeressive">3</string>
+    <string name="auto_correction_threshold_mode_index_aggressive">2</string>
+    <string name="auto_correction_threshold_mode_index_very_aggressive">3</string>
     <string-array name="auto_correction_threshold_mode_indexes">
       <item>@string/auto_correction_threshold_mode_index_off</item>
       <item>@string/auto_correction_threshold_mode_index_modest</item>
-      <item>@string/auto_correction_threshold_mode_index_aggeressive</item>
-      <item>@string/auto_correction_threshold_mode_index_very_aggeressive</item>
+      <item>@string/auto_correction_threshold_mode_index_aggressive</item>
+      <item>@string/auto_correction_threshold_mode_index_very_aggressive</item>
     </string-array>
     <string-array name="auto_correction_threshold_modes">
       <item>@string/auto_correction_threshold_mode_off</item>
       <item>@string/auto_correction_threshold_mode_modest</item>
-      <item>@string/auto_correction_threshold_mode_aggeressive</item>
-      <item>@string/auto_correction_threshold_mode_very_aggeressive</item>
+      <item>@string/auto_correction_threshold_mode_aggressive</item>
+      <item>@string/auto_correction_threshold_mode_very_aggressive</item>
     </string-array>
 
     <string name="voice_mode_main">0</string>
@@ -109,43 +101,27 @@
     <string name="prefs_force_non_distinct_multitouch">Force non-distinct multitouch</string>
 
     <!-- Keyboard theme names -->
-    <string name="layout_basic">Basic</string>
-    <string name="layout_high_contrast">Basic (High Contrast)</string>
-    <string name="layout_stone_bold">Stone (bold)</string>
-    <string name="layout_stone_normal">Stone (normal)</string>
     <string name="layout_gingerbread">Gingerbread</string>
     <string name="layout_ics">IceCreamSandwich</string>
 
     <!-- For keyboard theme switcher dialog -->
     <string-array name="keyboard_layout_modes">
-        <item>@string/layout_basic</item>
-        <item>@string/layout_high_contrast</item>
-        <item>@string/layout_stone_normal</item>
-        <item>@string/layout_stone_bold</item>
-        <item>@string/layout_gingerbread</item>
         <item>@string/layout_ics</item>
+        <item>@string/layout_gingerbread</item>
     </string-array>
     <string-array name="keyboard_layout_modes_values">
         <item>0</item>
         <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
     </string-array>
 
     <!-- Subtype locale display name exceptions.
-         For each exception, there should be related string resource for display name that has
-         explicit keyboard layout. The string resource name must be "subtype_with_layout_<locale>. -->
+         For each exception, there should be related string resources for display name that may have
+         explicit keyboard layout. The string resource name must be "subtype_<locale>" or
+         "subtype_with_layout_<locale>. Please refer to strings.xml for these resources. -->
     <string-array name="subtype_locale_exception_keys">
         <item>en_US</item>
         <item>en_GB</item>
-        <item>hu_ZZ</item>
-    </string-array>
-    <string-array name="subtype_locale_exception_values">
-        <item>English (US)</item>
-        <item>English (UK)</item>
-        <item>Hungarian (QUERTY)</item>
+        <item>es_US</item>
     </string-array>
 
     <!-- Generic subtype label -->
@@ -185,53 +161,49 @@
 
     <!-- Compatibility map from subtypeLocale:subtypeExtraValue to keyboardLayoutSet -->
     <string-array name="locale_and_extra_value_to_keyboard_layout_set_map">
-        <item>en_US:TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>en_US:TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>qwerty</item>
-        <item>en_GB:TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>en_GB:TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>qwerty</item>
-        <item>ar:SupportTouchPositionCorrection</item>
+        <item>ar:SupportTouchPositionCorrection,EmojiCapable</item>
         <item>arabic</item>
-        <item>cs:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>cs:AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>qwertz</item>
-        <item>da:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>da:AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>nordic</item>
-        <item>de:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>de:AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>qwertz</item>
-        <item>es:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>es:AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>spanish</item>
-        <item>fi:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>fi:AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>nordic</item>
-        <item>fr:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>fr:AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>azerty</item>
-        <item>fr_CA:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>fr_CA:AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>qwerty</item>
-        <item>hr:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>hr:AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>qwertz</item>
-        <item>hu:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>hu:AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>qwertz</item>
-        <item>it:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>it:AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>qwerty</item>
-        <item>iw:SupportTouchPositionCorrection</item>
+        <item>iw:SupportTouchPositionCorrection,EmojiCapable</item>
         <item>hebrew</item>
-        <item>nb:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>nb:AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>nordic</item>
-        <item>nl:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>nl:AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>qwerty</item>
-        <item>pl:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>pl:AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>qwerty</item>
-        <item>ru:SupportTouchPositionCorrection</item>
+        <item>ru:SupportTouchPositionCorrection,EmojiCapable</item>
         <item>east_slavic</item>
-        <item>sr:SupportTouchPositionCorrection</item>
+        <item>sr:SupportTouchPositionCorrection,EmojiCapable</item>
         <item>south_slavic</item>
-        <item>sv:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>sv:AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>nordic</item>
-        <item>tr:AsciiCapable,SupportTouchPositionCorrection</item>
+        <item>tr:AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>qwerty</item>
     </string-array>
 
-    <!-- dictionary pack package name /settings activity (for shared prefs and settings) -->
-    <string name="dictionary_pack_package_name">com.google.android.inputmethod.latin.dictionarypack</string>
-    <string name="dictionary_pack_settings_activity">com.google.android.inputmethod.latin.dictionarypack.DictionarySettingsActivity</string>
-    <string name="settings_ms">ms</string>
     <string name="settings_warning_researcher_mode">Attention!  You are using the special keyboard for research purposes.</string>
 </resources>

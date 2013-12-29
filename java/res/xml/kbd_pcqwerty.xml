@@ -21,8 +21,10 @@
 <Keyboard
     xmlns:latin="http://schemas.android.com/apk/res/in.androidtweak.inputmethod.indic"
     latin:rowHeight="20%p"
-    latin:verticalGap="3.20%p"
-    latin:touchPositionCorrectionData="@null"
+    latin:verticalGap="@fraction/key_bottom_gap_5row"
+    latin:keyLetterSize="@fraction/key_letter_ratio_5row"
+    latin:keyShiftedLetterHintRatio="@fraction/key_uppercase_letter_ratio_5row"
+    latin:touchPositionCorrectionData="@array/touch_position_correction_data_default"
 >
     <include
         latin:keyboardLayout="@xml/rows_pcqwerty" />

@@ -19,16 +19,19 @@ package in.androidtweak.inputmethod.accessibility;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.SparseIntArray;
 import android.view.inputmethod.EditorInfo;
 
-import in.androidtweak.inputmethod.indic.R;
 import in.androidtweak.inputmethod.keyboard.Key;
 import in.androidtweak.inputmethod.keyboard.Keyboard;
 import in.androidtweak.inputmethod.keyboard.KeyboardId;
+import in.androidtweak.inputmethod.indic.Constants;
+import in.androidtweak.inputmethod.indic.R;
+import in.androidtweak.inputmethod.indic.utils.CollectionUtils;
 
 import java.util.HashMap;
 
-public class KeyCodeDescriptionMapper {
+public final class KeyCodeDescriptionMapper {
     private static final String TAG = KeyCodeDescriptionMapper.class.getSimpleName();
 
     // The resource ID of the string spoken for obscured keys
@@ -37,10 +40,10 @@ public class KeyCodeDescriptionMapper {
     private static KeyCodeDescriptionMapper sInstance = new KeyCodeDescriptionMapper();
 
     // Map of key labels to spoken description resource IDs
-    private final HashMap<CharSequence, Integer> mKeyLabelMap;
+    private final HashMap<CharSequence, Integer> mKeyLabelMap = CollectionUtils.newHashMap();
 
-    // Map of key codes to spoken description resource IDs
-    private final HashMap<Integer, Integer> mKeyCodeMap;
+    // Sparse array of spoken description resource IDs indexed by key codes
+    private final SparseIntArray mKeyCodeMap;
 
     public static void init() {
         sInstance.initInternal();
@@ -51,25 +54,27 @@ public class KeyCodeDescriptionMapper {
     }
 
     private KeyCodeDescriptionMapper() {
-        mKeyLabelMap = new HashMap<CharSequence, Integer>();
-        mKeyCodeMap = new HashMap<Integer, Integer>();
+        mKeyCodeMap = new SparseIntArray();
     }
 
     private void initInternal() {
         // Manual label substitutions for key labels with no string resource
         mKeyLabelMap.put(":-)", R.string.spoken_description_smiley);
 
-        // Symbols that most TTS engines can't speak
-        mKeyCodeMap.put((int) ' ', R.string.spoken_description_space);
-
         // Special non-character codes defined in Keyboard
-        mKeyCodeMap.put(Keyboard.CODE_DELETE, R.string.spoken_description_delete);
-        mKeyCodeMap.put(Keyboard.CODE_ENTER, R.string.spoken_description_return);
-        mKeyCodeMap.put(Keyboard.CODE_SETTINGS, R.string.spoken_description_settings);
-        mKeyCodeMap.put(Keyboard.CODE_SHIFT, R.string.spoken_description_shift);
-        mKeyCodeMap.put(Keyboard.CODE_SHORTCUT, R.string.spoken_description_mic);
-        mKeyCodeMap.put(Keyboard.CODE_SWITCH_ALPHA_SYMBOL, R.string.spoken_description_to_symbol);
-        mKeyCodeMap.put(Keyboard.CODE_TAB, R.string.spoken_description_tab);
+        mKeyCodeMap.put(Constants.CODE_SPACE, R.string.spoken_description_space);
+        mKeyCodeMap.put(Constants.CODE_DELETE, R.string.spoken_description_delete);
+        mKeyCodeMap.put(Constants.CODE_ENTER, R.string.spoken_description_return);
+        mKeyCodeMap.put(Constants.CODE_SETTINGS, R.string.spoken_description_settings);
+        mKeyCodeMap.put(Constants.CODE_SHIFT, R.string.spoken_description_shift);
+        mKeyCodeMap.put(Constants.CODE_SHORTCUT, R.string.spoken_description_mic);
+        mKeyCodeMap.put(Constants.CODE_SWITCH_ALPHA_SYMBOL, R.string.spoken_description_to_symbol);
+        mKeyCodeMap.put(Constants.CODE_TAB, R.string.spoken_description_tab);
+        mKeyCodeMap.put(Constants.CODE_LANGUAGE_SWITCH,
+                R.string.spoken_description_language_switch);
+        mKeyCodeMap.put(Constants.CODE_ACTION_NEXT, R.string.spoken_description_action_next);
+        mKeyCodeMap.put(Constants.CODE_ACTION_PREVIOUS,
+                R.string.spoken_description_action_previous);
     }
 
     /**
@@ -88,29 +93,31 @@ public class KeyCodeDescriptionMapper {
      * @param keyboard The keyboard on which the key resides.
      * @param key The key from which to obtain a description.
      * @param shouldObscure {@true} if text (e.g. non-control) characters should be obscured.
-     * @return a character sequence describing the action performed by pressing
-     *         the key
+     * @return a character sequence describing the action performed by pressing the key
      */
-    public String getDescriptionForKey(Context context, Keyboard keyboard, Key key,
-            boolean shouldObscure) {
-        final int code = key.mCode;
+    public String getDescriptionForKey(final Context context, final Keyboard keyboard,
+            final Key key, final boolean shouldObscure) {
+        final int code = key.getCode();
 
-        if (code == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
+        if (code == Constants.CODE_SWITCH_ALPHA_SYMBOL) {
             final String description = getDescriptionForSwitchAlphaSymbol(context, keyboard);
-            if (description != null)
+            if (description != null) {
                 return description;
+            }
         }
 
-        if (code == Keyboard.CODE_SHIFT) {
+        if (code == Constants.CODE_SHIFT) {
             return getDescriptionForShiftKey(context, keyboard);
         }
 
-        if (code == Keyboard.CODE_ACTION_ENTER) {
+        if (code == Constants.CODE_ENTER) {
+            // The following function returns the correct description in all action and
+            // regular enter cases, taking care of all modes.
             return getDescriptionForActionKey(context, keyboard, key);
         }
 
-        if (!TextUtils.isEmpty(key.mLabel)) {
-            final String label = key.mLabel.toString().trim();
+        if (!TextUtils.isEmpty(key.getLabel())) {
+            final String label = key.getLabel().trim();
 
             // First, attempt to map the label to a pre-defined description.
             if (mKeyLabelMap.containsKey(label)) {
@@ -119,10 +126,9 @@ public class KeyCodeDescriptionMapper {
         }
 
         // Just attempt to speak the description.
-        if (key.mCode != Keyboard.CODE_UNSPECIFIED) {
+        if (key.getCode() != Constants.CODE_UNSPECIFIED) {
             return getDescriptionForKeyCode(context, keyboard, key, shouldObscure);
         }
-
         return null;
     }
 
@@ -133,10 +139,10 @@ public class KeyCodeDescriptionMapper {
      *
      * @param context The package's context.
      * @param keyboard The keyboard on which the key resides.
-     * @return a character sequence describing the action performed by pressing
-     *         the key
+     * @return a character sequence describing the action performed by pressing the key
      */
-    private String getDescriptionForSwitchAlphaSymbol(Context context, Keyboard keyboard) {
+    private String getDescriptionForSwitchAlphaSymbol(final Context context,
+            final Keyboard keyboard) {
         final KeyboardId keyboardId = keyboard.mId;
         final int elementId = keyboardId.mElementId;
         final int resId;
@@ -163,7 +169,6 @@ public class KeyCodeDescriptionMapper {
             Log.e(TAG, "Missing description for keyboard element ID:" + elementId);
             return null;
         }
-
         return context.getString(resId);
     }
 
@@ -174,7 +179,7 @@ public class KeyCodeDescriptionMapper {
      * @param keyboard The keyboard on which the key resides.
      * @return A context-sensitive description of the "Shift" key.
      */
-    private String getDescriptionForShiftKey(Context context, Keyboard keyboard) {
+    private String getDescriptionForShiftKey(final Context context, final Keyboard keyboard) {
         final KeyboardId keyboardId = keyboard.mId;
         final int elementId = keyboardId.mElementId;
         final int resId;
@@ -192,7 +197,6 @@ public class KeyCodeDescriptionMapper {
         default:
             resId = R.string.spoken_description_shift;
         }
-
         return context.getString(resId);
     }
 
@@ -202,17 +206,17 @@ public class KeyCodeDescriptionMapper {
      * @param context The package's context.
      * @param keyboard The keyboard on which the key resides.
      * @param key The key to describe.
-     * @return Returns a context-sensitive description of the "Enter" action
-     *         key.
+     * @return Returns a context-sensitive description of the "Enter" action key.
      */
-    private String getDescriptionForActionKey(Context context, Keyboard keyboard, Key key) {
+    private String getDescriptionForActionKey(final Context context, final Keyboard keyboard,
+            final Key key) {
         final KeyboardId keyboardId = keyboard.mId;
-        final int actionId = keyboardId.imeActionId();
+        final int actionId = keyboardId.imeAction();
         final int resId;
 
         // Always use the label, if available.
-        if (!TextUtils.isEmpty(key.mLabel)) {
-            return key.mLabel.toString().trim();
+        if (!TextUtils.isEmpty(key.getLabel())) {
+            return key.getLabel().trim();
         }
 
         // Otherwise, use the action ID.
@@ -238,7 +242,6 @@ public class KeyCodeDescriptionMapper {
         default:
             resId = R.string.spoken_description_return;
         }
-
         return context.getString(resId);
     }
 
@@ -260,27 +263,26 @@ public class KeyCodeDescriptionMapper {
      * @param keyboard The keyboard on which the key resides.
      * @param key The key from which to obtain a description.
      * @param shouldObscure {@true} if text (e.g. non-control) characters should be obscured.
-     * @return a character sequence describing the action performed by pressing
-     *         the key
+     * @return a character sequence describing the action performed by pressing the key
      */
-    private String getDescriptionForKeyCode(Context context, Keyboard keyboard, Key key,
-            boolean shouldObscure) {
-        final int code = key.mCode;
+    private String getDescriptionForKeyCode(final Context context, final Keyboard keyboard,
+            final Key key, final boolean shouldObscure) {
+        final int code = key.getCode();
 
         // If the key description should be obscured, now is the time to do it.
         final boolean isDefinedNonCtrl = Character.isDefined(code) && !Character.isISOControl(code);
         if (shouldObscure && isDefinedNonCtrl) {
             return context.getString(OBSCURED_KEY_RES_ID);
         }
-
-        if (mKeyCodeMap.containsKey(code)) {
+        if (mKeyCodeMap.indexOfKey(code) >= 0) {
             return context.getString(mKeyCodeMap.get(code));
-        } else if (isDefinedNonCtrl) {
-            return Character.toString((char) code);
-        } else if (!TextUtils.isEmpty(key.mLabel)) {
-            return key.mLabel;
-        } else {
-            return context.getString(R.string.spoken_description_unknown, code);
         }
+        if (isDefinedNonCtrl) {
+            return Character.toString((char) code);
+        }
+        if (!TextUtils.isEmpty(key.getLabel())) {
+            return key.getLabel();
+        }
+        return context.getString(R.string.spoken_description_unknown, code);
     }
 }

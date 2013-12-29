@@ -19,53 +19,23 @@ package in.androidtweak.inputmethod.compat;
 import android.content.Context;
 import android.os.IBinder;
 import android.view.inputmethod.InputMethodManager;
-import android.view.inputmethod.InputMethodSubtype;
-
-import in.androidtweak.inputmethod.indic.ImfUtils;
 
 import java.lang.reflect.Method;
 
-// TODO: Override this class with the concrete implementation if we need to take care of the
-// performance.
-public class InputMethodManagerCompatWrapper {
-    private static final String TAG = InputMethodManagerCompatWrapper.class.getSimpleName();
+public final class InputMethodManagerCompatWrapper {
+    // Note that InputMethodManager.switchToNextInputMethod() has been introduced
+    // in API level 16 (Build.VERSION_CODES.JELLY_BEAN).
     private static final Method METHOD_switchToNextInputMethod = CompatUtils.getMethod(
             InputMethodManager.class, "switchToNextInputMethod", IBinder.class, Boolean.TYPE);
 
-    private static final InputMethodManagerCompatWrapper sInstance =
-            new InputMethodManagerCompatWrapper();
+    public final InputMethodManager mImm;
 
-    private InputMethodManager mImm;
-
-    private InputMethodManagerCompatWrapper() {
-        // This wrapper class is not publicly instantiable.
+    public InputMethodManagerCompatWrapper(final Context context) {
+        mImm = (InputMethodManager)context.getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
-    public static InputMethodManagerCompatWrapper getInstance() {
-        if (sInstance.mImm == null) {
-            throw new RuntimeException(TAG + ".getInstance() is called before initialization");
-        }
-        return sInstance;
-    }
-
-    public static void init(Context context) {
-        sInstance.mImm = ImfUtils.getInputMethodManager(context);
-    }
-
-    public InputMethodSubtype getLastInputMethodSubtype() {
-        return mImm.getLastInputMethodSubtype();
-    }
-
-    public boolean switchToLastInputMethod(IBinder token) {
-        return mImm.switchToLastInputMethod(token);
-    }
-
-    public boolean switchToNextInputMethod(IBinder token, boolean onlyCurrentIme) {
-        return (Boolean)CompatUtils.invoke(mImm, false, METHOD_switchToNextInputMethod, token,
-                onlyCurrentIme);
-    }
-
-    public void showInputMethodPicker() {
-        mImm.showInputMethodPicker();
+    public boolean switchToNextInputMethod(final IBinder token, final boolean onlyCurrentIme) {
+        return (Boolean)CompatUtils.invoke(mImm, false /* defaultValue */,
+                METHOD_switchToNextInputMethod, token, onlyCurrentIme);
     }
 }

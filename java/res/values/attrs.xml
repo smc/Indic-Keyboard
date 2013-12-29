@@ -1,41 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2010 The Android Open Source Project
-
-     Licensed under the Apache License, Version 2.0 (the "License");
-     you may not use this file except in compliance with the License.
-     You may obtain a copy of the License at
-
-          http://www.apache.org/licenses/LICENSE-2.0
-
-     Unless required by applicable law or agreed to in writing, software
-     distributed under the License is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     See the License for the specific language governing permissions and
-     limitations under the License.
+<!--
+/*
+**
+** Copyright 2010, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
 -->
 
 <resources>
     <declare-styleable name="KeyboardTheme">
         <!-- Keyboard style -->
         <attr name="keyboardStyle" format="reference" />
-        <!-- TODO: Get rid of latinKeyboardStyle -->
-        <!-- LatinKeyboard style -->
-        <attr name="latinKeyboardStyle" format="reference" />
         <!-- KeyboardView style -->
         <attr name="keyboardViewStyle" format="reference" />
-        <!-- LatinKeyboardView style -->
-        <attr name="latinKeyboardViewStyle" format="reference" />
+        <!-- MainKeyboardView style -->
+        <attr name="mainKeyboardViewStyle" format="reference" />
+        <!-- EmojiPalettesView style -->
+        <attr name="emojiPalettesViewStyle" format="reference" />
         <!-- MoreKeysKeyboard style -->
         <attr name="moreKeysKeyboardStyle" format="reference" />
         <!-- MoreKeysKeyboardView style -->
         <attr name="moreKeysKeyboardViewStyle" format="reference" />
-        <attr name="moreKeysKeyboardPanelStyle" format="reference" />
+        <!-- MoreKeysKeyboardView container style -->
+        <attr name="moreKeysKeyboardContainerStyle" format="reference" />
         <!-- Suggestions strip style -->
-        <attr name="suggestionsStripBackgroundStyle" format="reference" />
-        <attr name="suggestionsViewStyle" format="reference" />
-        <attr name="moreSuggestionsViewStyle" format="reference" />
-        <attr name="suggestionBackgroundStyle" format="reference" />
-        <attr name="suggestionPreviewBackgroundStyle" format="reference" />
+        <attr name="suggestionStripViewStyle" format="reference" />
+        <!-- Suggestion word style -->
+        <attr name="suggestionWordStyle" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="KeyboardView">
@@ -43,27 +45,9 @@
              possible states: normal, pressed, checkable, checkable+pressed, checkable+checked,
              checkable+checked+pressed. -->
         <attr name="keyBackground" format="reference" />
+        <!-- Image for the functional key used in Emoji layout. -->
+        <attr name="keyBackgroundEmojiFunctional" format="reference" />
 
-        <!-- Size of the text for one letter keys. If not defined, keyLetterRatio takes effect. -->
-        <attr name="keyLetterSize" format="dimension" />
-        <!-- Size of the text for keys with multiple letters. If not defined, keyLabelRatio takes
-             effect. -->
-        <attr name="keyLabelSize" format="dimension" />
-        <!-- Size of the text for one letter keys, in the proportion of key height. -->
-        <attr name="keyLetterRatio" format="float" />
-        <!-- Large size of the text for one letter keys, in the proportion of key height. -->
-        <attr name="keyLargeLetterRatio" format="float" />
-        <!-- Size of the text for keys with multiple letters, in the proportion of key height. -->
-        <attr name="keyLabelRatio" format="float" />
-        <!-- Large size of the text for keys with multiple letters, in the proportion of key height. -->
-        <attr name="keyLargeLabelRatio" format="float" />
-        <!-- Size of the text for hint letter (= one character hint label), in the proportion of
-             key height. -->
-        <attr name="keyHintLetterRatio" format="float" />
-        <!-- Size of the text for hint label, in the proportion of key height. -->
-        <attr name="keyHintLabelRatio" format="float" />
-        <!-- Size of the text for shifted letter hint, in the proportion of key height. -->
-        <attr name="keyShiftedLetterHintRatio" format="float" />
         <!-- Horizontal padding of left/right aligned key label to the edge of the key. -->
         <attr name="keyLabelHorizontalPadding" format="dimension" />
         <!-- Right padding of hint letter to the edge of the key.-->
@@ -72,58 +56,19 @@
         <attr name="keyPopupHintLetterPadding" format="dimension" />
         <!-- Right padding of shifted letter hint to the edge of the key.-->
         <attr name="keyShiftedLetterHintPadding" format="dimension" />
+        <!-- Blur radius of key text shadow. -->
+        <attr name="keyTextShadowRadius" format="float" />
 
-        <!-- Color to use for the label in a key. -->
-        <attr name="keyTextColor" format="color" />
-        <!-- Color to use for the label in a key when in inactivated state. -->
-        <attr name="keyTextInactivatedColor" format="color" />
-        <!-- Key hint letter (= one character hint label) color -->
-        <attr name="keyHintLetterColor" format="color" />
-        <!-- Key hint label color -->
-        <attr name="keyHintLabelColor" format="color" />
-        <!-- Shifted letter hint colors -->
-        <attr name="keyShiftedLetterHintInactivatedColor" format="color" />
-        <attr name="keyShiftedLetterHintActivatedColor" format="color" />
-
-        <!-- Layout resource for key press feedback.-->
-        <attr name="keyPreviewLayout" format="reference" />
-        <!-- The background for key press feedback. -->
-        <attr name="keyPreviewBackground" format="reference" />
-        <!-- The background for the left edge key press feedback. -->
-        <attr name="keyPreviewLeftBackground" format="reference" />
-        <!-- The background for the right edge key press feedback. -->
-        <attr name="keyPreviewRightBackground" format="reference" />
-        <!-- The text color for key press feedback. -->
-        <attr name="keyPreviewTextColor" format="color" />
-        <!-- Vertical offset of the key press feedback from the key. -->
-        <attr name="keyPreviewOffset" format="dimension" />
-        <!-- Height of the key press feedback popup. -->
-        <attr name="keyPreviewHeight" format="dimension" />
-        <!-- Size of the text for key press feedback popup, int the proportion of key height -->
-        <attr name="keyPreviewTextRatio" format="float" />
-        <!-- Delay after key releasing and key press feedback dismissing in millisecond -->
-        <attr name="keyPreviewLingerTimeout" format="integer" />
+        <!-- Key preview background states -->
+        <attr name="state_left_edge" format="boolean" />
+        <attr name="state_right_edge" format="boolean" />
+        <attr name="state_has_morekeys" format="boolean" />
 
         <!-- Amount to offset the touch Y coordinate by, for bias correction. -->
         <attr name="verticalCorrection" format="dimension" />
-
-        <!-- Layout resource for more keys panel -->
-        <attr name="moreKeysLayout" format="reference" />
-
-        <attr name="shadowColor" format="color" />
-        <attr name="shadowRadius" format="float" />
-        <attr name="backgroundDimAlpha" format="integer" />
-
-        <attr name="keyTextStyle" format="enum">
-            <!-- This should be aligned with Typeface.NORMAL etc. -->
-            <enum name="normal" value="0" />
-            <enum name="bold" value="1" />
-            <enum name="italic" value="2" />
-            <enum name="boldItalic" value="3" />
-        </attr>
     </declare-styleable>
 
-    <declare-styleable name="LatinKeyboardView">
+    <declare-styleable name="MainKeyboardView">
         <attr name="autoCorrectionSpacebarLedEnabled" format="boolean" />
         <attr name="autoCorrectionSpacebarLedIcon" format="reference" />
         <!-- Size of the text for spacebar language label, in the proportion of key height. -->
@@ -138,29 +83,97 @@
         <attr name="altCodeKeyWhileTypingFadeinAnimator" format="reference" />
         <!-- Key detection hysteresis distance. -->
         <attr name="keyHysteresisDistance" format="dimension" />
+        <!-- Key detection hysteresis distance for shift/symbols sliding input. -->
+        <attr name="keyHysteresisDistanceForSlidingModifier" format="dimension" />
         <!-- Touch noise threshold time in millisecond -->
         <attr name="touchNoiseThresholdTime" format="integer" />
         <!-- Touch noise threshold distance in millimeter -->
         <attr name="touchNoiseThresholdDistance" format="dimension" />
         <!-- Sliding key input enable -->
         <attr name="slidingKeyInputEnable" format="boolean" />
+        <attr name="slidingKeyInputPreviewColor" format="color" />
+        <attr name="slidingKeyInputPreviewWidth" format="dimension" />
+        <attr name="slidingKeyInputPreviewBodyRatio" format="integer" />
+        <attr name="slidingKeyInputPreviewShadowRatio" format="integer" />
         <!-- Key repeat start timeout -->
         <attr name="keyRepeatStartTimeout" format="integer" />
         <!-- Key repeat interval in millisecond. -->
         <attr name="keyRepeatInterval" format="integer" />
-        <!-- Long press timeout of letter key in millisecond. -->
-        <attr name="longPressKeyTimeout" format="integer" />
-        <!-- Long press timeout of shift key in millisecond. -->
-        <attr name="longPressShiftKeyTimeout" format="integer" />
+        <!-- Long press timeout of shift key to shift lock in millisecond. -->
+        <attr name="longPressShiftLockTimeout" format="integer" />
         <!-- Ignore special key timeout while typing in millisecond. -->
         <attr name="ignoreAltCodeKeyTimeout" format="integer" />
+        <!-- Layout resource for key press feedback.-->
+        <attr name="keyPreviewLayout" format="reference" />
+        <!-- Vertical offset of the key press feedback from the key. -->
+        <attr name="keyPreviewOffset" format="dimension" />
+        <!-- Height of the key press feedback popup. -->
+        <attr name="keyPreviewHeight" format="dimension" />
+        <!-- Delay after key releasing and key press feedback dismissing in millisecond -->
+        <attr name="keyPreviewLingerTimeout" format="integer" />
+        <!-- Layout resource for more keys keyboard -->
+        <attr name="moreKeysKeyboardLayout" format="reference" />
+        <attr name="backgroundDimAlpha" format="integer" />
         <!-- More keys keyboard will shown at touched point. -->
         <attr name="showMoreKeysKeyboardAtTouchedPoint" format="boolean" />
+        <!-- Minimum distance between gesture trail sampling points. -->
+        <attr name="gestureTrailMinSamplingDistance" format="dimension" />
+        <!-- Maximum angular threshold between gesture trail interpolation segments in degree. -->
+        <attr name="gestureTrailMaxInterpolationAngularThreshold" format="integer" />
+        <!-- Maximum distance threshold between gesture trail interpolation segments. -->
+        <attr name="gestureTrailMaxInterpolationDistanceThreshold" format="dimension" />
+        <!-- Maximum number of gesture trail interpolation segments. -->
+        <attr name="gestureTrailMaxInterpolationSegments" format="integer" />
+        <!-- Delay after gesture trail starts fading out in millisecond. -->
+        <attr name="gestureTrailFadeoutStartDelay" format="integer" />
+        <!-- Duration while gesture trail is fading out in millisecond. -->
+        <attr name="gestureTrailFadeoutDuration" format="integer" />
+        <!-- Interval of updating gesture trail in millisecond. -->
+        <attr name="gestureTrailUpdateInterval" format="integer" />
+        <attr name="gestureTrailColor" format="color" />
+        <attr name="gestureTrailStartWidth" format="dimension" />
+        <attr name="gestureTrailEndWidth" format="dimension" />
+        <attr name="gestureTrailBodyRatio" format="integer" />
+        <attr name="gestureTrailShadowRatio" format="integer" />
+        <!-- Delay after gesture input and gesture floating preview text dismissing in millisecond -->
+        <attr name="gestureFloatingPreviewTextLingerTimeout" format="integer" />
+        <!-- Attributes for GestureFloatingPreviewText -->
+        <attr name="gestureFloatingPreviewTextSize" format="dimension" />
+        <attr name="gestureFloatingPreviewTextColor" format="color" />
+        <attr name="gestureFloatingPreviewTextOffset" format="dimension" />
+        <attr name="gestureFloatingPreviewColor" format="color" />
+        <attr name="gestureFloatingPreviewHorizontalPadding" format="dimension" />
+        <attr name="gestureFloatingPreviewVerticalPadding" format="dimension" />
+        <attr name="gestureFloatingPreviewRoundRadius" format="dimension" />
+        <!-- Static threshold for gesture after fast typing (msec) -->
+        <attr name="gestureStaticTimeThresholdAfterFastTyping" format="integer" />
+        <!-- Static threshold for starting gesture detection (keyWidth%/sec) -->
+        <attr name="gestureDetectFastMoveSpeedThreshold" format="fraction" />
+        <!-- Dynamic threshold for gesture after fast typing (msec) -->
+        <attr name="gestureDynamicThresholdDecayDuration" format="integer" />
+        <!-- Time based threshold values for gesture detection (msec) -->
+        <attr name="gestureDynamicTimeThresholdFrom" format="integer" />
+        <attr name="gestureDynamicTimeThresholdTo" format="integer" />
+        <!-- Distance based threshold values for gesture detection (keyWidth%/sec) -->
+        <attr name="gestureDynamicDistanceThresholdFrom" format="fraction" />
+        <attr name="gestureDynamicDistanceThresholdTo" format="fraction" />
+        <!-- Parameter for gesture sampling (keyWidth%/sec) -->
+        <attr name="gestureSamplingMinimumDistance" format="fraction" />
+        <!-- Parameters for gesture recognition (msec) and (keyWidth%/sec) -->
+        <attr name="gestureRecognitionMinimumTime" format="integer" />
+        <attr name="gestureRecognitionUpdateTime" format="integer" />
+        <attr name="gestureRecognitionSpeedThreshold" format="fraction" />
+        <!-- Suppress showing key preview duration after batch input in millisecond -->
+        <attr name="suppressKeyPreviewAfterBatchInputDuration" format="integer" />
     </declare-styleable>
 
-    <declare-styleable name="SuggestionsView">
+    <declare-styleable name="EmojiPalettesView">
+        <attr name="emojiTabLabelColor" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="SuggestionStripView">
         <attr name="suggestionStripOption" format="integer">
-            <!-- This should be aligned with SuggestionsViewParams.AUTO_CORRECT_* and etc. -->
+            <!-- This should be aligned with SuggestionStripLayoutHelper.AUTO_CORRECT_* and etc. -->
             <flag name="autoCorrectBold" value="0x01" />
             <flag name="autoCorrectUnderline" value="0x02" />
             <flag name="validTypedWordBold" value="0x04" />
@@ -169,13 +182,9 @@
         <attr name="colorTypedWord" format="color" />
         <attr name="colorAutoCorrect" format="color" />
         <attr name="colorSuggested" format="color" />
-        <attr name="alphaValidTypedWord" format="integer" />
-        <attr name="alphaTypedWord" format="integer" />
-        <attr name="alphaAutoCorrect" format="integer" />
-        <attr name="alphaSuggested" format="integer" />
-        <attr name="alphaObsoleted" format="integer" />
+        <attr name="alphaObsoleted" format="fraction" />
         <attr name="suggestionsCountInStrip" format="integer" />
-        <attr name="centerSuggestionPercentile" format="integer" />
+        <attr name="centerSuggestionPercentile" format="fraction" />
         <attr name="maxMoreSuggestionsRow" format="integer" />
         <attr name="minMoreSuggestionsWidth" format="float" />
     </declare-styleable>
@@ -184,25 +193,18 @@
         <attr name="themeId" format="integer" />
         <!-- Touch position correction -->
         <attr name="touchPositionCorrectionData" format="reference" />
-        <!-- Default keyboard height -->
-        <attr name="keyboardHeight" format="dimension|fraction" />
-        <!-- Maximum keyboard height, in pixels or percentage of display height -->
-        <attr name="maxKeyboardHeight" format="dimension|fraction" />
-        <!-- Minimum keyboard height represented in pixels, percentage of display height if fraction
-             is positive, or percentage of display width if fraction is negative. -->
-        <attr name="minKeyboardHeight" format="dimension|fraction" />
-        <!-- Keyboard top, bottom, both horizontal edges paddings. -->
-        <attr name="keyboardTopPadding" format="dimension|fraction" />
-        <attr name="keyboardBottomPadding" format="dimension|fraction" />
-        <attr name="keyboardHorizontalEdgesPadding" format="dimension|fraction" />
-        <!-- Default height of a row (key height + vertical gap), in pixels or percentage of
+        <!-- Keyboard top, bottom, left, right edges paddings, in propotion of keyboard height. -->
+        <attr name="keyboardTopPadding" format="fraction" />
+        <attr name="keyboardBottomPadding" format="fraction" />
+        <attr name="keyboardLeftPadding" format="fraction" />
+        <attr name="keyboardRightPadding" format="fraction" />
+        <!-- Default height of a row (key height + vertical gap), in pixels or in the proportion of
              keyboard height. -->
         <attr name="rowHeight" format="dimension|fraction" />
-        <!-- Default horizontal gap between keys, in pixels or percentage of keyboard width. -->
-        <attr name="horizontalGap" format="dimension|fraction" />
-        <!-- Default vertical gap between rows of keys, in pixels or percentage of keyboard
-             height. -->
-        <attr name="verticalGap" format="dimension|fraction" />
+        <!-- Default horizontal gap between keys, in the proportion of keyboard width. -->
+        <attr name="horizontalGap" format="fraction" />
+        <!-- Default vertical gap between rows of keys, in the proportion of keyboard height. -->
+        <attr name="verticalGap" format="fraction" />
         <!-- More keys keyboard layout template -->
         <attr name="moreKeysTemplate" format="reference" />
         <!-- Icon set for key top and key preview.
@@ -223,6 +225,13 @@
         <attr name="iconLanguageSwitchKey" format="reference" />
         <attr name="iconZwnjKey" format="reference" />
         <attr name="iconZwjKey" format="reference" />
+        <attr name="iconImeKey" format="reference" />
+        <attr name="iconEmojiKey" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="Keyboard_GridRows">
+        <attr name="codesArray" format="reference" />
+        <attr name="textsArray" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Key">
@@ -246,11 +255,12 @@
         <attr name="maxMoreKeysColumn" format="integer" />
         <attr name="backgroundType" format="enum">
             <!-- This should be aligned with Key.BACKGROUND_TYPE_* -->
-            <enum name="normal" value="0" />
-            <enum name="functional" value="1" />
-            <enum name="action" value="2" />
-            <enum name="stickyOff" value="3" />
-            <enum name="stickyOn" value="4" />
+            <enum name="empty" value="0" />
+            <enum name="normal" value="1" />
+            <enum name="functional" value="2" />
+            <enum name="action" value="3" />
+            <enum name="stickyOff" value="4" />
+            <enum name="stickyOn" value="5" />
         </attr>
         <!-- The key action flags. -->
         <attr name="keyActionFlags" format="integer">
@@ -306,19 +316,64 @@
         <attr name="keyIconPreview" format="string" />
         <!-- The key style to specify a set of key attributes defined by <key_style/> -->
         <attr name="keyStyle" format="string" />
-        <!-- Visual insets -->
-        <attr name="visualInsetsLeft" format="dimension|fraction" />
-        <attr name="visualInsetsRight" format="dimension|fraction" />
-        <!-- Width of the key, in pixels or percentage of display width.
-             If the value is fillRight, the actual key width will be determined to fill out the area
-             up to the right edge of the keyboard. -->
+        <!-- Visual insets, in the proportion of keyboard width. -->
+        <attr name="visualInsetsLeft" format="fraction" />
+        <attr name="visualInsetsRight" format="fraction" />
+        <!-- Width of the key, in the proportion of keyboard width.
+             If the value is fillRight, the actual key width will be determined to fill out the
+             area up to the right edge of the keyboard. -->
         <!-- This should be aligned with KeyboardBuilder.Row.KEYWIDTH_* -->
-        <attr name="keyWidth" format="dimension|fraction|enum">
+        <attr name="keyWidth" format="fraction|enum">
             <enum name="fillRight" value="-1" />
         </attr>
-        <!-- The X-coordinate of upper right corner of this key including horizontal gap.
+        <!-- The X-coordinate of upper right corner of this key including horizontal gap, in the
+             proportion of keyboard width.
              If the value is negative, the origin is the right edge of the keyboard. -->
-        <attr name="keyXPos" format="dimension|fraction" />
+        <attr name="keyXPos" format="fraction" />
+
+        <!-- Key top visual attributes -->
+        <attr name="keyTypeface" format="enum">
+            <!-- This should be aligned with Typeface.NORMAL etc. -->
+            <enum name="normal" value="0" />
+            <enum name="bold" value="1" />
+            <enum name="italic" value="2" />
+            <enum name="boldItalic" value="3" />
+        </attr>
+        <!-- Size of the text for one letter keys. If specified as fraction, the text size is
+             measured in the proportion of key height. -->
+        <attr name="keyLetterSize" format="dimension|fraction" />
+        <!-- Size of the text for keys with multiple letters. If specified as fraction, the text
+             size is measured in the proportion of key height. -->
+        <attr name="keyLabelSize" format="dimension|fraction" />
+        <!-- Large size of the text for one letter keys, in the proportion of key height. -->
+        <attr name="keyLargeLetterRatio" format="fraction" />
+        <!-- Large size of the text for keys with multiple letters, in the proportion of key height. -->
+        <attr name="keyLargeLabelRatio" format="fraction" />
+        <!-- Size of the text for hint letter (= one character hint label), in the proportion of
+             key height. -->
+        <attr name="keyHintLetterRatio" format="fraction" />
+        <!-- Size of the text for hint label, in the proportion of key height. -->
+        <attr name="keyHintLabelRatio" format="fraction" />
+        <!-- Size of the text for shifted letter hint, in the proportion of key height. -->
+        <attr name="keyShiftedLetterHintRatio" format="fraction" />
+        <!-- Color to use for the label in a key. -->
+        <attr name="keyTextColor" format="color" />
+        <attr name="keyTextShadowColor" format="color" />
+        <!-- Color to use for the label in a key when in inactivated state. -->
+        <attr name="keyTextInactivatedColor" format="color" />
+        <!-- Key hint letter (= one character hint label) color -->
+        <attr name="keyHintLetterColor" format="color" />
+        <!-- Key hint label color -->
+        <attr name="keyHintLabelColor" format="color" />
+        <!-- Shifted letter hint colors -->
+        <attr name="keyShiftedLetterHintInactivatedColor" format="color" />
+        <attr name="keyShiftedLetterHintActivatedColor" format="color" />
+
+        <!-- Key preview visual parameters -->
+        <!-- The text color for key press feedback. -->
+        <attr name="keyPreviewTextColor" format="color" />
+        <!-- Size of the text for key press feedback popup, in the proportion of key height. -->
+        <attr name="keyPreviewTextRatio" format="fraction" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Include">
@@ -326,6 +381,7 @@
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Case">
+        <attr name="keyboardLayoutSet" format="string" />
         <!-- This should be aligned with KeyboardLayoutSet_Element's elementName. -->
         <attr name="keyboardLayoutSetElement" format="enum|string">
             <enum name="alphabet" value="0" />
@@ -338,6 +394,13 @@
             <enum name="phone" value="7"  />
             <enum name="phoneSymbols" value="8"  />
             <enum name="number" value="9"  />
+            <enum name="emojiRecents" value="10" />
+            <enum name="emojiCategory1" value="11" />
+            <enum name="emojiCategory2" value="12" />
+            <enum name="emojiCategory3" value="13" />
+            <enum name="emojiCategory4" value="14" />
+            <enum name="emojiCategory5" value="15" />
+            <enum name="emojiCategory6" value="16" />
         </attr>
         <!-- This should be aligned with KeyboardId.MODE_* -->
         <attr name="mode" format="enum|string">
@@ -353,6 +416,7 @@
         <attr name="passwordInput" format="boolean" />
         <attr name="clobberSettingsKey" format="boolean" />
         <attr name="shortcutKeyEnabled" format="boolean" />
+        <attr name="shortcutKeyOnSymbols" format="boolean" />
         <attr name="hasShortcutKey" format="boolean" />
         <attr name="languageSwitchKeyEnabled" format="boolean" />
         <attr name="isMultiLine" format="boolean" />
@@ -392,9 +456,22 @@
             <enum name="phone" value="7"  />
             <enum name="phoneSymbols" value="8"  />
             <enum name="number" value="9"  />
+            <enum name="emojiRecents" value="10" />
+            <enum name="emojiCategory1" value="11" />
+            <enum name="emojiCategory2" value="12" />
+            <enum name="emojiCategory3" value="13" />
+            <enum name="emojiCategory4" value="14" />
+            <enum name="emojiCategory5" value="15" />
+            <enum name="emojiCategory6" value="16" />
         </attr>
         <attr name="elementKeyboard" format="reference"/>
         <!-- Enable proximity characters correction. Disabled by default. -->
         <attr name="enableProximityCharsCorrection" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="SeekBarDialogPreference">
+        <attr name="maxValue" format="integer" />
+        <attr name="minValue" format="integer" />
+        <attr name="stepValue" format="integer" />
     </declare-styleable>
 </resources>

@@ -34,12 +34,15 @@
             latin:keyboardLayout="@xml/key_f1" />
         <include
             latin:keyXPos="28.0%p"
-            latin:keyboardLayout="@xml/key_space"
+            latin:keyboardLayout="@xml/key_space_5kw"
             latin:backgroundType="normal" />
         <include
             latin:keyboardLayout="@xml/key_question_exclamation" />
-        <include
-            latin:keyboardLayout="@xml/key_dash" />
+        <Key
+            latin:keyLabel="-"
+            latin:keyHintLabel="_"
+            latin:moreKeys="_"
+            latin:keyStyle="hasShiftedLetterHintStyle" />
         <include
             latin:keyboardLayout="@xml/key_f2" />
     </Row>

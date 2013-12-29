@@ -18,10 +18,12 @@ package in.androidtweak.inputmethod.indic;
 
 import android.content.Context;
 
-import in.androidtweak.inputmethod.indic.R;
 import in.androidtweak.inputmethod.keyboard.ProximityInfo;
+import in.androidtweak.inputmethod.indic.SuggestedWords.SuggestedWordInfo;
 
-public class SynchronouslyLoadedUserBinaryDictionary extends UserBinaryDictionary {
+import java.util.ArrayList;
+
+public final class SynchronouslyLoadedUserBinaryDictionary extends UserBinaryDictionary {
 
     public SynchronouslyLoadedUserBinaryDictionary(final Context context, final String locale) {
         this(context, locale, false);
@@ -33,16 +35,17 @@ public class SynchronouslyLoadedUserBinaryDictionary extends UserBinaryDictionar
     }
 
     @Override
-    public synchronized void getWords(final WordComposer codes,
-            final CharSequence prevWordForBigrams, final WordCallback callback,
-            final ProximityInfo proximityInfo) {
-        syncReloadDictionaryIfRequired();
-        getWordsInner(codes, prevWordForBigrams, callback, proximityInfo);
+    public synchronized ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer codes,
+            final String prevWordForBigrams, final ProximityInfo proximityInfo,
+            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions) {
+        reloadDictionaryIfRequired();
+        return super.getSuggestions(codes, prevWordForBigrams, proximityInfo, blockOffensiveWords,
+                additionalFeaturesOptions);
     }
 
     @Override
-    public synchronized boolean isValidWord(CharSequence word) {
-        syncReloadDictionaryIfRequired();
+    public synchronized boolean isValidWord(final String word) {
+        reloadDictionaryIfRequired();
         return isValidWordInner(word);
     }
 }

@@ -1,28 +1,30 @@
 /*
  * Copyright (C) 2010 The Android Open Source Project
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package in.androidtweak.inputmethod.keyboard.internal;
 
-import static in.androidtweak.inputmethod.keyboard.Keyboard.CODE_UNSPECIFIED;
+import static in.androidtweak.inputmethod.indic.Constants.CODE_OUTPUT_TEXT;
+import static in.androidtweak.inputmethod.indic.Constants.CODE_UNSPECIFIED;
 
 import android.text.TextUtils;
 
+import in.androidtweak.inputmethod.indic.Constants;
 import in.androidtweak.inputmethod.indic.LatinImeLogger;
-import in.androidtweak.inputmethod.indic.StringUtils;
-import in.androidtweak.inputmethod.keyboard.Keyboard;
+import in.androidtweak.inputmethod.indic.utils.CollectionUtils;
+import in.androidtweak.inputmethod.indic.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,48 +47,83 @@ import java.util.Locale;
  * Note that the '\' is also parsed by XML parser and CSV parser as well.
  * See {@link KeyboardIconsSet} about icon_name.
  */
-public class KeySpecParser {
+public final class KeySpecParser {
     private static final boolean DEBUG = LatinImeLogger.sDBG;
 
     private static final int MAX_STRING_REFERENCE_INDIRECTION = 10;
 
     // Constants for parsing.
-    private static int COMMA = ',';
-    private static final char ESCAPE_CHAR = '\\';
-    private static final char LABEL_END = '|';
+    private static final char COMMA = ',';
+    private static final char BACKSLASH = '\\';
+    private static final char VERTICAL_BAR = '|';
     private static final String PREFIX_TEXT = "!text/";
-    private static final String PREFIX_ICON = "!icon/";
+    static final String PREFIX_ICON = "!icon/";
     private static final String PREFIX_CODE = "!code/";
     private static final String PREFIX_HEX = "0x";
     private static final String ADDITIONAL_MORE_KEY_MARKER = "%";
-
-    public static class MoreKeySpec {
-        public final int mCode;
-        public final String mLabel;
-        public final String mOutputText;
-        public final int mIconId;
-
-        public MoreKeySpec(final String moreKeySpec, boolean needsToUpperCase, Locale locale,
-                final KeyboardCodesSet codesSet) {
-            mCode = toUpperCaseOfCodeForLocale(getCode(moreKeySpec, codesSet),
-                    needsToUpperCase, locale);
-            mLabel = toUpperCaseOfStringForLocale(getLabel(moreKeySpec),
-                    needsToUpperCase, locale);
-            mOutputText = toUpperCaseOfStringForLocale(getOutputText(moreKeySpec),
-                    needsToUpperCase, locale);
-            mIconId = getIconId(moreKeySpec);
-        }
-    }
 
     private KeySpecParser() {
         // Intentional empty constructor for utility class.
     }
 
-    private static boolean hasIcon(String moreKeySpec) {
+    /**
+     * Split the text containing multiple key specifications separated by commas into an array of
+     * key specifications.
+     * A key specification can contain a character escaped by the backslash character, including a
+     * comma character.
+     * Note that an empty key specification will be eliminated from the result array.
+     *
+     * @param text the text containing multiple key specifications.
+     * @return an array of key specification text. Null if the specified <code>text</code> is empty
+     * or has no key specifications.
+     */
+    public static String[] splitKeySpecs(final String text) {
+        final int size = text.length();
+        if (size == 0) {
+            return null;
+        }
+        // Optimization for one-letter key specification.
+        if (size == 1) {
+            return text.charAt(0) == COMMA ? null : new String[] { text };
+        }
+
+        ArrayList<String> list = null;
+        int start = 0;
+        // The characters in question in this loop are COMMA and BACKSLASH. These characters never
+        // match any high or low surrogate character. So it is OK to iterate through with char
+        // index.
+        for (int pos = 0; pos < size; pos++) {
+            final char c = text.charAt(pos);
+            if (c == COMMA) {
+                // Skip empty entry.
+                if (pos - start > 0) {
+                    if (list == null) {
+                        list = CollectionUtils.newArrayList();
+                    }
+                    list.add(text.substring(start, pos));
+                }
+                // Skip comma
+                start = pos + 1;
+            } else if (c == BACKSLASH) {
+                // Skip escape character and escaped character.
+                pos++;
+            }
+        }
+        final String remain = (size - start > 0) ? text.substring(start) : null;
+        if (list == null) {
+            return remain != null ? new String[] { remain } : null;
+        }
+        if (remain != null) {
+            list.add(remain);
+        }
+        return list.toArray(new String[list.size()]);
+    }
+
+    private static boolean hasIcon(final String moreKeySpec) {
         return moreKeySpec.startsWith(PREFIX_ICON);
     }
 
-    private static boolean hasCode(String moreKeySpec) {
+    private static boolean hasCode(final String moreKeySpec) {
         final int end = indexOfLabelEnd(moreKeySpec, 0);
         if (end > 0 && end + 1 < moreKeySpec.length() && moreKeySpec.startsWith(
                 PREFIX_CODE, end + 1)) {
@@ -95,15 +132,15 @@ public class KeySpecParser {
         return false;
     }
 
-    private static String parseEscape(String text) {
-        if (text.indexOf(ESCAPE_CHAR) < 0) {
+    private static String parseEscape(final String text) {
+        if (text.indexOf(BACKSLASH) < 0) {
             return text;
         }
         final int length = text.length();
         final StringBuilder sb = new StringBuilder();
         for (int pos = 0; pos < length; pos++) {
             final char c = text.charAt(pos);
-            if (c == ESCAPE_CHAR && pos + 1 < length) {
+            if (c == BACKSLASH && pos + 1 < length) {
                 // Skip escape char
                 pos++;
                 sb.append(text.charAt(pos));
@@ -114,28 +151,28 @@ public class KeySpecParser {
         return sb.toString();
     }
 
-    private static int indexOfLabelEnd(String moreKeySpec, int start) {
-        if (moreKeySpec.indexOf(ESCAPE_CHAR, start) < 0) {
-            final int end = moreKeySpec.indexOf(LABEL_END, start);
+    private static int indexOfLabelEnd(final String moreKeySpec, final int start) {
+        if (moreKeySpec.indexOf(BACKSLASH, start) < 0) {
+            final int end = moreKeySpec.indexOf(VERTICAL_BAR, start);
             if (end == 0) {
-                throw new KeySpecParserError(LABEL_END + " at " + start + ": " + moreKeySpec);
+                throw new KeySpecParserError(VERTICAL_BAR + " at " + start + ": " + moreKeySpec);
             }
             return end;
         }
         final int length = moreKeySpec.length();
         for (int pos = start; pos < length; pos++) {
             final char c = moreKeySpec.charAt(pos);
-            if (c == ESCAPE_CHAR && pos + 1 < length) {
+            if (c == BACKSLASH && pos + 1 < length) {
                 // Skip escape char
                 pos++;
-            } else if (c == LABEL_END) {
+            } else if (c == VERTICAL_BAR) {
                 return pos;
             }
         }
         return -1;
     }
 
-    public static String getLabel(String moreKeySpec) {
+    public static String getLabel(final String moreKeySpec) {
         if (hasIcon(moreKeySpec)) {
             return null;
         }
@@ -148,18 +185,18 @@ public class KeySpecParser {
         return label;
     }
 
-    private static String getOutputTextInternal(String moreKeySpec) {
+    private static String getOutputTextInternal(final String moreKeySpec) {
         final int end = indexOfLabelEnd(moreKeySpec, 0);
         if (end <= 0) {
             return null;
         }
         if (indexOfLabelEnd(moreKeySpec, end + 1) >= 0) {
-            throw new KeySpecParserError("Multiple " + LABEL_END + ": " + moreKeySpec);
+            throw new KeySpecParserError("Multiple " + VERTICAL_BAR + ": " + moreKeySpec);
         }
-        return parseEscape(moreKeySpec.substring(end + /* LABEL_END */1));
+        return parseEscape(moreKeySpec.substring(end + /* VERTICAL_BAR */1));
     }
 
-    static String getOutputText(String moreKeySpec) {
+    static String getOutputText(final String moreKeySpec) {
         if (hasCode(moreKeySpec)) {
             return null;
         }
@@ -183,13 +220,13 @@ public class KeySpecParser {
         return (StringUtils.codePointCount(label) == 1) ? null : label;
     }
 
-    static int getCode(String moreKeySpec, KeyboardCodesSet codesSet) {
+    static int getCode(final String moreKeySpec, final KeyboardCodesSet codesSet) {
         if (hasCode(moreKeySpec)) {
             final int end = indexOfLabelEnd(moreKeySpec, 0);
             if (indexOfLabelEnd(moreKeySpec, end + 1) >= 0) {
-                throw new KeySpecParserError("Multiple " + LABEL_END + ": " + moreKeySpec);
+                throw new KeySpecParserError("Multiple " + VERTICAL_BAR + ": " + moreKeySpec);
             }
-            return parseCode(moreKeySpec.substring(end + 1), codesSet, Keyboard.CODE_UNSPECIFIED);
+            return parseCode(moreKeySpec.substring(end + 1), codesSet, CODE_UNSPECIFIED);
         }
         final String outputText = getOutputTextInternal(moreKeySpec);
         if (outputText != null) {
@@ -198,17 +235,18 @@ public class KeySpecParser {
             if (StringUtils.codePointCount(outputText) == 1) {
                 return outputText.codePointAt(0);
             }
-            return Keyboard.CODE_OUTPUT_TEXT;
+            return CODE_OUTPUT_TEXT;
         }
         final String label = getLabel(moreKeySpec);
         // Code is automatically generated for one letter label.
         if (StringUtils.codePointCount(label) == 1) {
             return label.codePointAt(0);
         }
-        return Keyboard.CODE_OUTPUT_TEXT;
+        return CODE_OUTPUT_TEXT;
     }
 
-    public static int parseCode(String text, KeyboardCodesSet codesSet, int defCode) {
+    public static int parseCode(final String text, final KeyboardCodesSet codesSet,
+            final int defCode) {
         if (text == null) return defCode;
         if (text.startsWith(PREFIX_CODE)) {
             return codesSet.getCode(text.substring(PREFIX_CODE.length()));
@@ -219,9 +257,9 @@ public class KeySpecParser {
         }
     }
 
-    public static int getIconId(String moreKeySpec) {
+    public static int getIconId(final String moreKeySpec) {
         if (moreKeySpec != null && hasIcon(moreKeySpec)) {
-            final int end = moreKeySpec.indexOf(LABEL_END, PREFIX_ICON.length());
+            final int end = moreKeySpec.indexOf(VERTICAL_BAR, PREFIX_ICON.length());
             final String name = (end < 0) ? moreKeySpec.substring(PREFIX_ICON.length())
                     : moreKeySpec.substring(PREFIX_ICON.length(), end);
             return KeyboardIconsSet.getIconId(name);
@@ -229,7 +267,7 @@ public class KeySpecParser {
         return KeyboardIconsSet.ICON_UNDEFINED;
     }
 
-    private static <T> ArrayList<T> arrayAsList(T[] array, int start, int end) {
+    private static <T> ArrayList<T> arrayAsList(final T[] array, final int start, final int end) {
         if (array == null) {
             throw new NullPointerException();
         }
@@ -237,7 +275,7 @@ public class KeySpecParser {
             throw new IllegalArgumentException();
         }
 
-        final ArrayList<T> list = new ArrayList<T>(end - start);
+        final ArrayList<T> list = CollectionUtils.newArrayList(end - start);
         for (int i = start; i < end; i++) {
             list.add(array[i]);
         }
@@ -246,7 +284,7 @@ public class KeySpecParser {
 
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
 
-    private static String[] filterOutEmptyString(String[] array) {
+    private static String[] filterOutEmptyString(final String[] array) {
         if (array == null) {
             return EMPTY_STRING_ARRAY;
         }
@@ -267,8 +305,8 @@ public class KeySpecParser {
         return out.toArray(new String[out.size()]);
     }
 
-    public static String[] insertAdditionalMoreKeys(String[] moreKeySpecs,
-            String[] additionalMoreKeySpecs) {
+    public static String[] insertAdditionalMoreKeys(final String[] moreKeySpecs,
+            final String[] additionalMoreKeySpecs) {
         final String[] moreKeys = filterOutEmptyString(moreKeySpecs);
         final String[] additionalMoreKeys = filterOutEmptyString(additionalMoreKeySpecs);
         final int moreKeysCount = moreKeys.length;
@@ -334,13 +372,14 @@ public class KeySpecParser {
     }
 
     @SuppressWarnings("serial")
-    public static class KeySpecParserError extends RuntimeException {
-        public KeySpecParserError(String message) {
+    public static final class KeySpecParserError extends RuntimeException {
+        public KeySpecParserError(final String message) {
             super(message);
         }
     }
 
-    public static String resolveTextReference(String rawText, KeyboardTextsSet textsSet) {
+    public static String resolveTextReference(final String rawText,
+            final KeyboardTextsSet textsSet) {
         int level = 0;
         String text = rawText;
         StringBuilder sb;
@@ -367,7 +406,7 @@ public class KeySpecParser {
                     final String name = text.substring(pos + prefixLen, end);
                     sb.append(textsSet.getText(name));
                     pos = end - 1;
-                } else if (c == ESCAPE_CHAR) {
+                } else if (c == BACKSLASH) {
                     if (sb != null) {
                         // Append both escape character and escaped character.
                         sb.append(text.substring(pos, Math.min(pos + 2, size)));
@@ -382,11 +421,10 @@ public class KeySpecParser {
                 text = sb.toString();
             }
         } while (sb != null);
-
         return text;
     }
 
-    private static int searchTextNameEnd(String text, int start) {
+    private static int searchTextNameEnd(final String text, final int start) {
         final int size = text.length();
         for (int pos = start; pos < size; pos++) {
             final char c = text.charAt(pos);
@@ -399,46 +437,8 @@ public class KeySpecParser {
         return size;
     }
 
-    public static String[] parseCsvString(String rawText, KeyboardTextsSet textsSet) {
-        final String text = resolveTextReference(rawText, textsSet);
-        final int size = text.length();
-        if (size == 0) {
-            return null;
-        }
-        if (StringUtils.codePointCount(text) == 1) {
-            return text.codePointAt(0) == COMMA ? null : new String[] { text };
-        }
-
-        ArrayList<String> list = null;
-        int start = 0;
-        for (int pos = 0; pos < size; pos++) {
-            final char c = text.charAt(pos);
-            if (c == COMMA) {
-                // Skip empty entry.
-                if (pos - start > 0) {
-                    if (list == null) {
-                        list = new ArrayList<String>();
-                    }
-                    list.add(text.substring(start, pos));
-                }
-                // Skip comma
-                start = pos + 1;
-            } else if (c == ESCAPE_CHAR) {
-                // Skip escape character and escaped character.
-                pos++;
-            }
-        }
-        final String remain = (size - start > 0) ? text.substring(start) : null;
-        if (list == null) {
-            return remain != null ? new String[] { remain } : null;
-        }
-        if (remain != null) {
-            list.add(remain);
-        }
-        return list.toArray(new String[list.size()]);
-    }
-
-    public static int getIntValue(String[] moreKeys, String key, int defaultValue) {
+    public static int getIntValue(final String[] moreKeys, final String key,
+            final int defaultValue) {
         if (moreKeys == null) {
             return defaultValue;
         }
@@ -464,7 +464,7 @@ public class KeySpecParser {
         return value;
     }
 
-    public static boolean getBooleanValue(String[] moreKeys, String key) {
+    public static boolean getBooleanValue(final String[] moreKeys, final String key) {
         if (moreKeys == null) {
             return false;
         }
@@ -480,9 +480,9 @@ public class KeySpecParser {
         return value;
     }
 
-    public static int toUpperCaseOfCodeForLocale(int code, boolean needsToUpperCase,
-            Locale locale) {
-        if (!Keyboard.isLetterCode(code) || !needsToUpperCase) return code;
+    public static int toUpperCaseOfCodeForLocale(final int code, final boolean needsToUpperCase,
+            final Locale locale) {
+        if (!Constants.isLetterCode(code) || !needsToUpperCase) return code;
         final String text = new String(new int[] { code } , 0, 1);
         final String casedText = KeySpecParser.toUpperCaseOfStringForLocale(
                 text, needsToUpperCase, locale);
@@ -490,8 +490,8 @@ public class KeySpecParser {
                 ? casedText.codePointAt(0) : CODE_UNSPECIFIED;
     }
 
-    public static String toUpperCaseOfStringForLocale(String text, boolean needsToUpperCase,
-            Locale locale) {
+    public static String toUpperCaseOfStringForLocale(final String text,
+            final boolean needsToUpperCase, final Locale locale) {
         if (text == null || !needsToUpperCase) return text;
         return text.toUpperCase(locale);
     }

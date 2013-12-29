@@ -18,22 +18,26 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!--
+    <!-- Note that correctionX is obsolete (See in.androidtweak.inputmethod.keyboard.internal.TouchPositionCorrection)
         An entry of the touch_position_correction word should be:
-        1. (float) (touch_center_x - key_center_x) / key_width
-        2. (float) (touch_center_y - key_center_y) / key_height
-        3. (float) sweet_spot_radius / (key_width^2 + key_height^2)
-     -->
+        1. correctionX: (touch_center_x - hitbox_center_x) / hitbox_width
+        2. correctionY: (touch_center_y - hitbox_center_y) / hitbox_height
+        3. correctionR: sweet_spot_radius / sqrt(hitbox_width^2 + hitbox_height^2)
+    -->
 
     <string-array
-        name="touch_position_correction_data_empty"
+        name="touch_position_correction_data_default"
         translatable="false"
     >
-        <!-- empty -->
+        <!-- The default touch position data (See in.androidtweak.inputmethod.keyboard.ProximityInfo)
+             correctionX = 0.0f
+             correctionY = 0.0f
+             correctionR = DEFAULT_TOUCH_POSITION_CORRECTION_RADIUS
+        -->
     </string-array>
 
     <string-array
-        name="touch_position_correction_data_gingerbread"
+        name="touch_position_correction_data_gb"
         translatable="false"
     >
         <!-- First row -->
@@ -53,7 +57,7 @@
     </string-array>
 
     <string-array
-        name="touch_position_correction_data_ice_cream_sandwich"
+        name="touch_position_correction_data_ics"
         translatable="false"
     >
         <!-- First row -->

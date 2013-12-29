@@ -39,6 +39,7 @@
     <!-- U+0430: "а" CYRILLIC SMALL LETTER A -->
     <Key
         latin:keyLabel="&#x0430;"
+        latin:moreKeys="!text/more_keys_for_cyrillic_a"
         latin:keyHintLabel="%"
         latin:additionalMoreKeys="%" />
     <!-- U+043F: "п" CYRILLIC SMALL LETTER PE -->
@@ -73,7 +74,8 @@
         latin:keyHintLabel="("
         latin:additionalMoreKeys="(" />
     <Key
-        latin:keyLabel="!text/keylabel_for_east_slavic_row2_2"
+        latin:keyLabel="!text/keylabel_for_east_slavic_row2_11"
+        latin:moreKeys="!text/more_keys_for_east_slavic_row2_11"
         latin:keyHintLabel=")"
         latin:additionalMoreKeys=")" />
 </merge>

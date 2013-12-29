@@ -16,9 +16,6 @@
 
 package in.androidtweak.inputmethod.accessibility;
 
-import in.androidtweak.inputmethod.keyboard.Key;
-import in.androidtweak.inputmethod.keyboard.Keyboard;
-import in.androidtweak.inputmethod.keyboard.KeyboardView;
 import android.graphics.Rect;
 import android.inputmethodservice.InputMethodService;
 import android.os.Bundle;
@@ -35,6 +32,13 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.inputmethod.EditorInfo;
 
+import in.androidtweak.inputmethod.keyboard.Key;
+import in.androidtweak.inputmethod.keyboard.Keyboard;
+import in.androidtweak.inputmethod.keyboard.KeyboardView;
+import in.androidtweak.inputmethod.indic.settings.Settings;
+import in.androidtweak.inputmethod.indic.settings.SettingsValues;
+import in.androidtweak.inputmethod.indic.utils.CollectionUtils;
+import in.androidtweak.inputmethod.indic.utils.CoordinateUtils;
 
 /**
  * Exposes a virtual view sub-tree for {@link KeyboardView} and generates
@@ -46,7 +50,7 @@ import android.view.inputmethod.EditorInfo;
  * virtual views, thus conveying their logical structure.
  * </p>
  */
-public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat {
+public final class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat {
     private static final String TAG = AccessibilityEntityProvider.class.getSimpleName();
     private static final int UNDEFINED = Integer.MIN_VALUE;
 
@@ -55,13 +59,13 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
     private final AccessibilityUtils mAccessibilityUtils;
 
     /** A map of integer IDs to {@link Key}s. */
-    private final SparseArray<Key> mVirtualViewIdToKey = new SparseArray<Key>();
+    private final SparseArray<Key> mVirtualViewIdToKey = CollectionUtils.newSparseArray();
 
     /** Temporary rect used to calculate in-screen bounds. */
     private final Rect mTempBoundsInScreen = new Rect();
 
     /** The parent view's cached on-screen location. */
-    private final int[] mParentLocation = new int[2];
+    private final int[] mParentLocation = CoordinateUtils.newInstance();
 
     /** The virtual view identifier for the focused node. */
     private int mAccessibilityFocusedView = UNDEFINED;
@@ -69,12 +73,11 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
     /** The current keyboard view. */
     private KeyboardView mKeyboardView;
 
-    public AccessibilityEntityProvider(KeyboardView keyboardView, InputMethodService inputMethod) {
+    public AccessibilityEntityProvider(final KeyboardView keyboardView,
+            final InputMethodService inputMethod) {
         mInputMethodService = inputMethod;
-
         mKeyCodeDescriptionMapper = KeyCodeDescriptionMapper.getInstance();
         mAccessibilityUtils = AccessibilityUtils.getInstance();
-
         setView(keyboardView);
     }
 
@@ -83,21 +86,19 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
      *
      * @param keyboardView The keyboard view to represent.
      */
-    public void setView(KeyboardView keyboardView) {
+    public void setView(final KeyboardView keyboardView) {
         mKeyboardView = keyboardView;
         updateParentLocation();
 
         // Since this class is constructed lazily, we might not get a subsequent
         // call to setKeyboard() and therefore need to call it now.
-        setKeyboard(mKeyboardView.getKeyboard());
+        setKeyboard();
     }
 
     /**
      * Sets the keyboard represented by this node provider.
-     *
-     * @param keyboard The keyboard to represent.
      */
-    public void setKeyboard(Keyboard keyboard) {
+    public void setKeyboard() {
         assignVirtualViewIds();
     }
 
@@ -110,19 +111,16 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
      * @return A populated {@link AccessibilityEvent} for the key.
      * @see AccessibilityEvent
      */
-    public AccessibilityEvent createAccessibilityEvent(Key key, int eventType) {
+    public AccessibilityEvent createAccessibilityEvent(final Key key, final int eventType) {
         final int virtualViewId = generateVirtualViewIdForKey(key);
         final String keyDescription = getKeyDescription(key);
-
         final AccessibilityEvent event = AccessibilityEvent.obtain(eventType);
         event.setPackageName(mKeyboardView.getContext().getPackageName());
         event.setClassName(key.getClass().getName());
         event.setContentDescription(keyDescription);
         event.setEnabled(true);
-
         final AccessibilityRecordCompat record = new AccessibilityRecordCompat(event);
         record.setSource(mKeyboardView, virtualViewId);
-
         return event;
     }
 
@@ -143,68 +141,65 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
      * </p>
      *
      * @param virtualViewId A client defined virtual view id.
-     * @return A populated {@link AccessibilityNodeInfoCompat} for a virtual
-     *         descendant or the host View.
+     * @return A populated {@link AccessibilityNodeInfoCompat} for a virtual descendant or the host
+     * View.
      * @see AccessibilityNodeInfoCompat
      */
     @Override
-    public AccessibilityNodeInfoCompat createAccessibilityNodeInfo(int virtualViewId) {
-        AccessibilityNodeInfoCompat info = null;
-
+    public AccessibilityNodeInfoCompat createAccessibilityNodeInfo(final int virtualViewId) {
         if (virtualViewId == UNDEFINED) {
             return null;
-        } else  if (virtualViewId == View.NO_ID) {
+        }
+        if (virtualViewId == View.NO_ID) {
             // We are requested to create an AccessibilityNodeInfo describing
             // this View, i.e. the root of the virtual sub-tree.
-            info = AccessibilityNodeInfoCompat.obtain(mKeyboardView);
-            ViewCompat.onInitializeAccessibilityNodeInfo(mKeyboardView, info);
+            final AccessibilityNodeInfoCompat rootInfo =
+                    AccessibilityNodeInfoCompat.obtain(mKeyboardView);
+            ViewCompat.onInitializeAccessibilityNodeInfo(mKeyboardView, rootInfo);
 
             // Add the virtual children of the root View.
             final Keyboard keyboard = mKeyboardView.getKeyboard();
-            final Key[] keys = keyboard.mKeys;
+            final Key[] keys = keyboard.getKeys();
             for (Key key : keys) {
                 final int childVirtualViewId = generateVirtualViewIdForKey(key);
-                info.addChild(mKeyboardView, childVirtualViewId);
+                rootInfo.addChild(mKeyboardView, childVirtualViewId);
             }
-        } else {
-            // Find the view that corresponds to the given id.
-            final Key key = mVirtualViewIdToKey.get(virtualViewId);
-            if (key == null) {
-                Log.e(TAG, "Invalid virtual view ID: " + virtualViewId);
-                return null;
-            }
-
-            final String keyDescription = getKeyDescription(key);
-            final Rect boundsInParent = key.mHitBox;
-
-            // Calculate the key's in-screen bounds.
-            mTempBoundsInScreen.set(boundsInParent);
-            mTempBoundsInScreen.offset(mParentLocation[0], mParentLocation[1]);
-
-            final Rect boundsInScreen = mTempBoundsInScreen;
-
-            // Obtain and initialize an AccessibilityNodeInfo with
-            // information about the virtual view.
-            info = AccessibilityNodeInfoCompat.obtain();
-            info.setPackageName(mKeyboardView.getContext().getPackageName());
-            info.setClassName(key.getClass().getName());
-            info.setContentDescription(keyDescription);
-            info.setBoundsInParent(boundsInParent);
-            info.setBoundsInScreen(boundsInScreen);
-            info.setParent(mKeyboardView);
-            info.setSource(mKeyboardView, virtualViewId);
-            info.setBoundsInScreen(boundsInScreen);
-            info.setEnabled(true);
-            info.setClickable(true);
-            info.addAction(AccessibilityNodeInfoCompat.ACTION_CLICK);
-
-            if (mAccessibilityFocusedView == virtualViewId) {
-                info.addAction(AccessibilityNodeInfoCompat.ACTION_CLEAR_ACCESSIBILITY_FOCUS);
-            } else {
-                info.addAction(AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS);
-            }
+            return rootInfo;
         }
 
+        // Find the view that corresponds to the given id.
+        final Key key = mVirtualViewIdToKey.get(virtualViewId);
+        if (key == null) {
+            Log.e(TAG, "Invalid virtual view ID: " + virtualViewId);
+            return null;
+        }
+        final String keyDescription = getKeyDescription(key);
+        final Rect boundsInParent = key.getHitBox();
+
+        // Calculate the key's in-screen bounds.
+        mTempBoundsInScreen.set(boundsInParent);
+        mTempBoundsInScreen.offset(
+                CoordinateUtils.x(mParentLocation), CoordinateUtils.y(mParentLocation));
+        final Rect boundsInScreen = mTempBoundsInScreen;
+
+        // Obtain and initialize an AccessibilityNodeInfo with information about the virtual view.
+        final AccessibilityNodeInfoCompat info = AccessibilityNodeInfoCompat.obtain();
+        info.setPackageName(mKeyboardView.getContext().getPackageName());
+        info.setClassName(key.getClass().getName());
+        info.setContentDescription(keyDescription);
+        info.setBoundsInParent(boundsInParent);
+        info.setBoundsInScreen(boundsInScreen);
+        info.setParent(mKeyboardView);
+        info.setSource(mKeyboardView, virtualViewId);
+        info.setBoundsInScreen(boundsInScreen);
+        info.setEnabled(true);
+        info.setVisibleToUser(true);
+
+        if (mAccessibilityFocusedView == virtualViewId) {
+            info.addAction(AccessibilityNodeInfoCompat.ACTION_CLEAR_ACCESSIBILITY_FOCUS);
+        } else {
+            info.addAction(AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS);
+        }
         return info;
     }
 
@@ -214,9 +209,9 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
      *
      * @param key The key to press.
      */
-    void simulateKeyPress(Key key) {
-        final int x = key.mHitBox.centerX();
-        final int y = key.mHitBox.centerY();
+    void simulateKeyPress(final Key key) {
+        final int x = key.getHitBox().centerX();
+        final int y = key.getHitBox().centerY();
         final long downTime = SystemClock.uptimeMillis();
         final MotionEvent downEvent = MotionEvent.obtain(
                 downTime, downTime, MotionEvent.ACTION_DOWN, x, y, 0);
@@ -225,16 +220,17 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
 
         mKeyboardView.onTouchEvent(downEvent);
         mKeyboardView.onTouchEvent(upEvent);
+        downEvent.recycle();
+        upEvent.recycle();
     }
 
     @Override
-    public boolean performAction(int virtualViewId, int action, Bundle arguments) {
+    public boolean performAction(final int virtualViewId, final int action,
+            final Bundle arguments) {
         final Key key = mVirtualViewIdToKey.get(virtualViewId);
-
         if (key == null) {
             return false;
         }
-
         return performActionForKey(key, action, arguments);
     }
 
@@ -244,16 +240,12 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
      * @param key The on which to perform the action.
      * @param action The action to perform.
      * @param arguments The action's arguments.
-     * @return The result of performing the action, or false if the action is
-     *         not supported.
+     * @return The result of performing the action, or false if the action is not supported.
      */
-    boolean performActionForKey(Key key, int action, Bundle arguments) {
+    boolean performActionForKey(final Key key, final int action, final Bundle arguments) {
         final int virtualViewId = generateVirtualViewIdForKey(key);
 
         switch (action) {
-        case AccessibilityNodeInfoCompat.ACTION_CLICK:
-            simulateKeyPress(key);
-            return true;
         case AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS:
             if (mAccessibilityFocusedView == virtualViewId) {
                 return false;
@@ -270,9 +262,9 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
             sendAccessibilityEventForKey(
                     key, AccessibilityEventCompat.TYPE_VIEW_ACCESSIBILITY_FOCUS_CLEARED);
             return true;
+        default:
+            return false;
         }
-
-        return false;
     }
 
     /**
@@ -281,7 +273,7 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
      * @param key The key that's sending the event.
      * @param eventType The type of event to send.
      */
-    void sendAccessibilityEventForKey(Key key, int eventType) {
+    void sendAccessibilityEventForKey(final Key key, final int eventType) {
         final AccessibilityEvent event = createAccessibilityEvent(key, eventType);
         mAccessibilityUtils.requestSendAccessibilityEvent(event);
     }
@@ -292,13 +284,18 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
      * @param key The key to describe.
      * @return The context-specific description of the key.
      */
-    private String getKeyDescription(Key key) {
+    private String getKeyDescription(final Key key) {
         final EditorInfo editorInfo = mInputMethodService.getCurrentInputEditorInfo();
         final boolean shouldObscure = mAccessibilityUtils.shouldObscureInput(editorInfo);
-        final String keyDescription = mKeyCodeDescriptionMapper.getDescriptionForKey(
+        final SettingsValues currentSettings = Settings.getInstance().getCurrent();
+        final String keyCodeDescription = mKeyCodeDescriptionMapper.getDescriptionForKey(
                 mKeyboardView.getContext(), mKeyboardView.getKeyboard(), key, shouldObscure);
-
-        return keyDescription;
+        if (currentSettings.isWordSeparator(key.getCode())) {
+            return mAccessibilityUtils.getAutoCorrectionDescription(
+                    keyCodeDescription, shouldObscure);
+        } else {
+            return keyCodeDescription;
+        }
     }
 
     /**
@@ -309,10 +306,9 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
         if (keyboard == null) {
             return;
         }
-
         mVirtualViewIdToKey.clear();
 
-        final Key[] keys = keyboard.mKeys;
+        final Key[] keys = keyboard.getKeys();
         for (Key key : keys) {
             final int virtualViewId = generateVirtualViewIdForKey(key);
             mVirtualViewIdToKey.put(virtualViewId, key);
@@ -333,10 +329,10 @@ public class AccessibilityEntityProvider extends AccessibilityNodeProviderCompat
      * @param key The key to identify.
      * @return A virtual view identifier.
      */
-    private static int generateVirtualViewIdForKey(Key key) {
+    private static int generateVirtualViewIdForKey(final Key key) {
         // The key x- and y-coordinates are stable between layout changes.
         // Generate an identifier by bit-shifting the x-coordinate to the
         // left-half of the integer and OR'ing with the y-coordinate.
-        return ((0xFFFF & key.mX) << (Integer.SIZE / 2)) | (0xFFFF & key.mY);
+        return ((0xFFFF & key.getX()) << (Integer.SIZE / 2)) | (0xFFFF & key.getY());
     }
 }

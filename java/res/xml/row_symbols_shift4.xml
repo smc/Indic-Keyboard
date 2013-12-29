@@ -17,33 +17,10 @@
 ** limitations under the License.
 */
 -->
+<merge xmlns:latin="http://schemas.android.com/apk/res/in.androidtweak.inputmethod.indic" >
 
-<merge
-    xmlns:latin="http://schemas.android.com/apk/res/in.androidtweak.inputmethod.indic"
->
-    <Row
-        latin:keyWidth="10%p"
-    >
-        <Key
-            latin:keyStyle="toAlphaKeyStyle"
-            latin:keyWidth="15%p" />
-        <!-- U+201F: "‟" DOUBLE HIGH-REVERSED-9 QUOTATION MARK -->
-        <!-- TODO: Neither DroidSans nor Roboto have the glyph for U+201F DOUBLE HIGH-REVERSED-9 QUOTATION MARK. -->
-        <!-- latin:keyLabelFlags="hasPopupHint" -->
-        <!-- latin:moreKeys="&#x201F;" -->
-        <!-- U+201E: "„" DOUBLE LOW-9 QUOTATION MARK -->
-        <Key
-            latin:keyLabel="&#x201E;"
-            latin:backgroundType="functional" />
-        <include
-            latin:keyXPos="25%p"
-            latin:keyboardLayout="@xml/key_space" />
-        <!-- U+2026: "…" HORIZONTAL ELLIPSIS -->
-        <Key
-            latin:keyLabel="&#x2026;"
-            latin:backgroundType="functional" />
-        <Key
-            latin:keyStyle="enterKeyStyle"
-            latin:keyWidth="fillRight" />
-    </Row>
+    <include latin:keyboardLayout="@xml/keys_less_greater" />
+    <include
+        latin:keyboardLayout="@xml/key_space_symbols" />
+    <include latin:keyboardLayout="@xml/keys_comma_period" />
 </merge>

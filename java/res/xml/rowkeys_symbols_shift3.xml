@@ -21,22 +21,20 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/in.androidtweak.inputmethod.indic"
 >
-    <!-- U+2122: "™" TRADE MARK SIGN -->
     <Key
-        latin:keyLabel="&#x2122;" />
-    <!-- U+00AE: "®" REGISTERED SIGN -->
-    <Key
-        latin:keyLabel="&#x00AE;" />
+        latin:keyLabel="\\" />
     <!-- U+00A9: "©" COPYRIGHT SIGN -->
     <Key
         latin:keyLabel="&#x00A9;" />
-    <!-- U+00B6: "¶" PILCROW SIGN
-         U+00A7: "§" SECTION SIGN -->
+    <!-- U+00AE: "®" REGISTERED SIGN -->
     <Key
-        latin:keyLabel="&#x00B6;"
-        latin:moreKeys="&#x00A7;" />
+        latin:keyLabel="&#x00AE;" />
+    <!-- U+2122: "™" TRADE MARK SIGN -->
     <Key
-        latin:keyLabel="\\" />
+        latin:keyLabel="&#x2122;" />
+    <!-- U+2105: "℅" CARE OF -->
+    <Key
+        latin:keyLabel="&#x2105;" />
     <include
-        latin:keyboardLayout="@xml/keys_less_greater" />
+        latin:keyboardLayout="@xml/keys_square_brackets" />
 </merge>

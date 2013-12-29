@@ -1,41 +1,46 @@
 /*
  * Copyright (C) 2010 The Android Open Source Project
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.android.inputmethod.keyboard.internal;
 
-import static com.android.inputmethod.keyboard.Keyboard.CODE_OUTPUT_TEXT;
-import static com.android.inputmethod.keyboard.Keyboard.CODE_UNSPECIFIED;
 import static com.android.inputmethod.keyboard.internal.KeyboardIconsSet.ICON_UNDEFINED;
+import static com.android.inputmethod.latin.Constants.CODE_OUTPUT_TEXT;
+import static com.android.inputmethod.latin.Constants.CODE_UNSPECIFIED;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.test.AndroidTestCase;
+import android.test.suitebuilder.annotation.SmallTest;
 
-import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.internal.KeySpecParser.MoreKeySpec;
+import com.android.inputmethod.latin.Constants;
+import com.android.inputmethod.latin.utils.RunInLocale;
 
 import java.util.Arrays;
 import java.util.Locale;
 
+@SmallTest
 public class KeySpecParserTests extends AndroidTestCase {
-    private final KeyboardCodesSet mCodesSet = new KeyboardCodesSet();
-    private final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
+    private final static Locale TEST_LOCALE = Locale.ENGLISH;
+    final KeyboardCodesSet mCodesSet = new KeyboardCodesSet();
+    final KeyboardTextsSet mTextsSet = new KeyboardTextsSet();
 
     private static final String CODE_SETTINGS = "!code/key_settings";
     private static final String ICON_SETTINGS = "!icon/settings_key";
-    private static final String CODE_SETTINGS_UPPERCASE = CODE_SETTINGS.toUpperCase();
-    private static final String ICON_SETTINGS_UPPERCASE = ICON_SETTINGS.toUpperCase();
+    private static final String CODE_SETTINGS_UPPERCASE = CODE_SETTINGS.toUpperCase(Locale.ROOT);
+    private static final String ICON_SETTINGS_UPPERCASE = ICON_SETTINGS.toUpperCase(Locale.ROOT);
     private static final String CODE_NON_EXISTING = "!code/non_existing";
     private static final String ICON_NON_EXISTING = "!icon/non_existing";
 
@@ -47,10 +52,17 @@ public class KeySpecParserTests extends AndroidTestCase {
     protected void setUp() throws Exception {
         super.setUp();
 
-        final String language = Locale.ENGLISH.getLanguage();
+        final String language = TEST_LOCALE.getLanguage();
         mCodesSet.setLanguage(language);
         mTextsSet.setLanguage(language);
-        mTextsSet.loadStringResources(getContext());
+        final Context context = getContext();
+        new RunInLocale<Void>() {
+            @Override
+            protected Void job(final Resources res) {
+                mTextsSet.loadStringResources(context);
+                return null;
+            }
+        }.runInLocale(context.getResources(), TEST_LOCALE);
 
         mCodeSettings = KeySpecParser.parseCode(
                 CODE_SETTINGS, mCodesSet, CODE_UNSPECIFIED);
@@ -70,8 +82,8 @@ public class KeySpecParserTests extends AndroidTestCase {
                 KeyboardIconsSet.getIconName(expectedIcon),
                 KeyboardIconsSet.getIconName(spec.mIconId));
         assertEquals(message + " [code]",
-                Keyboard.printableCode(expectedCode),
-                Keyboard.printableCode(spec.mCode));
+                Constants.printableCode(expectedCode),
+                Constants.printableCode(spec.mCode));
     }
 
     private void assertParserError(String message, String moreKeySpec, String expectedLabel,
@@ -586,7 +598,7 @@ public class KeySpecParserTests extends AndroidTestCase {
                 new String[] { null, "a", "b", "c" }, true);
         // Upper case specification will not work.
         assertGetBooleanValue("HAS LABEL", HAS_LABEL,
-                new String[] { HAS_LABEL.toUpperCase(), "a", "b", "c" },
+                new String[] { HAS_LABEL.toUpperCase(Locale.ROOT), "a", "b", "c" },
                 new String[] { "!HASLABEL!", "a", "b", "c" }, false);
 
         assertGetBooleanValue("No has label", HAS_LABEL,
@@ -599,13 +611,13 @@ public class KeySpecParserTests extends AndroidTestCase {
         // Upper case specification will not work.
         assertGetBooleanValue("Multiple has label", HAS_LABEL,
                 new String[] {
-                    "a", HAS_LABEL.toUpperCase(), "b", "c", HAS_LABEL, "d" },
+                    "a", HAS_LABEL.toUpperCase(Locale.ROOT), "b", "c", HAS_LABEL, "d" },
                 new String[] {
                     "a", "!HASLABEL!", "b", "c", null, "d" }, true);
         // Upper case specification will not work.
         assertGetBooleanValue("Multiple has label with needs dividers", HAS_LABEL,
                 new String[] {
-                    "a", HAS_LABEL, "b", NEEDS_DIVIDER, HAS_LABEL.toUpperCase(), "d" },
+                    "a", HAS_LABEL, "b", NEEDS_DIVIDER, HAS_LABEL.toUpperCase(Locale.ROOT), "d" },
                 new String[] {
                     "a", null, "b", NEEDS_DIVIDER, "!HASLABEL!", "d" }, true);
     }
@@ -624,7 +636,7 @@ public class KeySpecParserTests extends AndroidTestCase {
                 new String[] { null, "a", "b", "c" }, 3);
         // Upper case specification will not work.
         assertGetIntValue("FIXED COLUMN ORDER 3", FIXED_COLUMN_ORDER, -1,
-                new String[] { FIXED_COLUMN_ORDER.toUpperCase() + "3", "a", "b", "c" },
+                new String[] { FIXED_COLUMN_ORDER.toUpperCase(Locale.ROOT) + "3", "a", "b", "c" },
                 new String[] { "!FIXEDCOLUMNORDER!3", "a", "b", "c" }, -1);
 
         assertGetIntValue("No fixed column order", FIXED_COLUMN_ORDER, -1,
@@ -640,7 +652,7 @@ public class KeySpecParserTests extends AndroidTestCase {
         // Upper case specification will not work.
         assertGetIntValue("Multiple fixed column order 5,3 with has label", FIXED_COLUMN_ORDER, -1,
                 new String[] {
-                    FIXED_COLUMN_ORDER.toUpperCase() + "5", HAS_LABEL, "a",
+                    FIXED_COLUMN_ORDER.toUpperCase(Locale.ROOT) + "5", HAS_LABEL, "a",
                     FIXED_COLUMN_ORDER + "3", "b" },
                 new String[] { "!FIXEDCOLUMNORDER!5", HAS_LABEL, "a", null, "b" }, 3);
     }

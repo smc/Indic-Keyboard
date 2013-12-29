@@ -1,17 +1,17 @@
 /*
  * Copyright (C) 2011 The Android Open Source Project
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package in.androidtweak.inputmethod.indic;
@@ -19,22 +19,26 @@ package in.androidtweak.inputmethod.indic;
 import android.text.InputType;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
-import in.androidtweak.inputmethod.indic.R;
+
+import in.androidtweak.inputmethod.indic.utils.InputTypeUtils;
+import in.androidtweak.inputmethod.indic.utils.StringUtils;
 
 /**
  * Class to hold attributes of the input field.
  */
-public class InputAttributes {
+public final class InputAttributes {
     private final String TAG = InputAttributes.class.getSimpleName();
 
     final public boolean mInputTypeNoAutoCorrect;
     final public boolean mIsSettingsSuggestionStripOn;
     final public boolean mApplicationSpecifiedCompletionOn;
-    final public int mEditorAction;
+    final public boolean mShouldInsertSpacesAutomatically;
+    final private int mInputType;
 
     public InputAttributes(final EditorInfo editorInfo, final boolean isFullscreenMode) {
         final int inputType = null != editorInfo ? editorInfo.inputType : 0;
         final int inputClass = inputType & InputType.TYPE_MASK_CLASS;
+        mInputType = inputType;
         if (inputClass != InputType.TYPE_CLASS_TEXT) {
             // If we are not looking at a TYPE_CLASS_TEXT field, the following strange
             // cases may arise, so we do a couple sanity checks for them. If it's a
@@ -54,6 +58,7 @@ public class InputAttributes {
             mIsSettingsSuggestionStripOn = false;
             mInputTypeNoAutoCorrect = false;
             mApplicationSpecifiedCompletionOn = false;
+            mShouldInsertSpacesAutomatically = false;
         } else {
             final int variation = inputType & InputType.TYPE_MASK_VARIATION;
             final boolean flagNoSuggestions =
@@ -65,7 +70,8 @@ public class InputAttributes {
             final boolean flagAutoComplete =
                     0 != (inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
 
-            // Make sure that passwords are not displayed in {@link SuggestionsView}.
+            // TODO: Have a helper method in InputTypeUtils
+            // Make sure that passwords are not displayed in {@link SuggestionStripView}.
             if (InputTypeUtils.isPasswordInputType(inputType)
                     || InputTypeUtils.isVisiblePasswordInputType(inputType)
                     || InputTypeUtils.isEmailVariation(variation)
@@ -77,6 +83,8 @@ public class InputAttributes {
             } else {
                 mIsSettingsSuggestionStripOn = true;
             }
+
+            mShouldInsertSpacesAutomatically = InputTypeUtils.isAutoSpaceFriendlyType(inputType);
 
             // If it's a browser edit field and auto correct is not ON explicitly, then
             // disable auto correction, but keep suggestions on.
@@ -93,8 +101,14 @@ public class InputAttributes {
 
             mApplicationSpecifiedCompletionOn = flagAutoComplete && isFullscreenMode;
         }
-        mEditorAction = (editorInfo == null) ? EditorInfo.IME_ACTION_UNSPECIFIED
-                : editorInfo.imeOptions & EditorInfo.IME_MASK_ACTION;
+    }
+
+    public boolean isTypeNull() {
+        return InputType.TYPE_NULL == mInputType;
+    }
+
+    public boolean isSameInputType(final EditorInfo editorInfo) {
+        return editorInfo.inputType == mInputType;
     }
 
     @SuppressWarnings("unused")
@@ -110,36 +124,56 @@ public class InputAttributes {
         if (inputClass == InputType.TYPE_CLASS_DATETIME)
             Log.i(TAG, "  TYPE_CLASS_DATETIME");
         Log.i(TAG, "Variation:");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_EMAIL_ADDRESS");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_EMAIL_SUBJECT))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_EMAIL_SUBJECT");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_FILTER))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_FILTER");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_LONG_MESSAGE))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_LONG_MESSAGE");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_NORMAL))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_NORMAL");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_PASSWORD))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_PASSWORD");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_PERSON_NAME))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_PERSON_NAME");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_PHONETIC))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_PHONETIC");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_POSTAL_ADDRESS");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_SHORT_MESSAGE");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_URI))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_URI");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_VISIBLE_PASSWORD");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_WEB_EDIT_TEXT");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS");
-        if (0 != (inputType & InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD))
-            Log.i(TAG, "  TYPE_TEXT_VARIATION_WEB_PASSWORD");
+        switch (InputType.TYPE_MASK_VARIATION & inputType) {
+            case InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_EMAIL_ADDRESS");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_EMAIL_SUBJECT:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_EMAIL_SUBJECT");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_FILTER:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_FILTER");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_LONG_MESSAGE:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_LONG_MESSAGE");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_NORMAL:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_NORMAL");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_PASSWORD:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_PASSWORD");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_PERSON_NAME:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_PERSON_NAME");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_PHONETIC:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_PHONETIC");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_POSTAL_ADDRESS");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_SHORT_MESSAGE");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_URI:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_URI");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_VISIBLE_PASSWORD");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_WEB_EDIT_TEXT");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS");
+                break;
+            case InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD:
+                Log.i(TAG, "  TYPE_TEXT_VARIATION_WEB_PASSWORD");
+                break;
+            default:
+                Log.i(TAG, "  Unknown variation");
+                break;
+        }
         Log.i(TAG, "Flags:");
         if (0 != (inputType & InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS))
             Log.i(TAG, "  TYPE_TEXT_FLAG_NO_SUGGESTIONS");
@@ -172,6 +206,6 @@ public class InputAttributes {
         if (editorInfo == null) return false;
         final String findingKey = (packageName != null) ? packageName + "." + key
                 : key;
-        return StringUtils.containsInCsv(findingKey, editorInfo.privateImeOptions);
+        return StringUtils.containsInCommaSplittableText(findingKey, editorInfo.privateImeOptions);
     }
 }

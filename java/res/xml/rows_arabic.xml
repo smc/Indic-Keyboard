@@ -24,27 +24,25 @@
     <include
         latin:keyboardLayout="@xml/key_styles_common" />
     <Row
-        latin:keyWidth="10%p"
+        latin:keyWidth="9.091%p"
     >
         <include
             latin:keyboardLayout="@xml/rowkeys_arabic1" />
     </Row>
     <Row
-        latin:keyWidth="10%p"
+        latin:keyWidth="9.091%p"
     >
         <include
             latin:keyboardLayout="@xml/rowkeys_arabic2" />
     </Row>
     <Row
-        latin:keyWidth="10%p"
+        latin:keyWidth="9.091%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_arabic3"
-            latin:keyXPos="5.0%p" />
+            latin:keyboardLayout="@xml/rowkeys_arabic3" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillRight"
-            latin:visualInsetsLeft="1%p" />
+            latin:keyWidth="fillRight" />
     </Row>
     <include
         latin:keyboardLayout="@xml/row_qwerty4" />

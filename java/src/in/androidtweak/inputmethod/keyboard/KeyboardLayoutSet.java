@@ -1,17 +1,17 @@
 /*
  * Copyright (C) 2011 The Android Open Source Project
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package in.androidtweak.inputmethod.keyboard;
@@ -23,25 +23,28 @@ import static in.androidtweak.inputmethod.indic.Constants.ImeOption.NO_SETTINGS_
 import static in.androidtweak.inputmethod.indic.Constants.Subtype.ExtraValue.ASCII_CAPABLE;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.text.InputType;
 import android.util.Log;
+import android.util.SparseArray;
 import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
 import in.androidtweak.inputmethod.compat.EditorInfoCompatUtils;
+import in.androidtweak.inputmethod.keyboard.internal.KeyboardBuilder;
+import in.androidtweak.inputmethod.keyboard.internal.KeyboardParams;
+import in.androidtweak.inputmethod.keyboard.internal.KeysCache;
 import in.androidtweak.inputmethod.indic.InputAttributes;
-import in.androidtweak.inputmethod.indic.InputTypeUtils;
 import in.androidtweak.inputmethod.indic.LatinImeLogger;
 import in.androidtweak.inputmethod.indic.R;
-import in.androidtweak.inputmethod.indic.SubtypeLocale;
 import in.androidtweak.inputmethod.indic.SubtypeSwitcher;
-import in.androidtweak.inputmethod.indic.XmlParseUtils;
-import in.androidtweak.inputmethod.keyboard.KeyboardLayoutSet.Params.ElementParams;
+import in.androidtweak.inputmethod.indic.utils.CollectionUtils;
+import in.androidtweak.inputmethod.indic.utils.InputTypeUtils;
+import in.androidtweak.inputmethod.indic.utils.SubtypeLocaleUtils;
+import in.androidtweak.inputmethod.indic.utils.XmlParseUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -57,7 +60,7 @@ import java.util.HashMap;
  * A {@link KeyboardLayoutSet} needs to be created for each
  * {@link android.view.inputmethod.EditorInfo}.
  */
-public class KeyboardLayoutSet {
+public final class KeyboardLayoutSet {
     private static final String TAG = KeyboardLayoutSet.class.getSimpleName();
     private static final boolean DEBUG_CACHE = LatinImeLogger.sDBG;
 
@@ -69,61 +72,52 @@ public class KeyboardLayoutSet {
     private final Context mContext;
     private final Params mParams;
 
+    // How many layouts we forcibly keep in cache. This only includes ALPHABET (default) and
+    // ALPHABET_AUTOMATIC_SHIFTED layouts - other layouts may stay in memory in the map of
+    // soft-references, but we forcibly cache this many alphabetic/auto-shifted layouts.
+    private static final int FORCIBLE_CACHE_SIZE = 4;
+    // By construction of soft references, anything that is also referenced somewhere else
+    // will stay in the cache. So we forcibly keep some references in an array to prevent
+    // them from disappearing from sKeyboardCache.
+    private static final Keyboard[] sForcibleKeyboardCache = new Keyboard[FORCIBLE_CACHE_SIZE];
     private static final HashMap<KeyboardId, SoftReference<Keyboard>> sKeyboardCache =
-            new HashMap<KeyboardId, SoftReference<Keyboard>>();
+            CollectionUtils.newHashMap();
     private static final KeysCache sKeysCache = new KeysCache();
 
-    public static class KeyboardLayoutSetException extends RuntimeException {
+    @SuppressWarnings("serial")
+    public static final class KeyboardLayoutSetException extends RuntimeException {
         public final KeyboardId mKeyboardId;
 
-        public KeyboardLayoutSetException(Throwable cause, KeyboardId keyboardId) {
+        public KeyboardLayoutSetException(final Throwable cause, final KeyboardId keyboardId) {
             super(cause);
             mKeyboardId = keyboardId;
         }
     }
 
-    public static class KeysCache {
-        private final HashMap<Key, Key> mMap;
-
-        public KeysCache() {
-            mMap = new HashMap<Key, Key>();
-        }
-
-        public void clear() {
-            mMap.clear();
-        }
-
-        public Key get(Key key) {
-            final Key existingKey = mMap.get(key);
-            if (existingKey != null) {
-                // Reuse the existing element that equals to "key" without adding "key" to the map.
-                return existingKey;
-            }
-            mMap.put(key, key);
-            return key;
-        }
+    private static final class ElementParams {
+        int mKeyboardXmlId;
+        boolean mProximityCharsCorrectionEnabled;
+        public ElementParams() {}
     }
 
-    static class Params {
+    public static final class Params {
         String mKeyboardLayoutSetName;
         int mMode;
         EditorInfo mEditorInfo;
-        boolean mTouchPositionCorrectionEnabled;
+        boolean mDisableTouchPositionCorrectionDataForTest;
         boolean mVoiceKeyEnabled;
+        // TODO: Remove mVoiceKeyOnMain when it's certainly confirmed that we no longer show
+        // the voice input key on the symbol layout
         boolean mVoiceKeyOnMain;
         boolean mNoSettingsKey;
         boolean mLanguageSwitchKeyEnabled;
         InputMethodSubtype mSubtype;
-        int mOrientation;
-        int mWidth;
-        // KeyboardLayoutSet element id to element's parameters map.
-        final HashMap<Integer, ElementParams> mKeyboardLayoutSetElementIdToParamsMap =
-                new HashMap<Integer, ElementParams>();
-
-        static class ElementParams {
-            int mKeyboardXmlId;
-            boolean mProximityCharsCorrectionEnabled;
-        }
+        boolean mIsSpellChecker;
+        int mKeyboardWidth;
+        int mKeyboardHeight;
+        // Sparse array of KeyboardLayoutSet element parameters indexed by element's id.
+        final SparseArray<ElementParams> mKeyboardLayoutSetElementIdToParamsMap =
+                CollectionUtils.newSparseArray();
     }
 
     public static void clearKeyboardCache() {
@@ -131,12 +125,12 @@ public class KeyboardLayoutSet {
         sKeysCache.clear();
     }
 
-    private KeyboardLayoutSet(Context context, Params params) {
+    KeyboardLayoutSet(final Context context, final Params params) {
         mContext = context;
         mParams = params;
     }
 
-    public Keyboard getKeyboard(int baseKeyboardLayoutSetElementId) {
+    public Keyboard getKeyboard(final int baseKeyboardLayoutSetElementId) {
         final int keyboardLayoutSetElementId;
         switch (mParams.mMode) {
         case KeyboardId.MODE_PHONE:
@@ -163,92 +157,93 @@ public class KeyboardLayoutSet {
             elementParams = mParams.mKeyboardLayoutSetElementIdToParamsMap.get(
                     KeyboardId.ELEMENT_ALPHABET);
         }
-        final KeyboardId id = getKeyboardId(keyboardLayoutSetElementId);
+        // Note: The keyboard for each shift state, and mode are represented as an elementName
+        // attribute in a keyboard_layout_set XML file.  Also each keyboard layout XML resource is
+        // specified as an elementKeyboard attribute in the file.
+        // The KeyboardId is an internal key for a Keyboard object.
+        final KeyboardId id = new KeyboardId(keyboardLayoutSetElementId, mParams);
         try {
             return getKeyboard(elementParams, id);
-        } catch (RuntimeException e) {
+        } catch (final RuntimeException e) {
+            Log.e(TAG, "Can't create keyboard: " + id, e);
             throw new KeyboardLayoutSetException(e, id);
         }
     }
 
-    private Keyboard getKeyboard(ElementParams elementParams, final KeyboardId id) {
+    private Keyboard getKeyboard(final ElementParams elementParams, final KeyboardId id) {
         final SoftReference<Keyboard> ref = sKeyboardCache.get(id);
-        Keyboard keyboard = (ref == null) ? null : ref.get();
-        if (keyboard == null) {
-            final Keyboard.Builder<Keyboard.Params> builder =
-                    new Keyboard.Builder<Keyboard.Params>(mContext, new Keyboard.Params());
-            if (id.isAlphabetKeyboard()) {
-                builder.setAutoGenerate(sKeysCache);
-            }
-            final int keyboardXmlId = elementParams.mKeyboardXmlId;
-            builder.load(keyboardXmlId, id);
-            builder.setTouchPositionCorrectionEnabled(mParams.mTouchPositionCorrectionEnabled);
-            builder.setProximityCharsCorrectionEnabled(
-                    elementParams.mProximityCharsCorrectionEnabled);
-            keyboard = builder.build();
-            sKeyboardCache.put(id, new SoftReference<Keyboard>(keyboard));
-
+        final Keyboard cachedKeyboard = (ref == null) ? null : ref.get();
+        if (cachedKeyboard != null) {
             if (DEBUG_CACHE) {
-                Log.d(TAG, "keyboard cache size=" + sKeyboardCache.size() + ": "
-                        + ((ref == null) ? "LOAD" : "GCed") + " id=" + id);
+                Log.d(TAG, "keyboard cache size=" + sKeyboardCache.size() + ": HIT  id=" + id);
             }
-        } else if (DEBUG_CACHE) {
-            Log.d(TAG, "keyboard cache size=" + sKeyboardCache.size() + ": HIT  id=" + id);
+            return cachedKeyboard;
         }
 
+        final KeyboardBuilder<KeyboardParams> builder =
+                new KeyboardBuilder<KeyboardParams>(mContext, new KeyboardParams());
+        if (id.isAlphabetKeyboard()) {
+            builder.setAutoGenerate(sKeysCache);
+        }
+        final int keyboardXmlId = elementParams.mKeyboardXmlId;
+        builder.load(keyboardXmlId, id);
+        if (mParams.mDisableTouchPositionCorrectionDataForTest) {
+            builder.disableTouchPositionCorrectionDataForTest();
+        }
+        builder.setProximityCharsCorrectionEnabled(elementParams.mProximityCharsCorrectionEnabled);
+        final Keyboard keyboard = builder.build();
+        sKeyboardCache.put(id, new SoftReference<Keyboard>(keyboard));
+        if ((id.mElementId == KeyboardId.ELEMENT_ALPHABET
+                || id.mElementId == KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED)
+                && !mParams.mIsSpellChecker) {
+            // We only forcibly cache the primary, "ALPHABET", layouts.
+            for (int i = sForcibleKeyboardCache.length - 1; i >= 1; --i) {
+                sForcibleKeyboardCache[i] = sForcibleKeyboardCache[i - 1];
+            }
+            sForcibleKeyboardCache[0] = keyboard;
+            if (DEBUG_CACHE) {
+                Log.d(TAG, "forcing caching of keyboard with id=" + id);
+            }
+        }
+        if (DEBUG_CACHE) {
+            Log.d(TAG, "keyboard cache size=" + sKeyboardCache.size() + ": "
+                    + ((ref == null) ? "LOAD" : "GCed") + " id=" + id);
+        }
         return keyboard;
     }
 
-    // Note: The keyboard for each locale, shift state, and mode are represented as
-    // KeyboardLayoutSet element id that is a key in keyboard_set.xml.  Also that file specifies
-    // which XML layout should be used for each keyboard.  The KeyboardId is an internal key for
-    // Keyboard object.
-    private KeyboardId getKeyboardId(int keyboardLayoutSetElementId) {
-        final Params params = mParams;
-        final boolean isSymbols = (keyboardLayoutSetElementId == KeyboardId.ELEMENT_SYMBOLS
-                || keyboardLayoutSetElementId == KeyboardId.ELEMENT_SYMBOLS_SHIFTED);
-        final boolean noLanguage = SubtypeLocale.isNoLanguage(params.mSubtype);
-        final boolean voiceKeyEnabled = params.mVoiceKeyEnabled && !noLanguage;
-        final boolean hasShortcutKey = voiceKeyEnabled && (isSymbols != params.mVoiceKeyOnMain);
-        return new KeyboardId(keyboardLayoutSetElementId, params.mSubtype, params.mOrientation,
-                params.mWidth, params.mMode, params.mEditorInfo, params.mNoSettingsKey,
-                voiceKeyEnabled, hasShortcutKey, params.mLanguageSwitchKeyEnabled);
-    }
-
-    public static class Builder {
+    public static final class Builder {
         private final Context mContext;
         private final String mPackageName;
         private final Resources mResources;
-        private final EditorInfo mEditorInfo;
 
         private final Params mParams = new Params();
 
         private static final EditorInfo EMPTY_EDITOR_INFO = new EditorInfo();
 
-        public Builder(Context context, EditorInfo editorInfo) {
+        public Builder(final Context context, final EditorInfo editorInfo) {
             mContext = context;
             mPackageName = context.getPackageName();
             mResources = context.getResources();
-            mEditorInfo = editorInfo;
             final Params params = mParams;
 
             params.mMode = getKeyboardMode(editorInfo);
             params.mEditorInfo = (editorInfo != null) ? editorInfo : EMPTY_EDITOR_INFO;
             params.mNoSettingsKey = InputAttributes.inPrivateImeOptions(
-                    mPackageName, NO_SETTINGS_KEY, mEditorInfo);
+                    mPackageName, NO_SETTINGS_KEY, params.mEditorInfo);
         }
 
-        public Builder setScreenGeometry(int orientation, int widthPixels) {
-            mParams.mOrientation = orientation;
-            mParams.mWidth = widthPixels;
+        public Builder setKeyboardGeometry(final int keyboardWidth, final int keyboardHeight) {
+            mParams.mKeyboardWidth = keyboardWidth;
+            mParams.mKeyboardHeight = keyboardHeight;
             return this;
         }
 
-        public Builder setSubtype(InputMethodSubtype subtype) {
+        public Builder setSubtype(final InputMethodSubtype subtype) {
             final boolean asciiCapable = subtype.containsExtraValueKey(ASCII_CAPABLE);
             @SuppressWarnings("deprecation")
             final boolean deprecatedForceAscii = InputAttributes.inPrivateImeOptions(
-                    mPackageName, FORCE_ASCII, mEditorInfo);
+                    mPackageName, FORCE_ASCII, mParams.mEditorInfo);
             final boolean forceAscii = EditorInfoCompatUtils.hasFlagForceAscii(
                     mParams.mEditorInfo.imeOptions)
                     || deprecatedForceAscii;
@@ -257,17 +252,24 @@ public class KeyboardLayoutSet {
                     : subtype;
             mParams.mSubtype = keyboardSubtype;
             mParams.mKeyboardLayoutSetName = KEYBOARD_LAYOUT_SET_RESOURCE_PREFIX
-                    + SubtypeLocale.getKeyboardLayoutSetName(keyboardSubtype);
+                    + SubtypeLocaleUtils.getKeyboardLayoutSetName(keyboardSubtype);
             return this;
         }
 
-        public Builder setOptions(boolean voiceKeyEnabled, boolean voiceKeyOnMain,
-                boolean languageSwitchKeyEnabled) {
+        public Builder setIsSpellChecker(final boolean isSpellChecker) {
+            mParams.mIsSpellChecker = isSpellChecker;
+            return this;
+        }
+
+        // TODO: Remove mVoiceKeyOnMain when it's certainly confirmed that we no longer show
+        // the voice input key on the symbol layout
+        public Builder setOptions(final boolean voiceKeyEnabled, final boolean voiceKeyOnMain,
+                final boolean languageSwitchKeyEnabled) {
             @SuppressWarnings("deprecation")
             final boolean deprecatedNoMicrophone = InputAttributes.inPrivateImeOptions(
-                    null, NO_MICROPHONE_COMPAT, mEditorInfo);
+                    null, NO_MICROPHONE_COMPAT, mParams.mEditorInfo);
             final boolean noMicrophone = InputAttributes.inPrivateImeOptions(
-                    mPackageName, NO_MICROPHONE, mEditorInfo)
+                    mPackageName, NO_MICROPHONE, mParams.mEditorInfo)
                     || deprecatedNoMicrophone;
             mParams.mVoiceKeyEnabled = voiceKeyEnabled && !noMicrophone;
             mParams.mVoiceKeyOnMain = voiceKeyOnMain;
@@ -275,13 +277,11 @@ public class KeyboardLayoutSet {
             return this;
         }
 
-        public void setTouchPositionCorrectionEnabled(boolean enabled) {
-            mParams.mTouchPositionCorrectionEnabled = enabled;
+        public void disableTouchPositionCorrectionData() {
+            mParams.mDisableTouchPositionCorrectionDataForTest = true;
         }
 
         public KeyboardLayoutSet build() {
-            if (mParams.mOrientation == Configuration.ORIENTATION_UNDEFINED)
-                throw new RuntimeException("Screen geometry is not specified");
             if (mParams.mSubtype == null)
                 throw new RuntimeException("KeyboardLayoutSet subtype is not specified");
             final String packageName = mResources.getResourcePackageName(
@@ -290,24 +290,26 @@ public class KeyboardLayoutSet {
             final int xmlId = mResources.getIdentifier(keyboardLayoutSetName, "xml", packageName);
             try {
                 parseKeyboardLayoutSet(mResources, xmlId);
-            } catch (Exception e) {
-                throw new RuntimeException(e.getMessage() + " in " + keyboardLayoutSetName);
+            } catch (final IOException e) {
+                throw new RuntimeException(e.getMessage() + " in " + keyboardLayoutSetName, e);
+            } catch (final XmlPullParserException e) {
+                throw new RuntimeException(e.getMessage() + " in " + keyboardLayoutSetName, e);
             }
             return new KeyboardLayoutSet(mContext, mParams);
         }
 
-        private void parseKeyboardLayoutSet(Resources res, int resId)
+        private void parseKeyboardLayoutSet(final Resources res, final int resId)
                 throws XmlPullParserException, IOException {
             final XmlResourceParser parser = res.getXml(resId);
             try {
-                int event;
-                while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
+                while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
+                    final int event = parser.next();
                     if (event == XmlPullParser.START_TAG) {
                         final String tag = parser.getName();
                         if (TAG_KEYBOARD_SET.equals(tag)) {
                             parseKeyboardLayoutSetContent(parser);
                         } else {
-                            throw new XmlParseUtils.IllegalStartTag(parser, TAG_KEYBOARD_SET);
+                            throw new XmlParseUtils.IllegalStartTag(parser, tag, TAG_KEYBOARD_SET);
                         }
                     }
                 }
@@ -316,29 +318,29 @@ public class KeyboardLayoutSet {
             }
         }
 
-        private void parseKeyboardLayoutSetContent(XmlPullParser parser)
+        private void parseKeyboardLayoutSetContent(final XmlPullParser parser)
                 throws XmlPullParserException, IOException {
-            int event;
-            while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
+            while (parser.getEventType() != XmlPullParser.END_DOCUMENT) {
+                final int event = parser.next();
                 if (event == XmlPullParser.START_TAG) {
                     final String tag = parser.getName();
                     if (TAG_ELEMENT.equals(tag)) {
                         parseKeyboardLayoutSetElement(parser);
                     } else {
-                        throw new XmlParseUtils.IllegalStartTag(parser, TAG_KEYBOARD_SET);
+                        throw new XmlParseUtils.IllegalStartTag(parser, tag, TAG_KEYBOARD_SET);
                     }
                 } else if (event == XmlPullParser.END_TAG) {
                     final String tag = parser.getName();
                     if (TAG_KEYBOARD_SET.equals(tag)) {
                         break;
                     } else {
-                        throw new XmlParseUtils.IllegalEndTag(parser, TAG_KEYBOARD_SET);
+                        throw new XmlParseUtils.IllegalEndTag(parser, tag, TAG_KEYBOARD_SET);
                     }
                 }
             }
         }
 
-        private void parseKeyboardLayoutSetElement(XmlPullParser parser)
+        private void parseKeyboardLayoutSetElement(final XmlPullParser parser)
                 throws XmlPullParserException, IOException {
             final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.KeyboardLayoutSet_Element);
@@ -365,7 +367,7 @@ public class KeyboardLayoutSet {
             }
         }
 
-        private static int getKeyboardMode(EditorInfo editorInfo) {
+        private static int getKeyboardMode(final EditorInfo editorInfo) {
             if (editorInfo == null)
                 return KeyboardId.MODE_TEXT;
 
