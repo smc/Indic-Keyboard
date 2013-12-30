@@ -24,7 +24,7 @@
         2. (String)before
         3. (String)after
      -->
-    <string-array name="wordlist_whitelist" translatable="false">
+    <string-array name="wordlist_whitelist">
 
         <item>255</item>
         <item>ill</item>

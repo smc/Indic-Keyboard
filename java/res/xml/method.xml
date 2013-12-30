@@ -102,6 +102,7 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
     />
+<<<<<<< HEAD
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_en_GB"
             android:subtypeId="0xb045e755"
@@ -254,6 +255,9 @@
             android:imeSubtypeExtraValue="AsciiCapable,SupportTouchPositionCorrection,EmojiCapable"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
+=======
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+>>>>>>> master
             android:label="@string/subtype_generic"
             android:subtypeId="0x39753b7f"
             android:imeSubtypeLocale="hi"
@@ -262,6 +266,7 @@
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
+<<<<<<< HEAD
             android:subtypeId="0x35b7526a"
             android:imeSubtypeLocale="hr"
             android:imeSubtypeMode="keyboard"
@@ -533,9 +538,15 @@
             android:imeSubtypeLocale="uk"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=east_slavic,EmojiCapable"
+=======
+            android:imeSubtypeLocale="ml"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=malayalam"
+>>>>>>> master
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_generic"
+<<<<<<< HEAD
             android:subtypeId="0x93972eee"
             android:imeSubtypeLocale="vi"
             android:imeSubtypeMode="keyboard"
@@ -547,6 +558,11 @@
             android:imeSubtypeLocale="zu"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EmojiCapable"
+=======
+            android:imeSubtypeLocale="ta"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=tamil"
+>>>>>>> master
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/subtype_no_language_qwerty"
