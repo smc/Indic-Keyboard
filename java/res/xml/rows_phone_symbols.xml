@@ -37,6 +37,8 @@
             latin:keyStyle="numKeyStyle" />
         <Key
             latin:keyLabel="-"
+            latin:moreKeys="+"
+            latin:keyLabelFlags="hasPopupHint"
             latin:keyStyle="numFunctionalKeyStyle"
             latin:keyWidth="fillRight" />
     </Row>
@@ -63,7 +65,7 @@
         <Key
             latin:keyStyle="numWaitKeyStyle" />
         <Key
-            latin:keyLabel="#"
+            latin:keyLabel="\#"
             latin:keyStyle="numKeyStyle" />
         <Key
             latin:keyStyle="deleteKeyStyle"

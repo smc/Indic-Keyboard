@@ -35,7 +35,8 @@
         latin:keyWidth="10%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_symbols2" />
+            latin:keyboardLayout="@xml/rowkeys_symbols2"
+            latin:keyXPos="5%p" />
     </Row>
     <Row
         latin:keyWidth="10%p"
@@ -51,6 +52,16 @@
             latin:keyWidth="fillRight"
             latin:visualInsetsLeft="1%p" />
     </Row>
-    <include
-        latin:keyboardLayout="@xml/row_symbols4" />
+    <Row
+        latin:keyWidth="10%p"
+    >
+        <Key
+            latin:keyStyle="toAlphaKeyStyle"
+            latin:keyWidth="15%p" />
+        <include
+            latin:keyboardLayout="@xml/row_symbols4" />
+        <Key
+            latin:keyStyle="enterKeyStyle"
+            latin:keyWidth="fillRight" />
+    </Row>
 </merge>
