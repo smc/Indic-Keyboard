@@ -32,6 +32,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
 import in.androidtweak.inputmethod.annotations.UsedForTesting;
+import org.wikimedia.morelangs.InputMethod;
 import in.androidtweak.inputmethod.keyboard.KeyboardSwitcher;
 import in.androidtweak.inputmethod.indic.utils.SubtypeLocaleUtils;
 
@@ -45,6 +46,7 @@ public final class SubtypeSwitcher {
 
     private static final SubtypeSwitcher sInstance = new SubtypeSwitcher();
 
+    private /* final */ LatinIME mService;
     private /* final */ RichInputMethodManager mRichImm;
     private /* final */ Resources mResources;
     private /* final */ ConnectivityManager mConnectivityManager;
@@ -119,6 +121,7 @@ public final class SubtypeSwitcher {
 
         onSubtypeChanged(getCurrentSubtype());
         updateParametersOnStartInputView();
+        checkForTransliteration();
     }
 
     /**
@@ -181,6 +184,23 @@ public final class SubtypeSwitcher {
                 sameLocale || (sameLanguage && implicitlyEnabled));
 
         updateShortcutIME();
+
+        checkForTransliteration();
+    }
+
+    private void checkForTransliteration() {
+        if(getCurrentSubtype().containsExtraValueKey(Constants.Subtype.ExtraValue.TRANSLITERATION_METHOD)) {
+            InputMethod im;
+            try {
+                String transliterationName = getCurrentSubtype().getExtraValueOf(Constants.Subtype.ExtraValue.TRANSLITERATION_METHOD);
+                mService.enableTransliteration(transliterationName);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        } else {
+            mService.disableTransliteration();
+        }
     }
 
     ////////////////////////////

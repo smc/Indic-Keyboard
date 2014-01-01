@@ -59,6 +59,7 @@ import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
+import android.view.inputmethod.BaseInputConnection;
 
 import in.androidtweak.inputmethod.accessibility.AccessibilityUtils;
 import in.androidtweak.inputmethod.accessibility.AccessibleKeyboardViewProxy;
@@ -110,6 +111,11 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TreeSet;
+import java.io.IOException;
+
+import javax.xml.parsers.ParserConfigurationException;
+import org.wikimedia.morelangs.InputMethod;
+import org.xml.sax.SAXException;
 
 /**
  * Input method implementation for Qwerty'ish keyboard.
@@ -205,6 +211,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Personalization debugging params
     private boolean mUseOnlyPersonalizationDictionaryForDebug = false;
     private boolean mBoostPersonalizationDictionaryForDebug = false;
+
+    private boolean mTransliterationOn;
 
     // Member variables for remembering the current device orientation.
     private int mDisplayOrientation;
@@ -574,6 +582,22 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInputUpdater = new InputUpdater(this);
     }
 
+    void enableTransliteration(String transliterationMethod) {
+        InputMethod im;
+        try {
+            im = InputMethod.fromName(transliterationMethod);
+            mWordComposer.setTransliterationMethod(im);
+            mTransliterationOn = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    void disableTransliteration() {
+        mWordComposer.setTransliterationMethod(null);
+        mTransliterationOn = false;
+    }
     // Has to be package-visible for unit tests
     @UsedForTesting
     void loadSettings() {
@@ -1408,7 +1432,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // the right layout.
     public int getCurrentAutoCapsState() {
         final SettingsValues currentSettingsValues = mSettings.getCurrent();
-        if (!currentSettingsValues.mAutoCap) return Constants.TextUtils.CAP_MODE_OFF;
+        if (!currentSettingsValues.mAutoCap || mTransliterationOn) {
+            return Constants.TextUtils.CAP_MODE_OFF;
+        }
 
         final EditorInfo ei = getCurrentInputEditorInfo();
         if (ei == null) return Constants.TextUtils.CAP_MODE_OFF;
