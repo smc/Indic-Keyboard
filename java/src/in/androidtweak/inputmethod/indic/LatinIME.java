@@ -59,7 +59,6 @@ import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
-import android.view.inputmethod.BaseInputConnection;
 
 import in.androidtweak.inputmethod.accessibility.AccessibilityUtils;
 import in.androidtweak.inputmethod.accessibility.AccessibleKeyboardViewProxy;
@@ -528,6 +527,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         super();
         mSettings = Settings.getInstance();
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
+        checkForTransliteration();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mIsHardwareAcceleratedDrawingEnabled =
                 InputMethodServiceCompatUtils.enableHardwareAcceleration(this);
@@ -582,6 +582,21 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInputUpdater = new InputUpdater(this);
     }
 
+    private void checkForTransliteration() {
+        InputMethodSubtype currentSubtype = mSubtypeSwitcher.getCurrentSubtype();
+        if(currentSubtype.containsExtraValueKey(Constants.Subtype.ExtraValue.TRANSLITERATION_METHOD)) {
+            try {
+                String transliterationName = currentSubtype.getExtraValueOf(Constants.Subtype.ExtraValue.TRANSLITERATION_METHOD);
+                enableTransliteration(transliterationName);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        } else {
+            disableTransliteration();
+        }
+    }
+
     void enableTransliteration(String transliterationMethod) {
         InputMethod im;
         try {
@@ -598,6 +613,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mWordComposer.setTransliterationMethod(null);
         mTransliterationOn = false;
     }
+
     // Has to be package-visible for unit tests
     @UsedForTesting
     void loadSettings() {
@@ -823,6 +839,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
         // is not guaranteed. It may even be called at the same time on a different thread.
         mSubtypeSwitcher.onSubtypeChanged(subtype);
+        checkForTransliteration();
         loadKeyboard();
     }
 
