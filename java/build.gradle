@@ -8,16 +8,22 @@ buildscript {
 }
 apply plugin: 'android'
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
+    //compile files('libs/android-support-v4.jar')
+    compile fileTree(dir: 'libs', include: '*.jar')
 }
 
 android {
-    compileSdkVersion 16
-    buildToolsVersion "16"
+    compileSdkVersion 19
+    buildToolsVersion "19"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 16
+        targetSdkVersion 19
     }
     sourceSets {
         main {
