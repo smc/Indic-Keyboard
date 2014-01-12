@@ -20,8 +20,6 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.provider.Settings;
@@ -31,7 +29,6 @@ import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import in.androidtweak.inputmethod.compat.TextViewCompatUtils;
 import in.androidtweak.inputmethod.compat.ViewCompatUtils;
@@ -46,16 +43,11 @@ import java.util.ArrayList;
 public final class SetupWizardActivity extends Activity implements View.OnClickListener {
     static final String TAG = SetupWizardActivity.class.getSimpleName();
 
-    private static final boolean ENABLE_WELCOME_VIDEO = true;
-
     private InputMethodManager mImm;
 
     private View mSetupWizard;
     private View mWelcomeScreen;
     private View mSetupScreen;
-    private Uri mWelcomeVideoUri;
-    private VideoView mWelcomeVideoView;
-    private ImageView mWelcomeImageView;
     private View mActionStart;
     private View mActionNext;
     private TextView mStep1Bullet;
@@ -185,32 +177,6 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
             }
         });
         mSetupStepGroup.addStep(step3);
-
-        mWelcomeVideoUri = new Uri.Builder()
-                .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
-                .authority(getPackageName())
-                .path(Integer.toString(R.raw.setup_welcome_video))
-                .build();
-        final VideoView welcomeVideoView = (VideoView)findViewById(R.id.setup_welcome_video);
-        welcomeVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(final MediaPlayer mp) {
-                // Now VideoView has been laid-out and ready to play, remove background of it to
-                // reveal the video.
-                welcomeVideoView.setBackgroundResource(0);
-                mp.setLooping(true);
-            }
-        });
-        welcomeVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(final MediaPlayer mp, final int what, final int extra) {
-                Log.e(TAG, "Playing welcome video causes error: what=" + what + " extra=" + extra);
-                hideWelcomeVideoAndShowWelcomeImage();
-                return true;
-            }
-        });
-        mWelcomeVideoView = welcomeVideoView;
-        mWelcomeImageView = (ImageView)findViewById(R.id.setup_welcome_image);
 
         mActionStart = findViewById(R.id.setup_start_label);
         mActionStart.setOnClickListener(this);
@@ -365,26 +331,8 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         super.onBackPressed();
     }
 
-    void hideWelcomeVideoAndShowWelcomeImage() {
-        mWelcomeVideoView.setVisibility(View.GONE);
-        mWelcomeImageView.setImageResource(R.raw.setup_welcome_image);
-        mWelcomeImageView.setVisibility(View.VISIBLE);
-    }
-
-    private void showAndStartWelcomeVideo() {
-        mWelcomeVideoView.setVisibility(View.VISIBLE);
-        mWelcomeVideoView.setVideoURI(mWelcomeVideoUri);
-        mWelcomeVideoView.start();
-    }
-
-    private void hideAndStopWelcomeVideo() {
-        mWelcomeVideoView.stopPlayback();
-        mWelcomeVideoView.setVisibility(View.GONE);
-    }
-
     @Override
     protected void onPause() {
-        hideAndStopWelcomeVideo();
         super.onPause();
     }
 
@@ -404,14 +352,8 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         mWelcomeScreen.setVisibility(welcomeScreen ? View.VISIBLE : View.GONE);
         mSetupScreen.setVisibility(welcomeScreen ? View.GONE : View.VISIBLE);
         if (welcomeScreen) {
-            if (ENABLE_WELCOME_VIDEO) {
-                showAndStartWelcomeVideo();
-            } else {
-                hideWelcomeVideoAndShowWelcomeImage();
-            }
             return;
         }
-        hideAndStopWelcomeVideo();
         final boolean isStepActionAlreadyDone = mStepNumber < determineSetupStepNumber();
         mSetupStepGroup.enableStep(mStepNumber, isStepActionAlreadyDone);
         mActionNext.setVisibility(isStepActionAlreadyDone ? View.VISIBLE : View.GONE);
