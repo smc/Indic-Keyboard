@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <string name="keyboard_name_en">English</string>
+    <string name="keyboard_name_ml_lalitha">മലയാളം</string>
+    <string name="keyboard_name_hi">हिन्दी</string>
+    <string name="keyboard_name_ta">தமிழ் </string>
+    <string name="keyboard_name_ne">नेपाली</string>
+    <string name="keyboard_name_ne_traditional">नेपाली - Traditional</string>
+
     <string name="morelangs_application_name">MoreLangs Keyboard</string>
     <string name="keyboard_name_mr_transliteration">अहिराणी - अक्षरांतरण</string>
     <string name="keyboard_name_am_transliteration">አማርኛ - Transliteration</string>
