@@ -20,7 +20,5 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Predefined subtypes (language:layout[:extraValue]) -->
     <string-array name="predefined_subtypes" translatable="false">
-        <item>de:qwerty:AsciiCapable</item>
-        <item>fr:qwertz:AsciiCapable</item>
     </string-array>
 </resources>
