@@ -37,6 +37,9 @@ android {
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
         }
+        aaptOptions {
+            noCompress ".dict"
+        }
 
         instrumentTest.setRoot('tests')
     }
