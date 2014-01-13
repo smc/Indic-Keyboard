@@ -196,7 +196,8 @@ public final class WordComposer {
             String replacement = mTransliterationMethod.transliterate(input, context, false);
             int divIndex = firstDivergence(input, replacement);
             replacement = replacement.substring(divIndex);
-            mTypedWord.replace(startPos + divIndex, startPos + divIndex + replacement.length() + 1, replacement);
+            mTypedWord.replace(startPos + divIndex, startPos + divIndex + replacement.length() + 2, replacement);
+
             context += c;
             if(context.length() > mTransliterationMethod.getContextLength()) {
                 context = context.substring(context.length() - mTransliterationMethod.getContextLength());
