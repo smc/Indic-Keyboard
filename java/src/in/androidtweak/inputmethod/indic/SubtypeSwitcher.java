@@ -270,6 +270,9 @@ public final class SubtypeSwitcher {
     }
 
     public InputMethodSubtype getCurrentSubtype() {
+        if(mRichImm == null) {
+            mRichImm = RichInputMethodManager.getInstance();
+        }
         return mRichImm.getCurrentInputMethodSubtype(getNoLanguageSubtype());
     }
 

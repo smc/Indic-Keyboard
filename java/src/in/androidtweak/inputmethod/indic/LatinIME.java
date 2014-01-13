@@ -527,7 +527,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         super();
         mSettings = Settings.getInstance();
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
-        checkForTransliteration();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mIsHardwareAcceleratedDrawingEnabled =
                 InputMethodServiceCompatUtils.enableHardwareAcceleration(this);
@@ -540,6 +539,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         LatinImeLogger.init(this);
         RichInputMethodManager.init(this);
         mRichImm = RichInputMethodManager.getInstance();
+        checkForTransliteration();
         SubtypeSwitcher.init(this);
         KeyboardSwitcher.init(this);
         AudioAndHapticFeedbackManager.init(this);

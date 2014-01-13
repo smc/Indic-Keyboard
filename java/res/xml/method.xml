@@ -134,6 +134,13 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=nepali_traditional,EmojiCapable"
     />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/subtype_no_language_qwerty"
+            android:subtypeId="0xa239ebad"
+            android:imeSubtypeLocale="zz"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,AsciiCapable,EnabledWhenDefaultIsNotAsciiCapable,EmojiCapable"
+    />
 
     <subtype android:icon="@drawable/ic_ime_switcher_dark" android:label="@string/keyboard_name_ml_transliteration" android:imeSubtypeLocale="ml" android:imeSubtypeMode="keyboard" android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=ml-transliteration"/>
 
