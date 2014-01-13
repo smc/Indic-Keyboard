@@ -23,3 +23,5 @@ local.properties
 native/obj
 native/libs
 
+build/
+gradle/

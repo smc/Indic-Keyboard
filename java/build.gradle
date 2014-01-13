@@ -1,3 +1,5 @@
+project.ext.set("archivesBaseName", "IndicKeyboard");
+
 buildscript {
     repositories {
         mavenCentral()
@@ -42,5 +44,18 @@ android {
         }
 
         instrumentTest.setRoot('tests')
+    }
+    signingConfigs {
+        release {
+            storeFile file(System.console().readLine("\n\$ Enter keystore path: "))
+            storePassword System.console().readLine("\n\$ Enter keystore password: ")
+            keyAlias System.console().readLine("\n\$ Enter key alias: ")
+            keyPassword System.console().readLine("\n\$ Enter key password: ")
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
     }
 }
