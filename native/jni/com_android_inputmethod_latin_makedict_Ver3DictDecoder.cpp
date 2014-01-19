@@ -41,7 +41,7 @@ static const JNINativeMethod sMethods[] = {
 
 int register_Ver3DictDecoder(JNIEnv *env) {
     const char *const kClassPathName =
-            "in/androidtweak/inputmethod/indic/makedict/Ver3DictDecoder";
+            "com/android/inputmethod/latin/makedict/Ver3DictDecoder";
     return registerNativeMethods(env, kClassPathName, sMethods, NELEMS(sMethods));
 }
 } // namespace latinime

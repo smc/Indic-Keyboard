@@ -57,7 +57,7 @@ static const JNINativeMethod sMethods[] = {
 };
 
 int register_ProximityInfo(JNIEnv *env) {
-    const char *const kClassPathName = "in/androidtweak/inputmethod/keyboard/ProximityInfo";
+    const char *const kClassPathName = "com/android/inputmethod/keyboard/ProximityInfo";
     return registerNativeMethods(env, kClassPathName, sMethods, NELEMS(sMethods));
 }
 } // namespace latinime
