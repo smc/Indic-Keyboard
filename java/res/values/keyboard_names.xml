@@ -1,40 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <string name="keyboard_name_as_transliteration">অসমীয়া - প্ৰতিৰূপান্তৰণ</string>
+    <string name="keyboard_name_bn_avro">বাংলা - Avro</string>
     <string name="keyboard_name_en">English</string>
-    <string name="keyboard_name_ml_lalitha">മലയാളം</string>
     <string name="keyboard_name_hi">हिन्दी</string>
-    <string name="keyboard_name_ta">தமிழ் </string>
+    <string name="keyboard_name_hi_transliteration">कोंकणी - लिप्यंतरण</string>
+    <string name="keyboard_name_kn_transliteration">ಕನ್ನಡ - Transliteration</string>
+    <string name="keyboard_name_ml_lalitha">മലയാളം</string>
+    <string name="keyboard_name_ml_transliteration">മലയാളം - ലിപ്യന്തരണം</string>
+    <string name="keyboard_name_mr_transliteration">अहिराणी - अक्षरांतरण</string>
     <string name="keyboard_name_ne">नेपाली</string>
     <string name="keyboard_name_ne_traditional">नेपाली - Traditional</string>
-
-    <string name="morelangs_application_name">MoreLangs Keyboard</string>
-    <string name="keyboard_name_mr_transliteration">अहिराणी - अक्षरांतरण</string>
-    <string name="keyboard_name_am_transliteration">አማርኛ - Transliteration</string>
-    <string name="keyboard_name_as_transliteration">অসমীয়া - প্ৰতিৰূপান্তৰণ</string>
-    <string name="keyboard_name_as_avro">অসমীয়া - অভ্ৰ</string>
-    <string name="keyboard_name_as_bornona">অসমীয়া - বৰ্ণনা</string>
-    <string name="keyboard_name_as_phonetic">অসমীয়া - phonetic</string>
-    <string name="keyboard_name_bn_avro">বাংলা - Avro</string>
-    <string name="keyboard_name_bn_probhat">বাংলা - Probhat</string>
-    <string name="keyboard_name_eo_transliteration">Esperanto - Transliteration</string>
-    <string name="keyboard_name_fi_transliteration">Suomi - translitterointi</string>
-    <string name="keyboard_name_hi_transliteration">कोंकणी - लिप्यंतरण</string>
-    <string name="keyboard_name_hi_bolnagri">हिन्दी - बोलनागरी</string>
-    <string name="keyboard_name_hi_phonetic">हिन्दी - phonetic</string>
-    <string name="keyboard_name_jv_transliteration">ꦧꦱꦗꦮ - Transliteration</string>
-    <string name="keyboard_name_kn_transliteration">ಕನ್ನಡ - Transliteration</string>
-    <string name="keyboard_name_kn_kgp">ಕನ್ನಡ - KGP/Nudi/KP Rao</string>
-    <string name="keyboard_name_ml_transliteration">മലയാളം - ലിപ്യന്തരണം</string>
-    <string name="keyboard_name_mr_phonetic">मराठी - phonetic</string>
     <string name="keyboard_name_ne_transliteration">नेपाली - Transliteration</string>
     <string name="keyboard_name_or_transliteration">ଓଡ଼ିଆ - Transliteration</string>
-    <string name="keyboard_name_or_lekhani">ଓଡ଼ିଆ - ଲେଖନୀ</string>
-    <string name="keyboard_name_or_phonetic">ଓଡ଼ିଆ - Phonetic</string>
     <string name="keyboard_name_pa_transliteration">ਪੰਜਾਬੀ - Transliteration</string>
-    <string name="keyboard_name_pa_phonetic">ਪੰਜਾਬੀ - Phonetic</string>
     <string name="keyboard_name_sa_transliteration">संस्कृत - Transliteration</string>
     <string name="keyboard_name_si_singlish">සිංහල - Singlish</string>
+    <string name="keyboard_name_ta">தமிழ் </string>
     <string name="keyboard_name_ta_transliteration">தமிழ் - எழுத்துப்பெயர்ப்பு</string>
     <string name="keyboard_name_te_transliteration">తెలుగు - లిప్యంతరీకరణ</string>
     <string name="keyboard_name_ur_transliteration">اردو - Transliteration</string>
