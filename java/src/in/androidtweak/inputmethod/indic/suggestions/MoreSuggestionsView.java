@@ -20,8 +20,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 
-import in.androidtweak.inputmethod.keyboard.Keyboard;
-import in.androidtweak.inputmethod.keyboard.MoreKeysKeyboardView;
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.MoreKeysKeyboardView;
 import in.androidtweak.inputmethod.indic.R;
 import in.androidtweak.inputmethod.indic.SuggestedWords;
 import in.androidtweak.inputmethod.indic.suggestions.MoreSuggestions.MoreSuggestionsListener;

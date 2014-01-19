@@ -28,11 +28,11 @@ import android.view.View;
 import android.view.ViewParent;
 import android.view.accessibility.AccessibilityEvent;
 
-import in.androidtweak.inputmethod.keyboard.Key;
-import in.androidtweak.inputmethod.keyboard.Keyboard;
-import in.androidtweak.inputmethod.keyboard.KeyboardId;
-import in.androidtweak.inputmethod.keyboard.MainKeyboardView;
-import in.androidtweak.inputmethod.keyboard.PointerTracker;
+import com.android.inputmethod.keyboard.Key;
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.keyboard.MainKeyboardView;
+import com.android.inputmethod.keyboard.PointerTracker;
 import in.androidtweak.inputmethod.indic.R;
 
 public final class AccessibleKeyboardViewProxy extends AccessibilityDelegateCompat {

@@ -26,8 +26,8 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 import android.view.textservice.SuggestionsInfo;
 
-import in.androidtweak.inputmethod.keyboard.KeyboardLayoutSet;
-import in.androidtweak.inputmethod.indic.BinaryDictionary;
+import com.android.inputmethod.keyboard.KeyboardLayoutSet;
+import com.android.inputmethod.latin.BinaryDictionary;
 import in.androidtweak.inputmethod.indic.ContactsBinaryDictionary;
 import in.androidtweak.inputmethod.indic.Dictionary;
 import in.androidtweak.inputmethod.indic.DictionaryCollection;

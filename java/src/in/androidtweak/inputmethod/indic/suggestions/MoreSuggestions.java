@@ -21,12 +21,12 @@ import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 
-import in.androidtweak.inputmethod.keyboard.Key;
-import in.androidtweak.inputmethod.keyboard.Keyboard;
-import in.androidtweak.inputmethod.keyboard.KeyboardActionListener;
-import in.androidtweak.inputmethod.keyboard.internal.KeyboardBuilder;
-import in.androidtweak.inputmethod.keyboard.internal.KeyboardIconsSet;
-import in.androidtweak.inputmethod.keyboard.internal.KeyboardParams;
+import com.android.inputmethod.keyboard.Key;
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardActionListener;
+import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
+import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
+import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import in.androidtweak.inputmethod.indic.R;
 import in.androidtweak.inputmethod.indic.SuggestedWords;
 import in.androidtweak.inputmethod.indic.SuggestedWords.SuggestedWordInfo;

@@ -16,8 +16,9 @@
 
 package in.androidtweak.inputmethod.indic;
 
-import in.androidtweak.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.keyboard.ProximityInfo;
 import in.androidtweak.inputmethod.indic.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.BinaryDictionary;
 
 import java.util.ArrayList;
 import java.util.Locale;

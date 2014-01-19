@@ -21,13 +21,14 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import in.androidtweak.inputmethod.annotations.UsedForTesting;
-import in.androidtweak.inputmethod.keyboard.ProximityInfo;
-import in.androidtweak.inputmethod.indic.makedict.FormatSpec;
+import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.makedict.FormatSpec;
 import in.androidtweak.inputmethod.indic.personalization.DynamicPersonalizationDictionaryWriter;
 import in.androidtweak.inputmethod.indic.SuggestedWords.SuggestedWordInfo;
 import in.androidtweak.inputmethod.indic.utils.AsyncResultHolder;
 import in.androidtweak.inputmethod.indic.utils.CollectionUtils;
 import in.androidtweak.inputmethod.indic.utils.PrioritizedSerialExecutor;
+import com.android.inputmethod.latin.BinaryDictionary;
 
 import java.io.File;
 import java.util.ArrayList;

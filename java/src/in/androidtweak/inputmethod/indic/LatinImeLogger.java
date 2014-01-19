@@ -19,7 +19,7 @@ package in.androidtweak.inputmethod.indic;
 import android.content.SharedPreferences;
 import android.view.inputmethod.EditorInfo;
 
-import in.androidtweak.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.Keyboard;
 
 public final class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
 

@@ -25,8 +25,8 @@ import android.view.MotionEvent;
 import android.view.MotionEvent.PointerCoords;
 import android.view.MotionEvent.PointerProperties;
 
-import in.androidtweak.inputmethod.keyboard.KeyboardSwitcher;
-import in.androidtweak.inputmethod.keyboard.MainKeyboardView;
+import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.keyboard.MainKeyboardView;
 import in.androidtweak.inputmethod.indic.define.ProductionFlag;
 import in.androidtweak.inputmethod.research.MotionEventReader.ReplayData;
 

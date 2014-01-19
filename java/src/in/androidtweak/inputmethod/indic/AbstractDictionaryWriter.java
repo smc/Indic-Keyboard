@@ -19,9 +19,9 @@ package in.androidtweak.inputmethod.indic;
 import android.content.Context;
 import android.util.Log;
 
-import in.androidtweak.inputmethod.indic.makedict.DictEncoder;
-import in.androidtweak.inputmethod.indic.makedict.UnsupportedFormatException;
-import in.androidtweak.inputmethod.indic.makedict.Ver3DictEncoder;
+import com.android.inputmethod.latin.makedict.DictEncoder;
+import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
+import com.android.inputmethod.latin.makedict.Ver3DictEncoder;
 
 import java.io.File;
 import java.io.IOException;

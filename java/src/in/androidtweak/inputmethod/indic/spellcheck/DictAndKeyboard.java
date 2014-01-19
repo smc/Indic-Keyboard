@@ -17,10 +17,10 @@
 package in.androidtweak.inputmethod.indic.spellcheck;
 
 import in.androidtweak.inputmethod.indic.Dictionary;
-import in.androidtweak.inputmethod.keyboard.Keyboard;
-import in.androidtweak.inputmethod.keyboard.KeyboardId;
-import in.androidtweak.inputmethod.keyboard.KeyboardLayoutSet;
-import in.androidtweak.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.keyboard.KeyboardLayoutSet;
+import com.android.inputmethod.keyboard.ProximityInfo;
 
 /**
  * A container for a Dictionary and a Keyboard.

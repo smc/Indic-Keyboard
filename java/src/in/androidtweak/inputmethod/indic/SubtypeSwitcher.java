@@ -32,8 +32,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
 import in.androidtweak.inputmethod.annotations.UsedForTesting;
-import org.wikimedia.morelangs.InputMethod;
-import in.androidtweak.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import in.androidtweak.inputmethod.indic.utils.SubtypeLocaleUtils;
 
 import java.util.List;

@@ -21,10 +21,10 @@ import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.util.Log;
 
-import in.androidtweak.inputmethod.indic.makedict.DictDecoder;
-import in.androidtweak.inputmethod.indic.makedict.FormatSpec;
-import in.androidtweak.inputmethod.indic.makedict.FormatSpec.FileHeader;
-import in.androidtweak.inputmethod.indic.makedict.UnsupportedFormatException;
+import com.android.inputmethod.latin.makedict.DictDecoder;
+import com.android.inputmethod.latin.makedict.FormatSpec;
+import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
+import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import in.androidtweak.inputmethod.indic.utils.CollectionUtils;
 import in.androidtweak.inputmethod.indic.utils.DictionaryInfoUtils;
 import in.androidtweak.inputmethod.indic.utils.LocaleUtils;

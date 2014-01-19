@@ -68,12 +68,12 @@ import in.androidtweak.inputmethod.compat.InputMethodServiceCompatUtils;
 import in.androidtweak.inputmethod.compat.SuggestionSpanUtils;
 import in.androidtweak.inputmethod.dictionarypack.DictionaryPackConstants;
 import in.androidtweak.inputmethod.event.EventInterpreter;
-import in.androidtweak.inputmethod.keyboard.KeyDetector;
-import in.androidtweak.inputmethod.keyboard.Keyboard;
-import in.androidtweak.inputmethod.keyboard.KeyboardActionListener;
-import in.androidtweak.inputmethod.keyboard.KeyboardId;
-import in.androidtweak.inputmethod.keyboard.KeyboardSwitcher;
-import in.androidtweak.inputmethod.keyboard.MainKeyboardView;
+import com.android.inputmethod.keyboard.KeyDetector;
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardActionListener;
+import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.keyboard.MainKeyboardView;
 import in.androidtweak.inputmethod.indic.Suggest.OnGetSuggestedWordsCallback;
 import in.androidtweak.inputmethod.indic.SuggestedWords.SuggestedWordInfo;
 import in.androidtweak.inputmethod.indic.define.ProductionFlag;
@@ -110,11 +110,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TreeSet;
-import java.io.IOException;
 
-import javax.xml.parsers.ParserConfigurationException;
 import org.wikimedia.morelangs.InputMethod;
-import org.xml.sax.SAXException;
 
 /**
  * Input method implementation for Qwerty'ish keyboard.

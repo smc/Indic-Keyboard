@@ -24,7 +24,7 @@ import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 
-import in.androidtweak.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import in.androidtweak.inputmethod.indic.LatinImeLogger;
 import in.androidtweak.inputmethod.indic.R;
 import in.androidtweak.inputmethod.indic.debug.ExternalDictionaryGetterForDebug;

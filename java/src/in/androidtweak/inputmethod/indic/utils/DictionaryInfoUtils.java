@@ -25,8 +25,8 @@ import android.util.Log;
 import in.androidtweak.inputmethod.indic.AssetFileAddress;
 import in.androidtweak.inputmethod.indic.BinaryDictionaryGetter;
 import in.androidtweak.inputmethod.indic.R;
-import in.androidtweak.inputmethod.indic.makedict.BinaryDictIOUtils;
-import in.androidtweak.inputmethod.indic.makedict.FormatSpec.FileHeader;
+import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
+import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 
 import java.io.File;
 import java.util.ArrayList;

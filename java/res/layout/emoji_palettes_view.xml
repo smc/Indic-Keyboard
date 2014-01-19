@@ -18,7 +18,7 @@
 */
 -->
 
-<in.androidtweak.inputmethod.keyboard.EmojiPalettesView
+<com.android.inputmethod.keyboard.EmojiPalettesView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/emoji_keyboard_view"
     android:orientation="vertical"
@@ -77,7 +77,7 @@
         android:id="@+id/emoji_keyboard_pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    <in.androidtweak.inputmethod.keyboard.EmojiCategoryPageIndicatorView
+    <com.android.inputmethod.keyboard.EmojiCategoryPageIndicatorView
         android:id="@+id/emoji_category_page_id_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -107,4 +107,4 @@
             android:layout_height="match_parent"
             android:src="@drawable/ic_ime_switcher_dark" />
     </LinearLayout>
-</in.androidtweak.inputmethod.keyboard.EmojiPalettesView>
+</com.android.inputmethod.keyboard.EmojiPalettesView>

@@ -18,14 +18,14 @@ package in.androidtweak.inputmethod.indic;
 
 import android.content.Context;
 
-import in.androidtweak.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.keyboard.ProximityInfo;
 import in.androidtweak.inputmethod.indic.SuggestedWords.SuggestedWordInfo;
-import in.androidtweak.inputmethod.indic.makedict.DictEncoder;
-import in.androidtweak.inputmethod.indic.makedict.FormatSpec;
-import in.androidtweak.inputmethod.indic.makedict.FusionDictionary;
-import in.androidtweak.inputmethod.indic.makedict.FusionDictionary.PtNodeArray;
-import in.androidtweak.inputmethod.indic.makedict.FusionDictionary.WeightedString;
-import in.androidtweak.inputmethod.indic.makedict.UnsupportedFormatException;
+import com.android.inputmethod.latin.makedict.DictEncoder;
+import com.android.inputmethod.latin.makedict.FormatSpec;
+import com.android.inputmethod.latin.makedict.FusionDictionary;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
+import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
+import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import in.androidtweak.inputmethod.indic.utils.CollectionUtils;
 
 import java.io.IOException;

@@ -29,10 +29,10 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import in.androidtweak.inputmethod.keyboard.Keyboard;
-import in.androidtweak.inputmethod.keyboard.KeyboardSwitcher;
-import in.androidtweak.inputmethod.keyboard.MainKeyboardView;
-import in.androidtweak.inputmethod.keyboard.MoreKeysPanel;
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.keyboard.MainKeyboardView;
+import com.android.inputmethod.keyboard.MoreKeysPanel;
 import in.androidtweak.inputmethod.indic.AudioAndHapticFeedbackManager;
 import in.androidtweak.inputmethod.indic.Constants;
 import in.androidtweak.inputmethod.indic.LatinImeLogger;

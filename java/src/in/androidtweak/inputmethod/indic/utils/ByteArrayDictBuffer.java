@@ -16,7 +16,7 @@
 
 package in.androidtweak.inputmethod.indic.utils;
 
-import in.androidtweak.inputmethod.indic.makedict.BinaryDictDecoderUtils.DictBuffer;
+import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 
 /**
  * This class provides an implementation for the FusionDictionary buffer interface that is backed

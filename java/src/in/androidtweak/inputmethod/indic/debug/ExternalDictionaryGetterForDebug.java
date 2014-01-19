@@ -26,7 +26,7 @@ import android.os.Environment;
 import in.androidtweak.inputmethod.indic.BinaryDictionaryFileDumper;
 import in.androidtweak.inputmethod.indic.BinaryDictionaryGetter;
 import in.androidtweak.inputmethod.indic.R;
-import in.androidtweak.inputmethod.indic.makedict.FormatSpec.FileHeader;
+import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import in.androidtweak.inputmethod.indic.utils.CollectionUtils;
 import in.androidtweak.inputmethod.indic.utils.DictionaryInfoUtils;
 import in.androidtweak.inputmethod.indic.utils.LocaleUtils;

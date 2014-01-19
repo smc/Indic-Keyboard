@@ -21,7 +21,7 @@ import android.util.JsonWriter;
 import android.view.MotionEvent;
 import android.view.inputmethod.CompletionInfo;
 
-import in.androidtweak.inputmethod.keyboard.Key;
+import com.android.inputmethod.keyboard.Key;
 import in.androidtweak.inputmethod.indic.SuggestedWords;
 import in.androidtweak.inputmethod.indic.SuggestedWords.SuggestedWordInfo;
 

@@ -159,7 +159,7 @@ public final class Constants {
 
     /**
      * Custom request code used in
-     * {@link in.androidtweak.inputmethod.keyboard.KeyboardActionListener#onCustomRequest(int)}.
+     * {@link com.android.inputmethod.keyboard.KeyboardActionListener#onCustomRequest(int)}.
      */
     // The code to show input method picker.
     public static final int CUSTOM_CODE_SHOW_INPUT_METHOD_PICKER = 1;

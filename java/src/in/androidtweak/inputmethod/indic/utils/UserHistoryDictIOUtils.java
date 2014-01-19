@@ -19,14 +19,14 @@ package in.androidtweak.inputmethod.indic.utils;
 import android.util.Log;
 
 import in.androidtweak.inputmethod.annotations.UsedForTesting;
-import in.androidtweak.inputmethod.indic.makedict.BinaryDictIOUtils;
-import in.androidtweak.inputmethod.indic.makedict.DictDecoder;
-import in.androidtweak.inputmethod.indic.makedict.DictEncoder;
-import in.androidtweak.inputmethod.indic.makedict.FormatSpec.FormatOptions;
-import in.androidtweak.inputmethod.indic.makedict.FusionDictionary;
-import in.androidtweak.inputmethod.indic.makedict.FusionDictionary.PtNodeArray;
-import in.androidtweak.inputmethod.indic.makedict.PendingAttribute;
-import in.androidtweak.inputmethod.indic.makedict.UnsupportedFormatException;
+import com.android.inputmethod.latin.makedict.BinaryDictIOUtils;
+import com.android.inputmethod.latin.makedict.DictDecoder;
+import com.android.inputmethod.latin.makedict.DictEncoder;
+import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
+import com.android.inputmethod.latin.makedict.FusionDictionary;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
+import com.android.inputmethod.latin.makedict.PendingAttribute;
+import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import in.androidtweak.inputmethod.indic.personalization.UserHistoryDictionaryBigramList;
 
 import java.io.IOException;

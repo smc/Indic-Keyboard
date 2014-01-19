@@ -18,7 +18,7 @@ package in.androidtweak.inputmethod.indic.spellcheck;
 
 import android.util.Log;
 
-import in.androidtweak.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.keyboard.ProximityInfo;
 import in.androidtweak.inputmethod.indic.Dictionary;
 import in.androidtweak.inputmethod.indic.SuggestedWords.SuggestedWordInfo;
 import in.androidtweak.inputmethod.indic.WordComposer;

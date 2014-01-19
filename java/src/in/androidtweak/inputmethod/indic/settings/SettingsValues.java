@@ -23,7 +23,7 @@ import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 
 import in.androidtweak.inputmethod.annotations.UsedForTesting;
-import in.androidtweak.inputmethod.keyboard.internal.KeySpecParser;
+import com.android.inputmethod.keyboard.internal.KeySpecParser;
 import in.androidtweak.inputmethod.indic.Constants;
 import in.androidtweak.inputmethod.indic.Dictionary;
 import in.androidtweak.inputmethod.indic.InputAttributes;

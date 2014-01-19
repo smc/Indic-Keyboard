@@ -16,8 +16,8 @@
 
 package in.androidtweak.inputmethod.indic;
 
-import in.androidtweak.inputmethod.keyboard.Key;
-import in.androidtweak.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.Key;
+import com.android.inputmethod.keyboard.Keyboard;
 import in.androidtweak.inputmethod.indic.utils.StringUtils;
 
 import java.util.Arrays;

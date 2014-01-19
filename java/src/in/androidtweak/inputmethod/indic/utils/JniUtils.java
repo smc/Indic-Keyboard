@@ -25,9 +25,13 @@ public final class JniUtils {
 
     static {
         try {
-            System.loadLibrary(JniLibName.JNI_LIB_NAME);
-        } catch (UnsatisfiedLinkError ule) {
-            Log.e(TAG, "Could not load native library " + JniLibName.JNI_LIB_NAME, ule);
+            System.loadLibrary(JniLibName.JNI_LIB_NAME2);
+        } catch (UnsatisfiedLinkError ue) {
+            try {
+                System.loadLibrary(JniLibName.JNI_LIB_NAME);
+            } catch (UnsatisfiedLinkError ule) {
+                Log.e(TAG, "Could not load native library " + JniLibName.JNI_LIB_NAME, ule);
+            }
         }
     }
 

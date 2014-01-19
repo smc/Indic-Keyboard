@@ -16,7 +16,7 @@
 
 package in.androidtweak.inputmethod.indic.utils;
 
-import in.androidtweak.inputmethod.indic.BinaryDictionary;
+import com.android.inputmethod.latin.BinaryDictionary;
 import in.androidtweak.inputmethod.indic.Dictionary;
 import in.androidtweak.inputmethod.indic.LatinImeLogger;
 import in.androidtweak.inputmethod.indic.Suggest;
