@@ -270,12 +270,13 @@ public final class KeyboardTextsSet {
         /* 47 */ "!text/double_lqm_rqm",
         /* 48 */ "!text/single_laqm_raqm",
         /* 49 */ "!text/double_laqm_raqm",
+        // $ - I'm making ₹ as default
         // U+00A2: "¢" CENT SIGN
         // U+00A3: "£" POUND SIGN
         // U+20AC: "€" EURO SIGN
         // U+00A5: "¥" YEN SIGN
         // U+20B1: "₱" PESO SIGN
-        /* 50 */ "\u00A2,\u00A3,\u20AC,\u00A5,\u20B1",
+        /* 50 */ "$,\u00A2,\u00A3,\u20AC,\u00A5,\u20B1",
         /* 51 */ "$",
         /* 52 */ "$,\u00A2,\u20AC,\u00A3,\u00A5,\u20B1",
         /* 53 */ "!fixedColumnOrder!4,#,!,\\,,?,-,:,',@",
