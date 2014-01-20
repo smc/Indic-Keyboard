@@ -547,6 +547,37 @@ public final class KeyboardTextsSet {
         /* 84 */ "0",
     };
 
+    /* Language ml: Malayalam */
+    private static final String[] LANGUAGE_ml = {
+        /* 0~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* ~74 */
+        // U+0966: "൧" MALAYALAM DIGIT ONE
+        /* 75 */ "\u0D67",
+        // U+0966: "൨" MALAYALAM DIGIT TWO
+        /* 76 */ "\u0D68",
+        // U+0966: "൩" MALAYALAM DIGIT THREE
+        /* 77 */ "\u0D69",
+        // U+0966: "൪" MALAYALAM DIGIT FOUR
+        /* 78 */ "\u0D6A",
+        // U+0966: "൫" MALAYALAM DIGIT FIVE
+        /* 79 */ "\u0D6B",
+        // U+0966: "൬" MALAYALAM DIGIT SIX
+        /* 80 */ "\u0D6C",
+        // U+0966: "൭" MALAYALAM DIGIT SEVEN
+        /* 81 */ "\u0D6D",
+        // U+0966: "൮" MALAYALAM DIGIT EIGHT
+        /* 82 */ "\u0D6E",
+        // U+0966: "൯" MALAYALAM DIGIT NINE
+        /* 83 */ "\u0D6F",
+        // U+0966: "൦" MALAYALAM DIGIT ZERO
+        /* 84 */ "\u0D66",
+    };
+
     /* Language ne: Nepali */
     private static final String[] LANGUAGE_ne = {
         /* 0~ */
@@ -592,6 +623,49 @@ public final class KeyboardTextsSet {
         // Label for "switch to symbols with microphone" key. This string shouldn't include the "mic"
         // part because it'll be appended by the code.
         /* 74 */ "\u0967\u0968\u0969",
+        /* 75 */ "1",
+        /* 76 */ "2",
+        /* 77 */ "3",
+        /* 78 */ "4",
+        /* 79 */ "5",
+        /* 80 */ "6",
+        /* 81 */ "7",
+        /* 82 */ "8",
+        /* 83 */ "9",
+        /* 84 */ "0",
+    };
+
+    /* Language ta: Tamil */
+    private static final String[] LANGUAGE_ta = {
+        /* 0~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null,
+        /* ~62 */
+        // U+0BE7: "௧" TAMIL DIGIT ONE
+        /* 63 */ "\u0BE7",
+        // U+0BE8: "௨" TAMIL DIGIT TWO
+        /* 64 */ "\u0BE8",
+        // U+0BE9: "௩" TAMIL DIGIT THREE
+        /* 65 */ "\u0BE9",
+        // U+0BEA: "௪" TAMIL DIGIT FOUR
+        /* 66 */ "\u0BEA",
+        // U+0BEB: "௫" TAMIL DIGIT FIVE
+        /* 67 */ "\u0BEB",
+        // U+0BEC: "௬" TAMIL DIGIT SIX
+        /* 68 */ "\u0BEC",
+        // U+0BED: "௭" TAMIL DIGIT SEVEN
+        /* 69 */ "\u0BED",
+        // U+0BEE: "௮" TAMIL DIGIT EIGHT
+        /* 70 */ "\u0BEE",
+        // U+0BEF: "௯" TAMIL DIGIT NINE
+        /* 71 */ "\u0BEF",
+        // U+0BE6: "௦" TAMIL DIGIT ZERO
+        /* 72 */ "\u0BE6",
+        /* 73 */ null,
+        /* 74 */ null,
         /* 75 */ "1",
         /* 76 */ "2",
         /* 77 */ "3",
@@ -731,7 +805,9 @@ public final class KeyboardTextsSet {
         "DEFAULT", LANGUAGE_DEFAULT, /* default */
         "en", LANGUAGE_en, /* English */
         "hi", LANGUAGE_hi, /* Hindi */
+        "ml", LANGUAGE_ml, /* Malayalam */
         "ne", LANGUAGE_ne, /* Nepali */
+        "ta", LANGUAGE_ta, /* Tamil */
         "zz", LANGUAGE_zz, /* Alphabet */
     };
 
