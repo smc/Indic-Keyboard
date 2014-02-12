@@ -579,12 +579,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInputUpdater = new InputUpdater(this);
     }
 
-    private void checkForTransliteration() {
+    private boolean checkForTransliteration() {
         InputMethodSubtype currentSubtype = mSubtypeSwitcher.getCurrentSubtype();
         if(currentSubtype.containsExtraValueKey(Constants.Subtype.ExtraValue.TRANSLITERATION_METHOD)) {
             try {
                 String transliterationName = currentSubtype.getExtraValueOf(Constants.Subtype.ExtraValue.TRANSLITERATION_METHOD);
                 enableTransliteration(transliterationName);
+                return true;
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
@@ -592,6 +593,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             disableTransliteration();
         }
+        return false;
     }
 
     void enableTransliteration(String transliterationMethod) {
@@ -1217,7 +1219,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     @Override
     public void onExtractedTextClicked() {
-        if (mSettings.getCurrent().isSuggestionsRequested(mDisplayOrientation)) return;
+        if (mSettings.getCurrent().isSuggestionsRequested(mDisplayOrientation, checkForTransliteration())) return;
 
         super.onExtractedTextClicked();
     }
@@ -1233,7 +1235,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     @Override
     public void onExtractedCursorMovement(final int dx, final int dy) {
-        if (mSettings.getCurrent().isSuggestionsRequested(mDisplayOrientation)) return;
+        if (mSettings.getCurrent().isSuggestionsRequested(mDisplayOrientation, checkForTransliteration())) return;
 
         super.onExtractedCursorMovement(dx, dy);
     }
@@ -2247,7 +2249,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     }
                 }
             }
-            if (currentSettings.isSuggestionsRequested(mDisplayOrientation)
+            if (currentSettings.isSuggestionsRequested(mDisplayOrientation, checkForTransliteration())
                     && currentSettings.mCurrentLanguageHasSpaces) {
                 restartSuggestionsOnWordBeforeCursorIfAtEndOfWord();
             }
@@ -2293,6 +2295,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             promotePhantomSpace();
         }
 
+        //TODO: this breaks transliteration.
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can insert the character at the current cursor position.
@@ -2308,7 +2311,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // a letter or a word connector.
                 && currentSettings.isWordCodePoint(primaryCode)
         // We never go into composing state if suggestions are not requested.
-                && currentSettings.isSuggestionsRequested(mDisplayOrientation) &&
+                && currentSettings.isSuggestionsRequested(mDisplayOrientation, checkForTransliteration()) &&
         // In languages with spaces, we only start composing a word when we are not already
         // touching a word. In languages without spaces, the above conditions are sufficient.
                 (!mConnection.isCursorTouchingWord(currentSettings)
@@ -2437,7 +2440,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         if (Constants.CODE_SPACE == primaryCode) {
-            if (currentSettings.isSuggestionsRequested(mDisplayOrientation)) {
+            if (currentSettings.isSuggestionsRequested(mDisplayOrientation, checkForTransliteration())) {
                 if (maybeDoubleSpacePeriod()) {
                     mSpaceState = SPACE_STATE_DOUBLE;
                 } else if (!isShowingPunctuationList()) {
@@ -2514,7 +2517,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return false;
         if (currentSettings.isApplicationSpecifiedCompletionsOn())
             return true;
-        return currentSettings.isSuggestionsRequested(mDisplayOrientation);
+        return currentSettings.isSuggestionsRequested(mDisplayOrientation, checkForTransliteration());
     }
 
     private void clearSuggestionStrip() {
@@ -2551,7 +2554,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         // Check if we have a suggestion engine attached.
         if (mSuggest == null
-                || !currentSettings.isSuggestionsRequested(mDisplayOrientation)) {
+                || !currentSettings.isSuggestionsRequested(mDisplayOrientation, checkForTransliteration())) {
             if (mWordComposer.isComposingWord()) {
                 Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not "
                         + "requested!");
@@ -3346,7 +3349,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         p.println("  Keyboard mode = " + keyboardMode);
         final SettingsValues settingsValues = mSettings.getCurrent();
         p.println("  mIsSuggestionsSuggestionsRequested = "
-                + settingsValues.isSuggestionsRequested(mDisplayOrientation));
+                + settingsValues.isSuggestionsRequested(mDisplayOrientation, false));
         p.println("  mCorrectionEnabled=" + settingsValues.mCorrectionEnabled);
         p.println("  isComposingWord=" + mWordComposer.isComposingWord());
         p.println("  mSoundOn=" + settingsValues.mSoundOn);

@@ -235,8 +235,12 @@ public final class SettingsValues {
         return mInputAttributes.mApplicationSpecifiedCompletionOn;
     }
 
-    public boolean isSuggestionsRequested(final int displayOrientation) {
-        return mInputAttributes.mIsSettingsSuggestionStripOn
+    public boolean isSuggestionsRequested(final int displayOrientation, boolean transliteration) {
+        boolean mIsSettingsSuggestionStripOn = mInputAttributes.mIsSettingsSuggestionStripOn;
+        if(transliteration) {
+            mIsSettingsSuggestionStripOn = true;
+        }
+        return mIsSettingsSuggestionStripOn
                 && (mCorrectionEnabled
                         || isSuggestionStripVisibleInOrientation(displayOrientation));
     }

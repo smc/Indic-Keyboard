@@ -189,7 +189,6 @@ public final class WordComposer {
 
         /* if we've a transliteration method set, use that. Else just append the code and get on with life */
         if(mTransliterationMethod != null) {
-
             String c = new String(Character.toChars(primaryCode));
             int startPos = mTypedWord.length() > mTransliterationMethod.getMaxKeyLength() ? mTypedWord.length() - mTransliterationMethod.getMaxKeyLength() : 0;
             String input = mTypedWord.substring(startPos) + c;
