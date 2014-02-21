@@ -28,35 +28,44 @@
             <!-- അ, ആ -->
             <Key
                 latin:keyLabel="&#x0D05;"
-                latin:moreKeys="&#x0D06;" />
+                latin:moreKeys="&#x0D06;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
             <!-- ഷ, ക്ഷ -->
             <Key
                 latin:keyLabel="&#x0D37;"
-                latin:moreKeys="&#x0D15;&#x0D4D;&#x0D37;" />
+                latin:moreKeys="&#x0D15;&#x0D4D;&#x0D37;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- ധ, ഢ -->
             <Key
                 latin:keyLabel="&#x0D27;"
                 latin:moreKeys="&#x0D22;"
-                latin:keyHintLabel="&#x0D22;" />
+                latin:keyHintLabel="&#x0D22;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- ഫ -->
             <Key
-                latin:keyLabel="&#x0D2B;" />
+                latin:keyLabel="&#x0D2B;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- ഘ -->
             <Key
-                latin:keyLabel="&#x0D18;" />
+                latin:keyLabel="&#x0D18;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- ഃ -->
             <Key
-                latin:keyLabel="&#x0D03;" />
+                latin:keyLabel="&#x0D03;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- ഝ -->
             <Key
-                latin:keyLabel="&#x0D1D;" />
+                latin:keyLabel="&#x0D1D;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
             <!-- ഖ -->
             <Key
-                latin:keyLabel="&#x0D16;" />
+                latin:keyLabel="&#x0D16;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- ള, ള്ള, ള്‍ -->
             <Key
                 latin:keyLabel="&#x0D33;"
-                latin:moreKeys="&#x0D33;&#x0D4D;&#x0D33;,&#x0D33;&#x0D4D;&#x200D;" />
+                latin:moreKeys="&#x0D33;&#x0D4D;&#x0D33;,&#x0D33;&#x0D4D;&#x200D;"
+                latin:keyLabelFlags="fontNormal" />
         </case>
 
         <default>
@@ -64,39 +73,48 @@
             <Key
                 latin:keyLabel="&#x0D3E;"
                 latin:moreKeys="&#x0D06;"
-                latin:keyHintLabel="&#x0D06;" />
+                latin:keyHintLabel="&#x0D06;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- സ, സ്സ -->
             <Key
                 latin:keyLabel="&#x0D38;"
-                latin:moreKeys="&#x0D38;&#x0D4D;&#x0D38;" />
+                latin:moreKeys="&#x0D38;&#x0D4D;&#x0D38;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- ദ, ഡ, ഡ്ഡ, ദ്ദ -->
             <Key
                 latin:keyLabel="&#x0D26;"
                 latin:moreKeys="&#x0D21;,&#x0D21;&#x0D4D;&#x0D21;,&#x0D26;&#x0D4D;&#x0D26;"
-                latin:keyHintLabel="&#x0D21;" />
+                latin:keyHintLabel="&#x0D21;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- ഫ -->
             <Key
-                latin:keyLabel="&#x0D2B;" />
+                latin:keyLabel="&#x0D2B;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- ഗ, ഗ്ഗ -->
             <Key
                 latin:keyLabel="&#x0D17;"
-                latin:moreKeys="&#x0D17;&#x0D4D;&#x0D17;" />
+                latin:moreKeys="&#x0D17;&#x0D4D;&#x0D17;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- ഹ -->
             <Key
-                latin:keyLabel="&#x0D39;" />
+                latin:keyLabel="&#x0D39;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- ജ, ജ്ജ -->
             <Key
                 latin:keyLabel="&#x0D1C;"
-                latin:moreKeys="&#x0D1C;&#x0D4D;&#x0D1C;" />
+                latin:moreKeys="&#x0D1C;&#x0D4D;&#x0D1C;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- ക, ക്ക, ക്‍ -->
             <Key
                 latin:keyLabel="&#x0D15;"
-                latin:moreKeys="&#x0D15;&#x0D4D;&#x0D15;,&#x0d15;&#x0D4D;&#x200D;" />
+                latin:moreKeys="&#x0D15;&#x0D4D;&#x0D15;,&#x0d15;&#x0D4D;&#x200D;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- ല, ല്‍, ല്ല -->
             <Key
                 latin:keyLabel="&#x0D32;"
                 latin:moreKeys="&#x0D32;&#x0D4D;&#x200D;,&#x0D32;&#x0D4D;&#x0D32;"
-                latin:keyHintLabel="&#x0D32;&#x0D4D;&#x200D;" />
+                latin:keyHintLabel="&#x0D32;&#x0D4D;&#x200D;"
+                latin:keyLabelFlags="fontNormal" />
          </default>
     </switch>
 </merge>

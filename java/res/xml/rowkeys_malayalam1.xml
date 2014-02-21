@@ -28,48 +28,58 @@
             <Key
                 latin:keyLabel="&#x0d57;"
                 latin:moreKeys="&#x0D14;,&#x0D4C;"
-                latin:keyHintLabel="&#x0D4C;" />
+                latin:keyHintLabel="&#x0D4C;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- വ, വ്വ -->
             <Key
                 latin:keyLabel="&#x0D35;"
-                latin:moreKeys="&#x0D35;&#x0D4D;&#x0D35;" />
+                latin:moreKeys="&#x0D35;&#x0D4D;&#x0D35;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- േ, ഏ -->
             <Key
                 latin:keyLabel="&#x0D47;"
                 latin:moreKeys="&#x0D0F;"
-                latin:keyHintLabel="&#x0D0F;" />
+                latin:keyHintLabel="&#x0D0F;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- റ, ഋ,ര്‍‍, ൎ(dot repha) -->
             <Key
                 latin:keyLabel="&#x0D31;"
                 latin:moreKeys="&#x0D0B;,&#x0D30;&#x0D4D;&#x200D;,&#x0D4E;"
-                latin:keyHintLabel="&#x0D0B;" />
+                latin:keyHintLabel="&#x0D0B;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- ഥ, ഠ -->
             <Key
                 latin:keyLabel="&#x0D25;"
                 latin:moreKeys="&#x0D20;"
-                latin:keyHintLabel="&#x0D20;" />
+                latin:keyHintLabel="&#x0D20;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- യ, യ്യ, ്യ  -->
             <Key
                 latin:keyLabel="&#x0D2F;"
-                latin:moreKeys="&#x0D2F;&#x0D4D;&#x0D2F;,&#x0D4D;&#x0D2F;" />
+                latin:moreKeys="&#x0D2F;&#x0D4D;&#x0D2F;,&#x0D4D;&#x0D2F;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- ൂ, ഊ -->
             <Key
                 latin:keyLabel="&#x0D42;"
                 latin:moreKeys="&#x0D0A;"
-                latin:keyHintLabel="&#x0D0A;" />
+                latin:keyHintLabel="&#x0D0A;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- ീ, ഈ -->
             <Key
                 latin:keyLabel="&#x0D40;"
                 latin:moreKeys="&#x0D08;"
-                latin:keyHintLabel="&#x0D08;" />
+                latin:keyHintLabel="&#x0D08;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- ോ, ഓ -->
             <Key
                 latin:keyLabel="&#x0D4B;"
                 latin:moreKeys="&#x0D13;"
-                latin:keyHintLabel="&#x0D13;" />
+                latin:keyHintLabel="&#x0D13;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
             <!-- മ്പ -->
             <Key
-                latin:keyLabel="&#x0D2E;&#x0D4D;&#x0D2A;" />
+                latin:keyLabel="&#x0D2E;&#x0D4D;&#x0D2A;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </case>
 
         <default>
@@ -77,51 +87,59 @@
             <Key
                 latin:keyLabel="&#x0D10;"
                 latin:moreKeys="&#x0D48;"
-                latin:keyHintLabel="&#x0D48;" />
+                latin:keyHintLabel="&#x0D48;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
             <!-- വ, വ്വ -->
             <Key
                 latin:keyLabel="&#x0D35;"
-                latin:moreKeys="&#x0D35;&#x0D4D;&#x0D35;" />
+                latin:moreKeys="&#x0D35;&#x0D4D;&#x0D35;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- െ, എ -->
             <Key
                 latin:keyLabel="&#x0D46;"
                 latin:moreKeys="&#x0D0E;"
-                latin:keyHintLabel="&#x0D0E;" />
+                latin:keyHintLabel="&#x0D0E;"
+                latin:keyLabelFlags="fontNormal" />
             <!--ര, ൃ -->
             <Key
                 latin:keyLabel="&#x0D30;"
                 latin:moreKeys="&#x0D43;"
-                latin:keyHintLabel="&#x0D43;" />
+                latin:keyHintLabel="&#x0D43;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- ത, ട, ട്ട, ത്ത, ണ്ട, ന്ത  -->
             <Key
                 latin:keyLabel="&#x0D24;"
                 latin:moreKeys="&#x0D1F;,&#x0D1F;&#x0D4D;&#x0D1F;,&#x0D24;&#x0D4D;&#x0D24;,&#x0D23;&#x0D4D;&#x0D1F;,&#x0D28;&#x0D4D;&#x0D24;"
-                latin:keyHintLabel="&#x0D1F;" />
+                latin:keyHintLabel="&#x0D1F;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- യ, യ്യ, ്യ  -->
             <Key
                 latin:keyLabel="&#x0D2F;"
-                latin:moreKeys="&#x0D2F;&#x0D4D;&#x0D2F;,&#x0D4D;&#x0D2F;" />
+                latin:moreKeys="&#x0D2F;&#x0D4D;&#x0D2F;,&#x0D4D;&#x0D2F;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- ു, ഉ -->
             <Key
                 latin:keyLabel="&#x0D41;"
                 latin:moreKeys="&#x0D09;"
-                latin:keyHintLabel="&#x0D09;" />
+                latin:keyHintLabel="&#x0D09;"
+                latin:keyLabelFlags="fontNormal" />
             <!-- ി, ഇ -->
             <Key
                 latin:keyLabel="&#x0D3F;"
                 latin:moreKeys="&#x0D07;"
                 latin:keyHintLabel="&#x0D07;"
-                />
+                latin:keyLabelFlags="fontNormal" />
             <!-- ൊ, ഒ -->
             <Key
                 latin:keyLabel="&#x0D4A;"
                 latin:moreKeys="&#x0D12;"
                 latin:keyHintLabel="&#x0D12;"
-                />
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
             <!-- പ, പ്പ -->
             <Key
                 latin:keyLabel="&#x0D2A;"
-                latin:moreKeys="&#x0D2A;&#x0D4D;&#x0D2A;" />
+                latin:moreKeys="&#x0D2A;&#x0D4D;&#x0D2A;"
+                latin:keyLabelFlags="fontNormal" />
          </default>
     </switch>
 </merge>
