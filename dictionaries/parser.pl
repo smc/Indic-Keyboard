@@ -10,6 +10,7 @@
 
 
 # Open original file
+use utf8;
 open FILE, $ARGV[0] or die $!;
 my $count=0;
 
@@ -22,7 +23,7 @@ while (<FILE>) {
 my $divider = int( $count / 240) + 1 ;
 
 # Re-open the source file and update the weight
-open FILE, $ARGV[0] or die $!;
+open FILE, "<:encoding(utf8)", $ARGV[0] or die $!;
 
 while (my $line = <FILE>) {
     $count--;
@@ -32,7 +33,7 @@ while (my $line = <FILE>) {
     if ($line =~ /f=/) {
         my $weighed = int( $count / $divider) + 15;
         my ($name) = $line =~ m/=(.*),/;
-        if (length($name) > 3) {
+        if (length($name) > 1) {
             $line =~ s/(\d*[.])?\d+/$weighed/g;
             print $line;
         }
