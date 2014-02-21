@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res/in.androidtweak.inputmethod.indic"
+ >
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+            >
+
+            <!-- U+0C9F: "ಠ" kannada TTA
+                 +0CA0: "ಠ   Kannada TTHA  -->
+            <Key
+                latin:keyLabel="&#x0CA0;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+0CA1: "ಡ" kannada DA
+                 +0CA2: "ಢ"   Kannada DHA  -->
+            <Key
+                latin:keyLabel="&#x0CA2;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- E: matras, short E, long E
+                 Vowels and Consonats  -->
+            <Key
+                latin:keyLabel="&#x0CC7;"
+                latin:moreKeys="&#x0C8F;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- R: ra, vocalic R matra, vocalic R, RRA
+                 Vowels and Consonats  -->
+            <Key
+                latin:keyLabel="&#x0CC3;"
+                latin:moreKeys="&#x0CB1;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- T: dental ta, tha -->
+            <Key
+                latin:keyLabel="&#x0CA5;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- // Y: ya, ai matra, ai -->
+            <Key
+                latin:keyLabel="&#x0CC8;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- // U: matras, u, uu -->
+            <Key
+                latin:keyLabel="&#x0CC2;"
+                latin:moreKeys="&#x0C8A;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- // // I: matras, i, ii -->
+            <Key
+                latin:keyLabel="&#x0CC0;"
+                latin:moreKeys="&#x0C88;"
+                latin:keyLabelFlags="fontNormal" />
+            <!--  // O: matras, short o, long o -->
+            <Key
+                latin:keyLabel="&#x0CCB;"
+                latin:moreKeys="&#x0C93;"
+                latin:keyLabelFlags="fontNormal" />
+            <!--  // O: P: pa, pha -->
+            <Key
+                latin:keyLabel="&#x0CAB;"
+                latin:keyLabelFlags="fontNormal" />
+        </case>
+
+        <default>
+            <!-- U+0C9F: "ಠ" kannada TTA
+                 +0CA0: "ಠ   Kannada TTHA  -->
+            <Key
+                latin:keyLabel="&#x0C9F;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- U+0CA1: "ಡ" kannada DA
+                 +0CA2: "ಢ"   Kannada DHA  -->
+            <Key
+                latin:keyLabel="&#x0CA1;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- E: matras, short E, long E
+                 Vowels and Consonats  -->
+            <Key
+                latin:keyLabel="&#x0CC6;"
+                latin:moreKeys="&#x0C8E;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- R: ra, vocalic R matra, vocalic R, RRA
+                 Vowels and Consonats  -->
+            <Key
+                latin:keyLabel="&#x0CB0;"
+                latin:moreKeys="&#x0C8B;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- T: dental ta, tha -->
+            <Key
+                latin:keyLabel="&#x0CA4;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- // Y: ya, ai matra, ai -->
+            <Key
+                latin:keyLabel="&#x0CAF;"
+                latin:moreKeys="&#x0C90;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- // U: matras, u, uu -->
+            <Key
+                latin:keyLabel="&#x0CC1;"
+                latin:moreKeys="&#x0C89;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- // // I: matras, i, ii -->
+            <Key
+                latin:keyLabel="&#x0CBF;"
+                latin:moreKeys="&#x0C87;"
+                latin:keyLabelFlags="fontNormal" />
+            <!--  // O: matras, short o, long o -->
+            <Key
+                latin:keyLabel="&#x0CCA;"
+                latin:moreKeys="&#x0C92;"
+                latin:keyLabelFlags="fontNormal" />
+            <!--  // O: P: pa, pha -->
+            <Key
+                latin:keyLabel="&#x0CAA;"
+                latin:keyLabelFlags="fontNormal" />
+        </default>
+    </switch>
+</merge>
