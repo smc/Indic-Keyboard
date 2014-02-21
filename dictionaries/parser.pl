@@ -35,6 +35,7 @@ while (my $line = <FILE>) {
         my ($name) = $line =~ m/=(.*),/;
         if (length($name) > 1) {
             $line =~ s/(\d*[.])?\d+/$weighed/g;
+            utf8::encode($line);
             print $line;
         }
     }
