@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res/in.androidtweak.inputmethod.indic"
+ >
+    <switch>
+      <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+            >
+            <!-- // Z: nya, nga -->
+            <Key
+                latin:keyLabel="&#x0A81;"
+                latin:keyLabelFlags="fontNormal" />
+            <Key
+                latin:keyLabel="&#x0AA3;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- V: va, matra au, au -->
+            <Key
+                latin:keyLabel="&#x0AA8;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- // B: ba, bha -->
+            <Key
+                latin:keyLabel="&#x0AB5;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- N: na, nna -->
+            <Key
+                latin:keyLabel="&#x0AB3;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- M: ma, anusvara, avagraha, Devanagari OM -->
+            <Key
+                latin:keyLabel="&#x0AB6;"
+                latin:keyLabelFlags="fontNormal" />
+            <Key
+                latin:keyLabel="&#x0AB7;"
+                latin:keyLabelFlags="fontNormal" />
+            <Key
+                latin:keyLabel="&#x0964;"
+                latin:keyLabelFlags="fontNormal" />
+          </case>
+      <default>
+            <!-- // Z: nya, nga -->
+            <Key
+                latin:keyLabel="&#x0A82;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- // X: ssa, nukta below, LLLA -->
+            <Key
+                latin:keyLabel="&#x0AAE;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- // C: ca, cha -->
+            <Key
+                latin:keyLabel="&#x0AA8;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- V: va, matra au, au -->
+            <Key
+                latin:keyLabel="&#x0AB5;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- // B: ba, bha -->
+            <Key
+                latin:keyLabel="&#x0AB2;"
+                latin:keyLabelFlags="fontNormal" />
+            <Key
+                latin:keyLabel="&#x0AB8;"
+                latin:keyLabelFlags="fontNormal" />
+            <Key
+                latin:keyLabel="&#x0AAF;"
+                latin:keyLabelFlags="fontNormal" />
+            <Key
+                latin:keyLabel="&#x0A9F;"
+                latin:keyLabelFlags="fontNormal" />
+        </default>
+    </switch>
+</merge>

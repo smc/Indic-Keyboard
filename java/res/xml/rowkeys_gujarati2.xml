@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res/in.androidtweak.inputmethod.indic"
+ >
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+            >
+            <!-- A: aa matra, aa, short a -->
+            <Key
+                latin:keyLabel="&#x0A93;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- S: sa, sha -->
+            <Key
+                latin:keyLabel="&#x0A8F;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- D: dental da, dha -->
+            <Key
+                latin:keyLabel="&#x0A85;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- F: virama, vocalic RR matra, vocalic RR -->
+            <Key
+                latin:keyLabel="&#x0A87;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- G: ga, gha -->
+            <Key
+                latin:keyLabel="&#x0A89;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- H: ha, visarga, jihvanuliya, upadhmaniya -->
+            <Key
+                latin:keyLabel="&#x0AAB;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- J: ja, jha -->
+            <Key
+                latin:keyLabel="&#x0AB0;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- K: ka, kha -->
+            <Key
+                latin:keyLabel="&#x0A96;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- L: la, lla, vocalic L matra, vocalic L -->
+            <Key
+                latin:keyLabel="&#x0AA5;"
+                latin:keyLabelFlags="fontNormal" />
+        </case>
+
+        <default>
+            <!-- A: aa matra, aa, short a -->
+            <Key
+                latin:keyLabel="&#x0ACB;"
+                latin:keyLabelFlags="fontNormal" />
+            <!--  S: sa, sha -->
+            <Key
+                latin:keyLabel="&#x0AC7;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- D: dental da, dha -->
+            <Key
+                latin:keyLabel="&#x0ACD;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- F: virama, vocalic RR matra, vocalic RR -->
+            <Key
+                latin:keyLabel="&#x0ABF;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- G: ga, gha -->
+            <Key
+                latin:keyLabel="&#x0AAA;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- H: ha, visarga, jihvanuliya, upadhmaniya -->
+            <Key
+                latin:keyLabel="&#x0AB0;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- J: ja, jha -->
+            <Key
+                latin:keyLabel="&#x0A95;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- K: ka, kha -->
+            <Key
+                latin:keyLabel="&#x0AA4;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- L: la, lla, vocalic L matra, vocalic L -->
+            <Key
+                latin:keyLabel="&#x0A9A;"
+                latin:keyLabelFlags="fontNormal" />
+
+        </default>
+    </switch>
+</merge>
