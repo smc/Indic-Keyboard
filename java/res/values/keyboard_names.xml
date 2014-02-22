@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="keyboard_name_as_transliteration">অসমীয়া - প্ৰতিৰূপান্তৰণ</string>
+    <string name="keyboard_name_bn_probhat">বাংলা - Probhat</string>
     <string name="keyboard_name_bn_avro">বাংলা - Avro</string>
     <string name="keyboard_name_en">English</string>
     <string name="keyboard_name_hi">हिन्दी</string>
