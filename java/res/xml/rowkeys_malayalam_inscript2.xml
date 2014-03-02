@@ -56,9 +56,11 @@
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio|autoXScale" />
             <Key
                 latin:keyLabel="&#x0D22;"
+                latin:moreKeys="{"
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
             <Key
                 latin:keyLabel="&#x0D1E;"
+                latin:moreKeys="}"
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
             <Key
                 latin:keyLabel="|"
