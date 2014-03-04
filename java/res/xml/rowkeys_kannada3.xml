@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /*
-**
-** Copyright 2012, The Android Open Source Project
+** Kannada KaGaPa phonetic layout
+** Copyright 2014, Jishnu Mohan <jishnu7@gmail.com>
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -60,6 +60,7 @@
             <Key
                 latin:keyLabel="&#x0C82;"
                 latin:moreKeys="&#x0950;"
+                latin:keyHintLabel="&#x0950;"
                 latin:keyLabelFlags="fontNormal" />
         </case>
 
@@ -73,6 +74,7 @@
             <Key
                 latin:keyLabel="&#x0CB7;"
                 latin:moreKeys="&#x0CDE;"
+                latin:keyHintLabel="&#x0CDE;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- // C: ca, cha -->
@@ -84,6 +86,7 @@
             <Key
                 latin:keyLabel="&#x0CB5;"
                 latin:moreKeys="&#x0C94;"
+                latin:keyHintLabel="&#x0C94;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- // B: ba, bha -->
@@ -100,6 +103,7 @@
             <Key
                 latin:keyLabel="&#x0CAE;"
                 latin:moreKeys="&#x0CBD;"
+                latin:keyHintLabel="&#x0CBD;"
                 latin:keyLabelFlags="fontNormal" />
         </default>
     </switch>
