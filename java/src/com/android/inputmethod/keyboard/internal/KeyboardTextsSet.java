@@ -444,6 +444,42 @@ public final class KeyboardTextsSet {
         /* 149 */ "!icon/emoji_key|!code/key_emoji",
     };
 
+    /* Language bn: Bengali */
+    private static final String[] LANGUAGE_bn = {
+        /* 0~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* ~44 */
+        /* 45 */ "\u0985",
+        /* 46~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null,
+        /* ~62 */
+        /* 63 */ "\u09E7",
+        /* 64 */ "\u09E8",
+        /* 65 */ "\u09E9",
+        /* 66 */ "\u09EA",
+        /* 67 */ "\u09EB",
+        /* 68 */ "\u09EC",
+        /* 69 */ "\u09ED",
+        /* 70 */ "\u09EE",
+        /* 71 */ "\u09EF",
+        /* 72 */ "\u09E6",
+        /* 73 */ "\u09E7\u09E8\u09E9",
+        /* 74 */ null,
+        /* 75 */ "1",
+        /* 76 */ "2",
+        /* 77 */ "3",
+        /* 78 */ "4",
+        /* 79 */ "5",
+        /* 80 */ "6",
+        /* 81 */ "7",
+        /* 82 */ "8",
+        /* 83 */ "9",
+        /* 84 */ "0",
+    };
+
     /* Language en: English */
     private static final String[] LANGUAGE_en = {
         // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
@@ -547,14 +583,53 @@ public final class KeyboardTextsSet {
         /* 84 */ "0",
     };
 
+    /* Language kn: Kannada */
+    private static final String[] LANGUAGE_kn = {
+        /* 0~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* ~44 */
+        /* 45 */ "\u0C85",
+        /* 46~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null,
+        /* ~62 */
+        /* 63 */ "\u0CE7",
+        /* 64 */ "\u0CE8",
+        /* 65 */ "\u0CE9",
+        /* 66 */ "\u0CEA",
+        /* 67 */ "\u0CEB",
+        /* 68 */ "\u0CEC",
+        /* 69 */ "\u0CED",
+        /* 70 */ "\u0CEE",
+        /* 71 */ "\u0CEF",
+        /* 72 */ "\u0CE6",
+        /* 73 */ "\u0CE7\u0CE8\u0CE9",
+        /* 74 */ null,
+        /* 75 */ "1",
+        /* 76 */ "2",
+        /* 77 */ "3",
+        /* 78 */ "4",
+        /* 79 */ "5",
+        /* 80 */ "6",
+        /* 81 */ "7",
+        /* 82 */ "8",
+        /* 83 */ "9",
+        /* 84 */ "0",
+    };
+
     /* Language ml: Malayalam */
     private static final String[] LANGUAGE_ml = {
         /* 0~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* ~44 */
+        /* 45 */ "\u0D05",
+        /* 46~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         /* ~74 */
         // U+0966: "൧" MALAYALAM DIGIT ONE
         /* 75 */ "\u0D67",
@@ -641,8 +716,11 @@ public final class KeyboardTextsSet {
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* ~44 */
+        /* 45 */ "\u0B85",
+        /* 46~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null,
+        null, null,
         /* ~62 */
         // U+0BE7: "௧" TAMIL DIGIT ONE
         /* 63 */ "\u0BE7",
@@ -664,7 +742,43 @@ public final class KeyboardTextsSet {
         /* 71 */ "\u0BEF",
         // U+0BE6: "௦" TAMIL DIGIT ZERO
         /* 72 */ "\u0BE6",
-        /* 73 */ null,
+        /* 73 */ "\u0BE7\u0BE8\u0BE9",
+        /* 74 */ null,
+        /* 75 */ "1",
+        /* 76 */ "2",
+        /* 77 */ "3",
+        /* 78 */ "4",
+        /* 79 */ "5",
+        /* 80 */ "6",
+        /* 81 */ "7",
+        /* 82 */ "8",
+        /* 83 */ "9",
+        /* 84 */ "0",
+    };
+
+    /* Language te: Telugu */
+    private static final String[] LANGUAGE_te = {
+        /* 0~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* ~44 */
+        /* 45 */ "\u0C05",
+        /* 46~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null,
+        /* ~62 */
+        /* 63 */ "\u0C67",
+        /* 64 */ "\u0C68",
+        /* 65 */ "\u0C69",
+        /* 66 */ "\u0C6A",
+        /* 67 */ "\u0C6B",
+        /* 68 */ "\u0C6C",
+        /* 69 */ "\u0C6D",
+        /* 70 */ "\u0C6E",
+        /* 71 */ "\u0C6F",
+        /* 72 */ "\u0C66",
+        /* 73 */ "\u0C67\u0C68\u0C69",
         /* 74 */ null,
         /* 75 */ "1",
         /* 76 */ "2",
@@ -803,11 +917,14 @@ public final class KeyboardTextsSet {
 
     private static final Object[] LANGUAGES_AND_TEXTS = {
         "DEFAULT", LANGUAGE_DEFAULT, /* default */
+        "bn", LANGUAGE_bn, /* Bengali */
         "en", LANGUAGE_en, /* English */
         "hi", LANGUAGE_hi, /* Hindi */
+        "kn", LANGUAGE_kn, /* Kannada */
         "ml", LANGUAGE_ml, /* Malayalam */
         "ne", LANGUAGE_ne, /* Nepali */
         "ta", LANGUAGE_ta, /* Tamil */
+        "te", LANGUAGE_te, /* Telugu */
         "zz", LANGUAGE_zz, /* Alphabet */
     };
 

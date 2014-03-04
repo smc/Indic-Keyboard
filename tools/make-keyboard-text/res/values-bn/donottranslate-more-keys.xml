@@ -18,26 +18,16 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- U+0BE7: "௧" TAMIL DIGIT ONE -->
-    <string name="keylabel_for_symbols_1">&#x0BE7;</string>
-    <!-- U+0BE8: "௨" TAMIL DIGIT TWO -->
-    <string name="keylabel_for_symbols_2">&#x0BE8;</string>
-    <!-- U+0BE9: "௩" TAMIL DIGIT THREE -->
-    <string name="keylabel_for_symbols_3">&#x0BE9;</string>
-    <!-- U+0BEA: "௪" TAMIL DIGIT FOUR -->
-    <string name="keylabel_for_symbols_4">&#x0BEA;</string>
-    <!-- U+0BEB: "௫" TAMIL DIGIT FIVE -->
-    <string name="keylabel_for_symbols_5">&#x0BEB;</string>
-    <!-- U+0BEC: "௬" TAMIL DIGIT SIX -->
-    <string name="keylabel_for_symbols_6">&#x0BEC;</string>
-    <!-- U+0BED: "௭" TAMIL DIGIT SEVEN -->
-    <string name="keylabel_for_symbols_7">&#x0BED;</string>
-    <!-- U+0BEE: "௮" TAMIL DIGIT EIGHT -->
-    <string name="keylabel_for_symbols_8">&#x0BEE;</string>
-    <!-- U+0BEF: "௯" TAMIL DIGIT NINE -->
-    <string name="keylabel_for_symbols_9">&#x0BEF;</string>
-    <!-- U+0BE6: "௦" TAMIL DIGIT ZERO -->
-    <string name="keylabel_for_symbols_0">&#x0BE6;</string>
+    <string name="keylabel_for_symbols_1">&#x09E7;</string>
+    <string name="keylabel_for_symbols_2">&#x09E8;</string>
+    <string name="keylabel_for_symbols_3">&#x09E9;</string>
+    <string name="keylabel_for_symbols_4">&#x09EA;</string>
+    <string name="keylabel_for_symbols_5">&#x09EB;</string>
+    <string name="keylabel_for_symbols_6">&#x09EC;</string>
+    <string name="keylabel_for_symbols_7">&#x09ED;</string>
+    <string name="keylabel_for_symbols_8">&#x09EE;</string>
+    <string name="keylabel_for_symbols_9">&#x09EF;</string>
+    <string name="keylabel_for_symbols_0">&#x09E6;</string>
     <string name="additional_more_keys_for_symbols_1">1</string>
     <string name="additional_more_keys_for_symbols_2">2</string>
     <string name="additional_more_keys_for_symbols_3">3</string>
@@ -48,6 +38,6 @@
     <string name="additional_more_keys_for_symbols_8">8</string>
     <string name="additional_more_keys_for_symbols_9">9</string>
     <string name="additional_more_keys_for_symbols_0">0</string>
-    <string name="label_to_alpha_key">&#x0B85;</string>
-    <string name="label_to_symbol_key">&#x0BE7;&#x0BE8;&#x0BE9;</string>
+    <string name="label_to_alpha_key">&#x0985;</string>
+    <string name="label_to_symbol_key">&#x09E7;&#x09E8;&#x09E9;</string>
 </resources>
