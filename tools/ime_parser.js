@@ -72,6 +72,9 @@ jQuery = {
         calls = [];
 
       data.patterns.forEach(function(key) {
+        if(key[1] === "") {
+          return;
+        }
         calls.push(function(callback) {
           var char = key[1],
             pos = key[0],
