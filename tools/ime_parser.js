@@ -79,10 +79,10 @@ jQuery = {
 
           charDetails(char, function(name) {
             if(index !== -1) {
-              out[sort.indexOf(pos)] = '\n<!---' + pos + ' ' + char + ' ' + name + '--->\n' +
-                '<Key\n' +
-                'latin:keyLabel="' + toHex(char) +'"\n' +
-                'latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />';
+              out[sort.indexOf(pos)] = '\t\t\t<!--' + pos + ' ' + char + ' ' + name + '-->\n' +
+                '\t\t\t<Key\n' +
+                '\t\t\t\tlatin:keyLabel="' + toHex(char) +'"\n' +
+                '\t\t\t\tlatin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />\n';
             } else {
               extra.push(pos + " " + toHex(char) + " " + char + name + "\n");
             }
@@ -93,7 +93,7 @@ jQuery = {
 
       async.parallel(calls, function(err, results) {
         out.forEach(function(line) {
-          console.log(line.replace(/\n/g, "\n    "));
+          console.log(line.replace(/\t/g, "    "));
         });
         if(extra.length > 0) {
           console.log("\n\n\n", extra);
