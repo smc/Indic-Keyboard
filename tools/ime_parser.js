@@ -95,7 +95,9 @@ jQuery = {
         out.forEach(function(line) {
           console.log(line.replace(/\n/g, "\n    "));
         });
-        console.log("\n\n\n", extra);
+        if(extra.length > 0) {
+          console.log("\n\n\n", extra);
+        }
       });
     }
   }
