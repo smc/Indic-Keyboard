@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /**
- * Copyright (c) 2008, The Android Open Source Project
+ * Copyright (c) 2014, Jishnu Mohan <jishnu7@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,81 +17,6 @@
  */
 -->
 
-<!-- The attributes in this XML file provide configuration information -->
-<!-- for the Input Method Manager. -->
-
-<!-- Supported subtypes
-    keyboard_locale: script_name/keyboard_layout_set
-    af: Afrikaans/qwerty
-    ar: Arabic/arabic
-    (az: Azerbaijani/qwerty)  # disabled temporarily. waiting for string resources.
-    be: Belarusian/east_slavic
-    bg: Bulgarian/bulgarian
-    bg: Bulgarian/bulgarian_bds
-    ca: Catalan/spanish
-    cs: Czech/qwertz
-    da: Danish/nordic
-    de: German/qwertz
-    el: Greek/greek
-    en_US: English United States/qwerty
-    en_GB: English Great Britain/qwerty
-    eo: Esperanto/spanish
-    es: Spanish/spanish
-    es_US: Spanish United States/spanish
-    (es_419: Spanish Latin America/qwerty)
-    et_EE: Estonian/nordic
-    fa: Persian/arabic
-    fi: Finnish/nordic
-    fr: French/azerty
-    fr_CA: French Canada/qwerty
-    hi: Hindi/hindi
-    hr: Croatian/qwertz
-    hu: Hungarian/qwertz
-    hy_AM: Armenian Phonetic/armenian_phonetic
-    in: Indonesian/qwerty    # "id" is official language code of Indonesian.
-    is: Icelandic/qwerty
-    it: Italian/qwerty
-    iw: Hebrew/hebrew        # "he" is official language code of Hebrew.
-    ka_GE: Georgian/georgian
-    (kk: Kazakh/east_slavic) # disabled temporarily. waiting for string resources.
-    km_KH: Khmer/khmer
-    ky: Kyrgyz/east_slavic
-    lo_LA: Lao/lao
-    lt: Lithuanian/qwerty
-    lv: Latvian/qwerty
-    mk: Macedonian/south_slavic
-    mn_MN: Mongolian/mongolian
-    ms_MY: Malay/qwerty
-    nb: Norwegian Bokmål/nordic
-    (ne: Nepali Romanized/nepali_romanized)  # disabled temporarily
-    (ne: Nepali Traditional/nepali_traditional)  # disabled temporarily
-    nl: Dutch/qwerty
-    nl_BE: Dutch Belgium/azerty
-    pl: Polish/qwerty
-    pt_BR: Portuguese Brazil/qwerty
-    pt_PT: Portuguese Portugal/qwerty
-    ro: Romanian/qwerty
-    ru: Russian/east_slavic
-    sk: Slovak/qwerty
-    sl: Slovenian/qwerty
-    sr: Serbian/south_slavic
-    (sr-Latn: Serbian/qwerty) # not yet implemented.
-    sv: Swedish/nordic
-    sw: Swahili/qwerty
-    th: Thai/thai
-    tl: Tagalog/spanish
-    tr: Turkish/qwerty
-    uk: Ukrainian/east_slavic
-    vi: Vietnamese/qwerty
-    zu: Zulu/qwerty
-    zz: QWERTY/qwerty
-    (zz: Emoji/emoji)
-    -->
-<!-- TODO: use <lang>_keyboard icon instead of a common keyboard icon. -->
-<!-- Note: SupportTouchPositionCorrection extra value is obsolete and maintained for backward
-     compatibility. -->
-<!-- If IME doesn't have an applicable subtype, the first subtype will be used as a default
-     subtype.-->
 <input-method xmlns:android="http://schemas.android.com/apk/res/android"
         android:settingsActivity="in.androidtweak.inputmethod.indic.settings.SettingsActivity"
         android:isDefault="@bool/im_is_default">
@@ -113,6 +38,12 @@
             android:imeSubtypeLocale="ta"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=tamil,EmojiCapable"
+    />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_ta_inscript"
+            android:imeSubtypeLocale="ta"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=tamil_inscript,EmojiCapable"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_ml_lalitha"
