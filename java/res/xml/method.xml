@@ -116,6 +116,12 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=telugu,EmojiCapable"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_te_inscript"
+            android:imeSubtypeLocale="te"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=telugu_inscript,EmojiCapable"
+    />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_bn_avro"
             android:imeSubtypeLocale="bn"
             android:imeSubtypeMode="keyboard"

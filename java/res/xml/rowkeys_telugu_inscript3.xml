@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2014, Jishnu Mohan <jishnu7@gmail.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res/in.androidtweak.inputmethod.indic"
+>
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+        >
+            <!--A ఓ TELUGU LETTER OO-->
+            <Key
+                latin:keyLabel="&#x0C13;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--S ఏ TELUGU LETTER EE-->
+            <Key
+                latin:keyLabel="&#x0C0F;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--D అ TELUGU LETTER A-->
+            <Key
+                latin:keyLabel="&#x0C05;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--F ఇ TELUGU LETTER I-->
+            <Key
+                latin:keyLabel="&#x0C07;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--G ఉ TELUGU LETTER U-->
+            <Key
+                latin:keyLabel="&#x0C09;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--H ఫ TELUGU LETTER PHA-->
+            <Key
+                latin:keyLabel="&#x0C2B;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--J ఱ TELUGU LETTER RRA-->
+            <Key
+                latin:keyLabel="&#x0C31;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--K ఖ TELUGU LETTER KHA-->
+            <Key
+                latin:keyLabel="&#x0C16;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--L థ TELUGU LETTER THA-->
+            <Key
+                latin:keyLabel="&#x0C25;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--: &#x0C1B; ఛTELUGU LETTER CHA -->
+            <Key
+                latin:keyLabel="&#x0C1B;"
+                latin:moreKeys=":"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--" ఠ TELUGU LETTER TTHA-->
+            <Key
+                latin:keyLabel="&#x0C20;"
+                latin:moreKeys="&quot;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+        </case>
+
+        <default>
+            <!--a ో TELUGU VOWEL SIGN OO-->
+            <Key
+                latin:keyLabel="&#x0C4B;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--s ే TELUGU VOWEL SIGN EE-->
+            <Key
+                latin:keyLabel="&#x0C47;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--d ్ TELUGU SIGN VIRAMA-->
+            <Key
+                latin:keyLabel="&#x0C4D;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--f ి TELUGU VOWEL SIGN I-->
+            <Key
+                latin:keyLabel="&#x0C3F;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--g ు TELUGU VOWEL SIGN U-->
+            <Key
+                latin:keyLabel="&#x0C41;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--h ప TELUGU LETTER PA-->
+            <Key
+                latin:keyLabel="&#x0C2A;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--j ర TELUGU LETTER RA-->
+            <Key
+                latin:keyLabel="&#x0C30;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--k క TELUGU LETTER KA-->
+            <Key
+                latin:keyLabel="&#x0C15;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--l త TELUGU LETTER TA-->
+            <Key
+                latin:keyLabel="&#x0C24;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!-- ; &#x0C1A; చTELUGU LETTER CA -->
+            <Key
+                latin:keyLabel="&#x0C1A;"
+                latin:moreKeys=";"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--' ట TELUGU LETTER TTA-->
+            <Key
+                latin:keyLabel="&#x0C1F;"
+                latin:moreKeys="'"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+         </default>
+    </switch>
+</merge>
