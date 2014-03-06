@@ -24,6 +24,6 @@ root=`git rev-parse --show-toplevel`
 cd $root/java/res/xml/
 for i in "${files[@]}"
 do
-    echo "copying... $i"
+    echo "copying... ${i/kannada/$1}"
     sed "s/kannada/${1}/g" $i > ${i/kannada/$1}
 done
