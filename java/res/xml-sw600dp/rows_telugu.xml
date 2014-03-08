@@ -27,7 +27,7 @@
         latin:keyWidth="9.0%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_malayalam1" />
+            latin:keyboardLayout="@xml/rowkeys_telugu1" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight" />
@@ -36,7 +36,7 @@
         latin:keyWidth="9.0%p"
     >
         <include
-            latin:keyboardLayout="@xml/rowkeys_malayalam2"
+            latin:keyboardLayout="@xml/rowkeys_telugu2"
             latin:keyXPos="4.5%p" />
         <Key
             latin:keyStyle="enterKeyStyle"
@@ -49,7 +49,7 @@
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="10.0%p" />
         <include
-            latin:keyboardLayout="@xml/rowkeys_malayalam3" />
+            latin:keyboardLayout="@xml/rowkeys_telugu3" />
         <include
             latin:keyboardLayout="@xml/keys_exclamation_question" />
         <Key
