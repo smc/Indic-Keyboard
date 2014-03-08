@@ -110,6 +110,12 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=gujarati,EmojiCapable"
     />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_gu_inscript"
+            android:imeSubtypeLocale="gu"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=gujarati_inscript,EmojiCapable"
+    />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_te"
             android:imeSubtypeLocale="te"
             android:imeSubtypeMode="keyboard"
