@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2014, Jishnu Mohan <jishnu7@gmail.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res/in.androidtweak.inputmethod.indic"
+>
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+        >
+            <!--A ও BENGALI LETTER O-->
+            <Key
+                latin:keyLabel="&#x0993;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--S এ BENGALI LETTER E-->
+            <Key
+                latin:keyLabel="&#x098F;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--D অ BENGALI LETTER A-->
+            <Key
+                latin:keyLabel="&#x0985;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--F ই BENGALI LETTER I-->
+            <Key
+                latin:keyLabel="&#x0987;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--G উ BENGALI LETTER U-->
+            <Key
+                latin:keyLabel="&#x0989;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--H ফ BENGALI LETTER PHA-->
+            <Key
+                latin:keyLabel="&#x09AB;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--J ৎ BENGALI LETTER KHANDA TA-->
+            <Key
+                latin:keyLabel="&#x09CE;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--K খ BENGALI LETTER KHA-->
+            <Key
+                latin:keyLabel="&#x0996;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--L থ BENGALI LETTER THA-->
+            <Key
+                latin:keyLabel="&#x09A5;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--\: ছ BENGALI LETTER CHA-->
+            <Key
+                latin:keyLabel="&#x099B;"
+                latin:moreKeys=":"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--" ঠ BENGALI LETTER TTHA-->
+            <Key
+                latin:keyLabel="&#x09A0;"
+                latin:moreKeys="&quot;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+        </case>
+
+        <default>
+            <!--a ো BENGALI VOWEL SIGN O-->
+            <Key
+                latin:keyLabel="&#x09CB;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--s ে BENGALI VOWEL SIGN E-->
+            <Key
+                latin:keyLabel="&#x09C7;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--d ্ BENGALI SIGN VIRAMA-->
+            <Key
+                latin:keyLabel="&#x09CD;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--f ি BENGALI VOWEL SIGN I-->
+            <Key
+                latin:keyLabel="&#x09BF;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--g ু BENGALI VOWEL SIGN U-->
+            <Key
+                latin:keyLabel="&#x09C1;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--h প BENGALI LETTER PA-->
+            <Key
+                latin:keyLabel="&#x09AA;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--j র BENGALI LETTER RA-->
+            <Key
+                latin:keyLabel="&#x09B0;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--k ক BENGALI LETTER KA-->
+            <Key
+                latin:keyLabel="&#x0995;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--l ত BENGALI LETTER TA-->
+            <Key
+                latin:keyLabel="&#x09A4;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--; &#x099A; চBENGALI LETTER CA-->
+            <Key
+                latin:keyLabel="&#x099A;"
+                latin:moreKeys=";"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+
+            <!--' ট BENGALI LETTER TTA-->
+            <Key
+                latin:keyLabel="&#x099F;"
+                latin:moreKeys="'"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+         </default>
+    </switch>
+</merge>
