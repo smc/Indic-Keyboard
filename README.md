@@ -5,8 +5,22 @@ AOSP keyboard ported to support more languges.
 
 * Android 4.1 and above.
 
-## TODO
+## Supported Languages
+* Assamese
+* Bengali
+* Gujarati
+* Hindi
+* Kannadda
+* Malayalam
+* Nepali
+* Oriya/Odia
+* Punjabi
+* Sanskrit
+* Sinhalese
+* Tamil
+* Telugu
+* Urdu
 
-* Internal dictionary for word prediction.
-* Add more languages.
+
+## TODO
 
