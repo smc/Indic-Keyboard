@@ -156,6 +156,11 @@
 
     <!-- Oriya/Odia -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_or_inscript"
+            android:imeSubtypeLocale="or"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=oriya_inscript,EmojiCapable" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_or_transliteration"
             android:imeSubtypeLocale="or"
             android:imeSubtypeMode="keyboard"
