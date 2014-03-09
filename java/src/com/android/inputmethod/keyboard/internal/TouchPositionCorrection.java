@@ -16,8 +16,8 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import in.androidtweak.inputmethod.annotations.UsedForTesting;
-import in.androidtweak.inputmethod.indic.LatinImeLogger;
+import org.smc.inputmethod.annotations.UsedForTesting;
+import org.smc.inputmethod.indic.LatinImeLogger;
 
 public final class TouchPositionCorrection {
     private static final int TOUCH_POSITION_CORRECTION_RECORD_SIZE = 3;

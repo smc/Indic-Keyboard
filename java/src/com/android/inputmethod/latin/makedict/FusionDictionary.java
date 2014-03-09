@@ -16,8 +16,8 @@
 
 package com.android.inputmethod.latin.makedict;
 
-import in.androidtweak.inputmethod.annotations.UsedForTesting;
-import in.androidtweak.inputmethod.indic.Constants;
+import org.smc.inputmethod.annotations.UsedForTesting;
+import org.smc.inputmethod.indic.Constants;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import in.androidtweak.inputmethod.annotations.UsedForTesting;
+import org.smc.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.internal.MatrixUtils.MatrixOperationFailedException;
 
 import android.util.Log;

@@ -16,11 +16,11 @@
 
 package com.android.inputmethod.keyboard;
 
-import static in.androidtweak.inputmethod.indic.Constants.ImeOption.FORCE_ASCII;
-import static in.androidtweak.inputmethod.indic.Constants.ImeOption.NO_MICROPHONE;
-import static in.androidtweak.inputmethod.indic.Constants.ImeOption.NO_MICROPHONE_COMPAT;
-import static in.androidtweak.inputmethod.indic.Constants.ImeOption.NO_SETTINGS_KEY;
-import static in.androidtweak.inputmethod.indic.Constants.Subtype.ExtraValue.ASCII_CAPABLE;
+import static org.smc.inputmethod.indic.Constants.ImeOption.FORCE_ASCII;
+import static org.smc.inputmethod.indic.Constants.ImeOption.NO_MICROPHONE;
+import static org.smc.inputmethod.indic.Constants.ImeOption.NO_MICROPHONE_COMPAT;
+import static org.smc.inputmethod.indic.Constants.ImeOption.NO_SETTINGS_KEY;
+import static org.smc.inputmethod.indic.Constants.Subtype.ExtraValue.ASCII_CAPABLE;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -33,18 +33,18 @@ import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
-import in.androidtweak.inputmethod.compat.EditorInfoCompatUtils;
+import org.smc.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.KeysCache;
-import in.androidtweak.inputmethod.indic.InputAttributes;
-import in.androidtweak.inputmethod.indic.LatinImeLogger;
-import in.androidtweak.inputmethod.indic.R;
-import in.androidtweak.inputmethod.indic.SubtypeSwitcher;
-import in.androidtweak.inputmethod.indic.utils.CollectionUtils;
-import in.androidtweak.inputmethod.indic.utils.InputTypeUtils;
-import in.androidtweak.inputmethod.indic.utils.SubtypeLocaleUtils;
-import in.androidtweak.inputmethod.indic.utils.XmlParseUtils;
+import org.smc.inputmethod.indic.InputAttributes;
+import org.smc.inputmethod.indic.LatinImeLogger;
+import org.smc.inputmethod.indic.R;
+import org.smc.inputmethod.indic.SubtypeSwitcher;
+import org.smc.inputmethod.indic.utils.CollectionUtils;
+import org.smc.inputmethod.indic.utils.InputTypeUtils;
+import org.smc.inputmethod.indic.utils.SubtypeLocaleUtils;
+import org.smc.inputmethod.indic.utils.XmlParseUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

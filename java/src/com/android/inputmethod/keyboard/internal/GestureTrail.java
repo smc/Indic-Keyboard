@@ -24,9 +24,9 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.os.SystemClock;
 
-import in.androidtweak.inputmethod.indic.Constants;
-import in.androidtweak.inputmethod.indic.R;
-import in.androidtweak.inputmethod.indic.utils.ResizableIntArray;
+import org.smc.inputmethod.indic.Constants;
+import org.smc.inputmethod.indic.R;
+import org.smc.inputmethod.indic.utils.ResizableIntArray;
 
 /*
  * @attr ref R.styleable#MainKeyboardView_gestureTrailFadeoutStartDelay

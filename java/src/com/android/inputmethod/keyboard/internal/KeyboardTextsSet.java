@@ -19,8 +19,8 @@ package com.android.inputmethod.keyboard.internal;
 import android.content.Context;
 import android.content.res.Resources;
 
-import in.androidtweak.inputmethod.annotations.UsedForTesting;
-import in.androidtweak.inputmethod.indic.utils.CollectionUtils;
+import org.smc.inputmethod.annotations.UsedForTesting;
+import org.smc.inputmethod.indic.utils.CollectionUtils;
 
 import java.util.HashMap;
 

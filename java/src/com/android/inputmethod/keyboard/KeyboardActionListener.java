@@ -16,8 +16,8 @@
 
 package com.android.inputmethod.keyboard;
 
-import in.androidtweak.inputmethod.indic.Constants;
-import in.androidtweak.inputmethod.indic.InputPointers;
+import org.smc.inputmethod.indic.Constants;
+import org.smc.inputmethod.indic.InputPointers;
 
 public interface KeyboardActionListener {
     /**

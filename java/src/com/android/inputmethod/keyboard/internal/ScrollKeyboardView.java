@@ -27,7 +27,7 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardView;
-import in.androidtweak.inputmethod.indic.R;
+import org.smc.inputmethod.indic.R;
 
 /**
  * This is an extended {@link KeyboardView} class that hosts a vertical scroll keyboard.

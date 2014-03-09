@@ -21,8 +21,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.keyboard.internal.TouchPositionCorrection;
-import in.androidtweak.inputmethod.indic.Constants;
-import in.androidtweak.inputmethod.indic.utils.JniUtils;
+import org.smc.inputmethod.indic.Constants;
+import org.smc.inputmethod.indic.utils.JniUtils;
 
 import java.util.Arrays;
 

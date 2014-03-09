@@ -16,15 +16,15 @@
 
 package com.android.inputmethod.latin.makedict;
 
-import in.androidtweak.inputmethod.annotations.UsedForTesting;
-import in.androidtweak.inputmethod.indic.Constants;
+import org.smc.inputmethod.annotations.UsedForTesting;
+import org.smc.inputmethod.indic.Constants;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
-import in.androidtweak.inputmethod.indic.utils.ByteArrayDictBuffer;
+import org.smc.inputmethod.indic.utils.ByteArrayDictBuffer;
 
 import java.io.File;
 import java.io.FileInputStream;

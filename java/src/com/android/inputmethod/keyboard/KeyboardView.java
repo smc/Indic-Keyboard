@@ -33,13 +33,13 @@ import android.view.View;
 
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyVisualAttributes;
-import in.androidtweak.inputmethod.indic.Constants;
-import in.androidtweak.inputmethod.indic.LatinImeLogger;
-import in.androidtweak.inputmethod.indic.R;
-import in.androidtweak.inputmethod.indic.define.ProductionFlag;
-import in.androidtweak.inputmethod.indic.utils.CollectionUtils;
-import in.androidtweak.inputmethod.indic.utils.TypefaceUtils;
-import in.androidtweak.inputmethod.research.ResearchLogger;
+import org.smc.inputmethod.indic.Constants;
+import org.smc.inputmethod.indic.LatinImeLogger;
+import org.smc.inputmethod.indic.R;
+import org.smc.inputmethod.indic.define.ProductionFlag;
+import org.smc.inputmethod.indic.utils.CollectionUtils;
+import org.smc.inputmethod.indic.utils.TypefaceUtils;
+import org.smc.inputmethod.research.ResearchLogger;
 
 import java.util.HashSet;
 

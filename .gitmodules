@@ -1,6 +1,3 @@
 [submodule "morelangs"]
 	path = morelangs
-	url = git@github.com:androidtweak/java-morelangs.git
-[submodule "tools-indic"]
-	path = tools-indic
-	url = git@github.com:androidtweak/Indic-Keyboard-tools.git
+	url = git@github.com:wikimedia/java-morelangs.git

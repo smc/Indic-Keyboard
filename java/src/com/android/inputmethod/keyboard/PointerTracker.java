@@ -23,22 +23,22 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import in.androidtweak.inputmethod.accessibility.AccessibilityUtils;
+import org.smc.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.keyboard.internal.GestureStroke;
 import com.android.inputmethod.keyboard.internal.GestureStroke.GestureStrokeParams;
 import com.android.inputmethod.keyboard.internal.GestureStrokeWithPreviewPoints;
 import com.android.inputmethod.keyboard.internal.GestureStrokeWithPreviewPoints.GestureStrokePreviewParams;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
-import in.androidtweak.inputmethod.indic.Constants;
-import in.androidtweak.inputmethod.indic.InputPointers;
-import in.androidtweak.inputmethod.indic.LatinImeLogger;
-import in.androidtweak.inputmethod.indic.R;
-import in.androidtweak.inputmethod.indic.define.ProductionFlag;
-import in.androidtweak.inputmethod.indic.settings.Settings;
-import in.androidtweak.inputmethod.indic.utils.CollectionUtils;
-import in.androidtweak.inputmethod.indic.utils.CoordinateUtils;
-import in.androidtweak.inputmethod.indic.utils.ResourceUtils;
-import in.androidtweak.inputmethod.research.ResearchLogger;
+import org.smc.inputmethod.indic.Constants;
+import org.smc.inputmethod.indic.InputPointers;
+import org.smc.inputmethod.indic.LatinImeLogger;
+import org.smc.inputmethod.indic.R;
+import org.smc.inputmethod.indic.define.ProductionFlag;
+import org.smc.inputmethod.indic.settings.Settings;
+import org.smc.inputmethod.indic.utils.CollectionUtils;
+import org.smc.inputmethod.indic.utils.CoordinateUtils;
+import org.smc.inputmethod.indic.utils.ResourceUtils;
+import org.smc.inputmethod.research.ResearchLogger;
 
 import java.util.ArrayList;
 

@@ -18,8 +18,8 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.text.TextUtils;
 
-import in.androidtweak.inputmethod.indic.Constants;
-import in.androidtweak.inputmethod.indic.utils.StringUtils;
+import org.smc.inputmethod.indic.Constants;
+import org.smc.inputmethod.indic.utils.StringUtils;
 
 import java.util.Locale;
 

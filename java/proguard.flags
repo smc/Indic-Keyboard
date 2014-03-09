@@ -1,13 +1,13 @@
 # Keep classes and methods that have the @UsedForTesting annotation
--keep @in.androidtweak.inputmethod.annotations.UsedForTesting class *
+-keep @org.smc.inputmethod.annotations.UsedForTesting class *
 -keepclassmembers class * {
-    @in.androidtweak.inputmethod.annotations.UsedForTesting *;
+    @org.smc.inputmethod.annotations.UsedForTesting *;
 }
 
 # Keep classes and methods that have the @ExternallyReferenced annotation
--keep @in.androidtweak.inputmethod.annotations.ExternallyReferenced class *
+-keep @org.smc.inputmethod.annotations.ExternallyReferenced class *
 -keepclassmembers class * {
-    @in.androidtweak.inputmethod.annotations.ExternallyReferenced *;
+    @org.smc.inputmethod.annotations.ExternallyReferenced *;
 }
 
 # Keep native methods

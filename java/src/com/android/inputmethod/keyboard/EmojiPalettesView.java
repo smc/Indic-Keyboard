@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard;
 
-import static in.androidtweak.inputmethod.indic.Constants.NOT_A_COORDINATE;
+import static org.smc.inputmethod.indic.Constants.NOT_A_COORDINATE;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -46,12 +46,12 @@ import android.widget.TextView;
 import com.android.inputmethod.keyboard.internal.DynamicGridKeyboard;
 import com.android.inputmethod.keyboard.internal.ScrollKeyboardView;
 import com.android.inputmethod.keyboard.internal.ScrollViewWithNotifier;
-import in.androidtweak.inputmethod.indic.Constants;
-import in.androidtweak.inputmethod.indic.R;
-import in.androidtweak.inputmethod.indic.SubtypeSwitcher;
-import in.androidtweak.inputmethod.indic.settings.Settings;
-import in.androidtweak.inputmethod.indic.utils.CollectionUtils;
-import in.androidtweak.inputmethod.indic.utils.ResourceUtils;
+import org.smc.inputmethod.indic.Constants;
+import org.smc.inputmethod.indic.R;
+import org.smc.inputmethod.indic.SubtypeSwitcher;
+import org.smc.inputmethod.indic.settings.Settings;
+import org.smc.inputmethod.indic.utils.CollectionUtils;
+import org.smc.inputmethod.indic.utils.ResourceUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

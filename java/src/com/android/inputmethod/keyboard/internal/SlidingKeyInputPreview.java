@@ -23,8 +23,8 @@ import android.graphics.Path;
 import android.view.View;
 
 import com.android.inputmethod.keyboard.PointerTracker;
-import in.androidtweak.inputmethod.indic.R;
-import in.androidtweak.inputmethod.indic.utils.CoordinateUtils;
+import org.smc.inputmethod.indic.R;
+import org.smc.inputmethod.indic.utils.CoordinateUtils;
 
 /**
  * Draw rubber band preview graphics during sliding key input.

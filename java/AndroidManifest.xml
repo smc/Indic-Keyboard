@@ -16,7 +16,7 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         coreApp="true"
-        package="in.androidtweak.inputmethod.indic"
+        package="org.smc.inputmethod.indic"
         android:versionCode="9"
         android:versionName="0.9.1">
 
@@ -114,17 +114,17 @@
 
         <receiver android:name=".personalization.DictionaryDecayBroadcastReciever">
             <intent-filter>
-                <action android:name="in.androidtweak.inputmethod.indic.personalization.DICT_DECAY" />
+                <action android:name="org.smc.inputmethod.indic.personalization.DICT_DECAY" />
             </intent-filter>
         </receiver>
 
         <receiver android:name=".DictionaryPackInstallBroadcastReceiver">
             <intent-filter>
-                <action android:name="in.androidtweak.inputmethod.dictionarypack.aosp.UNKNOWN_CLIENT" />
+                <action android:name="org.smc.inputmethod.dictionarypack.aosp.UNKNOWN_CLIENT" />
             </intent-filter>
         </receiver>
 
-        <provider android:name="in.androidtweak.inputmethod.dictionarypack.DictionaryProvider"
+        <provider android:name="org.smc.inputmethod.dictionarypack.DictionaryProvider"
                 android:grantUriPermissions="true"
                 android:exported="false"
                 android:authorities="@string/authority"
@@ -132,19 +132,19 @@
                 android:label="@string/dictionary_provider_name">
         </provider>
 
-        <service android:name="in.androidtweak.inputmethod.dictionarypack.DictionaryService"
+        <service android:name="org.smc.inputmethod.dictionarypack.DictionaryService"
                 android:label="@string/dictionary_service_name">
         </service>
 
-        <receiver android:name="in.androidtweak.inputmethod.dictionarypack.EventHandler">
+        <receiver android:name="org.smc.inputmethod.dictionarypack.EventHandler">
             <intent-filter>
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
                 <action android:name="android.intent.action.DATE_CHANGED" />
-                <action android:name="in.androidtweak.inputmethod.dictionarypack.aosp.UPDATE_NOW" />
+                <action android:name="org.smc.inputmethod.dictionarypack.aosp.UPDATE_NOW" />
             </intent-filter>
         </receiver>
 
-        <activity android:name="in.androidtweak.inputmethod.dictionarypack.DictionarySettingsActivity"
+        <activity android:name="org.smc.inputmethod.dictionarypack.DictionarySettingsActivity"
                 android:label="@string/dictionary_settings_title"
                 android:theme="@android:style/Theme.Holo"
                 android:uiOptions="splitActionBarWhenNarrow">
@@ -153,7 +153,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="in.androidtweak.inputmethod.dictionarypack.DownloadOverMeteredDialog"
+        <activity android:name="org.smc.inputmethod.dictionarypack.DownloadOverMeteredDialog"
                 android:label="@string/dictionary_install_over_metered_network_prompt"
                 android:theme="@android:style/Theme.Holo">
             <intent-filter>

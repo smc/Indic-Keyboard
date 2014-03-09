@@ -16,15 +16,15 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import static in.androidtweak.inputmethod.indic.Constants.CODE_OUTPUT_TEXT;
-import static in.androidtweak.inputmethod.indic.Constants.CODE_UNSPECIFIED;
+import static org.smc.inputmethod.indic.Constants.CODE_OUTPUT_TEXT;
+import static org.smc.inputmethod.indic.Constants.CODE_UNSPECIFIED;
 
 import android.text.TextUtils;
 
-import in.androidtweak.inputmethod.indic.Constants;
-import in.androidtweak.inputmethod.indic.LatinImeLogger;
-import in.androidtweak.inputmethod.indic.utils.CollectionUtils;
-import in.androidtweak.inputmethod.indic.utils.StringUtils;
+import org.smc.inputmethod.indic.Constants;
+import org.smc.inputmethod.indic.LatinImeLogger;
+import org.smc.inputmethod.indic.utils.CollectionUtils;
+import org.smc.inputmethod.indic.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

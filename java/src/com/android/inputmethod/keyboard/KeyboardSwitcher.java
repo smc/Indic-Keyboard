@@ -26,19 +26,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
-import in.androidtweak.inputmethod.accessibility.AccessibleKeyboardViewProxy;
+import org.smc.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet.KeyboardLayoutSetException;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
-import in.androidtweak.inputmethod.indic.InputView;
-import in.androidtweak.inputmethod.indic.LatinIME;
-import in.androidtweak.inputmethod.indic.LatinImeLogger;
-import in.androidtweak.inputmethod.indic.R;
-import in.androidtweak.inputmethod.indic.RichInputMethodManager;
-import in.androidtweak.inputmethod.indic.SubtypeSwitcher;
-import in.androidtweak.inputmethod.indic.WordComposer;
-import in.androidtweak.inputmethod.indic.settings.Settings;
-import in.androidtweak.inputmethod.indic.settings.SettingsValues;
-import in.androidtweak.inputmethod.indic.utils.ResourceUtils;
+import org.smc.inputmethod.indic.InputView;
+import org.smc.inputmethod.indic.LatinIME;
+import org.smc.inputmethod.indic.LatinImeLogger;
+import org.smc.inputmethod.indic.R;
+import org.smc.inputmethod.indic.RichInputMethodManager;
+import org.smc.inputmethod.indic.SubtypeSwitcher;
+import org.smc.inputmethod.indic.WordComposer;
+import org.smc.inputmethod.indic.settings.Settings;
+import org.smc.inputmethod.indic.settings.SettingsValues;
+import org.smc.inputmethod.indic.utils.ResourceUtils;
 
 public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private static final String TAG = KeyboardSwitcher.class.getSimpleName();

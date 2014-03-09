@@ -17,10 +17,10 @@
 package com.android.inputmethod.keyboard;
 
 import static com.android.inputmethod.keyboard.internal.KeyboardIconsSet.ICON_UNDEFINED;
-import static in.androidtweak.inputmethod.indic.Constants.CODE_OUTPUT_TEXT;
-import static in.androidtweak.inputmethod.indic.Constants.CODE_SHIFT;
-import static in.androidtweak.inputmethod.indic.Constants.CODE_SWITCH_ALPHA_SYMBOL;
-import static in.androidtweak.inputmethod.indic.Constants.CODE_UNSPECIFIED;
+import static org.smc.inputmethod.indic.Constants.CODE_OUTPUT_TEXT;
+import static org.smc.inputmethod.indic.Constants.CODE_SHIFT;
+import static org.smc.inputmethod.indic.Constants.CODE_SWITCH_ALPHA_SYMBOL;
+import static org.smc.inputmethod.indic.Constants.CODE_UNSPECIFIED;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -39,9 +39,9 @@ import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.KeyboardRow;
 import com.android.inputmethod.keyboard.internal.MoreKeySpec;
-import in.androidtweak.inputmethod.indic.Constants;
-import in.androidtweak.inputmethod.indic.R;
-import in.androidtweak.inputmethod.indic.utils.StringUtils;
+import org.smc.inputmethod.indic.Constants;
+import org.smc.inputmethod.indic.R;
+import org.smc.inputmethod.indic.utils.StringUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

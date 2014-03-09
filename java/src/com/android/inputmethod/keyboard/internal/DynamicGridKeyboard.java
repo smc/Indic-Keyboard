@@ -23,9 +23,9 @@ import android.util.Log;
 import com.android.inputmethod.keyboard.EmojiPalettesView;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
-import in.androidtweak.inputmethod.indic.settings.Settings;
-import in.androidtweak.inputmethod.indic.utils.CollectionUtils;
-import in.androidtweak.inputmethod.indic.utils.StringUtils;
+import org.smc.inputmethod.indic.settings.Settings;
+import org.smc.inputmethod.indic.utils.CollectionUtils;
+import org.smc.inputmethod.indic.utils.StringUtils;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

@@ -16,8 +16,8 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import in.androidtweak.inputmethod.indic.Constants;
-import in.androidtweak.inputmethod.indic.utils.CollectionUtils;
+import org.smc.inputmethod.indic.Constants;
+import org.smc.inputmethod.indic.utils.CollectionUtils;
 
 import java.util.HashMap;
 

@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard;
 
-import in.androidtweak.inputmethod.indic.Constants;
+import org.smc.inputmethod.indic.Constants;
 
 
 public class KeyDetector {

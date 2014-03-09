@@ -26,17 +26,17 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.util.Xml;
 
-import in.androidtweak.inputmethod.annotations.UsedForTesting;
+import org.smc.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
-import in.androidtweak.inputmethod.indic.Constants;
-import in.androidtweak.inputmethod.indic.R;
-import in.androidtweak.inputmethod.indic.utils.ResourceUtils;
-import in.androidtweak.inputmethod.indic.utils.RunInLocale;
-import in.androidtweak.inputmethod.indic.utils.StringUtils;
-import in.androidtweak.inputmethod.indic.utils.SubtypeLocaleUtils;
-import in.androidtweak.inputmethod.indic.utils.XmlParseUtils;
+import org.smc.inputmethod.indic.Constants;
+import org.smc.inputmethod.indic.R;
+import org.smc.inputmethod.indic.utils.ResourceUtils;
+import org.smc.inputmethod.indic.utils.RunInLocale;
+import org.smc.inputmethod.indic.utils.StringUtils;
+import org.smc.inputmethod.indic.utils.SubtypeLocaleUtils;
+import org.smc.inputmethod.indic.utils.XmlParseUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<in.androidtweak.inputmethod.research.FeedbackLayout
+<org.smc.inputmethod.research.FeedbackLayout
      xmlns:android="http://schemas.android.com/apk/res/android"
      android:layout_width="match_parent"
      android:layout_height="wrap_content"
@@ -24,8 +24,8 @@
 
     <fragment
           android:id="@+id/research_feedback_fragment"
-          android:name="in.androidtweak.inputmethod.research.FeedbackFragment"
+          android:name="org.smc.inputmethod.research.FeedbackFragment"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
     />
-</in.androidtweak.inputmethod.research.FeedbackLayout>
+</org.smc.inputmethod.research.FeedbackLayout>

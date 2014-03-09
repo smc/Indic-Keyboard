@@ -19,7 +19,7 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/in.androidtweak.inputmethod.indic"
+    xmlns:latin="http://schemas.android.com/apk/res/org.smc.inputmethod.indic"
 >
     <Row
         latin:keyWidth="10%p"
