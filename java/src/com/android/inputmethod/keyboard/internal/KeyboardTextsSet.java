@@ -444,6 +444,42 @@ public final class KeyboardTextsSet {
         /* 149 */ "!icon/emoji_key|!code/key_emoji",
     };
 
+    /* Language as: Assamese */
+    private static final String[] LANGUAGE_as = {
+        /* 0~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* ~44 */
+        /* 45 */ "\u0985",
+        /* 46~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null,
+        /* ~62 */
+        /* 63 */ "\u09E7",
+        /* 64 */ "\u09E8",
+        /* 65 */ "\u09E9",
+        /* 66 */ "\u09EA",
+        /* 67 */ "\u09EB",
+        /* 68 */ "\u09EC",
+        /* 69 */ "\u09ED",
+        /* 70 */ "\u09EE",
+        /* 71 */ "\u09EF",
+        /* 72 */ "\u09E6",
+        /* 73 */ "\u09E7\u09E8\u09E9",
+        /* 74 */ null,
+        /* 75 */ "1",
+        /* 76 */ "2",
+        /* 77 */ "3",
+        /* 78 */ "4",
+        /* 79 */ "5",
+        /* 80 */ "6",
+        /* 81 */ "7",
+        /* 82 */ "8",
+        /* 83 */ "9",
+        /* 84 */ "0",
+    };
+
     /* Language bn: Bengali */
     private static final String[] LANGUAGE_bn = {
         /* 0~ */
@@ -710,6 +746,78 @@ public final class KeyboardTextsSet {
         /* 84 */ "0",
     };
 
+    /* Language or: Oriya */
+    private static final String[] LANGUAGE_or = {
+        /* 0~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* ~44 */
+        /* 45 */ "\u0B05",
+        /* 46~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null,
+        /* ~62 */
+        /* 63 */ "\u0B67",
+        /* 64 */ "\u0B68",
+        /* 65 */ "\u0B69",
+        /* 66 */ "\u0B6A",
+        /* 67 */ "\u0B6B",
+        /* 68 */ "\u0B6C",
+        /* 69 */ "\u0B6D",
+        /* 70 */ "\u0B6E",
+        /* 71 */ "\u0B6F",
+        /* 72 */ "\u0B66",
+        /* 73 */ "\u0B67\u0B68\u0B69",
+        /* 74 */ null,
+        /* 75 */ "1",
+        /* 76 */ "2",
+        /* 77 */ "3",
+        /* 78 */ "4",
+        /* 79 */ "5",
+        /* 80 */ "6",
+        /* 81 */ "7",
+        /* 82 */ "8",
+        /* 83 */ "9",
+        /* 84 */ "0",
+    };
+
+    /* Language pa: Panjabi */
+    private static final String[] LANGUAGE_pa = {
+        /* 0~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* ~44 */
+        /* 45 */ "\u0A05",
+        /* 46~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null,
+        /* ~62 */
+        /* 63 */ "\u0A67",
+        /* 64 */ "\u0A68",
+        /* 65 */ "\u0A69",
+        /* 66 */ "\u0A6A",
+        /* 67 */ "\u0A6B",
+        /* 68 */ "\u0A6C",
+        /* 69 */ "\u0A6D",
+        /* 70 */ "\u0A6E",
+        /* 71 */ "\u0A6F",
+        /* 72 */ "\u0A66",
+        /* 73 */ "\u0A67\u0A68\u0A69",
+        /* 74 */ null,
+        /* 75 */ "1",
+        /* 76 */ "2",
+        /* 77 */ "3",
+        /* 78 */ "4",
+        /* 79 */ "5",
+        /* 80 */ "6",
+        /* 81 */ "7",
+        /* 82 */ "8",
+        /* 83 */ "9",
+        /* 84 */ "0",
+    };
+
     /* Language ta: Tamil */
     private static final String[] LANGUAGE_ta = {
         /* 0~ */
@@ -917,12 +1025,15 @@ public final class KeyboardTextsSet {
 
     private static final Object[] LANGUAGES_AND_TEXTS = {
         "DEFAULT", LANGUAGE_DEFAULT, /* default */
+        "as", LANGUAGE_as, /* Assamese */
         "bn", LANGUAGE_bn, /* Bengali */
         "en", LANGUAGE_en, /* English */
         "hi", LANGUAGE_hi, /* Hindi */
         "kn", LANGUAGE_kn, /* Kannada */
         "ml", LANGUAGE_ml, /* Malayalam */
         "ne", LANGUAGE_ne, /* Nepali */
+        "or", LANGUAGE_or, /* Oriya */
+        "pa", LANGUAGE_pa, /* Panjabi */
         "ta", LANGUAGE_ta, /* Tamil */
         "te", LANGUAGE_te, /* Telugu */
         "zz", LANGUAGE_zz, /* Alphabet */
