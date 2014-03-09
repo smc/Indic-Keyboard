@@ -180,6 +180,11 @@
 
     <!-- Punjabi -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_pa"
+            android:imeSubtypeLocale="pa"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=punjabi,EmojiCapable" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_pa_inscript"
             android:imeSubtypeLocale="pa"
             android:imeSubtypeMode="keyboard"
