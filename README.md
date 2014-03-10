@@ -12,7 +12,7 @@ This keyboard is developed with the support of DIT R & D Project of ICFOSS
 * Bengali
 * Gujarati
 * Hindi
-* Kannadda
+* Kannada
 * Malayalam
 * Marathi
 * Nepali
