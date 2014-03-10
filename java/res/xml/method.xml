@@ -146,20 +146,6 @@
             android:imeSubtypeLocale="ne"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=nepali_traditional,EmojiCapable" />
-
-    <!-- Nepali -->
-    <subtype android:icon="@drawable/ic_ime_switcher_dark"
-            android:label="@string/keyboard_name_ne"
-            android:subtypeId="0xd80a4cee"
-            android:imeSubtypeLocale="ne"
-            android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=nepali_romanized,EmojiCapable" />
-    <subtype android:icon="@drawable/ic_ime_switcher_dark"
-            android:label="@string/keyboard_name_ne_traditional"
-            android:subtypeId="0x5fafea88"
-            android:imeSubtypeLocale="ne"
-            android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=nepali_traditional,EmojiCapable" />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_ne_transliteration"
             android:imeSubtypeLocale="ne"
