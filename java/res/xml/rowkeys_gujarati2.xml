@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<!--
+/*
+**
+** Copyright 2014, Jishnu Mohan <jishnu7@gmail.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/org.smc.inputmethod.indic"
  >
@@ -7,82 +26,107 @@
         <case
             latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
             >
-            <!-- A: aa matra, aa, short a -->
+            <!--A આ GUJARATI LETTER AA-->
             <Key
-                latin:keyLabel="&#x0A93;"
+                latin:keyLabel="&#x0A86;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- S: sa, sha -->
+
+            <!--S શ GUJARATI LETTER SHA-->
             <Key
-                latin:keyLabel="&#x0A8F;"
+                latin:keyLabel="&#x0AB6;"
+                latin:moreKeys="&#x0AB6;&#x0ACD;&#x0AB0;"
+                latin:keyHintLabel="&#x0AB6;&#x0ACD;&#x0AB0;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- D: dental da, dha -->
+
+            <!--D ધ GUJARATI LETTER DHA-->
+            <!-- ઢ GUJARATI LETTER DDHA-->
+            <Key
+                latin:keyLabel="&#x0AA7;"
+                latin:moreKeys="&#x0AA2;"
+                latin:keyHintLabel="&#x0AA2;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--F અ GUJARATI LETTER A-->
             <Key
                 latin:keyLabel="&#x0A85;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- F: virama, vocalic RR matra, vocalic RR -->
+
+            <!--G ઘ GUJARATI LETTER GHA-->
             <Key
-                latin:keyLabel="&#x0A87;"
+                latin:keyLabel="&#x0A98;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- G: ga, gha -->
+
+            <!--H ઃ GUJARATI SIGN VISARGA-->
             <Key
-                latin:keyLabel="&#x0A89;"
+                latin:keyLabel="&#x0A83;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- H: ha, visarga, jihvanuliya, upadhmaniya -->
+
+            <!--J ઝ GUJARATI LETTER JHA-->
             <Key
-                latin:keyLabel="&#x0AAB;"
+                latin:keyLabel="&#x0A9D;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- J: ja, jha -->
-            <Key
-                latin:keyLabel="&#x0AB0;"
-                latin:keyLabelFlags="fontNormal" />
-            <!-- K: ka, kha -->
+
+            <!--K ખ GUJARATI LETTER KHA-->
             <Key
                 latin:keyLabel="&#x0A96;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- L: la, lla, vocalic L matra, vocalic L -->
+
+            <!--L ળ GUJARATI LETTER LLA-->
             <Key
-                latin:keyLabel="&#x0AA5;"
+                latin:keyLabel="&#x0AB3;"
                 latin:keyLabelFlags="fontNormal" />
         </case>
 
         <default>
-            <!-- A: aa matra, aa, short a -->
+            <!--a ા GUJARATI VOWEL SIGN AA-->
             <Key
-                latin:keyLabel="&#x0ACB;"
+                latin:keyLabel="&#x0ABE;"
                 latin:keyLabelFlags="fontNormal" />
-            <!--  S: sa, sha -->
+
+            <!--s સ GUJARATI LETTER SA-->
             <Key
-                latin:keyLabel="&#x0AC7;"
+                latin:keyLabel="&#x0AB8;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- D: dental da, dha -->
+
+            <!--d દ GUJARATI LETTER DA-->
+            <!-- ડ GUJARATI LETTER DDA-->
+            <Key
+                latin:keyLabel="&#x0AA6;"
+                latin:moreKeys="&#x0AA1;"
+                latin:keyHintLabel="&#x0AA1;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--f ્ GUJARATI SIGN VIRAMA-->
             <Key
                 latin:keyLabel="&#x0ACD;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- F: virama, vocalic RR matra, vocalic RR -->
+
+            <!--g ગ GUJARATI LETTER GA-->
             <Key
-                latin:keyLabel="&#x0ABF;"
+                latin:keyLabel="&#x0A97;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- G: ga, gha -->
+
+            <!--h હ GUJARATI LETTER HA-->
             <Key
-                latin:keyLabel="&#x0AAA;"
+                latin:keyLabel="&#x0AB9;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- H: ha, visarga, jihvanuliya, upadhmaniya -->
+
+            <!--j જ GUJARATI LETTER JA-->
             <Key
-                latin:keyLabel="&#x0AB0;"
+                latin:keyLabel="&#x0A9C;"
+                latin:moreKeys="&#x0A9C;&#x0ACD;&#x0A9E;"
+                latin:keyHintLabel="&#x0A9C;&#x0ACD;&#x0A9E;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- J: ja, jha -->
+
+            <!--k ક GUJARATI LETTER KA-->
             <Key
                 latin:keyLabel="&#x0A95;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- K: ka, kha -->
-            <Key
-                latin:keyLabel="&#x0AA4;"
-                latin:keyLabelFlags="fontNormal" />
-            <!-- L: la, lla, vocalic L matra, vocalic L -->
-            <Key
-                latin:keyLabel="&#x0A9A;"
-                latin:keyLabelFlags="fontNormal" />
 
+            <!--l લ GUJARATI LETTER LA-->
+            <Key
+                latin:keyLabel="&#x0AB2;"
+                latin:keyLabelFlags="fontNormal" />
         </default>
     </switch>
 </merge>

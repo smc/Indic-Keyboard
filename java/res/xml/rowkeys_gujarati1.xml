@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+<!--
+/*
+**
+** Copyright 2014, Jishnu Mohan <jishnu7@gmail.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/org.smc.inputmethod.indic"
  >
@@ -7,110 +26,139 @@
         <case
             latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
             >
-            <!-- U+0C9F: "ಠ" kannada TTA
-                 +0CA0: "ಠ   Kannada TTHA  -->
+            <!--Q ઔ GUJARATI LETTER AU-->
             <Key
                 latin:keyLabel="&#x0A94;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- U+0CA1: "ಡ" kannada DA
-                 +0CA2: "ಢ"   Kannada DHA  -->
-            <Key
-                latin:keyLabel="&#x0A90;"
-                latin:keyLabelFlags="fontNormal" />
-            <!-- E: matras, short E, long E
-                 Vowels and Consonats  -->
-            <Key
-                latin:keyLabel="&#x0A86;"
-                latin:keyLabelFlags="fontNormal" />
-            <!-- R: ra, vocalic R matra, vocalic R, RRA
-                 Vowels and Consonats  -->
-            <Key
-                latin:keyLabel="&#x0A88;"
 
-                latin:keyLabelFlags="fontNormal" />
-            <!-- T: dental ta, tha -->
+            <!--W ઠ GUJARATI LETTER TTHA-->
             <Key
-                latin:keyLabel="&#x0A8A;"
+                latin:keyLabel="&#x0AA0;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- // Y: ya, ai matra, ai -->
-            <Key
-                latin:keyLabel="&#x0AAD;"
-                latin:keyLabelFlags="fontNormal" />
-            <!-- // U: matras, u, uu -->
-            <Key
-                latin:keyLabel="&#x0A99;"
-                latin:keyLabelFlags="fontNormal" />
-            <!-- // // I: matras, i, ii -->
-            <Key
-                latin:keyLabel="&#x0A98;"
 
-                latin:keyLabelFlags="fontNormal" />
-            <!--  // O: matras, short o, long o -->
+            <!--E ૈ GUJARATI VOWEL SIGN AI-->
+            <!-- ઐ GUJARATI LETTER AI-->
             <Key
-                latin:keyLabel="&#x0AA7;"
+                latin:keyLabel="&#x0AC8;"
+                latin:moreKeys="&#x0A90;"
+                latin:keyHintLabel="&#x0A90;"
                 latin:keyLabelFlags="fontNormal" />
-            <!--  // O: P: pa, pha -->
+
+            <!--R ૃ GUJARATI VOWEL SIGN VOCALIC R-->
+            <!-- ઋ GUJARATI LETTER VOCALIC R-->
             <Key
-                latin:keyLabel="&#x0A9D;"
+                latin:keyLabel="&#x0AC3;"
+                latin:moreKeys="&#x0A8B;"
+                latin:keyHintLabel="&#x0A8B;"
                 latin:keyLabelFlags="fontNormal" />
+
+            <!--T થ GUJARATI LETTER THA-->
             <Key
-                latin:keyLabel="&#x0AA2;"
+                latin:keyLabel="&#x0AA5;"
                 latin:keyLabelFlags="fontNormal" />
+
+            <!--Y ય઼  -->
             <Key
-                latin:keyLabel="&#x0A9E;"
+                latin:keyLabel="&#x0AAF;&#x0ABC;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--U ૂ GUJARATI VOWEL SIGN UU-->
+            <!-- ઊ GUJARATI LETTER UU-->
+            <Key
+                latin:keyLabel="&#x0AC2;"
+                latin:moreKeys="&#x0A8A;"
+                latin:keyHintLabel="&#x0A8A;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--I ી GUJARATI VOWEL SIGN II-->
+            <!-- ઈGUJARATI LETTER II', -->
+            <Key
+                latin:keyLabel="&#x0AC0;"
+                latin:moreKeys="&#x0A88;"
+                latin:keyHintLabel="&#x0A88;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--O ૌ GUJARATI VOWEL SIGN AU-->
+            <Key
+                latin:keyLabel="&#x0ACC;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--P ફ GUJARATI LETTER PHA-->
+            <Key
+                latin:keyLabel="&#x0AAB;"
                 latin:keyLabelFlags="fontNormal" />
         </case>
 
         <default>
-            <!-- U+0C9F: "ಠ" kannada TTA
-                 +0CA0: "ಠ   Kannada TTHA  -->
+            <!--q ઓ GUJARATI LETTER O-->
             <Key
-                latin:keyLabel="&#x0ACC;"
+                latin:keyLabel="&#x0A93;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- U+0CA1: "ಡ" kannada DA
-                 +0CA2: "ಢ"   Kannada DHA  -->
+
+            <!--w ટ GUJARATI LETTER TTA-->
             <Key
-                latin:keyLabel="&#x0648;"
+                latin:keyLabel="&#x0A9F;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- E: matras, short E, long E
-                 Vowels and Consonats  -->
+
+            <!--e ે GUJARATI VOWEL SIGN E-->
+            <!-- એ GUJARATI LETTER E
+                 ઍGUJARATI VOWEL CANDRA E
+                  ૅGUJARATI VOWEL SIGN CANDRA E -->
             <Key
-                latin:keyLabel="&#x0ABE;"
+                latin:keyLabel="&#x0AC7;"
+                latin:moreKeys="&#x0A8F;, &#x0A8D;, &#x0AC5;"
+                latin:keyHintLabel="&#x0A8F;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- R: ra, vocalic R matra, vocalic R, RRA
-                 Vowels and Consonats  -->
+
+            <!--r ર GUJARATI LETTER RA-->
+            <!-- ૱ GUJARATI RUPEE SIGN-->
             <Key
-                latin:keyLabel="&#x0AC0;"
+                latin:keyLabel="&#x0AB0;"
+                latin:moreKeys="&#x0AF1;"
+                latin:keyHintLabel="&#x0AF1;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- T: dental ta, tha -->
+
+            <!--t ત GUJARATI LETTER TA-->
             <Key
-                latin:keyLabel="&#x0AC2;"
+                latin:keyLabel="&#x0AA4;"
+                latin:moreKeys="&#x0AA4;&#x0ACD;&#x0AB0;"
+                latin:keyHintLabel="&#x0AA4;&#x0ACD;&#x0AB0;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- // Y: ya, ai matra, ai -->
+
+            <!--y ય GUJARATI LETTER YA-->
             <Key
-                latin:keyLabel="&#x0AAC;"
+                latin:keyLabel="&#x0AAF;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- // U: matras, u, uu -->
+
+            <!--u ુ GUJARATI VOWEL SIGN U-->
+            <!-- ઉGUJARATI LETTER U -->
             <Key
-                latin:keyLabel="&#x0AB9;"
+                latin:keyLabel="&#x0AC1;"
+                latin:moreKeys="&#x0A89;"
+                latin:keyHintLabel="&#x0A89;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- // // I: matras, i, ii -->
+
+            <!--i િ GUJARATI VOWEL SIGN I-->
+            <!-- ઇ GUJARATI LETTER I-->
             <Key
-                latin:keyLabel="&#x0A97;"
+                latin:keyLabel="&#x0ABF;"
+                latin:moreKeys="&#x0A87;"
+                latin:keyHintLabel="&#x0A87;"
                 latin:keyLabelFlags="fontNormal" />
-            <!--  // O: matras, short o, long o -->
+
+            <!--o ો GUJARATI VOWEL SIGN O-->
+            <!-- ઑ GUJARATI VOWEL CANDRA O
+                 ૉ GUJARATI VOWEL SIGN CANDRA O-
+                 ૐ GUJARATI OM-->
             <Key
-                latin:keyLabel="&#x0AA6;"
+                latin:keyLabel="&#x0ACB;"
+                latin:moreKeys="&#x0A91;, &#x0AC9;, &#x0AD0;"
+                latin:keyHintLabel="&#x0A91;"
                 latin:keyLabelFlags="fontNormal" />
-            <!--  // O: P: pa, pha -->
+
+            <!--p પ GUJARATI LETTER PA-->
             <Key
-                latin:keyLabel="&#x0A9C;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keyLabel="&#x0AA1;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keyLabel="&#x0ABC;"
+                latin:keyLabel="&#x0AAA;"
                 latin:keyLabelFlags="fontNormal" />
         </default>
     </switch>
