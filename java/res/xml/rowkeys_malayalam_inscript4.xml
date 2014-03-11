@@ -32,7 +32,7 @@
             <Key
                 latin:keyLabel="&#x200b;"
                 latin:keyHintLabel="ZWS"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio|followKeyHintLabelRatio|followKeyLargeLetterRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
             <Key
                 latin:keyLabel="&#x0D23;"
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />

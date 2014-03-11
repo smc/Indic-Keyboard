@@ -107,8 +107,9 @@
                 latin:moreKeys="]"
                 latin:keyHintLabel="ZWJ" />
             <Key
-                latin:keyLabel="\\"
-                latin:additionalMoreKeys="\\|"
+                latin:keyLabel="&#x200c;"
+                latin:moreKeys="\\"
+                latin:keyHintLabel="ZWNJ"
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
          </default>
     </switch>
