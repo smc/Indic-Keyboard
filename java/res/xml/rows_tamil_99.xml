@@ -19,7 +19,7 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/org.smc.inputmethod.indic"
+    xmlns:latin="http://schemas.android.com/apk/res/org.icfoss.inputmethod.indic"
 >
     <include latin:keyboardLayout="@xml/key_styles_common" />
     <Row latin:keyWidth="8.3%p" >

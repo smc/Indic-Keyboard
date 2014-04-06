@@ -18,8 +18,8 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.content.res.TypedArray;
 
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.utils.ResizableIntArray;
+import org.icfoss.inputmethod.indic.R;
+import org.icfoss.inputmethod.indic.utils.ResizableIntArray;
 
 public final class GestureStrokeWithPreviewPoints extends GestureStroke {
     public static final int PREVIEW_CAPACITY = 256;

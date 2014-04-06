@@ -16,8 +16,8 @@
 
 package com.android.inputmethod.latin.makedict;
 
-import org.smc.inputmethod.annotations.UsedForTesting;
-import org.smc.inputmethod.indic.utils.CollectionUtils;
+import org.icfoss.inputmethod.annotations.UsedForTesting;
+import org.icfoss.inputmethod.indic.utils.CollectionUtils;
 
 import java.io.File;
 import java.io.FileInputStream;

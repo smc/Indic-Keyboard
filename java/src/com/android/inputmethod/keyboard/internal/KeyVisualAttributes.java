@@ -21,8 +21,8 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.util.SparseIntArray;
 
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.utils.ResourceUtils;
+import org.icfoss.inputmethod.indic.R;
+import org.icfoss.inputmethod.indic.utils.ResourceUtils;
 
 public final class KeyVisualAttributes {
     public final Typeface mTypeface;

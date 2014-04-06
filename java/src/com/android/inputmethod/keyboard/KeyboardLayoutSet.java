@@ -16,11 +16,11 @@
 
 package com.android.inputmethod.keyboard;
 
-import static org.smc.inputmethod.indic.Constants.ImeOption.FORCE_ASCII;
-import static org.smc.inputmethod.indic.Constants.ImeOption.NO_MICROPHONE;
-import static org.smc.inputmethod.indic.Constants.ImeOption.NO_MICROPHONE_COMPAT;
-import static org.smc.inputmethod.indic.Constants.ImeOption.NO_SETTINGS_KEY;
-import static org.smc.inputmethod.indic.Constants.Subtype.ExtraValue.ASCII_CAPABLE;
+import static org.icfoss.inputmethod.indic.Constants.ImeOption.FORCE_ASCII;
+import static org.icfoss.inputmethod.indic.Constants.ImeOption.NO_MICROPHONE;
+import static org.icfoss.inputmethod.indic.Constants.ImeOption.NO_MICROPHONE_COMPAT;
+import static org.icfoss.inputmethod.indic.Constants.ImeOption.NO_SETTINGS_KEY;
+import static org.icfoss.inputmethod.indic.Constants.Subtype.ExtraValue.ASCII_CAPABLE;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -33,18 +33,18 @@ import android.util.Xml;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
-import org.smc.inputmethod.compat.EditorInfoCompatUtils;
+import org.icfoss.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.KeysCache;
-import org.smc.inputmethod.indic.InputAttributes;
-import org.smc.inputmethod.indic.LatinImeLogger;
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.SubtypeSwitcher;
-import org.smc.inputmethod.indic.utils.CollectionUtils;
-import org.smc.inputmethod.indic.utils.InputTypeUtils;
-import org.smc.inputmethod.indic.utils.SubtypeLocaleUtils;
-import org.smc.inputmethod.indic.utils.XmlParseUtils;
+import org.icfoss.inputmethod.indic.InputAttributes;
+import org.icfoss.inputmethod.indic.LatinImeLogger;
+import org.icfoss.inputmethod.indic.R;
+import org.icfoss.inputmethod.indic.SubtypeSwitcher;
+import org.icfoss.inputmethod.indic.utils.CollectionUtils;
+import org.icfoss.inputmethod.indic.utils.InputTypeUtils;
+import org.icfoss.inputmethod.indic.utils.SubtypeLocaleUtils;
+import org.icfoss.inputmethod.indic.utils.XmlParseUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

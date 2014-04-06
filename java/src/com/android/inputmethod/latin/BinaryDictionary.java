@@ -18,12 +18,12 @@ package com.android.inputmethod.latin;
 
 import android.text.TextUtils;
 import android.util.SparseArray;
-import org.smc.inputmethod.annotations.UsedForTesting;
-import org.smc.inputmethod.indic.*;
-import org.smc.inputmethod.indic.settings.NativeSuggestOptions;
-import org.smc.inputmethod.indic.utils.CollectionUtils;
-import org.smc.inputmethod.indic.utils.JniUtils;
-import org.smc.inputmethod.indic.utils.StringUtils;
+import org.icfoss.inputmethod.annotations.UsedForTesting;
+import org.icfoss.inputmethod.indic.*;
+import org.icfoss.inputmethod.indic.settings.NativeSuggestOptions;
+import org.icfoss.inputmethod.indic.utils.CollectionUtils;
+import org.icfoss.inputmethod.indic.utils.JniUtils;
+import org.icfoss.inputmethod.indic.utils.StringUtils;
 import com.android.inputmethod.keyboard.ProximityInfo;
 
 import java.io.File;

@@ -16,15 +16,15 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import static org.smc.inputmethod.indic.Constants.CODE_OUTPUT_TEXT;
-import static org.smc.inputmethod.indic.Constants.CODE_UNSPECIFIED;
+import static org.icfoss.inputmethod.indic.Constants.CODE_OUTPUT_TEXT;
+import static org.icfoss.inputmethod.indic.Constants.CODE_UNSPECIFIED;
 
 import android.text.TextUtils;
 
-import org.smc.inputmethod.indic.Constants;
-import org.smc.inputmethod.indic.LatinImeLogger;
-import org.smc.inputmethod.indic.utils.CollectionUtils;
-import org.smc.inputmethod.indic.utils.StringUtils;
+import org.icfoss.inputmethod.indic.Constants;
+import org.icfoss.inputmethod.indic.LatinImeLogger;
+import org.icfoss.inputmethod.indic.utils.CollectionUtils;
+import org.icfoss.inputmethod.indic.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

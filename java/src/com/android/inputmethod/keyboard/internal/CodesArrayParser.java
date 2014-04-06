@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import org.smc.inputmethod.indic.Constants;
+import org.icfoss.inputmethod.indic.Constants;
 
 import android.text.TextUtils;
 

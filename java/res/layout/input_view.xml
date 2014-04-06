@@ -18,7 +18,7 @@
 */
 -->
 
-<org.smc.inputmethod.indic.InputView
+<org.icfoss.inputmethod.indic.InputView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
 
         <!-- To ensure that key preview popup is correctly placed when the current system locale is
              one of RTL locales, layoutDirection="ltr" is needed in the SDK version 17+. -->
-        <org.smc.inputmethod.indic.suggestions.SuggestionStripView
+        <org.icfoss.inputmethod.indic.suggestions.SuggestionStripView
             android:id="@+id/suggestion_strip_view"
             android:layoutDirection="ltr"
             android:layout_width="match_parent"
@@ -57,4 +57,4 @@
     </LinearLayout>
     <include
         layout="@layout/emoji_palettes_view" />
-</org.smc.inputmethod.indic.InputView>
+</org.icfoss.inputmethod.indic.InputView>

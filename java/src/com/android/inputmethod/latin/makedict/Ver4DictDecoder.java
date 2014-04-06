@@ -16,14 +16,14 @@
 
 package com.android.inputmethod.latin.makedict;
 
-import org.smc.inputmethod.annotations.UsedForTesting;
+import org.icfoss.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.CharEncoding;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
 import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
-import org.smc.inputmethod.indic.utils.CollectionUtils;
+import org.icfoss.inputmethod.indic.utils.CollectionUtils;
 
 import android.util.Log;
 

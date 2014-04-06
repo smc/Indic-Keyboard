@@ -20,7 +20,7 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/org.smc.inputmethod.indic"
+    xmlns:latin="http://schemas.android.com/apk/res/org.icfoss.inputmethod.indic"
  >
     <switch>
       <case

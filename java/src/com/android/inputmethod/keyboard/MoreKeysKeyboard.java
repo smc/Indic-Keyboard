@@ -20,15 +20,15 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 
-import org.smc.inputmethod.annotations.UsedForTesting;
+import org.icfoss.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.internal.KeyPreviewDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.MoreKeySpec;
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.utils.StringUtils;
-import org.smc.inputmethod.indic.utils.TypefaceUtils;
+import org.icfoss.inputmethod.indic.R;
+import org.icfoss.inputmethod.indic.utils.StringUtils;
+import org.icfoss.inputmethod.indic.utils.TypefaceUtils;
 
 public final class MoreKeysKeyboard extends Keyboard {
     private final int mDefaultKeyCoordX;

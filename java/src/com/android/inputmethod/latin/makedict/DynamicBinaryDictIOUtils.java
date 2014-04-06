@@ -16,8 +16,8 @@
 
 package com.android.inputmethod.latin.makedict;
 
-import org.smc.inputmethod.annotations.UsedForTesting;
-import org.smc.inputmethod.indic.Constants;
+import org.icfoss.inputmethod.annotations.UsedForTesting;
+import org.icfoss.inputmethod.indic.Constants;
 import com.android.inputmethod.latin.makedict.BinaryDictDecoderUtils.DictBuffer;
 import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;

@@ -22,8 +22,8 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.SparseIntArray;
 
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.utils.CollectionUtils;
+import org.icfoss.inputmethod.indic.R;
+import org.icfoss.inputmethod.indic.utils.CollectionUtils;
 
 import java.util.HashMap;
 

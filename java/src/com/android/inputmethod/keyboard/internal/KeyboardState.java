@@ -19,8 +19,8 @@ package com.android.inputmethod.keyboard.internal;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.smc.inputmethod.indic.Constants;
-import org.smc.inputmethod.indic.utils.RecapitalizeStatus;
+import org.icfoss.inputmethod.indic.Constants;
+import org.icfoss.inputmethod.indic.utils.RecapitalizeStatus;
 
 /**
  * Keyboard state machine.

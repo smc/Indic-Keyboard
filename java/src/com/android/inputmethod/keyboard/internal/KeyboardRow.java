@@ -22,9 +22,9 @@ import android.util.Xml;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.utils.CollectionUtils;
-import org.smc.inputmethod.indic.utils.ResourceUtils;
+import org.icfoss.inputmethod.indic.R;
+import org.icfoss.inputmethod.indic.utils.CollectionUtils;
+import org.icfoss.inputmethod.indic.utils.ResourceUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 

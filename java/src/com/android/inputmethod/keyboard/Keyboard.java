@@ -21,8 +21,8 @@ import android.util.SparseArray;
 import com.android.inputmethod.keyboard.internal.KeyVisualAttributes;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
-import org.smc.inputmethod.indic.Constants;
-import org.smc.inputmethod.indic.utils.CollectionUtils;
+import org.icfoss.inputmethod.indic.Constants;
+import org.icfoss.inputmethod.indic.utils.CollectionUtils;
 
 /**
  * Loads an XML description of a keyboard and stores the attributes of the keys. A keyboard

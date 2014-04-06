@@ -26,19 +26,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
-import org.smc.inputmethod.accessibility.AccessibleKeyboardViewProxy;
+import org.icfoss.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet.KeyboardLayoutSetException;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
-import org.smc.inputmethod.indic.InputView;
-import org.smc.inputmethod.indic.LatinIME;
-import org.smc.inputmethod.indic.LatinImeLogger;
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.RichInputMethodManager;
-import org.smc.inputmethod.indic.SubtypeSwitcher;
-import org.smc.inputmethod.indic.WordComposer;
-import org.smc.inputmethod.indic.settings.Settings;
-import org.smc.inputmethod.indic.settings.SettingsValues;
-import org.smc.inputmethod.indic.utils.ResourceUtils;
+import org.icfoss.inputmethod.indic.InputView;
+import org.icfoss.inputmethod.indic.LatinIME;
+import org.icfoss.inputmethod.indic.LatinImeLogger;
+import org.icfoss.inputmethod.indic.R;
+import org.icfoss.inputmethod.indic.RichInputMethodManager;
+import org.icfoss.inputmethod.indic.SubtypeSwitcher;
+import org.icfoss.inputmethod.indic.WordComposer;
+import org.icfoss.inputmethod.indic.settings.Settings;
+import org.icfoss.inputmethod.indic.settings.SettingsValues;
+import org.icfoss.inputmethod.indic.utils.ResourceUtils;
 
 public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private static final String TAG = KeyboardSwitcher.class.getSimpleName();

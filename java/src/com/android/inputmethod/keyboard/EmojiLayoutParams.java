@@ -16,8 +16,8 @@
 
 package com.android.inputmethod.keyboard;
 
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.utils.ResourceUtils;
+import org.icfoss.inputmethod.indic.R;
+import org.icfoss.inputmethod.indic.utils.ResourceUtils;
 
 import android.content.res.Resources;
 import android.support.v4.view.ViewPager;

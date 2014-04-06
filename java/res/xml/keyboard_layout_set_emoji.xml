@@ -19,7 +19,7 @@
 -->
 
 <KeyboardLayoutSet
-    xmlns:latin="http://schemas.android.com/apk/res/org.smc.inputmethod.indic">
+    xmlns:latin="http://schemas.android.com/apk/res/org.icfoss.inputmethod.indic">
     <Element
         latin:elementName="emojiRecents"
         latin:elementKeyboard="@xml/kbd_emoji_recents" />

@@ -16,8 +16,8 @@
 
 package com.android.inputmethod.keyboard;
 
-import org.smc.inputmethod.indic.Constants;
-import org.smc.inputmethod.indic.InputPointers;
+import org.icfoss.inputmethod.indic.Constants;
+import org.icfoss.inputmethod.indic.InputPointers;
 
 public interface KeyboardActionListener {
     /**

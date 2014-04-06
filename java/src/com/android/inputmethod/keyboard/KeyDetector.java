@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard;
 
-import org.smc.inputmethod.indic.Constants;
+import org.icfoss.inputmethod.indic.Constants;
 
 
 public class KeyDetector {

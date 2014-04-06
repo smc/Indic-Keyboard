@@ -26,9 +26,9 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.android.inputmethod.keyboard.PointerTracker;
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.SuggestedWords;
-import org.smc.inputmethod.indic.utils.CoordinateUtils;
+import org.icfoss.inputmethod.indic.R;
+import org.icfoss.inputmethod.indic.SuggestedWords;
+import org.icfoss.inputmethod.indic.utils.CoordinateUtils;
 
 /**
  * The class for single gesture preview text. The class for multiple gesture preview text will be

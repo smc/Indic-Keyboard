@@ -19,7 +19,7 @@ package com.android.inputmethod.keyboard.internal;
 import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 
-import org.smc.inputmethod.indic.utils.ResourceUtils;
+import org.icfoss.inputmethod.indic.utils.ResourceUtils;
 
 public final class KeyDrawParams {
     public Typeface mTypeface;

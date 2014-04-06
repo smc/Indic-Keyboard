@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import org.smc.inputmethod.annotations.UsedForTesting;
+import org.icfoss.inputmethod.annotations.UsedForTesting;
 
 import android.util.Log;
 

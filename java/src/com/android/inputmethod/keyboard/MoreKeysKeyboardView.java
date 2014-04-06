@@ -22,9 +22,9 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
-import org.smc.inputmethod.indic.Constants;
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.utils.CoordinateUtils;
+import org.icfoss.inputmethod.indic.Constants;
+import org.icfoss.inputmethod.indic.R;
+import org.icfoss.inputmethod.indic.utils.CoordinateUtils;
 
 /**
  * A view that renders a virtual {@link MoreKeysKeyboard}. It handles rendering of keys and

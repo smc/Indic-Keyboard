@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.latin;
 
-import org.smc.inputmethod.indic.utils.JniUtils;
+import org.icfoss.inputmethod.indic.utils.JniUtils;
 
 import java.util.Locale;
 

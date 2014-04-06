@@ -16,16 +16,16 @@
 
 package com.android.inputmethod.keyboard;
 
-import static org.smc.inputmethod.indic.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
+import static org.icfoss.inputmethod.indic.Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET;
 
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
-import org.smc.inputmethod.compat.EditorInfoCompatUtils;
-import org.smc.inputmethod.indic.utils.InputTypeUtils;
-import org.smc.inputmethod.indic.utils.SubtypeLocaleUtils;
+import org.icfoss.inputmethod.compat.EditorInfoCompatUtils;
+import org.icfoss.inputmethod.indic.utils.InputTypeUtils;
+import org.icfoss.inputmethod.indic.utils.SubtypeLocaleUtils;
 
 import java.util.Arrays;
 import java.util.Locale;

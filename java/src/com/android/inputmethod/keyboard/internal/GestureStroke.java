@@ -19,10 +19,10 @@ package com.android.inputmethod.keyboard.internal;
 import android.content.res.TypedArray;
 import android.util.Log;
 
-import org.smc.inputmethod.indic.InputPointers;
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.utils.ResizableIntArray;
-import org.smc.inputmethod.indic.utils.ResourceUtils;
+import org.icfoss.inputmethod.indic.InputPointers;
+import org.icfoss.inputmethod.indic.R;
+import org.icfoss.inputmethod.indic.utils.ResizableIntArray;
+import org.icfoss.inputmethod.indic.utils.ResourceUtils;
 
 public class GestureStroke {
     private static final String TAG = GestureStroke.class.getSimpleName();

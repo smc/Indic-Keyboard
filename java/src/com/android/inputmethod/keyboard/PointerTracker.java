@@ -23,22 +23,22 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import org.smc.inputmethod.accessibility.AccessibilityUtils;
+import org.icfoss.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.keyboard.internal.GestureStroke;
 import com.android.inputmethod.keyboard.internal.GestureStroke.GestureStrokeParams;
 import com.android.inputmethod.keyboard.internal.GestureStrokeWithPreviewPoints;
 import com.android.inputmethod.keyboard.internal.GestureStrokeWithPreviewPoints.GestureStrokePreviewParams;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
-import org.smc.inputmethod.indic.Constants;
-import org.smc.inputmethod.indic.InputPointers;
-import org.smc.inputmethod.indic.LatinImeLogger;
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.define.ProductionFlag;
-import org.smc.inputmethod.indic.settings.Settings;
-import org.smc.inputmethod.indic.utils.CollectionUtils;
-import org.smc.inputmethod.indic.utils.CoordinateUtils;
-import org.smc.inputmethod.indic.utils.ResourceUtils;
-import org.smc.inputmethod.research.ResearchLogger;
+import org.icfoss.inputmethod.indic.Constants;
+import org.icfoss.inputmethod.indic.InputPointers;
+import org.icfoss.inputmethod.indic.LatinImeLogger;
+import org.icfoss.inputmethod.indic.R;
+import org.icfoss.inputmethod.indic.define.ProductionFlag;
+import org.icfoss.inputmethod.indic.settings.Settings;
+import org.icfoss.inputmethod.indic.utils.CollectionUtils;
+import org.icfoss.inputmethod.indic.utils.CoordinateUtils;
+import org.icfoss.inputmethod.indic.utils.ResourceUtils;
+import org.icfoss.inputmethod.research.ResearchLogger;
 
 import java.util.ArrayList;
 

@@ -14,7 +14,7 @@
      limitations under the License.
 -->
 
-<org.smc.inputmethod.research.FeedbackLayout
+<org.icfoss.inputmethod.research.FeedbackLayout
      xmlns:android="http://schemas.android.com/apk/res/android"
      android:layout_width="match_parent"
      android:layout_height="wrap_content"
@@ -24,8 +24,8 @@
 
     <fragment
           android:id="@+id/research_feedback_fragment"
-          android:name="org.smc.inputmethod.research.FeedbackFragment"
+          android:name="org.icfoss.inputmethod.research.FeedbackFragment"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
     />
-</org.smc.inputmethod.research.FeedbackLayout>
+</org.icfoss.inputmethod.research.FeedbackLayout>

@@ -16,8 +16,8 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import org.smc.inputmethod.indic.Constants;
-import org.smc.inputmethod.indic.utils.CollectionUtils;
+import org.icfoss.inputmethod.indic.Constants;
+import org.icfoss.inputmethod.indic.utils.CollectionUtils;
 
 import java.util.HashMap;
 

@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard;
 
-import org.smc.inputmethod.indic.R;
+import org.icfoss.inputmethod.indic.R;
 
 import android.content.Context;
 import android.graphics.Canvas;

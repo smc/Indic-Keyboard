@@ -18,7 +18,7 @@ package com.android.inputmethod.keyboard.internal;
 
 import android.util.Log;
 
-import org.smc.inputmethod.indic.utils.CollectionUtils;
+import org.icfoss.inputmethod.indic.utils.CollectionUtils;
 
 import java.util.ArrayList;
 
