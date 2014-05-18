@@ -42,5 +42,7 @@ This project is originally initiated by Jishnu Mohan in 2012 as part of his `and
 In 2013 the project got supported by SMC and ICFOSS through a DIT R&D project on android.
 Anivar Aravind co-ordinated the project for ICFOSS and Hiran Venugopalan designed the icon.
 
+This project uses code from jquery.ime project of Wikimedia and some of the layouts are ported from there.
+
 ## TODO
 
