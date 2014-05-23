@@ -143,18 +143,14 @@
                 latin:keyLabel="&#x0C1C;"
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
 
-
-
-
-
+            <!--[ TELUGU LETTER DDA-->
             <Key
-                latin:keyLabel="&#x0CA1;"
+                latin:keyLabel="&#x0C21;"
                 latin:moreKeys="["
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
 
             <Key
-                latin:keyLabel="&#x0CBC;"
-                latin:moreKeys="]"
+                latin:keyLabel="]"
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
 
             <Key
