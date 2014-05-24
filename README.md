@@ -19,6 +19,7 @@ This keyboard requires Android 4.1+.
 * Gujarati
 * Hindi
 * Kannada
+* Kashmiri/Kashur
 * Malayalam
 * Marathi
 * Nepali

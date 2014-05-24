@@ -109,6 +109,13 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=kn-transliteration" />
 
+    <!-- Kashmiri / Kashur -->
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_ks_transliteration"
+            android:imeSubtypeLocale="ks"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=ks-transliteration" />
+
     <!-- Malayalam -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_ml_lalitha"
