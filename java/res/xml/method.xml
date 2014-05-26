@@ -115,6 +115,11 @@
             android:imeSubtypeLocale="ks"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=ks-transliteration" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_kn_inscript"
+            android:imeSubtypeLocale="ks"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=kashmiri_inscript,EmojiCapable" />
 
     <!-- Malayalam -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Author: Jishnu Mohan <jishnu7@gmail.com>
+** Copyright © 2014 Jishnu Mohan
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge xmlns:latin="http://schemas.android.com/apk/res/in.androidtweak.inputmethod.indic">
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted">
+            <!--A ओ DEVANAGARI LETTER O-->
+            <Key
+                latin:keyLabel="&#x0913;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!--S ए DEVANAGARI LETTER E-->
+            <Key
+                latin:keyLabel="&#x090F;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!--D अ DEVANAGARI LETTER A-->
+            <Key
+                latin:keyLabel="&#x0905;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!--F इ DEVANAGARI LETTER I-->
+            <Key
+                latin:keyLabel="&#x0907;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!--H फ DEVANAGARI LETTER PHA-->
+            <Key
+                latin:keyLabel="&#x092B;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!--J ऱ DEVANAGARI LETTER RRA-->
+            <Key
+                latin:keyLabel="&#x0931;"
+                latin:moreKeys=":"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!--K ख DEVANAGARI LETTER KHA-->
+            <Key
+                latin:keyLabel="&#x0916;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!--L थ DEVANAGARI LETTER THA-->
+            <Key
+                latin:keyLabel="&#x0925;"
+                latin:moreKeys="&quot;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!--" ठ DEVANAGARI LETTER TTHA-->
+            <Key
+                latin:keyLabel="&#x0920;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+        </case>
+
+        <default>
+            <!--a ो DEVANAGARI VOWEL SIGN O-->
+            <Key
+                latin:keyLabel="&#x094B;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!--s े DEVANAGARI VOWEL SIGN E-->
+            <Key
+                latin:keyLabel="&#x0947;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!--d ् DEVANAGARI SIGN VIRAMA-->
+            <Key
+                latin:keyLabel="&#x094D;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!--f ि DEVANAGARI VOWEL SIGN I-->
+            <Key
+                latin:keyLabel="&#x093F;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!--h प DEVANAGARI LETTER PA-->
+            <Key
+                latin:keyLabel="&#x092A;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!--j र DEVANAGARI LETTER RA-->
+            <Key
+                latin:keyLabel="&#x0930;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!--k क DEVANAGARI LETTER KA-->
+            <Key
+                latin:keyLabel="&#x0915;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!--l त DEVANAGARI LETTER TA-->
+            <Key
+                latin:keyLabel="&#x0924;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!--; च DEVANAGARI LETTER CA-->
+            <Key
+                latin:keyLabel="&#x091A;"
+                latin:moreKeys=";"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!--' ट DEVANAGARI LETTER TTA-->
+            <Key
+                latin:keyLabel="&#x091F;"
+                latin:moreKeys="'"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+         </default>
+    </switch>
+</merge>
