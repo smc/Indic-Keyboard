@@ -45,7 +45,6 @@
             <!--J ऱ DEVANAGARI LETTER RRA-->
             <Key
                 latin:keyLabel="&#x0931;"
-                latin:moreKeys=":"
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
             <!--K ख DEVANAGARI LETTER KHA-->
             <Key
@@ -54,11 +53,15 @@
             <!--L थ DEVANAGARI LETTER THA-->
             <Key
                 latin:keyLabel="&#x0925;"
-                latin:moreKeys="&quot;"
+                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!--:-->
+            <Key latin:keyLabel=""
+                latin:moreKeys=":"
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
             <!--" ठ DEVANAGARI LETTER TTHA-->
             <Key
                 latin:keyLabel="&#x0920;"
+                latin:moreKeys="&quot;"
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
         </case>
 
