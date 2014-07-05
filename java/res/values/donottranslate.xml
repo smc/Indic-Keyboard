@@ -122,6 +122,7 @@
     <string-array name="keyboard_color_schemes">
         <item>@string/keyboard_color_scheme_white</item>
         <item>@string/keyboard_color_scheme_blue</item>
+        <item>@string/keyboard_color_scheme_material</item>
     </string-array>
     <!-- An element must be an index of {@link KeyboardSwitcher#KEYBOARD_THEMES[]}. -->
     <string-array name="keyboard_color_schemes_values">
