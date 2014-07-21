@@ -8,12 +8,12 @@
         <item name="iconSettingsKey">@drawable/sym_keyboard_settings_lxx_dark</item>
         <item name="iconSpaceKey">@drawable/sym_keyboard_spacebar_lxx_dark</item>
         <item name="iconEnterKey">@drawable/sym_keyboard_return_lxx_dark</item>
-        <!--<item name="iconGoKey">@drawable/sym_keyboard_go_lxx_dark</item>-->
+        <item name="iconGoKey">@drawable/sym_keyboard_go_lxx_dark</item>
         <item name="iconSearchKey">@drawable/sym_keyboard_search_lxx_dark</item>
-        <!--<item name="iconSendKey">@drawable/sym_keyboard_send_lxx_dark</item>-->
-        <!--<item name="iconNextKey">@drawable/sym_keyboard_next_lxx_dark</item>-->
-        <!--<item name="iconDoneKey">@drawable/sym_keyboard_done_lxx_dark</item>-->
-        <!--<item name="iconPreviousKey">@drawable/sym_keyboard_previous_lxx_dark</item>-->
+        <item name="iconSendKey">@drawable/sym_keyboard_send_lxx_dark</item>
+        <item name="iconNextKey">@drawable/sym_keyboard_next_lxx_dark</item>
+        <item name="iconDoneKey">@drawable/sym_keyboard_done_lxx_dark</item>
+        <item name="iconPreviousKey">@drawable/sym_keyboard_previous_lxx_dark</item>
         <item name="iconTabKey">@drawable/sym_keyboard_tab_holo_dark</item>
         <item name="iconShortcutKey">@drawable/sym_keyboard_voice_lxx_dark</item>
         <item name="iconSpaceKeyForNumberLayout">@drawable/sym_keyboard_space_holo_dark</item>

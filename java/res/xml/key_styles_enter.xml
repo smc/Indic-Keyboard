@@ -282,11 +282,27 @@
                 latin:parentStyle="shiftEnterKeyStyle" />
         </case>
         <case
+            latin:imeAction="actionGo" latin:isIconDefined="go_key"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:keyIcon="!icon/go_key"
+                latin:parentStyle="defaultActionEnterKeyStyle" />
+        </case>
+        <case
             latin:imeAction="actionGo"
         >
             <key-style
                 latin:styleName="enterKeyStyle"
                 latin:keyLabel="!text/label_go_key"
+                latin:parentStyle="defaultActionEnterKeyStyle" />
+        </case>
+        <case
+            latin:imeAction="actionNext" latin:isIconDefined="next_key"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:keyIcon="!icon/next_key"
                 latin:parentStyle="defaultActionEnterKeyStyle" />
         </case>
         <case
@@ -298,6 +314,14 @@
                 latin:parentStyle="defaultActionEnterKeyStyle" />
         </case>
         <case
+            latin:imeAction="actionPrevious" latin:isIconDefined="previous_key"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:keyIcon="!icon/previous_key"
+                latin:parentStyle="defaultActionEnterKeyStyle" />
+        </case>
+        <case
             latin:imeAction="actionPrevious"
         >
             <key-style
@@ -306,11 +330,27 @@
                 latin:parentStyle="defaultActionEnterKeyStyle" />
         </case>
         <case
+            latin:imeAction="actionDone" latin:isIconDefined="done_key"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:keyIcon="!icon/done_key"
+                latin:parentStyle="defaultActionEnterKeyStyle" />
+        </case>
+        <case
             latin:imeAction="actionDone"
         >
             <key-style
                 latin:styleName="enterKeyStyle"
                 latin:keyLabel="!text/label_done_key"
+                latin:parentStyle="defaultActionEnterKeyStyle" />
+        </case>
+        <case
+            latin:imeAction="actionSend" latin:isIconDefined="send_key"
+        >
+            <key-style
+                latin:styleName="enterKeyStyle"
+                latin:keyIcon="!icon/send_key"
                 latin:parentStyle="defaultActionEnterKeyStyle" />
         </case>
         <case
