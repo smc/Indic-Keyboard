@@ -264,6 +264,7 @@
     <key-style
         latin:styleName="shiftEnterKeyStyle"
         latin:code="!code/key_shift_enter"
+        latin:backgroundType="action"
         latin:parentStyle="defaultEnterKeyStyle" />
     <key-style
         latin:styleName="defaultActionEnterKeyStyle"
@@ -279,7 +280,8 @@
         >
             <key-style
                 latin:styleName="enterKeyStyle"
-                latin:parentStyle="shiftEnterKeyStyle" />
+                latin:keyIcon="!icon/enter_key"
+                latin:parentStyle="defaultActionEnterKeyStyle" />
         </case>
         <case
             latin:imeAction="actionGo" latin:isIconDefined="go_key"
@@ -381,7 +383,8 @@
         <default>
             <key-style
                 latin:styleName="enterKeyStyle"
-                latin:parentStyle="defaultEnterKeyStyle" />
+                latin:keyIcon="!icon/enter_key"
+                latin:parentStyle="defaultActionEnterKeyStyle" />
         </default>
     </switch>
 </merge>
