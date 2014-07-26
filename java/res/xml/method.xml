@@ -205,7 +205,7 @@
             android:label="@string/keyboard_name_ta_99"
             android:imeSubtypeLocale="ta"
             android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=tamil_99,EmojiCapable" />
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=tamil_99,EmojiCapable,TransliterationMethod=ta-99" />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_ta_inscript"
             android:imeSubtypeLocale="ta"
