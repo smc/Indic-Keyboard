@@ -23,7 +23,7 @@
      of Hindi. The files named res/xml/{key,keys}_nepali*.xml have this U+25CC hack, although the
      counterpart files named res/xml-v16/{key,keys}_nepali*.xml don't have this hack. -->
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/org.smc.inputmethod.indic"
+    xmlns:latin="http://schemas.android.com/apk/res-auto"
 >
     <switch>
         <case

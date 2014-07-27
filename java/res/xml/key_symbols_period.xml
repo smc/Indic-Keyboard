@@ -19,7 +19,7 @@
 -->
 
 <merge
-    xmlns:latin="http://schemas.android.com/apk/res/org.smc.inputmethod.indic"
+    xmlns:latin="http://schemas.android.com/apk/res-auto"
 >
     <!-- U+2105: "℅" CARE OF
          U+2122: "™" TRADE MARK SIGN
