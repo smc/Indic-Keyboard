@@ -37,11 +37,9 @@ Apache License, Version 2.0
 
 ## Credits
 
-Developed with the support of DIT R & D Project undertaken by ICFOSS, Govt. of Kerala.
-
 This project is originally initiated by Jishnu Mohan in 2012 as part of his `androidtweak.in` project.
-In 2013 the project got supported by SMC and ICFOSS through a DIT R&D project on android.
-Anivar Aravind co-ordinated the project for ICFOSS and Hiran Venugopalan designed the icon.
+
+1.0 version was supported by DIT R & D Project undertaken by ICFOSS, Govt. of Kerala. Anivar Aravind co-ordinated the project for ICFOSS and Hiran Venugopalan designed the icon.
 
 This project uses code from jquery.ime project of Wikimedia and some of the layouts are ported from there.
 
