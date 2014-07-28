@@ -32,3 +32,5 @@ gradlew.bat
 *.swp
 java.iml
 *~
+
+temp/
