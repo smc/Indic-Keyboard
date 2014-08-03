@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--<style name="KeyboardIcons" />-->
+    <style name="KeyboardIcons.LXX_Dark" parent="@style/KeyboardIcons">
+        <item name="iconShiftKey">@drawable/sym_keyboard_shift_lxx_dark</item>
+        <item name="iconDeleteKey">@drawable/sym_keyboard_delete_lxx_dark</item>
+        <item name="iconSettingsKey">@drawable/sym_keyboard_settings_lxx_dark</item>
+        <item name="iconSpaceKey">@drawable/sym_keyboard_spacebar_lxx_dark</item>
+        <item name="iconEnterKey">@drawable/sym_keyboard_return_lxx_dark</item>
+        <item name="iconGoKey">@drawable/sym_keyboard_go_lxx_dark</item>
+        <item name="iconSearchKey">@drawable/sym_keyboard_search_lxx_dark</item>
+        <item name="iconSendKey">@drawable/sym_keyboard_send_lxx_dark</item>
+        <item name="iconNextKey">@drawable/sym_keyboard_next_lxx_dark</item>
+        <item name="iconDoneKey">@drawable/sym_keyboard_done_lxx_dark</item>
+        <item name="iconPreviousKey">@drawable/sym_keyboard_previous_lxx_dark</item>
+        <item name="iconTabKey">@drawable/sym_keyboard_tab_holo_dark</item>
+        <item name="iconShortcutKey">@drawable/sym_keyboard_voice_lxx_dark</item>
+        <item name="iconSpaceKeyForNumberLayout">@drawable/sym_keyboard_space_holo_dark</item>
+        <item name="iconShiftKeyShifted">@drawable/sym_keyboard_shift_locked_lxx_dark</item>
+        <item name="iconShortcutKeyDisabled">@drawable/sym_keyboard_voice_off_lxx_dark</item>
+        <item name="iconTabKeyPreview">@drawable/sym_keyboard_feedback_tab</item>
+        <item name="iconLanguageSwitchKey">@drawable/sym_keyboard_language_switch_lxx_dark</item>
+        <item name="iconZwnjKey">@drawable/sym_keyboard_zwnj_holo_dark</item>
+        <item name="iconZwjKey">@drawable/sym_keyboard_zwj_holo_dark</item>
+        <item name="iconEmojiKey">@drawable/sym_keyboard_smiley_lxx_dark</item>
+    </style>
+    <style name="KeyboardTheme.LXX_Dark" parent="@style/KeyboardIcons.LXX_Dark">
+        <item name="keyboardStyle">@style/Keyboard.LXX_Dark</item>
+        <item name="keyboardViewStyle">@style/KeyboardView.LXX_Dark</item>
+        <item name="mainKeyboardViewStyle">@style/MainKeyboardView.LXX_Dark</item>
+        <!--<item name="keyPreviewTextViewStyle">@style/KeyPreviewTextView.LXX_Dark</item>-->
+        <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.LXX_Dark</item>
+        <!--<item name="emojiTabWidgetStyle">@style/EmojiTabWidget.LXX_Dark</item>-->
+        <!--<item name="emojiCategoryPageIndicatorViewStyle">@style/EmojiCategoryPageIndicatorView.LXX_Dark</item>-->
+        <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.LXX_Dark</item>
+        <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.LXX_Dark</item>
+        <item name="suggestionStripViewStyle">@style/SuggestionStripView.LXX_Dark</item>
+        <item name="suggestionWordStyle">@style/SuggestionWord.LXX_Dark</item>
+    </style>
+    <style name="Keyboard.LXX_Dark" parent="@style/Keyboard">
+        <item name="themeId">3</item>
+        <item name="touchPositionCorrectionData">@array/touch_position_correction_data_holo</item>
+        <item name="keyboardTopPadding">@fraction/keyboard_top_padding_holo</item>
+        <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding_holo</item>
+        <item name="horizontalGap">@fraction/key_horizontal_gap_holo</item>
+        <item name="verticalGap">@fraction/key_bottom_gap_holo</item>
+    </style>
+    <style name="KeyboardView.LXX_Dark" parent="@style/KeyboardView">
+        <item name="android:background">@color/keyboard_background_lxx_dark</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_lxx_dark</item>
+        <!--<item name="functionalKeyBackground">@drawable/btn_keyboard_key_functional_lxx_dark</item>-->
+        <!--<item name="spacebarBackground">@drawable/btn_keyboard_spacebar_lxx_dark</item>-->
+        <!--<item name="spacebarIconWidthRatio">0.9</item>-->
+        <item name="keyTextShadowRadius">-1.0</item>
+        <item name="keyTypeface">normal</item>
+        <item name="keyTextColor">@color/key_text_color_lxx_dark</item>
+        <item name="keyTextInactivatedColor">@color/key_text_inactive_color_lxx_dark</item>
+        <!--<item name="functionalTextColor">@color/key_hint_letter_color_lxx_dark</item>-->
+        <item name="keyHintLetterColor">@color/key_hint_letter_color_lxx_dark</item>
+        <item name="keyHintLabelColor">@color/key_text_inactive_color_lxx_dark</item>
+        <item name="keyShiftedLetterHintInactivatedColor">@color/key_text_inactive_color_lxx_dark</item>
+        <item name="keyShiftedLetterHintActivatedColor">@color/key_text_color_lxx_dark</item>
+        <item name="keyPreviewTextColor">@color/key_text_color_lxx_dark</item>
+    </style>
+    <style name="MainKeyboardView.LXX_Dark" parent="@style/KeyboardView.LXX_Dark">
+        <item name="spacebarTextColor">@color/key_text_inactive_color_lxx_dark</item>
+        <!--<item name="SpacebarTextShadowRadius">-1.0</item>-->
+        <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_lxx_dark</item>
+        <item name="keyPreviewOffset">@dimen/key_preview_offset_holo</item>
+        <item name="gestureTrailColor">@color/highlight_color_lxx_dark</item>
+        <item name="gestureFloatingPreviewTextColor">@color/highlight_color_lxx_dark</item>
+        <item name="gestureFloatingPreviewColor">@color/gesture_floating_preview_color_lxx_dark</item>
+    </style>
+    <style name="EmojiPalettesView.LXX_Dark" parent="@style/MainKeyboardView.LXX_Dark">
+        <!--<item name="iconEmojiRecentsTab">@drawable/ic_emoji_recents_holo_dark</item>-->
+        <!--<item name="iconEmojiCategory1Tab">@drawable/ic_emoji_people_holo_dark</item>-->
+        <!--<item name="iconEmojiCategory2Tab">@drawable/ic_emoji_objects_holo_dark</item>-->
+        <!--<item name="iconEmojiCategory3Tab">@drawable/ic_emoji_nature_holo_dark</item>-->
+        <!--<item name="iconEmojiCategory4Tab">@drawable/ic_emoji_places_holo_dark</item>-->
+        <!--<item name="iconEmojiCategory5Tab">@drawable/ic_emoji_symbols_holo_dark</item>-->
+        <!--<item name="iconEmojiCategory6Tab">@drawable/ic_emoji_emoticons_holo_dark</item>-->
+        <item name="keyBackgroundEmojiFunctional">@drawable/btn_keyboard_key_functional_klp</item>
+        <item name="emojiTabLabelColor">@color/emoji_tab_label_color_holo</item>
+    </style>
+    <!--<style name="EmojiCategoryPageIndicatorView.LXX_Dark" parent="@style/EmojiCategoryPageIndicatorView">-->
+        <!--<item name="android:background">@color/emoji_tab_page_indicator_background_lxx_dark</item>-->
+        <!--<item name="emojiCategoryPageIndicatorColor">@color/highlight_color_lxx_dark</item>-->
+    <!--</style>-->
+    <!--<style name="EmojiTabWidget.LXX_Dark" parent="@style/EmojiTabWidget">-->
+        <!--<item name="android:background">@drawable/emoji_category_tab_selected_lxx_dark</item>-->
+        <!--<item name="android:tabStripLeft">@drawable/emoji_category_tab_unselected_lxx_dark</item>-->
+        <!--<item name="android:tabStripRight">@drawable/emoji_category_tab_unselected_lxx_dark</item>-->
+    <!--</style>-->
+    <style name="MoreKeysKeyboard.LXX_Dark" parent="@style/Keyboard.LXX_Dark">
+        <item name="touchPositionCorrectionData">@null</item>
+        <item name="keyboardTopPadding">0.0%p</item>
+        <item name="keyboardBottomPadding">0.0%p</item>
+        <item name="horizontalGap">0.0%p</item>
+    </style>
+    <style name="MoreKeysKeyboardView.LXX_Dark" parent="@style/KeyboardView.LXX_Dark">
+        <item name="android:background">@drawable/keyboard_popup_panel_background_lxx_dark</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_popup_klp</item>
+        <item name="verticalCorrection">@dimen/more_keys_keyboard_vertical_correction_holo</item>
+        <item name="keyTypeface">normal</item>
+    </style>
+    <style name="SuggestionStripView.LXX_Dark" parent="@style/KeyboardView.LXX_Dark">
+        <item name="android:background">@color/suggestions_strip_background_lxx_dark</item>
+        <!--<item name="suggestionStripOptions">autoCorrectBold|validTypedWordBold</item>-->
+        <item name="colorValidTypedWord">@color/typed_word_color_lxx_dark</item>
+        <item name="colorTypedWord">@color/typed_word_color_lxx_dark</item>
+        <item name="colorAutoCorrect">@color/highlight_color_lxx_dark</item>
+        <item name="colorSuggested">@color/suggested_word_color_lxx_dark</item>
+        <item name="alphaObsoleted">70.00001%</item>
+        <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
+        <item name="centerSuggestionPercentile">@fraction/center_suggestion_percentile</item>
+        <item name="maxMoreSuggestionsRow">@integer/max_more_suggestions_row</item>
+        <item name="minMoreSuggestionsWidth">@fraction/min_more_suggestions_width</item>
+    </style>
+    <style name="SuggestionWord.LXX_Dark" parent="@style/SuggestionWord">
+        <item name="android:textColor">@color/highlight_color_lxx_dark</item>
+        <item name="android:background">@drawable/btn_suggestion_lxx_dark</item>
+    </style>
+    <!--<style name="KeyPreviewTextView.LXX_Dark" parent="@style/KeyPreviewTextView">-->
+        <!--<item name="android:background">@drawable/keyboard_key_feedback_lxx_dark</item>-->
+    <!--</style>-->
+</resources>

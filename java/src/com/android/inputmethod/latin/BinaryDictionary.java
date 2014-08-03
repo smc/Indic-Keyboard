@@ -1,5 +1,3 @@
-package com.android.inputmethod.latin;
-
 /*
  * Copyright (C) 2008 The Android Open Source Project
  *
@@ -16,15 +14,24 @@ package com.android.inputmethod.latin;
  * limitations under the License.
  */
 
+package com.android.inputmethod.latin;
+
 import android.text.TextUtils;
 import android.util.SparseArray;
+
 import org.smc.inputmethod.annotations.UsedForTesting;
-import org.smc.inputmethod.indic.*;
+import com.android.inputmethod.keyboard.ProximityInfo;
+// additional imports since we changed the package name.
+import org.smc.inputmethod.indic.Dictionary;
+import org.smc.inputmethod.indic.WordComposer;
+import org.smc.inputmethod.indic.Constants;
+import org.smc.inputmethod.indic.InputPointers;
+// -- don't delete on merge
+import org.smc.inputmethod.indic.SuggestedWords.SuggestedWordInfo;
 import org.smc.inputmethod.indic.settings.NativeSuggestOptions;
 import org.smc.inputmethod.indic.utils.CollectionUtils;
 import org.smc.inputmethod.indic.utils.JniUtils;
 import org.smc.inputmethod.indic.utils.StringUtils;
-import com.android.inputmethod.keyboard.ProximityInfo;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,7 +43,7 @@ import java.util.Map;
  * Implements a static, compacted, binary dictionary of standard words.
  */
 // TODO: All methods which should be locked need to have a suffix "Locked".
-public class BinaryDictionary extends Dictionary {
+public final class BinaryDictionary extends Dictionary {
     private static final String TAG = BinaryDictionary.class.getSimpleName();
 
     // Must be equal to MAX_WORD_LENGTH in native/jni/src/defines.h
@@ -100,8 +107,8 @@ public class BinaryDictionary extends Dictionary {
      * @param isUpdatable whether to open the dictionary file in writable mode.
      */
     public BinaryDictionary(final String filename, final long offset, final long length,
-                            final boolean useFullEditDistance, final Locale locale, final String dictType,
-                            final boolean isUpdatable) {
+            final boolean useFullEditDistance, final Locale locale, final String dictType,
+            final boolean isUpdatable) {
         super(dictType);
         mLocale = locale;
         mDictSize = length;
@@ -110,15 +117,14 @@ public class BinaryDictionary extends Dictionary {
         loadDictionary(filename, offset, length, isUpdatable);
     }
 
-
     static {
         JniUtils.loadNativeLibrary();
     }
 
     private static native boolean createEmptyDictFileNative(String filePath, long dictVersion,
-                                                            String[] attributeKeyStringArray, String[] attributeValueStringArray);
+            String[] attributeKeyStringArray, String[] attributeValueStringArray);
     private static native long openNative(String sourceDir, long dictOffset, long dictSize,
-                                          boolean isUpdatable);
+            boolean isUpdatable);
     private static native void flushNative(long dict, String filePath);
     private static native boolean needsToRunGCNative(long dict, boolean mindsBlockByGC);
     private static native void flushWithGCNative(long dict, String filePath);
@@ -126,24 +132,24 @@ public class BinaryDictionary extends Dictionary {
     private static native int getProbabilityNative(long dict, int[] word);
     private static native int getBigramProbabilityNative(long dict, int[] word0, int[] word1);
     private static native int getSuggestionsNative(long dict, long proximityInfo,
-                                                   long traverseSession, int[] xCoordinates, int[] yCoordinates, int[] times,
-                                                   int[] pointerIds, int[] inputCodePoints, int inputSize, int commitPoint,
-                                                   int[] suggestOptions, int[] prevWordCodePointArray,
-                                                   int[] outputCodePoints, int[] outputScores, int[] outputIndices, int[] outputTypes,
-                                                   int[] outputAutoCommitFirstWordConfidence);
+            long traverseSession, int[] xCoordinates, int[] yCoordinates, int[] times,
+            int[] pointerIds, int[] inputCodePoints, int inputSize, int commitPoint,
+            int[] suggestOptions, int[] prevWordCodePointArray,
+            int[] outputCodePoints, int[] outputScores, int[] outputIndices, int[] outputTypes,
+            int[] outputAutoCommitFirstWordConfidence);
     private static native float calcNormalizedScoreNative(int[] before, int[] after, int score);
     private static native int editDistanceNative(int[] before, int[] after);
     private static native void addUnigramWordNative(long dict, int[] word, int probability);
     private static native void addBigramWordsNative(long dict, int[] word0, int[] word1,
-                                                    int probability);
+            int probability);
     private static native void removeBigramWordsNative(long dict, int[] word0, int[] word1);
     private static native int calculateProbabilityNative(long dict, int unigramProbability,
-                                                         int bigramProbability);
+            int bigramProbability);
     private static native String getPropertyNative(long dict, String query);
 
     @UsedForTesting
     public static boolean createEmptyDictFile(final String filePath, final long dictVersion,
-                                              final Map<String, String> attributeMap) {
+            final Map<String, String> attributeMap) {
         final String[] keyArray = new String[attributeMap.size()];
         final String[] valueArray = new String[attributeMap.size()];
         int index = 0;
@@ -157,23 +163,23 @@ public class BinaryDictionary extends Dictionary {
 
     // TODO: Move native dict into session
     private final void loadDictionary(final String path, final long startOffset,
-                                      final long length, final boolean isUpdatable) {
+            final long length, final boolean isUpdatable) {
         mNativeDict = openNative(path, startOffset, length, isUpdatable);
     }
 
     @Override
-    public ArrayList<SuggestedWords.SuggestedWordInfo> getSuggestions(final WordComposer composer,
-                                                                      final String prevWord, final ProximityInfo proximityInfo,
-                                                                      final boolean blockOffensiveWords, final int[] additionalFeaturesOptions) {
+    public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
+            final String prevWord, final ProximityInfo proximityInfo,
+            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions) {
         return getSuggestionsWithSessionId(composer, prevWord, proximityInfo, blockOffensiveWords,
                 additionalFeaturesOptions, 0 /* sessionId */);
     }
 
     @Override
-    public ArrayList<SuggestedWords.SuggestedWordInfo> getSuggestionsWithSessionId(final WordComposer composer,
-                                                                                   final String prevWord, final ProximityInfo proximityInfo,
-                                                                                   final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
-                                                                                   final int sessionId) {
+    public ArrayList<SuggestedWordInfo> getSuggestionsWithSessionId(final WordComposer composer,
+            final String prevWord, final ProximityInfo proximityInfo,
+            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
+            final int sessionId) {
         if (!isValidDictionary()) return null;
 
         Arrays.fill(mInputCodePoints, Constants.NOT_A_CODE);
@@ -201,7 +207,7 @@ public class BinaryDictionary extends Dictionary {
                 inputSize, 0 /* commitPoint */, mNativeSuggestOptions.getOptions(),
                 prevWordCodePointArray, mOutputCodePoints, mOutputScores, mSpaceIndices,
                 mOutputTypes, mOutputAutoCommitFirstWordConfidence);
-        final ArrayList<SuggestedWords.SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
+        final ArrayList<SuggestedWordInfo> suggestions = CollectionUtils.newArrayList();
         for (int j = 0; j < count; ++j) {
             final int start = j * MAX_WORD_LENGTH;
             int len = 0;
@@ -209,20 +215,20 @@ public class BinaryDictionary extends Dictionary {
                 ++len;
             }
             if (len > 0) {
-                final int flags = mOutputTypes[j] & SuggestedWords.SuggestedWordInfo.KIND_MASK_FLAGS;
+                final int flags = mOutputTypes[j] & SuggestedWordInfo.KIND_MASK_FLAGS;
                 if (blockOffensiveWords
-                        && 0 != (flags & SuggestedWords.SuggestedWordInfo.KIND_FLAG_POSSIBLY_OFFENSIVE)
-                        && 0 == (flags & SuggestedWords.SuggestedWordInfo.KIND_FLAG_EXACT_MATCH)) {
+                        && 0 != (flags & SuggestedWordInfo.KIND_FLAG_POSSIBLY_OFFENSIVE)
+                        && 0 == (flags & SuggestedWordInfo.KIND_FLAG_EXACT_MATCH)) {
                     // If we block potentially offensive words, and if the word is possibly
                     // offensive, then we don't output it unless it's also an exact match.
                     continue;
                 }
-                final int kind = mOutputTypes[j] & SuggestedWords.SuggestedWordInfo.KIND_MASK_KIND;
-                final int score = SuggestedWords.SuggestedWordInfo.KIND_WHITELIST == kind
-                        ? SuggestedWords.SuggestedWordInfo.MAX_SCORE : mOutputScores[j];
+                final int kind = mOutputTypes[j] & SuggestedWordInfo.KIND_MASK_KIND;
+                final int score = SuggestedWordInfo.KIND_WHITELIST == kind
+                        ? SuggestedWordInfo.MAX_SCORE : mOutputScores[j];
                 // TODO: check that all users of the `kind' parameter are ready to accept
                 // flags too and pass mOutputTypes[j] instead of kind
-                suggestions.add(new SuggestedWords.SuggestedWordInfo(new String(mOutputCodePoints, start, len),
+                suggestions.add(new SuggestedWordInfo(new String(mOutputCodePoints, start, len),
                         score, kind, this /* sourceDict */,
                         mSpaceIndices[j] /* indexOfTouchPointOfSecondWord */,
                         mOutputAutoCommitFirstWordConfidence[0]));
@@ -236,7 +242,7 @@ public class BinaryDictionary extends Dictionary {
     }
 
     public static float calcNormalizedScore(final String before, final String after,
-                                            final int score) {
+            final int score) {
         return calcNormalizedScoreNative(StringUtils.toCodePointArray(before),
                 StringUtils.toCodePointArray(after), score);
     }
@@ -346,7 +352,7 @@ public class BinaryDictionary extends Dictionary {
     }
 
     @Override
-    public boolean shouldAutoCommit(final SuggestedWords.SuggestedWordInfo candidate) {
+    public boolean shouldAutoCommit(final SuggestedWordInfo candidate) {
         return candidate.mAutoCommitFirstWordConfidence > CONFIDENCE_TO_AUTO_COMMIT;
     }
 

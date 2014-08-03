@@ -50,10 +50,6 @@ int Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
         int *inputXs, int *inputYs, int *times, int *pointerIds, int *inputCodePoints,
         int inputSize, int commitPoint, int *outWords, int *frequencies, int *outputIndices,
         int *outputTypes, int *outputAutoCommitFirstWordConfidence) const {
-    if (!TRAVERSAL || !SCORING || !WEIGHTING) {
-        return 0;
-    }
-
     PROF_OPEN;
     PROF_START(0);
     const float maxSpatialDistance = TRAVERSAL->getMaxSpatialDistance();
