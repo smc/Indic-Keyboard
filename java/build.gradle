@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    //compile files('libs/android-support-v4.jar')
+    compile 'com.android.support:support-v4:20.0.0'
     compile fileTree(dir: 'libs', include: '*.jar')
     // TODO: not working because xml files are not packed
     //compile project(':morelangs')
