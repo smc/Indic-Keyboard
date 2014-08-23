@@ -68,20 +68,4 @@
 
     <color name="key_text_color_normal_holo">@android:color/white</color>
     <color name="key_text_color_functional_holo">@android:color/white</color>
-
-    <!--- l release -->
-    <color name="key_text_color_lxx_dark">#ffffffff</color>
-    <color name="key_text_inactive_color_lxx_dark">#ff808184</color>
-    <color name="key_hint_letter_color_lxx_dark">#ff808184</color>
-    <color name="highlight_color_lxx_dark">#ff7fcac3</color>
-    <color name="typed_word_color_lxx_dark">#d87fcac3</color>
-    <color name="suggested_word_color_lxx_dark">#b27fcac3</color>
-    <color name="highlight_translucent_color_lxx_dark">#997fcac3</color>
-    <color name="keyboard_background_lxx_dark">#ff384248</color>
-    <color name="key_background_lxx_dark">#ff384248</color>
-    <color name="key_background_pressed_lxx_dark">#ff546872</color>
-    <color name="suggestions_strip_background_lxx_dark">#ff263238</color>
-    <color name="suggested_word_background_selected_lxx_dark">#ff384248</color>
-    <color name="gesture_floating_preview_color_lxx_dark">#c0000000</color>
-    <color name="emoji_tab_page_indicator_background_lxx_dark">#ff263238</color>
 </resources>

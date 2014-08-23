@@ -59,13 +59,11 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     public static final int THEME_INDEX_ICS = 0;
     public static final int THEME_INDEX_GB = 1;
     public static final int THEME_INDEX_KLP = 2;
-    public static final int THEME_INDEX_LXX = 3;
     public static final int THEME_INDEX_DEFAULT = THEME_INDEX_KLP;
     public static final KeyboardTheme[] KEYBOARD_THEMES = {
         new KeyboardTheme(THEME_INDEX_ICS, R.style.KeyboardTheme_ICS),
         new KeyboardTheme(THEME_INDEX_GB, R.style.KeyboardTheme_GB),
-        new KeyboardTheme(THEME_INDEX_KLP, R.style.KeyboardTheme_KLP),
-        new KeyboardTheme(THEME_INDEX_LXX, R.style.KeyboardTheme_LXX_Dark),
+        new KeyboardTheme(THEME_INDEX_KLP, R.style.KeyboardTheme_KLP)
     };
 
     private SubtypeSwitcher mSubtypeSwitcher;

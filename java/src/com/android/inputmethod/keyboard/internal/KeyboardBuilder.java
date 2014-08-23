@@ -662,8 +662,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     R.styleable.Keyboard_Case_isMultiLine, id.isMultiLine());
             final boolean imeActionMatched = matchInteger(caseAttr,
                     R.styleable.Keyboard_Case_imeAction, id.imeAction());
-            final boolean isIconDefinedMatched = isIconDefined(caseAttr,
-                    R.styleable.Keyboard_Case_isIconDefined, mParams.mIconsSet);
             final boolean localeCodeMatched = matchString(caseAttr,
                     R.styleable.Keyboard_Case_localeCode, id.mLocale.toString());
             final boolean languageCodeMatched = matchString(caseAttr,
@@ -676,7 +674,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     && shortcutKeyEnabledMatched && shortcutKeyOnSymbolsMatched
                     && hasShortcutKeyMatched && languageSwitchKeyEnabledMatched
                     && isMultiLineMatched && imeActionMatched && localeCodeMatched
-                    && languageCodeMatched && countryCodeMatched && isIconDefinedMatched;
+                    && languageCodeMatched && countryCodeMatched;
 
             if (DEBUG) {
                 startTag("<%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s>%s", TAG_CASE,
@@ -852,15 +850,5 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     private static String booleanAttr(final TypedArray a, final int index, final String name) {
         return a.hasValue(index)
                 ? String.format(" %s=%s", name, a.getBoolean(index, false)) : "";
-    }
-
-    private static boolean isIconDefined(TypedArray a, int index, KeyboardIconsSet iconsSet) {
-        if (!a.hasValue(index)) {
-            return true;
-        }
-        while (iconsSet.getIconDrawable(KeyboardIconsSet.getIconId(a.getString(index))) != null) {
-            return true;
-        }
-        return false;
     }
 }
