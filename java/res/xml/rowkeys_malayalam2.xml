@@ -107,10 +107,10 @@
                 latin:keyLabel="&#x0D1C;"
                 latin:moreKeys="&#x0D1C;&#x0D4D;&#x0D1C;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- ക, ക്ക, ക്‍ -->
+            <!-- ക, ക്ക, ക്‍ , ങ്ക-->
             <Key
                 latin:keyLabel="&#x0D15;"
-                latin:moreKeys="&#x0D15;&#x0D4D;&#x0D15;,&#x0d15;&#x0D4D;&#x200D;"
+                latin:moreKeys="&#x0D15;&#x0D4D;&#x0D15;,&#x0d15;&#x0D4D;&#x200D;,&#x0D19;&#x0D4D;&#x0D15;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- ല, ല്‍, ല്ല -->
             <Key

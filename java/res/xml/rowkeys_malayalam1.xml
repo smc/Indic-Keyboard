@@ -44,10 +44,10 @@
                 latin:moreKeys="&#x0D0F;"
                 latin:keyHintLabel="&#x0D0F;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- റ, ഋ,ര്‍‍, ൎ(dot repha) -->
+            <!-- റ, ഋ,ര്‍‍, ൎ(dot repha),റ്റ -->
             <Key
                 latin:keyLabel="&#x0D31;"
-                latin:moreKeys="&#x0D0B;,&#x0D30;&#x0D4D;&#x200D;,&#x0D4E;"
+                latin:moreKeys="&#x0D0B;,&#x0D30;&#x0D4D;&#x200D;,&#x0D4E;,&#x0D31;&#x0D4D;&#x0D31;"
                 latin:keyHintLabel="&#x0D0B;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- ഥ, ഠ -->
