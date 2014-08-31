@@ -119,8 +119,11 @@
                 latin:keyLabelFlags="fontNormal" />
 
             <!--k ક GUJARATI LETTER KA-->
+            <!-- ક્ષ KSSA-->
             <Key
                 latin:keyLabel="&#x0A95;"
+                latin:moreKeys="&#x0A95;&#x0ACD;&#x0AB7;"
+                latin:keyHintLabel="&#x0A95;&#x0ACD;&#x0AB7;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--l લ GUJARATI LETTER LA-->
