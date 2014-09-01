@@ -26,53 +26,69 @@
         <case
             latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
             >
+            <!-- MYANMAR LETTER JA -->
              <Key
                 latin:keyLabel="&#x1007;"
                 latin:keyLabelFlags="fontNormal" />
+            <!-- MYANMAR LETTER TTHA -->
              <Key
                 latin:keyLabel="&#x100C;"
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!-- MYANMAR LETTER GHA -->
              <Key
                 latin:keyLabel="&#x1003;"
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!-- MYANMAR LETTER LLA -->
              <Key
                 latin:keyLabel="&#x1020;"
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!-- MYANMAR LETTER YA -->
              <Key
                 latin:keyLabel="&#x101A;"
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!-- MYANMAR LETTER NYA -->
              <Key
                 latin:keyLabel="&#x1009;"
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!-- MYANMAR LETTER UUA -->
              <Key
                 latin:keyLabel="&#x1026;"
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!-- MYANMAR SIGN LITTLE SECTION -->
              <Key
                 latin:keyLabel="&#x104A;"
                 latin:keyLabelFlags="fontNormal" />
         </case>
         <default>
+            <!-- MYANMAR LETTER PHA -->
              <Key
                 latin:keyLabel="&#x1016;"
                 latin:keyLabelFlags="fontNormal" />
+            <!-- MYANMAR LETTER THA -->
              <Key
                 latin:keyLabel="&#x1011;"
                 latin:keyLabelFlags="fontNormal" />
+            <!-- MYANMAR LETTER KHA -->
              <Key
                 latin:keyLabel="&#x1001;"
                 latin:keyLabelFlags="fontNormal" />
+            <!-- MYANMAR LETTER LA -->
              <Key
                 latin:keyLabel="&#x101C;"
                 latin:keyLabelFlags="fontNormal" />
+            <!-- MYANMAR LETTER BHA -->
              <Key
                 latin:keyLabel="&#x1018;"
                 latin:keyLabelFlags="fontNormal" />
+            <!-- MYANMAR LETTER NNYA -->
              <Key
                 latin:keyLabel="&#x100A;"
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+            <!-- MYANMAR VOWEL SIGN AA -->
              <Key
                 latin:keyLabel="&#x102C;"
                 latin:keyLabelFlags="fontNormal" />
+            <!-- MYANMAR SIGN SECTION -->
              <Key
                 latin:keyLabel="&#x104B;"
                 latin:keyLabelFlags="fontNormal" />
