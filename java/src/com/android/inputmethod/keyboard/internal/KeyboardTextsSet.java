@@ -279,7 +279,7 @@ public final class KeyboardTextsSet {
         /* 50 */ "$,\u00A2,\u00A3,\u20AC,\u00A5,\u20B1",
         /* 51 */ "$",
         /* 52 */ "$,\u00A2,\u20AC,\u00A3,\u00A5,\u20B1",
-        /* 53 */ "!fixedColumnOrder!4,#,!,\\,,?,-,:,',@",
+        /* 53 */ "!fixedColumnOrder!8,;,/,(,),#,!,\\,,?,&,\\%,+,\",-,:,',@",
         // U+2020: "†" DAGGER
         // U+2021: "‡" DOUBLE DAGGER
         // U+2605: "★" BLACK STAR
@@ -689,6 +689,43 @@ public final class KeyboardTextsSet {
         /* 84 */ "\u0D66",
     };
 
+    /* Language my: Burmese */
+    private static final String[] LANGUAGE_my = {
+        /* 0~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* ~44 */
+        /* 45 */ "\u1000",
+        /* 46~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null,
+        /* ~62 */
+        /* 63 */ "\u1041",
+        /* 64 */ "\u1042",
+        /* 65 */ "\u1043",
+        /* 66 */ "\u1044",
+        /* 67 */ "\u1045",
+        /* 68 */ "\u1046",
+        /* 69 */ "\u1047",
+        /* 70 */ "\u1048",
+        /* 71 */ "\u1049",
+        /* 72 */ "\u1040",
+        // Label for "switch to symbols" key.
+        /* 73 */ "\u1041",
+        /* 74 */ null,
+        /* 75 */ "1",
+        /* 76 */ "2",
+        /* 77 */ "3",
+        /* 78 */ "4",
+        /* 79 */ "5",
+        /* 80 */ "6",
+        /* 81 */ "7",
+        /* 82 */ "8",
+        /* 83 */ "9",
+        /* 84 */ "0",
+    };
+
     /* Language ne: Nepali */
     private static final String[] LANGUAGE_ne = {
         /* 0~ */
@@ -1031,6 +1068,7 @@ public final class KeyboardTextsSet {
         "hi", LANGUAGE_hi, /* Hindi */
         "kn", LANGUAGE_kn, /* Kannada */
         "ml", LANGUAGE_ml, /* Malayalam */
+        "my", LANGUAGE_my, /* Burmese */
         "ne", LANGUAGE_ne, /* Nepali */
         "or", LANGUAGE_or, /* Oriya */
         "pa", LANGUAGE_pa, /* Panjabi */
