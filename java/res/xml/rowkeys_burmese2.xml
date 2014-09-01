@@ -104,11 +104,13 @@
                latin:keyLabel="&#x1037;"
                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
             <!-- MYANMAR CONSONANT SIGN MEDIAL RA
-                 MYANMAR LETTER VOCALIC R -->
+                 MYANMAR LETTER RA
+                 MYANMAR LETTER VOCALIC R
+                 MYANMAR LETTER VOCALIC RR -->
             <Key
                latin:keyLabel="&#x103C;"
-               latin:moreKeys="&#x101B;"
-               latin:keyHintLabel="&#x101B;,&#x1052;,&#x1053;"
+               latin:keyHintLabel="&#x101B;"
+               latin:moreKeys="&#x101B;,&#x1052;,&#x1053;"
                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
             <!-- MYANMAR VOWEL SIGN U -->
             <Key
