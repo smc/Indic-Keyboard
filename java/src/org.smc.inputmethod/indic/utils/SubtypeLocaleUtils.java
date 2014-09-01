@@ -38,7 +38,7 @@ public final class SubtypeLocaleUtils {
             DictionaryFactory.class.getPackage().getName();
 
     // Special language code to represent "no language".
-    public static final String NO_LANGUAGE = "en_US";
+    public static final String NO_LANGUAGE = "en_IN";
     public static final String QWERTY = "qwerty";
     public static final String EMOJI = "emoji";
     public static final int UNKNOWN_KEYBOARD_LAYOUT = R.string.subtype_generic;
