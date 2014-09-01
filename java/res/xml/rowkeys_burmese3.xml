@@ -38,9 +38,12 @@
              <Key
                 latin:keyLabel="&#x1003;"
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
-            <!-- MYANMAR LETTER LLA -->
+            <!-- MYANMAR LETTER LLA
+                 MYANMAR LETTER VOCALIC LL -->
              <Key
                 latin:keyLabel="&#x1020;"
+                latin:moreKeys="&#x1055;"
+                latin:keyHintLabel="&#x1055;"
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
             <!-- MYANMAR LETTER YA -->
              <Key
@@ -72,9 +75,12 @@
              <Key
                 latin:keyLabel="&#x1001;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- MYANMAR LETTER LA -->
+            <!-- MYANMAR LETTER LA
+                 MYANMAR LETTER VOCALIC L -->
              <Key
                 latin:keyLabel="&#x101C;"
+                latin:moreKeys="&#x1054;"
+                latin:keyHintLabel="&#x1054;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- MYANMAR LETTER BHA -->
              <Key

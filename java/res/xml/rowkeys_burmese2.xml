@@ -59,7 +59,7 @@
             <Key
                 latin:keyLabel="&#x1012;"
                 latin:moreKeys="&#x100D;"
-                latin:keyHintLabel="&#x100D;,&#x100E;"
+                latin:keyHintLabel="&#x100D;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- MYANMAR LETTER DHA
                  MYANMAR LETTER DDHA -->
@@ -103,9 +103,12 @@
             <Key
                latin:keyLabel="&#x1037;"
                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
-            <!-- MYANMAR CONSONANT SIGN MEDIAL RA -->
+            <!-- MYANMAR CONSONANT SIGN MEDIAL RA
+                 MYANMAR LETTER VOCALIC R -->
             <Key
                latin:keyLabel="&#x103C;"
+               latin:moreKeys="&#x101B;"
+               latin:keyHintLabel="&#x101B;,&#x1052;,&#x1053;"
                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
             <!-- MYANMAR VOWEL SIGN U -->
             <Key

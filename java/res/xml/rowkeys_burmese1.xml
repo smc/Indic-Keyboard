@@ -85,9 +85,12 @@
             <Key
                 latin:keyLabel="&#x1006;"
                 latin:keyLabelFlags="fontNormal" />
-            <!-- MYANMAR LETTER TA -->
+            <!-- MYANMAR LETTER TA
+                 MYANMAR LETTER TTA -->
             <Key
                 latin:keyLabel="&#x1010;"
+               latin:moreKeys="&#x100B;"
+               latin:keyHintLabel="&#x100B;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- MYANMAR LETTER NA -->
             <Key
