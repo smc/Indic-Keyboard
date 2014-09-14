@@ -22,8 +22,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+//import android.net.ConnectivityManager;
+//import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.util.Log;
@@ -47,14 +47,14 @@ public final class SubtypeSwitcher {
 
     private /* final */ RichInputMethodManager mRichImm;
     private /* final */ Resources mResources;
-    private /* final */ ConnectivityManager mConnectivityManager;
+    //private [> final <] ConnectivityManager mConnectivityManager;
 
     private final NeedsToDisplayLanguage mNeedsToDisplayLanguage = new NeedsToDisplayLanguage();
     private InputMethodInfo mShortcutInputMethodInfo;
     private InputMethodSubtype mShortcutSubtype;
     private InputMethodSubtype mNoLanguageSubtype;
     private InputMethodSubtype mEmojiSubtype;
-    private boolean mIsNetworkConnected;
+    //private boolean mIsNetworkConnected = false;
 
     // Dummy no language QWERTY subtype. See {@link R.xml.method}.
     private static final InputMethodSubtype DUMMY_NO_LANGUAGE_SUBTYPE = new InputMethodSubtype(
@@ -111,11 +111,11 @@ public final class SubtypeSwitcher {
         }
         mResources = context.getResources();
         mRichImm = RichInputMethodManager.getInstance();
-        mConnectivityManager = (ConnectivityManager) context.getSystemService(
-                Context.CONNECTIVITY_SERVICE);
+        //mConnectivityManager = (ConnectivityManager) context.getSystemService(
+                //Context.CONNECTIVITY_SERVICE);
 
-        final NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
-        mIsNetworkConnected = (info != null && info.isConnected());
+        //final NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
+        //mIsNetworkConnected = (info != null && info.isConnected());
 
         onSubtypeChanged(getCurrentSubtype());
         updateParametersOnStartInputView();
@@ -230,18 +230,19 @@ public final class SubtypeSwitcher {
         if (mShortcutSubtype == null)
             return true;
         if (mShortcutSubtype.containsExtraValueKey(REQ_NETWORK_CONNECTIVITY)) {
-            return mIsNetworkConnected;
+            //return mIsNetworkConnected;
+            return false;
         }
         return true;
     }
 
-    public void onNetworkStateChanged(final Intent intent) {
-        final boolean noConnection = intent.getBooleanExtra(
-                ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
-        mIsNetworkConnected = !noConnection;
+    //public void onNetworkStateChanged(final Intent intent) {
+        //final boolean noConnection = intent.getBooleanExtra(
+                //ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
+        //mIsNetworkConnected = !noConnection;
 
-        KeyboardSwitcher.getInstance().onNetworkStateChanged();
-    }
+        //KeyboardSwitcher.getInstance().onNetworkStateChanged();
+    //}
 
     //////////////////////////////////
     // Subtype Switching functions //

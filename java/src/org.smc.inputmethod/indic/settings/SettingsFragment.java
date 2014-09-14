@@ -207,26 +207,27 @@ public final class SettingsFragment extends InputMethodSettingsFragment
         setPreferenceEnabled(Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST,
                 Settings.readShowsLanguageSwitchKey(prefs));
 
-        final PreferenceGroup textCorrectionGroup =
-                (PreferenceGroup) findPreference(Settings.PREF_CORRECTION_SETTINGS);
-        final PreferenceScreen dictionaryLink =
-                (PreferenceScreen) findPreference(Settings.PREF_CONFIGURE_DICTIONARIES_KEY);
-        final Intent intent = dictionaryLink.getIntent();
-        intent.setClassName(context.getPackageName(), DictionarySettingsActivity.class.getName());
-        final int number = context.getPackageManager().queryIntentActivities(intent, 0).size();
-        if (0 >= number) {
-            textCorrectionGroup.removePreference(dictionaryLink);
-        }
+        //Add-on dictionaries
+        //final PreferenceGroup textCorrectionGroup =
+                //(PreferenceGroup) findPreference(Settings.PREF_CORRECTION_SETTINGS);
+        //final PreferenceScreen dictionaryLink =
+                //(PreferenceScreen) findPreference(Settings.PREF_CONFIGURE_DICTIONARIES_KEY);
+        //final Intent intent = dictionaryLink.getIntent();
+        //intent.setClassName(context.getPackageName(), DictionarySettingsActivity.class.getName());
+        //final int number = context.getPackageManager().queryIntentActivities(intent, 0).size();
+        //if (0 >= number) {
+            //textCorrectionGroup.removePreference(dictionaryLink);
+        //}
 
-        final Preference editPersonalDictionary =
-                findPreference(Settings.PREF_EDIT_PERSONAL_DICTIONARY);
-        final Intent editPersonalDictionaryIntent = editPersonalDictionary.getIntent();
-        final ResolveInfo ri = USE_INTERNAL_PERSONAL_DICTIONARY_SETTIGS ? null
-                : context.getPackageManager().resolveActivity(
-                        editPersonalDictionaryIntent, PackageManager.MATCH_DEFAULT_ONLY);
-        if (ri == null) {
-            overwriteUserDictionaryPreference(editPersonalDictionary);
-        }
+        //final Preference editPersonalDictionary =
+                //findPreference(Settings.PREF_EDIT_PERSONAL_DICTIONARY);
+        //final Intent editPersonalDictionaryIntent = editPersonalDictionary.getIntent();
+        //final ResolveInfo ri = USE_INTERNAL_PERSONAL_DICTIONARY_SETTIGS ? null
+                //: context.getPackageManager().resolveActivity(
+                        //editPersonalDictionaryIntent, PackageManager.MATCH_DEFAULT_ONLY);
+        //if (ri == null) {
+            //overwriteUserDictionaryPreference(editPersonalDictionary);
+        //}
 
         if (!Settings.readFromBuildConfigIfGestureInputEnabled(res)) {
             removePreference(Settings.PREF_GESTURE_SETTINGS, getPreferenceScreen());

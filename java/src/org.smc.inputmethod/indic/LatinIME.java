@@ -560,7 +560,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Register to receive ringer mode change and network state change.
         // Also receive installation and removal of a dictionary pack.
         final IntentFilter filter = new IntentFilter();
-        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        //filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
         registerReceiver(mReceiver, filter);
 
@@ -3224,9 +3224,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         @Override
         public void onReceive(final Context context, final Intent intent) {
             final String action = intent.getAction();
-            if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-                mSubtypeSwitcher.onNetworkStateChanged(intent);
-            } else if (action.equals(AudioManager.RINGER_MODE_CHANGED_ACTION)) {
+            //if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+                ////mSubtypeSwitcher.onNetworkStateChanged(intent);
+            //} else if (action.equals(AudioManager.RINGER_MODE_CHANGED_ACTION)) {
+            if (action.equals(AudioManager.RINGER_MODE_CHANGED_ACTION)) {
                 AudioAndHapticFeedbackManager.getInstance().onRingerModeChanged();
             }
         }
