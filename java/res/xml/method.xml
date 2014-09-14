@@ -24,7 +24,8 @@
     <!-- English -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_en"
-            android:imeSubtypeLocale="en_IN"
+            android:subtypeId="0xc9194f98"
+            android:imeSubtypeLocale="en_US"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection,EmojiCapable" />
 
