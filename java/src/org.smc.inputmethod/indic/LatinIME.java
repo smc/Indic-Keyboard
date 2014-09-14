@@ -34,7 +34,7 @@ import android.content.res.Resources;
 import android.graphics.Rect;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
-import android.net.ConnectivityManager;
+//import android.net.ConnectivityManager;
 import android.os.Debug;
 import android.os.Handler;
 import android.os.HandlerThread;
