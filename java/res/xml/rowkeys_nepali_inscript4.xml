@@ -41,8 +41,8 @@
             <Key
                 latin:keyLabel="&#x0936;"
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
-            <Key latin:keyLabel=""
-                latin:moreKeys="&lt;"
+            <Key
+                latin:keyLabel="&lt;"
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
             <!--\> । DEVANAGARI DANDA-->
             <Key

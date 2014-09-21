@@ -174,7 +174,7 @@
             android:label="@string/keyboard_name_ne_inscript"
             android:imeSubtypeLocale="ne"
             android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=ne_inscript,EmojiCapable" />
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=nepali_inscript,EmojiCapable" />
 
     <!-- Oriya/Odia -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"

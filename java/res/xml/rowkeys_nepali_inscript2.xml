@@ -75,7 +75,7 @@
             <!--\| ॠ DEVANAGARI LETTER VOCALIC RR-->
             <Key
                 latin:keyLabel="&#x0960;"
-                latin:moreKeys="|"
+                latin:moreKeys="\|"
                 latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
         </case>
 
