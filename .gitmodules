@@ -4,3 +4,6 @@
 [submodule "tools-indic"]
 	path = tools-indic
 	url = git@github.com:androidtweak/Indic-Keyboard-tools.git
+[submodule "dictionaries-indic"]
+	path = dictionaries-indic
+	url = git@github.com:androidtweak/dictionaries.git
