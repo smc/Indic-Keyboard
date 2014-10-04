@@ -111,6 +111,11 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=kannada_inscript,EmojiCapable" />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_kn_anysoft_inscript"
+            android:imeSubtypeLocale="kn"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=kannada_anysoft_inscript,EmojiCapable" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_kn_transliteration"
             android:imeSubtypeLocale="kn"
             android:imeSubtypeMode="keyboard"
