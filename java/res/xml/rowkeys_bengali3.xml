@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+  xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Key latin:moreKeys="ঃ,ং" latin:keyLabel="ঁ" />
+    <Key latin:moreKeys="ঢ়" latin:keyLabel="ঢ" />
+    <Key latin:keyLabel="ম" />
+    <Key latin:moreKeys="ণ" latin:keyLabel="ন" />
+    <Key latin:moreKeys="ঙ,ঞ্জ" latin:keyLabel="ঞ" />
+    <Key latin:keyLabel="ল" />
+    <Key latin:moreKeys="ক্ষ" latin:keyLabel="ষ" />
+    <Key latin:moreKeys="শ" latin:keyLabel="স" />
+    <Key latin:moreKeys="য" latin:keyLabel="য়" />
+    <Key latin:moreKeys="॥" latin:keyLabel="।" />
+</merge>

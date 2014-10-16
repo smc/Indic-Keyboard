@@ -2,9 +2,11 @@
 <resources>
     <string name="keyboard_name_as_inscript">অসমীয়া - Inscript</string>
     <string name="keyboard_name_as_transliteration">অসমীয়া - প্ৰতিৰূপান্তৰণ</string>
-    <string name="keyboard_name_bn_probhat">বাংলা - Probhat</string>
+    <string name="keyboard_name_bn">বাংলা</string>
     <string name="keyboard_name_bn_avro">বাংলা - Avro</string>
     <string name="keyboard_name_bn_inscript">বাংলা - Inscript</string>
+    <string name="keyboard_name_bn_probhat">বাংলা - Probhat</string>
+
     <string name="keyboard_name_en">English</string>
     <string name="keyboard_name_gu">ગુજરાતી</string>
     <string name="keyboard_name_gu_inscript">ગુજરાતી - Inscript</string>

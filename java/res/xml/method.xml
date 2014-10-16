@@ -43,6 +43,11 @@
 
     <!-- Bengali -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_bn"
+            android:imeSubtypeLocale="bn"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=bengali,EmojiCapable" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_bn_probhat"
             android:imeSubtypeLocale="bn"
             android:imeSubtypeMode="keyboard"
