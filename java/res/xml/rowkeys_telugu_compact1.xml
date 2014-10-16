@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+  xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Key latin:moreKeys="ఔ,%" latin:additionalMoreKeys="1" latin:keyLabel="ౌ" latin:keyHintLabel="1" />
+    <Key latin:moreKeys="ఐ,%" latin:additionalMoreKeys="2" latin:keyLabel="ై" latin:keyHintLabel="2" />
+    <Key latin:moreKeys="ఆ,%" latin:additionalMoreKeys="3" latin:keyLabel="ా" latin:keyHintLabel="3" />
+    <Key latin:moreKeys="ఈ,%" latin:additionalMoreKeys="4" latin:keyLabel="ీ" latin:keyHintLabel="4" />
+    <Key latin:moreKeys="ఊ,%" latin:additionalMoreKeys="5" latin:keyLabel="ూ" latin:keyHintLabel="5" />
+    <Key latin:moreKeys="భ,%" latin:additionalMoreKeys="6" latin:keyLabel="బ" latin:keyHintLabel="6" />
+    <Key latin:moreKeys="ః,%" latin:additionalMoreKeys="7" latin:keyLabel="హ" latin:keyHintLabel="7" />
+    <Key latin:moreKeys="ఘ,%" latin:additionalMoreKeys="8" latin:keyLabel="గ" latin:keyHintLabel="8" />
+    <Key latin:moreKeys="ధ,%" latin:additionalMoreKeys="9" latin:keyLabel="ద" latin:keyHintLabel="9" />
+    <Key latin:moreKeys="ఝ,%" latin:additionalMoreKeys="0" latin:keyLabel="జ" latin:keyHintLabel="0" />
+    <Key latin:moreKeys="ఢ" latin:keyLabel="డ" />
+</merge>
