@@ -140,6 +140,11 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=malayalam,EmojiCapable" />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_ml_compact"
+            android:imeSubtypeLocale="ml"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=malayalam_compact,EmojiCapable" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_ml_inscript"
             android:imeSubtypeLocale="ml"
             android:imeSubtypeMode="keyboard"

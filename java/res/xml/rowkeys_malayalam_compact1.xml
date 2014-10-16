@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+  xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <Key latin:moreKeys="അ,%" latin:additionalMoreKeys="1" latin:keyLabel="്" latin:keyHintLabel="1" />
+    <Key latin:moreKeys="ആ,%" latin:additionalMoreKeys="2" latin:keyLabel="ാ" latin:keyHintLabel="2" />
+    <Key latin:moreKeys="ഇ,%" latin:additionalMoreKeys="3" latin:keyLabel="ി" latin:keyHintLabel="3" />
+    <Key latin:moreKeys="ഈ,%" latin:additionalMoreKeys="4" latin:keyLabel="ീ" latin:keyHintLabel="4" />
+    <Key latin:moreKeys="ഉ,%" latin:additionalMoreKeys="5" latin:keyLabel="ു" latin:keyHintLabel="5" />
+    <Key latin:moreKeys="ഊ,%" latin:additionalMoreKeys="6" latin:keyLabel="ൂ" latin:keyHintLabel="6" />
+    <Key latin:moreKeys="ഋ,%" latin:additionalMoreKeys="7" latin:keyLabel="ൃ" latin:keyHintLabel="7" />
+    <Key latin:moreKeys="എ,ഐ,ൈ,%" latin:additionalMoreKeys="8" latin:keyLabel="െ" latin:keyHintLabel="8" />
+    <Key latin:moreKeys="ഏ,%" latin:additionalMoreKeys="9" latin:keyLabel="േ" latin:keyHintLabel="9" />
+    <Key latin:moreKeys="ഒ,%" latin:additionalMoreKeys="0" latin:keyLabel="ൊ" latin:keyHintLabel="0" />
+    <Key latin:moreKeys="ഓ,ഔ,ൗ" latin:keyLabel="ോ" />
+</merge>
