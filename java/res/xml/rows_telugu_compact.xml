@@ -24,19 +24,19 @@
         latin:keyWidth="9.091%p"
         latin:keyLabelFlags="fontNormal|autoXScale"
     >
-        <include latin:keyboardLayout="@xml/rowkeys_telugu1" />
+        <include latin:keyboardLayout="@xml/rowkeys_telugu_compact1" />
     </Row>
     <Row
         latin:keyWidth="9.091%p"
         latin:keyLabelFlags="fontNormal|autoXScale"
     >
-        <include latin:keyboardLayout="@xml/rowkeys_telugu2" />
+        <include latin:keyboardLayout="@xml/rowkeys_telugu_compact2" />
     </Row>
     <Row
         latin:keyWidth="9.091%p"
         latin:keyLabelFlags="fontNormal|autoXScale"
     >
-        <include latin:keyboardLayout="@xml/rowkeys_telugu3" />
+        <include latin:keyboardLayout="@xml/rowkeys_telugu_compact3" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight" />

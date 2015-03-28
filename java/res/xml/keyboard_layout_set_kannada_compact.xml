@@ -24,7 +24,7 @@
         latin:supportedScript="kannada" />
     <Element
         latin:elementName="alphabet"
-        latin:elementKeyboard="@xml/kbd_kannada"
+        latin:elementKeyboard="@xml/kbd_kannada_compact"
         latin:enableProximityCharsCorrection="true" />
     <Element
         latin:elementName="symbols"
