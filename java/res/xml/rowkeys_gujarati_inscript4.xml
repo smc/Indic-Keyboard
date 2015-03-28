@@ -26,7 +26,7 @@
         <case
             latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
         >
-            <Key latin:keySpec="#x0020;" />
+            <Key latin:keySpec="&#x0020;" />
 
             <!--X ઁ GUJARATI SIGN CANDRABINDU-->
             <Key
@@ -38,9 +38,9 @@
                 latin:keySpec="&#x0AA3;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keySpec="#x0020;" />
+            <Key latin:keySpec="&#x0020;" />
 
-            <Key latin:keySpec="#x0020;" />
+            <Key latin:keySpec="&#x0020;" />
 
             <!--N ળ GUJARATI LETTER LLA-->
             <Key
@@ -70,7 +70,7 @@
         </case>
 
         <default>
-            <Key latin:keySpec="#x0020;" />
+            <Key latin:keySpec="&#x0020;" />
 
             <!--x ં GUJARATI SIGN ANUSVARA-->
             <Key

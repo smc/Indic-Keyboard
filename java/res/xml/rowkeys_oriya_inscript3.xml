@@ -55,7 +55,7 @@
                 latin:keySpec="&#x0B2B;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keySpec="#x0020;" />
+            <Key latin:keySpec="&#x0020;" />
 
             <!--K ଖ ORIYA LETTER KHA-->
             <Key

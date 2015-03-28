@@ -31,7 +31,7 @@
                 latin:keySpec="&#x0B8E;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keySpec="#x0020;" />
+            <Key latin:keySpec="&#x0020;" />
 
             <!---C ண TAMIL LETTER NNA-->
             <Key
@@ -78,7 +78,7 @@
                 latin:keySpec="&#x0BC6;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keySpec="#x0020;" />
+            <Key latin:keySpec="&#x0020;" />
 
             <!---c ம TAMIL LETTER MA-->
             <Key

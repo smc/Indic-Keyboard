@@ -29,11 +29,11 @@
             <Key
                 latin:keySpec="&#x0C8E;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
-            <Key latin:keySpec="#x0020;" />
+            <Key latin:keySpec="&#x0020;" />
             <Key
                 latin:keySpec="&#x0CA3;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
-            <Key latin:keySpec="#x0020;" />
+            <Key latin:keySpec="&#x0020;" />
             <Key
                 latin:keySpec="&#x0CB4;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
