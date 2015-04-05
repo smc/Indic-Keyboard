@@ -24,7 +24,6 @@
     <!-- English -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_en"
-            android:subtypeId="0xc9194f98"
             android:imeSubtypeLocale="en_US"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection,EmojiCapable" />
@@ -116,15 +115,15 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=kannada_inscript,EmojiCapable" />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
-            android:label="@string/keyboard_name_kn_anysoft_inscript"
-            android:imeSubtypeLocale="kn"
-            android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=kannada_anysoft_inscript,EmojiCapable" />
-    <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_kn_compact"
             android:imeSubtypeLocale="kn"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=kannada_compact,EmojiCapable" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_kn_anysoft_inscript"
+            android:imeSubtypeLocale="kn"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=kannada_anysoft_inscript,EmojiCapable" />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_kn_transliteration"
             android:imeSubtypeLocale="kn"
@@ -171,6 +170,13 @@
             android:imeSubtypeLocale="mr"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=mr-transliteration" />
+
+    <!-- Mon -->
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_mnw"
+            android:imeSubtypeLocale="mnw"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=mon,EmojiCapable" />
 
     <!-- Nepali -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
@@ -272,6 +278,11 @@
             android:imeSubtypeLocale="te"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=telugu,EmojiCapable" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_te_kachatathapa"
+            android:imeSubtypeLocale="te"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=telugu_kachatathapa,EmojiCapable,TransliterationMethod=te-kachatathapa" />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_te_compact"
             android:imeSubtypeLocale="te"

@@ -27,25 +27,31 @@ import android.util.LruCache;
 import android.view.textservice.SuggestionsInfo;
 import android.view.textservice.TextInfo;
 
-import org.smc.inputmethod.compat.SuggestionsInfoCompatUtils;
-import org.smc.inputmethod.indic.Constants;
-import org.smc.inputmethod.indic.Dictionary;
-import org.smc.inputmethod.indic.SuggestedWords.SuggestedWordInfo;
-import org.smc.inputmethod.indic.WordComposer;
-import org.smc.inputmethod.indic.spellcheck.AndroidSpellCheckerService.SuggestionsGatherer;
-import org.smc.inputmethod.indic.utils.LocaleUtils;
-import org.smc.inputmethod.indic.utils.StringUtils;
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.PrevWordsInfo;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
+import org.smc.inputmethod.compat.SuggestionsInfoCompatUtils;
+import org.smc.inputmethod.indic.Constants;
+import org.smc.inputmethod.indic.SuggestedWords.SuggestedWordInfo;
+import org.smc.inputmethod.indic.WordComposer;
+import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
+import com.android.inputmethod.latin.utils.CoordinateUtils;
+import com.android.inputmethod.latin.utils.LocaleUtils;
+import com.android.inputmethod.latin.utils.ScriptUtils;
+import com.android.inputmethod.latin.utils.StringUtils;
+import com.android.inputmethod.latin.utils.SuggestionResults;
 
 public abstract class AndroidWordLevelSpellCheckerSession extends Session {
     private static final String TAG = AndroidWordLevelSpellCheckerSession.class.getSimpleName();
     private static final boolean DBG = false;
 
-    // Immutable, but need the locale which is not available in the constructor yet
-    private DictionaryPool mDictionaryPool;
-    // Likewise
+    public final static String[] EMPTY_STRING_ARRAY = new String[0];
+
+    // Immutable, but not available in the constructor.
     private Locale mLocale;
     // Cache this for performance
     private int mScript; // One of SCRIPT_LATIN or SCRIPT_CYRILLIC for now.
@@ -66,29 +72,29 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
         private static final char CHAR_DELIMITER = '\uFFFC';
         private static final int MAX_CACHE_SIZE = 50;
         private final LruCache<String, SuggestionsParams> mUnigramSuggestionsInfoCache =
-                new LruCache<String, SuggestionsParams>(MAX_CACHE_SIZE);
+                new LruCache<>(MAX_CACHE_SIZE);
 
         // TODO: Support n-gram input
-        private static String generateKey(String query, String prevWord) {
-            if (TextUtils.isEmpty(query) || TextUtils.isEmpty(prevWord)) {
+        private static String generateKey(final String query, final PrevWordsInfo prevWordsInfo) {
+            if (TextUtils.isEmpty(query) || !prevWordsInfo.isValid()) {
                 return query;
             }
-            return query + CHAR_DELIMITER + prevWord;
+            return query + CHAR_DELIMITER + prevWordsInfo;
         }
 
-        // TODO: Support n-gram input
-        public SuggestionsParams getSuggestionsFromCache(String query, String prevWord) {
-            return mUnigramSuggestionsInfoCache.get(generateKey(query, prevWord));
+        public SuggestionsParams getSuggestionsFromCache(String query,
+                final PrevWordsInfo prevWordsInfo) {
+            return mUnigramSuggestionsInfoCache.get(generateKey(query, prevWordsInfo));
         }
 
-        // TODO: Support n-gram input
         public void putSuggestionsToCache(
-                String query, String prevWord, String[] suggestions, int flags) {
+                final String query, final PrevWordsInfo prevWordsInfo,
+                final String[] suggestions, final int flags) {
             if (suggestions == null || TextUtils.isEmpty(query)) {
                 return;
             }
             mUnigramSuggestionsInfoCache.put(
-                    generateKey(query, prevWord), new SuggestionsParams(suggestions, flags));
+                    generateKey(query, prevWordsInfo), new SuggestionsParams(suggestions, flags));
         }
 
         public void clearCache() {
@@ -112,53 +118,14 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
     @Override
     public void onCreate() {
         final String localeString = getLocale();
-        mDictionaryPool = mService.getDictionaryPool(localeString);
         mLocale = LocaleUtils.constructLocaleFromString(localeString);
-        mScript = AndroidSpellCheckerService.getScriptFromLocale(mLocale);
+        mScript = ScriptUtils.getScriptFromSpellCheckerLocale(mLocale);
     }
 
     @Override
     public void onClose() {
         final ContentResolver cres = mService.getContentResolver();
         cres.unregisterContentObserver(mObserver);
-    }
-
-    /*
-     * Returns whether the code point is a letter that makes sense for the specified
-     * locale for this spell checker.
-     * The dictionaries supported by Latin IME are described in res/xml/spellchecker.xml
-     * and is limited to EFIGS languages and Russian.
-     * Hence at the moment this explicitly tests for Cyrillic characters or Latin characters
-     * as appropriate, and explicitly excludes CJK, Arabic and Hebrew characters.
-     */
-    private static boolean isLetterCheckableByLanguage(final int codePoint,
-            final int script) {
-        switch (script) {
-        case AndroidSpellCheckerService.SCRIPT_LATIN:
-            // Our supported latin script dictionaries (EFIGS) at the moment only include
-            // characters in the C0, C1, Latin Extended A and B, IPA extensions unicode
-            // blocks. As it happens, those are back-to-back in the code range 0x40 to 0x2AF,
-            // so the below is a very efficient way to test for it. As for the 0-0x3F, it's
-            // excluded from isLetter anyway.
-            return codePoint <= 0x2AF && Character.isLetter(codePoint);
-        case AndroidSpellCheckerService.SCRIPT_CYRILLIC:
-            // All Cyrillic characters are in the 400~52F block. There are some in the upper
-            // Unicode range, but they are archaic characters that are not used in modern
-            // Russian and are not used by our dictionary.
-            return codePoint >= 0x400 && codePoint <= 0x52F && Character.isLetter(codePoint);
-        case AndroidSpellCheckerService.SCRIPT_GREEK:
-            // Greek letters are either in the 370~3FF range (Greek & Coptic), or in the
-            // 1F00~1FFF range (Greek extended). Our dictionary contains both sort of characters.
-            // Our dictionary also contains a few words with 0xF2; it would be best to check
-            // if that's correct, but a web search does return results for these words so
-            // they are probably okay.
-            return (codePoint >= 0x370 && codePoint <= 0x3FF)
-                    || (codePoint >= 0x1F00 && codePoint <= 0x1FFF)
-                    || codePoint == 0xF2;
-        default:
-            // Should never come here
-            throw new RuntimeException("Impossible value of script: " + script);
-        }
     }
 
     private static final int CHECKABILITY_CHECKABLE = 0;
@@ -187,7 +154,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
         // Filter by first letter
         final int firstCodePoint = text.codePointAt(0);
         // Filter out words that don't start with a letter or an apostrophe
-        if (!isLetterCheckableByLanguage(firstCodePoint, script)
+        if (!ScriptUtils.isLetterPartOfScript(firstCodePoint, script)
                 && '\'' != firstCodePoint) return CHECKABILITY_FIRST_LETTER_UNCHECKABLE;
 
         // Filter contents
@@ -208,7 +175,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             if (Constants.CODE_PERIOD == codePoint) {
                 return CHECKABILITY_CONTAINS_PERIOD;
             }
-            if (isLetterCheckableByLanguage(codePoint, script)) ++letterCount;
+            if (ScriptUtils.isLetterPartOfScript(codePoint, script)) ++letterCount;
         }
         // Guestimate heuristic: perform spell checking if at least 3/4 of the characters
         // in this word are letters
@@ -225,24 +192,24 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
      * If the "TEXT" is fully upper case, we test the exact string "TEXT", the lower-cased
      *  version of it "text" and the capitalized version of it "Text".
      */
-    private boolean isInDictForAnyCapitalization(final Dictionary dict, final String text,
-            final int capitalizeType) {
+    private boolean isInDictForAnyCapitalization(final String text, final int capitalizeType) {
         // If the word is in there as is, then it's in the dictionary. If not, we'll test lower
         // case versions, but only if the word is not already all-lower case or mixed case.
-        if (dict.isValidWord(text)) return true;
+        if (mService.isValidWord(mLocale, text)) return true;
         if (StringUtils.CAPITALIZE_NONE == capitalizeType) return false;
 
         // If we come here, we have a capitalized word (either First- or All-).
         // Downcase the word and look it up again. If the word is only capitalized, we
         // tested all possibilities, so if it's still negative we can return false.
         final String lowerCaseText = text.toLowerCase(mLocale);
-        if (dict.isValidWord(lowerCaseText)) return true;
+        if (mService.isValidWord(mLocale, lowerCaseText)) return true;
         if (StringUtils.CAPITALIZE_FIRST == capitalizeType) return false;
 
         // If the lower case version is not in the dictionary, it's still possible
         // that we have an all-caps version of a word that needs to be capitalized
         // according to the dictionary. E.g. "GERMANS" only exists in the dictionary as "Germans".
-        return dict.isValidWord(StringUtils.capitalizeFirstAndDowncaseRest(lowerCaseText, mLocale));
+        return mService.isValidWord(mLocale,
+                StringUtils.capitalizeFirstAndDowncaseRest(lowerCaseText, mLocale));
     }
 
     // Note : this must be reentrant
@@ -257,11 +224,12 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
     }
 
     protected SuggestionsInfo onGetSuggestionsInternal(
-            final TextInfo textInfo, final String prevWord, final int suggestionsLimit) {
+            final TextInfo textInfo, final PrevWordsInfo prevWordsInfo,
+            final int suggestionsLimit) {
         try {
             final String inText = textInfo.getText();
             final SuggestionsParams cachedSuggestionsParams =
-                    mSuggestionsCache.getSuggestionsFromCache(inText, prevWord);
+                    mSuggestionsCache.getSuggestionsFromCache(inText, prevWordsInfo);
             if (cachedSuggestionsParams != null) {
                 if (DBG) {
                     Log.d(TAG, "Cache hit: " + inText + ", " + cachedSuggestionsParams.mFlags);
@@ -269,78 +237,57 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                 return new SuggestionsInfo(
                         cachedSuggestionsParams.mFlags, cachedSuggestionsParams.mSuggestions);
             }
-
             final int checkability = getCheckabilityInScript(inText, mScript);
             if (CHECKABILITY_CHECKABLE != checkability) {
-                DictAndKeyboard dictInfo = null;
-                try {
-                    dictInfo = mDictionaryPool.pollWithDefaultTimeout();
-                    if (!DictionaryPool.isAValidDictionary(dictInfo)) {
-                        return AndroidSpellCheckerService.getNotInDictEmptySuggestions(
-                                false /* reportAsTypo */);
-                    }
-                    return dictInfo.mDictionary.isValidWord(inText)
-                            ? AndroidSpellCheckerService.getInDictEmptySuggestions()
-                            : AndroidSpellCheckerService.getNotInDictEmptySuggestions(
-                                    CHECKABILITY_CONTAINS_PERIOD == checkability
-                                    /* reportAsTypo */);
-                } finally {
-                    if (null != dictInfo) {
-                        if (!mDictionaryPool.offer(dictInfo)) {
-                            Log.e(TAG, "Can't re-insert a dictionary into its pool");
+                if (CHECKABILITY_CONTAINS_PERIOD == checkability) {
+                    final String[] splitText = inText.split(Constants.REGEXP_PERIOD);
+                    boolean allWordsAreValid = true;
+                    for (final String word : splitText) {
+                        if (!mService.isValidWord(mLocale, word)) {
+                            allWordsAreValid = false;
+                            break;
                         }
                     }
+                    if (allWordsAreValid) {
+                        return new SuggestionsInfo(SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO
+                                | SuggestionsInfo.RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS,
+                                new String[] {
+                                        TextUtils.join(Constants.STRING_SPACE, splitText) });
+                    }
                 }
+                return mService.isValidWord(mLocale, inText) ?
+                        AndroidSpellCheckerService.getInDictEmptySuggestions() :
+                        AndroidSpellCheckerService.getNotInDictEmptySuggestions(
+                                CHECKABILITY_CONTAINS_PERIOD == checkability /* reportAsTypo */);
             }
             final String text = inText.replaceAll(
                     AndroidSpellCheckerService.APOSTROPHE, AndroidSpellCheckerService.SINGLE_QUOTE);
-
-            // TODO: Don't gather suggestions if the limit is <= 0 unless necessary
-            //final SuggestionsGatherer suggestionsGatherer = new SuggestionsGatherer(text,
-            //mService.mSuggestionThreshold, mService.mRecommendedThreshold,
-            //suggestionsLimit);
-            final SuggestionsGatherer suggestionsGatherer = mService.newSuggestionsGatherer(
-                    text, suggestionsLimit);
-
             final int capitalizeType = StringUtils.getCapitalizationType(text);
             boolean isInDict = true;
-            DictAndKeyboard dictInfo = null;
-            try {
-                dictInfo = mDictionaryPool.pollWithDefaultTimeout();
-                if (!DictionaryPool.isAValidDictionary(dictInfo)) {
-                    return AndroidSpellCheckerService.getNotInDictEmptySuggestions(
-                            false /* reportAsTypo */);
-                }
-                final WordComposer composer = new WordComposer();
-                final int length = text.length();
-                for (int i = 0; i < length; i = text.offsetByCodePoints(i, 1)) {
-                    final int codePoint = text.codePointAt(i);
-                    composer.addKeyInfo(codePoint, dictInfo.getKeyboard(codePoint));
-                }
-                // TODO: make a spell checker option to block offensive words or not
-                final ArrayList<SuggestedWordInfo> suggestions =
-                        dictInfo.mDictionary.getSuggestions(composer, prevWord,
-                                dictInfo.getProximityInfo(), true /* blockOffensiveWords */,
-                                null /* additionalFeaturesOptions */);
-                if (suggestions != null) {
-                    for (final SuggestedWordInfo suggestion : suggestions) {
-                        final String suggestionStr = suggestion.mWord;
-                        suggestionsGatherer.addWord(suggestionStr.toCharArray(), null, 0,
-                                suggestionStr.length(), suggestion.mScore);
-                    }
-                }
-                isInDict = isInDictForAnyCapitalization(dictInfo.mDictionary, text, capitalizeType);
-            } finally {
-                if (null != dictInfo) {
-                    if (!mDictionaryPool.offer(dictInfo)) {
-                        Log.e(TAG, "Can't re-insert a dictionary into its pool");
-                    }
-                }
+            if (!mService.hasMainDictionaryForLocale(mLocale)) {
+                return AndroidSpellCheckerService.getNotInDictEmptySuggestions(
+                        false /* reportAsTypo */);
             }
-
-            final SuggestionsGatherer.Result result = suggestionsGatherer.getResults(
-                    capitalizeType, mLocale);
-
+            final Keyboard keyboard = mService.getKeyboardForLocale(mLocale);
+            final WordComposer composer = new WordComposer();
+            final int[] codePoints = StringUtils.toCodePointArray(text);
+            final int[] coordinates;
+            final ProximityInfo proximityInfo;
+            if (null == keyboard) {
+                coordinates = CoordinateUtils.newCoordinateArray(codePoints.length,
+                        Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+                proximityInfo = null;
+            } else {
+                coordinates = keyboard.getCoordinates(codePoints);
+                proximityInfo = keyboard.getProximityInfo();
+            }
+            composer.setComposingWord(codePoints, coordinates);
+            // TODO: Don't gather suggestions if the limit is <= 0 unless necessary
+            final SuggestionResults suggestionResults = mService.getSuggestionResults(
+                    mLocale, composer, prevWordsInfo, proximityInfo);
+            final Result result = getResult(capitalizeType, mLocale, suggestionsLimit,
+                    mService.getRecommendedThreshold(), text, suggestionResults);
+            isInDict = isInDictForAnyCapitalization(text, capitalizeType);
             if (DBG) {
                 Log.i(TAG, "Spell checking results for " + text + " with suggestion limit "
                         + suggestionsLimit);
@@ -362,7 +309,8 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                                     .getValueOf_RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS()
                             : 0);
             final SuggestionsInfo retval = new SuggestionsInfo(flags, result.mSuggestions);
-            mSuggestionsCache.putSuggestionsToCache(text, prevWord, result.mSuggestions, flags);
+            mSuggestionsCache.putSuggestionsToCache(text, prevWordsInfo, result.mSuggestions,
+                    flags);
             return retval;
         } catch (RuntimeException e) {
             // Don't kill the keyboard if there is a bug in the spell checker
@@ -374,6 +322,62 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
                         false /* reportAsTypo */);
             }
         }
+    }
+
+    private static final class Result {
+        public final String[] mSuggestions;
+        public final boolean mHasRecommendedSuggestions;
+        public Result(final String[] gatheredSuggestions,
+                final boolean hasRecommendedSuggestions) {
+            mSuggestions = gatheredSuggestions;
+            mHasRecommendedSuggestions = hasRecommendedSuggestions;
+        }
+    }
+
+    private static Result getResult(final int capitalizeType, final Locale locale,
+            final int suggestionsLimit, final float recommendedThreshold, final String originalText,
+            final SuggestionResults suggestionResults) {
+        if (suggestionResults.isEmpty() || suggestionsLimit <= 0) {
+            return new Result(null /* gatheredSuggestions */,
+                    false /* hasRecommendedSuggestions */);
+        }
+        if (DBG) {
+            for (final SuggestedWordInfo suggestedWordInfo : suggestionResults) {
+                Log.i(TAG, "" + suggestedWordInfo.mScore + " " + suggestedWordInfo.mWord);
+            }
+        }
+        final ArrayList<String> suggestions = new ArrayList<>();
+        for (final SuggestedWordInfo suggestedWordInfo : suggestionResults) {
+            final String suggestion;
+            if (StringUtils.CAPITALIZE_ALL == capitalizeType) {
+                suggestion = suggestedWordInfo.mWord.toUpperCase(locale);
+            } else if (StringUtils.CAPITALIZE_FIRST == capitalizeType) {
+                suggestion = StringUtils.capitalizeFirstCodePoint(
+                        suggestedWordInfo.mWord, locale);
+            } else {
+                suggestion = suggestedWordInfo.mWord;
+            }
+            suggestions.add(suggestion);
+        }
+        StringUtils.removeDupes(suggestions);
+        // This returns a String[], while toArray() returns an Object[] which cannot be cast
+        // into a String[].
+        final String[] gatheredSuggestions =
+                suggestions.subList(0, Math.min(suggestions.size(), suggestionsLimit))
+                        .toArray(EMPTY_STRING_ARRAY);
+
+        final int bestScore = suggestionResults.first().mScore;
+        final String bestSuggestion = suggestions.get(0);
+        final float normalizedScore = BinaryDictionaryUtils.calcNormalizedScore(
+                originalText, bestSuggestion.toString(), bestScore);
+        final boolean hasRecommendedSuggestions = (normalizedScore > recommendedThreshold);
+        if (DBG) {
+            Log.i(TAG, "Best suggestion : " + bestSuggestion + ", score " + bestScore);
+            Log.i(TAG, "Normalized score = " + normalizedScore
+                    + " (threshold " + recommendedThreshold
+                    + ") => hasRecommendedSuggestions = " + hasRecommendedSuggestions);
+        }
+        return new Result(gatheredSuggestions, hasRecommendedSuggestions);
     }
 
     /*

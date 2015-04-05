@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2014, Jishnu Mohan <jishnu7@gmail.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- U+0966: "൧" MALAYALAM DIGIT ONE -->
+    <string name="additional_more_keys_for_symbols_1">&#x0D67;</string>
+    <!-- U+0966: "൨" MALAYALAM DIGIT TWO -->
+    <string name="additional_more_keys_for_symbols_2">&#x0D68;</string>
+    <!-- U+0966: "൩" MALAYALAM DIGIT THREE -->
+    <string name="additional_more_keys_for_symbols_3">&#x0D69;</string>
+    <!-- U+0966: "൪" MALAYALAM DIGIT FOUR -->
+    <string name="additional_more_keys_for_symbols_4">&#x0D6A;</string>
+    <!-- U+0966: "൫" MALAYALAM DIGIT FIVE -->
+    <string name="additional_more_keys_for_symbols_5">&#x0D6B;</string>
+    <!-- U+0966: "൬" MALAYALAM DIGIT SIX -->
+    <string name="additional_more_keys_for_symbols_6">&#x0D6C;</string>
+    <!-- U+0966: "൭" MALAYALAM DIGIT SEVEN -->
+    <string name="additional_more_keys_for_symbols_7">&#x0D6D;</string>
+    <!-- U+0966: "൮" MALAYALAM DIGIT EIGHT -->
+    <string name="additional_more_keys_for_symbols_8">&#x0D6E;</string>
+    <!-- U+0966: "൯" MALAYALAM DIGIT NINE -->
+    <string name="additional_more_keys_for_symbols_9">&#x0D6F;</string>
+    <!-- U+0966: "൦" MALAYALAM DIGIT ZERO -->
+    <string name="additional_more_keys_for_symbols_0">&#x0D66;</string>
+    <string name="keylabel_to_alpha">&#x0D05;</string>
+</resources>

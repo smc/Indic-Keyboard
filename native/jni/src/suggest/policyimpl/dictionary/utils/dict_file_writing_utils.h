@@ -21,6 +21,7 @@
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/header/header_read_write_utils.h"
+#include "suggest/policyimpl/dictionary/utils/format_utils.h"
 
 namespace latinime {
 
@@ -28,20 +29,36 @@ class BufferWithExtendableBuffer;
 
 class DictFileWritingUtils {
  public:
-    static bool createEmptyDictFile(const char *const filePath, const int dictVersion,
-            const HeaderReadWriteUtils::AttributeMap *const attributeMap);
+    static const char *const TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE;
 
-    static bool flushAllHeaderAndBodyToFile(const char *const filePath,
-            BufferWithExtendableBuffer *const dictHeader,
-            BufferWithExtendableBuffer *const dictBody);
+    static bool createEmptyDictFile(const char *const filePath, const int dictVersion,
+            const std::vector<int> localeAsCodePointVector,
+            const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap);
+
+    static bool flushBufferToFileWithSuffix(const char *const basePath, const char *const suffix,
+            const BufferWithExtendableBuffer *const buffer);
+
+    static bool writeBufferToFileTail(FILE *const file,
+            const BufferWithExtendableBuffer *const buffer);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(DictFileWritingUtils);
 
-    static const char *const TEMP_FILE_SUFFIX_FOR_WRITING_DICT_FILE;
+    static const int SIZE_OF_BUFFER_SIZE_FIELD;
 
-    static bool createEmptyV3DictFile(const char *const filePath,
-            const HeaderReadWriteUtils::AttributeMap *const attributeMap);
+    static bool createEmptyV401DictFile(const char *const filePath,
+            const std::vector<int> localeAsCodePointVector,
+            const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap,
+            const FormatUtils::FORMAT_VERSION formatVersion);
+
+    template<class DictConstants, class DictBuffers, class DictBuffersPtr>
+    static bool createEmptyV4DictFile(const char *const filePath,
+            const std::vector<int> localeAsCodePointVector,
+            const DictionaryHeaderStructurePolicy::AttributeMap *const attributeMap,
+            const FormatUtils::FORMAT_VERSION formatVersion);
+
+    static bool flushBufferToFile(const char *const filePath,
+            const BufferWithExtendableBuffer *const buffer);
 
     static bool writeBufferToFile(FILE *const file,
             const BufferWithExtendableBuffer *const buffer);

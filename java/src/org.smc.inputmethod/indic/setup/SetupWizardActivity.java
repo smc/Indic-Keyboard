@@ -17,27 +17,24 @@
 package org.smc.inputmethod.indic.setup;
 
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Message;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 import org.smc.inputmethod.compat.TextViewCompatUtils;
 import org.smc.inputmethod.compat.ViewCompatUtils;
 import org.smc.inputmethod.indic.R;
 import org.smc.inputmethod.indic.settings.SettingsActivity;
-import org.smc.inputmethod.indic.utils.CollectionUtils;
-import org.smc.inputmethod.indic.utils.StaticInnerHandlerWrapper;
-
-import java.util.ArrayList;
+import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
+import com.android.inputmethod.latin.utils.UncachedInputMethodManagerUtils;
 
 // TODO: Use Fragment to implement welcome screen and setup steps.
 public final class SetupWizardActivity extends Activity implements View.OnClickListener {
@@ -66,27 +63,28 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
     private SettingsPoolingHandler mHandler;
 
     private static final class SettingsPoolingHandler
-            extends StaticInnerHandlerWrapper<SetupWizardActivity> {
+            extends LeakGuardHandlerWrapper<SetupWizardActivity> {
         private static final int MSG_POLLING_IME_SETTINGS = 0;
         private static final long IME_SETTINGS_POLLING_INTERVAL = 200;
 
         private final InputMethodManager mImmInHandler;
 
-        public SettingsPoolingHandler(final SetupWizardActivity outerInstance,
+        public SettingsPoolingHandler(final SetupWizardActivity ownerInstance,
                 final InputMethodManager imm) {
-            super(outerInstance);
+            super(ownerInstance);
             mImmInHandler = imm;
         }
 
         @Override
         public void handleMessage(final Message msg) {
-            final SetupWizardActivity setupWizardActivity = getOuterInstance();
+            final SetupWizardActivity setupWizardActivity = getOwnerInstance();
             if (setupWizardActivity == null) {
                 return;
             }
             switch (msg.what) {
             case MSG_POLLING_IME_SETTINGS:
-                if (SetupActivity.isThisImeEnabled(setupWizardActivity, mImmInHandler)) {
+                if (UncachedInputMethodManagerUtils.isThisImeEnabled(setupWizardActivity,
+                        mImmInHandler)) {
                     setupWizardActivity.invokeSetupWizardOfThisIme();
                     return;
                 }
@@ -244,7 +242,8 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
     }
 
     void invokeSubtypeEnablerOfThisIme() {
-        final InputMethodInfo imi = SetupActivity.getInputMethodInfoOf(getPackageName(), mImm);
+        final InputMethodInfo imi =
+                UncachedInputMethodManagerUtils.getInputMethodInfoOf(getPackageName(), mImm);
         if (imi == null) {
             return;
         }
@@ -268,10 +267,10 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
 
     private int determineSetupStepNumber() {
         mHandler.cancelPollingImeSettings();
-        if (!SetupActivity.isThisImeEnabled(this, mImm)) {
+        if (!UncachedInputMethodManagerUtils.isThisImeEnabled(this, mImm)) {
             return STEP_1;
         }
-        if (!SetupActivity.isThisImeCurrent(this, mImm)) {
+        if (!UncachedInputMethodManagerUtils.isThisImeCurrent(this, mImm)) {
             return STEP_2;
         }
         return STEP_3;
@@ -424,7 +423,7 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
 
     static final class SetupStepGroup {
         private final SetupStepIndicatorView mIndicatorView;
-        private final ArrayList<SetupStep> mGroup = CollectionUtils.newArrayList();
+        private final ArrayList<SetupStep> mGroup = new ArrayList<>();
 
         public SetupStepGroup(final SetupStepIndicatorView indicatorView) {
             mIndicatorView = indicatorView;

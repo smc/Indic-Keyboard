@@ -26,24 +26,32 @@
     xmlns:latin="http://schemas.android.com/apk/res-auto"
 >
     <switch>
-        <case
-            latin:keyboardLayoutSet="hindi"
-        >
+        <case latin:keyboardLayoutSet="hindi">
             <!-- U+0941/U+0902: "ुं" DEVANAGARI VOWEL SIGN U/DEVANAGARI SIGN ANUSVARA
                  U+0941/U+0901: "ुँ" DEVANAGARI VOWEL SIGN U/DEVANAGARI SIGN CANDRABINDU -->
             <key-style
                 latin:styleName="moreKeysDevanagariVowelSignU"
                 latin:moreKeys="&#x0941;&#x0902;,&#x0941;&#x0901;" />
         </case>
+        <case latin:keyboardLayoutSet="hindi_compact">
+            <!-- U+0941: "ु" DEVANAGARI VOWEL SIGN U -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignU"
+                latin:moreKeys="&#x0941;" />
+        </case>
+        <case latin:keyboardLayoutSet="marathi">
+            <!-- U+0909: "उ" DEVANAGARI LETTER U -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignU"
+                latin:moreKeys="&#x0909;" />
+        </case>
         <default>
-             <key-style
-                latin:styleName="moreKeysDevanagariVowelSignU" />
+            <key-style latin:styleName="moreKeysDevanagariVowelSignU" />
         </default>
     </switch>
     <!-- U+0941: "ु" DEVANAGARI VOWEL SIGN U -->
     <key-style
         latin:styleName="baseKeyDevanagariVowelSignU"
         latin:parentStyle="moreKeysDevanagariVowelSignU"
-        latin:keyLabel="&#x0941;"
-        latin:keyLabelFlags="fontNormal" />
+        latin:keySpec="&#x0941;" />
 </merge>

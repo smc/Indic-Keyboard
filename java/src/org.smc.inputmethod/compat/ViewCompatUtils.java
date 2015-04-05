@@ -20,24 +20,23 @@ import android.view.View;
 
 import java.lang.reflect.Method;
 
+// TODO: Use {@link android.support.v4.view.ViewCompat} instead of this utility class.
+// Currently {@link #getPaddingEnd(View)} and {@link #setPaddingRelative(View,int,int,int,int)}
+// are missing from android-support-v4 static library in KitKat SDK.
 public final class ViewCompatUtils {
-    // Note that View.LAYOUT_DIRECTION_LTR and View.LAYOUT_DIRECTION_RTL have been introduced in
-    // API level 17 (Build.VERSION_CODE.JELLY_BEAN_MR1).
-    public static final int LAYOUT_DIRECTION_LTR = (Integer)CompatUtils.getFieldValue(null, 0x0,
-            CompatUtils.getField(View.class, "LAYOUT_DIRECTION_LTR"));
-    public static final int LAYOUT_DIRECTION_RTL = (Integer)CompatUtils.getFieldValue(null, 0x1,
-            CompatUtils.getField(View.class, "LAYOUT_DIRECTION_RTL"));
-
-    // Note that View.getPaddingEnd(), View.setPaddingRelative(int,int,int,int), and
-    // View.getLayoutDirection() have been introduced in API level 17
-    // (Build.VERSION_CODE.JELLY_BEAN_MR1).
+    // Note that View.getPaddingEnd(), View.setPaddingRelative(int,int,int,int) have been
+    // introduced in API level 17 (Build.VERSION_CODE.JELLY_BEAN_MR1).
     private static final Method METHOD_getPaddingEnd = CompatUtils.getMethod(
             View.class, "getPaddingEnd");
     private static final Method METHOD_setPaddingRelative = CompatUtils.getMethod(
             View.class, "setPaddingRelative",
-            Integer.TYPE, Integer.TYPE, Integer.TYPE, Integer.TYPE);
-    private static final Method METHOD_getLayoutDirection = CompatUtils.getMethod(
-            View.class, "getLayoutDirection");
+            int.class, int.class, int.class, int.class);
+    // Note that View.setElevation(float) has been introduced in API level 21.
+    private static final Method METHOD_setElevation = CompatUtils.getMethod(
+            View.class, "setElevation", float.class);
+    // Note that View.setTextAlignment(int) has been introduced in API level 17.
+    private static final Method METHOD_setTextAlignment = CompatUtils.getMethod(
+            View.class, "setTextAlignment", int.class);
 
     private ViewCompatUtils() {
         // This utility class is not publicly instantiable.
@@ -59,10 +58,20 @@ public final class ViewCompatUtils {
         CompatUtils.invoke(view, null, METHOD_setPaddingRelative, start, top, end, bottom);
     }
 
-    public static int getLayoutDirection(final View view) {
-        if (METHOD_getLayoutDirection == null) {
-            return LAYOUT_DIRECTION_LTR;
-        }
-        return (Integer)CompatUtils.invoke(view, 0, METHOD_getLayoutDirection);
+    public static void setElevation(final View view, final float elevation) {
+        CompatUtils.invoke(view, null, METHOD_setElevation, elevation);
+    }
+
+    // These TEXT_ALIGNMENT_* constants have been introduced in API 17.
+    public static final int TEXT_ALIGNMENT_INHERIT = 0;
+    public static final int TEXT_ALIGNMENT_GRAVITY = 1;
+    public static final int TEXT_ALIGNMENT_TEXT_START = 2;
+    public static final int TEXT_ALIGNMENT_TEXT_END = 3;
+    public static final int TEXT_ALIGNMENT_CENTER = 4;
+    public static final int TEXT_ALIGNMENT_VIEW_START = 5;
+    public static final int TEXT_ALIGNMENT_VIEW_END = 6;
+
+    public static void setTextAlignment(final View view, final int textAlignment) {
+        CompatUtils.invoke(view, null, METHOD_setTextAlignment, textAlignment);
     }
 }

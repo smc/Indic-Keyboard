@@ -26,9 +26,9 @@ import android.view.ViewParent;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.smc.inputmethod.indic.R;
-
 import java.util.Locale;
+
+import org.smc.inputmethod.indic.R;
 
 /**
  * A preference for one word list.
@@ -96,6 +96,10 @@ public final class WordListPreference extends Preference {
         if (status == mStatus) return;
         mStatus = status;
         setSummary(getSummary(status));
+    }
+
+    public boolean hasStatus(final int status) {
+        return status == mStatus;
     }
 
     @Override
@@ -217,6 +221,7 @@ public final class WordListPreference extends Preference {
         progressBar.setIds(mClientId, mWordlistId);
         progressBar.setMax(mFilesize);
         final boolean showProgressBar = (MetadataDbHelper.STATUS_DOWNLOADING == mStatus);
+        setSummary(getSummary(mStatus));
         status.setVisibility(showProgressBar ? View.INVISIBLE : View.VISIBLE);
         progressBar.setVisibility(showProgressBar ? View.VISIBLE : View.INVISIBLE);
 

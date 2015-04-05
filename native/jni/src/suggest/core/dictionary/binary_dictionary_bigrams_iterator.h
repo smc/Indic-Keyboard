@@ -24,11 +24,21 @@ namespace latinime {
 
 class BinaryDictionaryBigramsIterator {
  public:
+    // Empty iterator.
+    BinaryDictionaryBigramsIterator()
+           : mBigramsStructurePolicy(nullptr), mPos(NOT_A_DICT_POS),
+             mBigramPos(NOT_A_DICT_POS), mProbability(NOT_A_PROBABILITY), mHasNext(false) {}
+
     BinaryDictionaryBigramsIterator(
             const DictionaryBigramsStructurePolicy *const bigramsStructurePolicy, const int pos)
             : mBigramsStructurePolicy(bigramsStructurePolicy), mPos(pos),
               mBigramPos(NOT_A_DICT_POS), mProbability(NOT_A_PROBABILITY),
               mHasNext(pos != NOT_A_DICT_POS) {}
+
+    BinaryDictionaryBigramsIterator(BinaryDictionaryBigramsIterator &&bigramsIterator)
+            : mBigramsStructurePolicy(bigramsIterator.mBigramsStructurePolicy),
+              mPos(bigramsIterator.mPos), mBigramPos(bigramsIterator.mBigramPos),
+              mProbability(bigramsIterator.mProbability), mHasNext(bigramsIterator.mHasNext) {}
 
     AK_FORCE_INLINE bool hasNext() const {
         return mHasNext;

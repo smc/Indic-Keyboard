@@ -28,99 +28,99 @@
             >
             <!--Z ௳ TAMIL DAY SIGN-->
             <Key
-                latin:keyLabel="&#x0BF3;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0BF3;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--X ௴ TAMIL MONTH SIGN-->
             <Key
-                latin:keyLabel="&#x0BF4;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0BF4;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--C ௵ TAMIL YEAR SIGN-->
             <Key
-                latin:keyLabel="&#x0BF5;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio|autoXScale" />
+                latin:keySpec="&#x0BF5;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
 
             <!--V ௶ TAMIL DEBIT SIGN-->
             <Key
-                latin:keyLabel="&#x0BF6;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0BF6;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--B ௷ TAMIL CREDIT SIGN-->
             <Key
-                latin:keyLabel="&#x0BF7;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0BF7;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--N ல TAMIL LETTER LA-->
             <Key
-                latin:keyLabel="&#x0BB2;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0BB2;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keyLabel="/"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="/"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keyLabel="&lt;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&lt;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keyLabel="&gt;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&gt;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keyLabel="\?"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="\?"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </case>
 
         <default>
             <!--z ஔ TAMIL LETTER AU-->
             <Key
-                latin:keyLabel="&#x0B94;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio|autoXScale" />
+                latin:keySpec="&#x0B94;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
 
             <!--x ஓ TAMIL LETTER OO-->
             <Key
-                latin:keyLabel="&#x0B93;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0B93;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--c ஒ TAMIL LETTER O-->
             <Key
-                latin:keyLabel="&#x0B92;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0B92;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--v வ TAMIL LETTER VA-->
             <Key
-                latin:keyLabel="&#x0BB5;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0BB5;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--b ங TAMIL LETTER NGA-->
             <Key
-                latin:keyLabel="&#x0B99;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0B99;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--n ல TAMIL LETTER LA-->
             <Key
-                latin:keyLabel="&#x0BB2;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0BB2;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--m ர TAMIL LETTER RA-->
             <Key
-                latin:keyLabel="&#x0BB0;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0BB0;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keyLabel=","
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec=","
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keyLabel="."
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="."
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--/ ழ TAMIL LETTER LLLA-->
             <Key
-                latin:keyLabel="&#x0BB4;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0BB4;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </default>
     </switch>
 </merge>

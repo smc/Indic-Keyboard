@@ -16,11 +16,11 @@
 
 package com.android.inputmethod.latin.makedict;
 
+import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
-import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
-import com.android.inputmethod.latin.makedict.Word;
+import com.android.inputmethod.latin.makedict.WordProperty;
 
 import junit.framework.TestCase;
 
@@ -32,7 +32,7 @@ import java.util.Random;
  * Unit tests for FusionDictionary.
  */
 public class FusionDictionaryTest extends TestCase {
-    private static final ArrayList<String> sWords = new ArrayList<String>();
+    private static final ArrayList<String> sWords = new ArrayList<>();
     private static final int MAX_UNIGRAMS = 1000;
 
     private void prepare(final long seed) {
@@ -87,8 +87,8 @@ public class FusionDictionaryTest extends TestCase {
     }
 
     private void dumpDict(final FusionDictionary dict) {
-        for (Word w : dict) {
-            System.out.println("Word " + dumpWord(w.mWord));
+        for (WordProperty wordProperty : dict) {
+            System.out.println("Word " + dumpWord(wordProperty.mWord));
         }
     }
 
@@ -96,13 +96,12 @@ public class FusionDictionaryTest extends TestCase {
     // that it does not contain any duplicates.
     public void testFusion() {
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                new DictionaryOptions(new HashMap<String, String>(),
-                        false /* germanUmlautProcessing */, false /* frenchLigatureProcessing */));
+                new DictionaryOptions(new HashMap<String, String>()));
         final long time = System.currentTimeMillis();
         prepare(time);
         for (int i = 0; i < sWords.size(); ++i) {
             System.out.println("Adding in pos " + i + " : " + dumpWord(sWords.get(i)));
-            dict.add(sWords.get(i), 180, null, false);
+            dict.add(sWords.get(i), new ProbabilityInfo(180), null, false);
             dumpDict(dict);
             checkDictionary(dict, sWords, i);
         }

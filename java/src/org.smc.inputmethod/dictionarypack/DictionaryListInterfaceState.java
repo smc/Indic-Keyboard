@@ -18,8 +18,6 @@ package org.smc.inputmethod.dictionarypack;
 
 import android.view.View;
 
-import org.smc.inputmethod.indic.utils.CollectionUtils;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -39,8 +37,8 @@ public class DictionaryListInterfaceState {
         public int mStatus = MetadataDbHelper.STATUS_UNKNOWN;
     }
 
-    private HashMap<String, State> mWordlistToState = CollectionUtils.newHashMap();
-    private ArrayList<View> mViewCache = CollectionUtils.newArrayList();
+    private HashMap<String, State> mWordlistToState = new HashMap<>();
+    private ArrayList<View> mViewCache = new ArrayList<>();
 
     public boolean isOpen(final String wordlistId) {
         final State state = mWordlistToState.get(wordlistId);

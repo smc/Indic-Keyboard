@@ -26,78 +26,78 @@
         <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
         >
             <Key
-                latin:keyLabel="&#x0D13;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0D13;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="&#x0D0F;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0D0F;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="&#x0D05;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0D05;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="&#x0D07;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0D07;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="&#x0D09;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0D09;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="&#x0D2B;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0D2B;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="&#x0D31;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0D31;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="&#x0D16;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0D16;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="&#x0D25;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0D25;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="&#x0D1B;"
+                latin:keySpec="&#x0D1B;"
                 latin:moreKeys=":"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="&#x0D20;"
+                latin:keySpec="&#x0D20;"
                 latin:moreKeys="&quot;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </case>
 
         <default>
             <Key
-                latin:keyLabel="&#x0D4B;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio|autoXScale" />
+                latin:keySpec="&#x0D4B;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
             <Key
-                latin:keyLabel="&#x0D47;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0D47;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="&#x0D4D;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0D4D;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="&#x0D3F;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0D3F;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="&#x0D41;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0D41;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="&#x0D2A;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0D2A;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="&#x0D30;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0D30;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="&#x0D15;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0D15;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="&#x0D24;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0D24;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="&#x0D1A;"
+                latin:keySpec="&#x0D1A;"
                 latin:moreKeys=";"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="&#x0D1F;"
+                latin:keySpec="&#x0D1F;"
                 latin:moreKeys="'"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
          </default>
     </switch>
 </merge>

@@ -18,11 +18,12 @@
 #define LATINIME_BUFFER_WITH_EXTENDABLE_BUFFER_H
 
 #include <cstddef>
-#include <stdint.h>
+#include <cstdint>
 #include <vector>
 
 #include "defines.h"
 #include "suggest/policyimpl/dictionary/utils/byte_array_utils.h"
+#include "utils/byte_array_view.h"
 
 namespace latinime {
 
@@ -32,14 +33,20 @@ namespace latinime {
 // raw pointer but provides several methods that handle boundary checking for writing data.
 class BufferWithExtendableBuffer {
  public:
-    BufferWithExtendableBuffer(uint8_t *const originalBuffer, const int originalBufferSize,
-            const int maxAdditionalBufferSize = MAX_ADDITIONAL_BUFFER_SIZE)
-            : mOriginalBuffer(originalBuffer), mOriginalBufferSize(originalBufferSize),
-              mAdditionalBuffer(EXTEND_ADDITIONAL_BUFFER_SIZE_STEP), mUsedAdditionalBufferSize(0),
+    static const size_t DEFAULT_MAX_ADDITIONAL_BUFFER_SIZE;
+
+    BufferWithExtendableBuffer(const ReadWriteByteArrayView originalBuffer,
+            const int maxAdditionalBufferSize)
+            : mOriginalBuffer(originalBuffer), mAdditionalBuffer(), mUsedAdditionalBufferSize(0),
+              mMaxAdditionalBufferSize(maxAdditionalBufferSize) {}
+
+    // Without original buffer.
+    BufferWithExtendableBuffer(const int maxAdditionalBufferSize)
+            : mOriginalBuffer(), mAdditionalBuffer(), mUsedAdditionalBufferSize(0),
               mMaxAdditionalBufferSize(maxAdditionalBufferSize) {}
 
     AK_FORCE_INLINE int getTailPosition() const {
-        return mOriginalBufferSize + mUsedAdditionalBufferSize;
+        return mOriginalBuffer.size() + mUsedAdditionalBufferSize;
     }
 
     AK_FORCE_INLINE int getUsedAdditionalBufferSize() const {
@@ -50,21 +57,28 @@ class BufferWithExtendableBuffer {
      * For reading.
      */
     AK_FORCE_INLINE bool isInAdditionalBuffer(const int position) const {
-        return position >= mOriginalBufferSize;
+        return position >= static_cast<int>(mOriginalBuffer.size());
     }
 
     // TODO: Resolve the issue that the address can be changed when the vector is resized.
     // CAVEAT!: Be careful about array out of bound access with buffers
     AK_FORCE_INLINE const uint8_t *getBuffer(const bool usesAdditionalBuffer) const {
         if (usesAdditionalBuffer) {
-            return &mAdditionalBuffer[0];
+            return mAdditionalBuffer.data();
         } else {
-            return mOriginalBuffer;
+            return mOriginalBuffer.data();
         }
     }
 
+    uint32_t readUint(const int size, const int pos) const;
+
+    uint32_t readUintAndAdvancePosition(const int size, int *const pos) const;
+
+    void readCodePointsAndAdvancePosition(const int maxCodePointCount,
+            int *const outCodePoints, int *outCodePointCount, int *const pos) const;
+
     AK_FORCE_INLINE int getOriginalBufferSize() const {
-        return mOriginalBufferSize;
+        return mOriginalBuffer.size();
     }
 
     AK_FORCE_INLINE bool isNearSizeLimit() const {
@@ -72,32 +86,36 @@ class BufferWithExtendableBuffer {
                 * NEAR_BUFFER_LIMIT_THRESHOLD_PERCENTILE) / 100);
     }
 
+    bool extend(const int size);
+
     /**
      * For writing.
      *
      * Writing is allowed for original buffer, already written region of additional buffer and the
      * tail of additional buffer.
      */
+    bool writeUint(const uint32_t data, const int size, const int pos);
+
     bool writeUintAndAdvancePosition(const uint32_t data, const int size, int *const pos);
 
     bool writeCodePointsAndAdvancePosition(const int *const codePoints, const int codePointCount,
             const bool writesTerminator, int *const pos);
 
+    bool copy(const BufferWithExtendableBuffer *const sourceBuffer);
+
  private:
     DISALLOW_COPY_AND_ASSIGN(BufferWithExtendableBuffer);
 
-    static const size_t MAX_ADDITIONAL_BUFFER_SIZE;
     static const int NEAR_BUFFER_LIMIT_THRESHOLD_PERCENTILE;
     static const size_t EXTEND_ADDITIONAL_BUFFER_SIZE_STEP;
 
-    uint8_t *const mOriginalBuffer;
-    const int mOriginalBufferSize;
+    const ReadWriteByteArrayView mOriginalBuffer;
     std::vector<uint8_t> mAdditionalBuffer;
     int mUsedAdditionalBufferSize;
     const size_t mMaxAdditionalBufferSize;
 
     // Return if the buffer is successfully extended or not.
-    bool extendBuffer();
+    bool extendBuffer(const size_t size);
 
     // Returns if it is possible to write size-bytes from pos. When pos is at the tail position of
     // the additional buffer, try extending the buffer.

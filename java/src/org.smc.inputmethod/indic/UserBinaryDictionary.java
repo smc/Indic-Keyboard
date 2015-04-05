@@ -18,7 +18,6 @@ package org.smc.inputmethod.indic;
 
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
@@ -29,12 +28,17 @@ import android.provider.UserDictionary.Words;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.smc.inputmethod.compat.UserDictionaryCompatUtils;
-import org.smc.inputmethod.indic.utils.LocaleUtils;
-import org.smc.inputmethod.indic.utils.SubtypeLocaleUtils;
-
+import java.io.File;
 import java.util.Arrays;
 import java.util.Locale;
+
+// Package name change //
+import com.android.inputmethod.latin.BinaryDictionary;
+// Package name change //
+
+import org.smc.inputmethod.annotations.UsedForTesting;
+import org.smc.inputmethod.compat.UserDictionaryCompatUtils;
+import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 /**
  * An expandable dictionary that stores the words in the user dictionary provider into a binary
@@ -51,23 +55,15 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     // to auto-correct, so we set this to the highest frequency that won't, i.e. 14.
     private static final int USER_DICT_SHORTCUT_FREQUENCY = 14;
 
-    // TODO: use Words.SHORTCUT when we target JellyBean or above
-    final static String SHORTCUT = "shortcut";
-    private static final String[] PROJECTION_QUERY;
-    static {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            PROJECTION_QUERY = new String[] {
-                Words.WORD,
-                SHORTCUT,
-                Words.FREQUENCY,
-            };
-        } else {
-            PROJECTION_QUERY = new String[] {
-                Words.WORD,
-                Words.FREQUENCY,
-            };
-        }
-    }
+    private static final String[] PROJECTION_QUERY_WITH_SHORTCUT = new String[] {
+        Words.WORD,
+        Words.SHORTCUT,
+        Words.FREQUENCY,
+    };
+    private static final String[] PROJECTION_QUERY_WITHOUT_SHORTCUT = new String[] {
+        Words.WORD,
+        Words.FREQUENCY,
+    };
 
     private static final String NAME = "userunigram";
 
@@ -75,24 +71,18 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     final private String mLocale;
     final private boolean mAlsoUseMoreRestrictiveLocales;
 
-    public UserBinaryDictionary(final Context context, final String locale) {
-        this(context, locale, false);
-    }
-
-    public UserBinaryDictionary(final Context context, final String locale,
-            final boolean alsoUseMoreRestrictiveLocales) {
-        super(context, getFilenameWithLocale(NAME, locale), Dictionary.TYPE_USER,
-                false /* isUpdatable */);
+    protected UserBinaryDictionary(final Context context, final Locale locale,
+            final boolean alsoUseMoreRestrictiveLocales, final File dictFile, final String name) {
+        super(context, getDictName(name, locale, dictFile), locale, Dictionary.TYPE_USER, dictFile);
         if (null == locale) throw new NullPointerException(); // Catch the error earlier
-        if (SubtypeLocaleUtils.NO_LANGUAGE.equals(locale)) {
+        final String localeStr = locale.toString();
+        if (SubtypeLocaleUtils.NO_LANGUAGE.equals(localeStr)) {
             // If we don't have a locale, insert into the "all locales" user dictionary.
             mLocale = USER_DICTIONARY_ALL_LANGUAGES;
         } else {
-            mLocale = locale;
+            mLocale = localeStr;
         }
         mAlsoUseMoreRestrictiveLocales = alsoUseMoreRestrictiveLocales;
-        // Perform a managed query. The Activity will handle closing and re-querying the cursor
-        // when needed.
         ContentResolver cres = context.getContentResolver();
 
         mObserver = new ContentObserver(null) {
@@ -108,12 +98,18 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
             // devices. On older versions of the platform, the hook above will be called instead.
             @Override
             public void onChange(final boolean self, final Uri uri) {
-                setRequiresReload(true);
+                setNeedsToRecreate();
             }
         };
         cres.registerContentObserver(Words.CONTENT_URI, true, mObserver);
+        reloadDictionaryIfRequired();
+    }
 
-        loadDictionary();
+    @UsedForTesting
+    public static UserBinaryDictionary getDictionary(final Context context, final Locale locale,
+            final File dictFile, final String dictNamePrefix) {
+        return new UserBinaryDictionary(context, locale, false /* alsoUseMoreRestrictiveLocales */,
+                dictFile, dictNamePrefix + NAME);
     }
 
     @Override
@@ -126,7 +122,7 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     }
 
     @Override
-    public void loadDictionaryAsync() {
+    public void loadInitialContentsLocked() {
         // Split the locale. For example "en" => ["en"], "de_DE" => ["de", "DE"],
         // "en_US_foo_bar_qux" => ["en", "US", "foo_bar_qux"] because of the limit of 3.
         // This is correct for locale processing.
@@ -174,11 +170,30 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
         } else {
             requestArguments = localeElements;
         }
+        final String requestString = request.toString();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            try {
+                addWordsFromProjectionLocked(PROJECTION_QUERY_WITH_SHORTCUT, requestString,
+                        requestArguments);
+            } catch (IllegalArgumentException e) {
+                // This may happen on some non-compliant devices where the declared API is JB+ but
+                // the SHORTCUT column is not present for some reason.
+                addWordsFromProjectionLocked(PROJECTION_QUERY_WITHOUT_SHORTCUT, requestString,
+                        requestArguments);
+            }
+        } else {
+            addWordsFromProjectionLocked(PROJECTION_QUERY_WITHOUT_SHORTCUT, requestString,
+                    requestArguments);
+        }
+    }
+
+    private void addWordsFromProjectionLocked(final String[] query, String request,
+            final String[] requestArguments) throws IllegalArgumentException {
         Cursor cursor = null;
         try {
             cursor = mContext.getContentResolver().query(
-                Words.CONTENT_URI, PROJECTION_QUERY, request.toString(), requestArguments, null);
-            addWords(cursor);
+                    Words.CONTENT_URI, query, request, requestArguments, null);
+            addWordsLocked(cursor);
         } catch (final SQLiteException e) {
             Log.e(TAG, "SQLiteException in the remote User dictionary process.", e);
         } finally {
@@ -190,8 +205,8 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
         }
     }
 
-    public boolean isEnabled() {
-        final ContentResolver cr = mContext.getContentResolver();
+    public static boolean isEnabled(final Context context) {
+        final ContentResolver cr = context.getContentResolver();
         final ContentProviderClient client = cr.acquireContentProviderClient(Words.CONTENT_URI);
         if (client != null) {
             client.release();
@@ -204,18 +219,15 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     /**
      * Adds a word to the user dictionary and makes it persistent.
      *
+     * @param context the context
+     * @param locale the locale
      * @param word the word to add. If the word is capitalized, then the dictionary will
      * recognize it as a capitalized word when searched.
      */
-    public synchronized void addWordToUserDictionary(final String word) {
+    public static void addWordToUserDictionary(final Context context, final Locale locale,
+            final String word) {
         // Update the user dictionary provider
-        final Locale locale;
-        if (USER_DICTIONARY_ALL_LANGUAGES == mLocale) {
-            locale = null;
-        } else {
-            locale = LocaleUtils.constructLocaleFromString(mLocale);
-        }
-        UserDictionaryCompatUtils.addWord(mContext, word,
+        UserDictionaryCompatUtils.addWord(context, word,
                 HISTORICAL_DEFAULT_USER_DICTIONARY_FREQUENCY, null, locale);
     }
 
@@ -232,12 +244,12 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
         }
     }
 
-    private void addWords(final Cursor cursor) {
+    private void addWordsLocked(final Cursor cursor) {
         final boolean hasShortcutColumn = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
         if (cursor == null) return;
         if (cursor.moveToFirst()) {
             final int indexWord = cursor.getColumnIndex(Words.WORD);
-            final int indexShortcut = hasShortcutColumn ? cursor.getColumnIndex(SHORTCUT) : 0;
+            final int indexShortcut = hasShortcutColumn ? cursor.getColumnIndex(Words.SHORTCUT) : 0;
             final int indexFrequency = cursor.getColumnIndex(Words.FREQUENCY);
             while (!cursor.isAfterLast()) {
                 final String word = cursor.getString(indexWord);
@@ -245,26 +257,20 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
                 final int frequency = cursor.getInt(indexFrequency);
                 final int adjustedFrequency = scaleFrequencyFromDefaultToLatinIme(frequency);
                 // Safeguard against adding really long words.
-                if (word.length() < MAX_WORD_LENGTH) {
-                    super.addWord(word, null, adjustedFrequency, 0 /* shortcutFreq */,
-                            false /* isNotAWord */);
-                }
-                if (null != shortcut && shortcut.length() < MAX_WORD_LENGTH) {
-                    super.addWord(shortcut, word, adjustedFrequency, USER_DICT_SHORTCUT_FREQUENCY,
-                            true /* isNotAWord */);
+                if (word.length() <= MAX_WORD_LENGTH) {
+                    runGCIfRequiredLocked(true /* mindsBlockByGC */);
+                    addUnigramLocked(word, adjustedFrequency, null /* shortcutTarget */,
+                            0 /* shortcutFreq */, false /* isNotAWord */,
+                            false /* isBlacklisted */, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
+                    if (null != shortcut && shortcut.length() <= MAX_WORD_LENGTH) {
+                        runGCIfRequiredLocked(true /* mindsBlockByGC */);
+                        addUnigramLocked(shortcut, adjustedFrequency, word,
+                                USER_DICT_SHORTCUT_FREQUENCY, true /* isNotAWord */,
+                                false /* isBlacklisted */, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
+                    }
                 }
                 cursor.moveToNext();
             }
         }
-    }
-
-    @Override
-    protected boolean hasContentChanged() {
-        return true;
-    }
-
-    @Override
-    protected boolean needsToReloadBeforeWriting() {
-        return true;
     }
 }

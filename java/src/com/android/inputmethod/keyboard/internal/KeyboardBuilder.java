@@ -21,29 +21,31 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.util.Xml;
 
-import org.smc.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
-import org.smc.inputmethod.indic.Constants;
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.utils.ResourceUtils;
-import org.smc.inputmethod.indic.utils.RunInLocale;
-import org.smc.inputmethod.indic.utils.StringUtils;
-import org.smc.inputmethod.indic.utils.SubtypeLocaleUtils;
-import org.smc.inputmethod.indic.utils.XmlParseUtils;
+import com.android.inputmethod.keyboard.KeyboardTheme;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Locale;
+
+import org.smc.inputmethod.annotations.UsedForTesting;
+import org.smc.inputmethod.indic.Constants;
+import org.smc.inputmethod.indic.R;
+import com.android.inputmethod.latin.utils.ResourceUtils;
+import com.android.inputmethod.latin.utils.StringUtils;
+import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
+import com.android.inputmethod.latin.utils.XmlParseUtils;
+import com.android.inputmethod.latin.utils.XmlParseUtils.ParseException;
 
 /**
  * Keyboard Building helper.
@@ -276,20 +278,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
             params.mThemeId = keyboardAttr.getInt(R.styleable.Keyboard_themeId, 0);
             params.mIconsSet.loadIcons(keyboardAttr);
-            final String language = params.mId.mLocale.getLanguage();
-            params.mCodesSet.setLanguage(language);
-            params.mTextsSet.setLanguage(language);
-            final RunInLocale<Void> job = new RunInLocale<Void>() {
-                @Override
-                protected Void job(final Resources res) {
-                    params.mTextsSet.loadStringResources(mContext);
-                    return null;
-                }
-            };
-            // Null means the current system locale.
-            final Locale locale = SubtypeLocaleUtils.isNoLanguage(params.mId.mSubtype)
-                    ? null : params.mId.mLocale;
-            job.runInLocale(mResources, locale);
+            params.mTextsSet.setLocale(params.mId.mLocale, mContext);
 
             final int resourceId = keyboardAttr.getResourceId(
                     R.styleable.Keyboard_touchPositionCorrectionData, 0);
@@ -456,11 +445,16 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 if (Build.VERSION.SDK_INT < supportedMinSdkVersion) {
                     continue;
                 }
+                final int labelFlags = row.getDefaultKeyLabelFlags();
+                // TODO: Should be able to assign default keyActionFlags as well.
+                final int backgroundType = row.getDefaultBackgroundType();
                 final int x = (int)row.getKeyX(null);
                 final int y = row.getKeyY();
-                final Key key = new Key(mParams, label, null /* hintLabel */, 0 /* iconId */,
-                        code, outputText, x, y, (int)keyWidth, (int)row.getRowHeight(),
-                        row.getDefaultKeyLabelFlags(), row.getDefaultBackgroundType());
+                final int width = (int)keyWidth;
+                final int height = row.getRowHeight();
+                final Key key = new Key(label, KeyboardIconsSet.ICON_UNDEFINED, code, outputText,
+                        null /* hintLabel */, labelFlags, backgroundType, x, y, width, height,
+                        mParams.mHorizontalGap, mParams.mVerticalGap);
                 endKey(key);
                 row.advanceXPos(keyWidth);
             }
@@ -477,7 +471,15 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             if (DEBUG) startEndTag("<%s /> skipped", TAG_KEY);
             return;
         }
-        final Key key = new Key(mResources, mParams, row, parser);
+        final TypedArray keyAttr = mResources.obtainAttributes(
+                Xml.asAttributeSet(parser), R.styleable.Keyboard_Key);
+        final KeyStyle keyStyle = mParams.mKeyStyles.getKeyStyle(keyAttr, parser);
+        final String keySpec = keyStyle.getString(keyAttr, R.styleable.Keyboard_Key_keySpec);
+        if (TextUtils.isEmpty(keySpec)) {
+            throw new ParseException("Empty keySpec", parser);
+        }
+        final Key key = new Key(keySpec, keyAttr, keyStyle, mParams, row);
+        keyAttr.recycle();
         if (DEBUG) {
             startEndTag("<%s%s %s moreKeys=%s />", TAG_KEY, (key.isEnabled() ? "" : " disabled"),
                     key, Arrays.toString(key.getMoreKeys()));
@@ -493,7 +495,11 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             if (DEBUG) startEndTag("<%s /> skipped", TAG_SPACER);
             return;
         }
-        final Key.Spacer spacer = new Key.Spacer(mResources, mParams, row, parser);
+        final TypedArray keyAttr = mResources.obtainAttributes(
+                Xml.asAttributeSet(parser), R.styleable.Keyboard_Key);
+        final KeyStyle keyStyle = mParams.mKeyStyles.getKeyStyle(keyAttr, parser);
+        final Key spacer = new Key.Spacer(keyAttr, keyStyle, mParams, row);
+        keyAttr.recycle();
         if (DEBUG) startEndTag("<%s />", TAG_SPACER);
         XmlParseUtils.checkEndTag(TAG_SPACER, parser);
         endKey(spacer);
@@ -639,6 +645,9 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             final boolean keyboardLayoutSetElementMatched = matchTypedValue(caseAttr,
                     R.styleable.Keyboard_Case_keyboardLayoutSetElement, id.mElementId,
                     KeyboardId.elementIdToName(id.mElementId));
+            final boolean keyboardThemeMacthed = matchTypedValue(caseAttr,
+                    R.styleable.Keyboard_Case_keyboardTheme, mParams.mThemeId,
+                    KeyboardTheme.getKeyboardThemeName(mParams.mThemeId));
             final boolean modeMatched = matchTypedValue(caseAttr,
                     R.styleable.Keyboard_Case_mode, id.mMode, KeyboardId.modeName(id.mMode));
             final boolean navigateNextMatched = matchBoolean(caseAttr,
@@ -649,10 +658,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     R.styleable.Keyboard_Case_passwordInput, id.passwordInput());
             final boolean clobberSettingsKeyMatched = matchBoolean(caseAttr,
                     R.styleable.Keyboard_Case_clobberSettingsKey, id.mClobberSettingsKey);
-            final boolean shortcutKeyEnabledMatched = matchBoolean(caseAttr,
-                    R.styleable.Keyboard_Case_shortcutKeyEnabled, id.mShortcutKeyEnabled);
-            final boolean shortcutKeyOnSymbolsMatched = matchBoolean(caseAttr,
-                    R.styleable.Keyboard_Case_shortcutKeyOnSymbols, id.mShortcutKeyOnSymbols);
             final boolean hasShortcutKeyMatched = matchBoolean(caseAttr,
                     R.styleable.Keyboard_Case_hasShortcutKey, id.mHasShortcutKey);
             final boolean languageSwitchKeyEnabledMatched = matchBoolean(caseAttr,
@@ -671,12 +676,11 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             final boolean countryCodeMatched = matchString(caseAttr,
                     R.styleable.Keyboard_Case_countryCode, id.mLocale.getCountry());
             final boolean selected = keyboardLayoutSetMatched && keyboardLayoutSetElementMatched
-                    && modeMatched && navigateNextMatched && navigatePreviousMatched
-                    && passwordInputMatched && clobberSettingsKeyMatched
-                    && shortcutKeyEnabledMatched && shortcutKeyOnSymbolsMatched
-                    && hasShortcutKeyMatched && languageSwitchKeyEnabledMatched
-                    && isMultiLineMatched && imeActionMatched && localeCodeMatched
-                    && languageCodeMatched && countryCodeMatched && isIconDefinedMatched;
+                    && keyboardThemeMacthed && modeMatched && navigateNextMatched
+                    && navigatePreviousMatched && passwordInputMatched && clobberSettingsKeyMatched
+                    && hasShortcutKeyMatched  && languageSwitchKeyEnabledMatched
+                    && isMultiLineMatched && imeActionMatched && isIconDefinedMatched
+                    && localeCodeMatched && languageCodeMatched && countryCodeMatched;
 
             if (DEBUG) {
                 startTag("<%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s>%s", TAG_CASE,
@@ -685,6 +689,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                         textAttr(caseAttr.getString(
                                 R.styleable.Keyboard_Case_keyboardLayoutSetElement),
                                 "keyboardLayoutSetElement"),
+                        textAttr(caseAttr.getString(
+                                R.styleable.Keyboard_Case_keyboardTheme), "keyboardTheme"),
                         textAttr(caseAttr.getString(R.styleable.Keyboard_Case_mode), "mode"),
                         textAttr(caseAttr.getString(R.styleable.Keyboard_Case_imeAction),
                                 "imeAction"),
@@ -696,16 +702,14 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                                 "clobberSettingsKey"),
                         booleanAttr(caseAttr, R.styleable.Keyboard_Case_passwordInput,
                                 "passwordInput"),
-                        booleanAttr(caseAttr, R.styleable.Keyboard_Case_shortcutKeyEnabled,
-                                "shortcutKeyEnabled"),
-                        booleanAttr(caseAttr, R.styleable.Keyboard_Case_shortcutKeyOnSymbols,
-                                "shortcutKeyOnSymbols"),
                         booleanAttr(caseAttr, R.styleable.Keyboard_Case_hasShortcutKey,
                                 "hasShortcutKey"),
                         booleanAttr(caseAttr, R.styleable.Keyboard_Case_languageSwitchKeyEnabled,
                                 "languageSwitchKeyEnabled"),
                         booleanAttr(caseAttr, R.styleable.Keyboard_Case_isMultiLine,
                                 "isMultiLine"),
+                        textAttr(caseAttr.getString(R.styleable.Keyboard_Case_isIconDefined),
+                                "isIconDefined"),
                         textAttr(caseAttr.getString(R.styleable.Keyboard_Case_localeCode),
                                 "localeCode"),
                         textAttr(caseAttr.getString(R.styleable.Keyboard_Case_languageCode),
@@ -755,6 +759,16 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             return StringUtils.containsInArray(strValue, a.getString(index).split("\\|"));
         }
         return false;
+    }
+
+    private static boolean isIconDefined(final TypedArray a, final int index,
+            final KeyboardIconsSet iconsSet) {
+        if (!a.hasValue(index)) {
+            return true;
+        }
+        final String iconName = a.getString(index);
+        final int iconId = KeyboardIconsSet.getIconId(iconName);
+        return iconsSet.getIconDrawable(iconId) != null;
     }
 
     private boolean parseDefault(final XmlPullParser parser, final KeyboardRow row,
@@ -852,15 +866,5 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     private static String booleanAttr(final TypedArray a, final int index, final String name) {
         return a.hasValue(index)
                 ? String.format(" %s=%s", name, a.getBoolean(index, false)) : "";
-    }
-
-    private static boolean isIconDefined(TypedArray a, int index, KeyboardIconsSet iconsSet) {
-        if (!a.hasValue(index)) {
-            return true;
-        }
-        while (iconsSet.getIconDrawable(KeyboardIconsSet.getIconId(a.getString(index))) != null) {
-            return true;
-        }
-        return false;
     }
 }

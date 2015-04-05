@@ -16,11 +16,11 @@
 
 package org.smc.inputmethod.dictionarypack;
 
-import org.smc.inputmethod.indic.utils.FragmentUtils;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+
+import com.android.inputmethod.latin.utils.FragmentUtils;
 
 /**
  * Preference screen.

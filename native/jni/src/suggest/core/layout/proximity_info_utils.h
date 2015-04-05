@@ -18,18 +18,18 @@
 #define LATINIME_PROXIMITY_INFO_UTILS_H
 
 #include <cmath>
+#include <unordered_map>
 
 #include "defines.h"
 #include "suggest/core/layout/additional_proximity_chars.h"
 #include "suggest/core/layout/geometry_utils.h"
 #include "utils/char_utils.h"
-#include "utils/hash_map_compat.h"
 
 namespace latinime {
 class ProximityInfoUtils {
  public:
     static AK_FORCE_INLINE int getKeyIndexOf(const int keyCount, const int c,
-            const hash_map_compat<int, int> *const codeToKeyMap) {
+            const std::unordered_map<int, int> *const codeToKeyMap) {
         if (keyCount == 0) {
             // We do not have the coordinate data
             return NOT_AN_INDEX;
@@ -38,7 +38,7 @@ class ProximityInfoUtils {
             return NOT_AN_INDEX;
         }
         const int lowerCode = CharUtils::toLowerCase(c);
-        hash_map_compat<int, int>::const_iterator mapPos = codeToKeyMap->find(lowerCode);
+        std::unordered_map<int, int>::const_iterator mapPos = codeToKeyMap->find(lowerCode);
         if (mapPos != codeToKeyMap->end()) {
             return mapPos->second;
         }
@@ -52,7 +52,7 @@ class ProximityInfoUtils {
             const int *const proximityCharsArray, const int cellHeight, const int cellWidth,
             const int gridWidth, const int mostCommonKeyWidth, const int keyCount,
             const char *const localeStr,
-            const hash_map_compat<int, int> *const codeToKeyMap, int *inputProximities) {
+            const std::unordered_map<int, int> *const codeToKeyMap, int *inputProximities) {
         // Initialize
         // - mInputCodes
         // - mNormalizedSquaredDistances
@@ -100,6 +100,10 @@ class ProximityInfoUtils {
         const float dotProduct = ray1x * ray2x + ray1y * ray2y;
         const float lineLengthSqr = GeometryUtils::SQUARE_FLOAT(ray2x)
                 + GeometryUtils::SQUARE_FLOAT(ray2y);
+        if (lineLengthSqr <= 0.0f) {
+            // Return point to the point distance.
+            return getSquaredDistanceFloat(x, y, x1, y1);
+        }
         const float projectionLengthSqr = dotProduct / lineLengthSqr;
 
         float projectionX;
@@ -121,29 +125,6 @@ class ProximityInfoUtils {
          return type == MATCH_CHAR || type == PROXIMITY_CHAR || type == ADDITIONAL_PROXIMITY_CHAR;
      }
 
-    // Normal distribution N(u, sigma^2).
-    struct NormalDistribution {
-     public:
-        NormalDistribution(const float u, const float sigma)
-                : mU(u), mSigma(sigma),
-                  mPreComputedNonExpPart(1.0f / sqrtf(2.0f * M_PI_F
-                          * GeometryUtils::SQUARE_FLOAT(sigma))),
-                  mPreComputedExponentPart(-1.0f / (2.0f * GeometryUtils::SQUARE_FLOAT(sigma))) {}
-
-        float getProbabilityDensity(const float x) const {
-            const float shiftedX = x - mU;
-            return mPreComputedNonExpPart
-                    * expf(mPreComputedExponentPart * GeometryUtils::SQUARE_FLOAT(shiftedX));
-        }
-
-     private:
-        DISALLOW_IMPLICIT_CONSTRUCTORS(NormalDistribution);
-        const float mU; // mean value
-        const float mSigma; // standard deviation
-        const float mPreComputedNonExpPart; // = 1 / sqrt(2 * PI * sigma^2)
-        const float mPreComputedExponentPart; // = -1 / (2 * sigma^2)
-    }; // struct NormalDistribution
-
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(ProximityInfoUtils);
 
@@ -163,10 +144,16 @@ class ProximityInfoUtils {
             const int *const proximityCharsArray, const int cellHeight, const int cellWidth,
             const int gridWidth, const int mostCommonKeyWidth, const int keyCount,
             const int x, const int y, const int primaryKey, const char *const localeStr,
-            const hash_map_compat<int, int> *const codeToKeyMap, int *proximities) {
+            const std::unordered_map<int, int> *const codeToKeyMap, int *proximities) {
         const int mostCommonKeyWidthSquare = mostCommonKeyWidth * mostCommonKeyWidth;
         int insertPos = 0;
         proximities[insertPos++] = primaryKey;
+        if (x == NOT_A_COORDINATE || y == NOT_A_COORDINATE) {
+            for (int i = insertPos; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {
+                proximities[i] = NOT_A_CODE_POINT;
+            }
+            return;
+        }
         const int startIndex = getStartIndexFromCoordinates(x, y, cellHeight, cellWidth, gridWidth);
         if (startIndex >= 0) {
             for (int i = 0; i < MAX_PROXIMITY_CHARS_SIZE; ++i) {

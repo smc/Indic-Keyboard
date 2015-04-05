@@ -21,8 +21,8 @@ import android.database.Cursor;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Collections;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -43,9 +43,8 @@ public class MetadataHandler {
      * @return the constructed list of wordlist metadata.
      */
     private static List<WordListMetadata> makeMetadataObject(final Cursor results) {
-        final ArrayList<WordListMetadata> buildingMetadata = new ArrayList<WordListMetadata>();
-
-        if (results.moveToFirst()) {
+        final ArrayList<WordListMetadata> buildingMetadata = new ArrayList<>();
+        if (null != results && results.moveToFirst()) {
             final int localeColumn = results.getColumnIndex(MetadataDbHelper.LOCALE_COLUMN);
             final int typeColumn = results.getColumnIndex(MetadataDbHelper.TYPE_COLUMN);
             final int descriptionColumn =
@@ -53,6 +52,8 @@ public class MetadataHandler {
             final int idIndex = results.getColumnIndex(MetadataDbHelper.WORDLISTID_COLUMN);
             final int updateIndex = results.getColumnIndex(MetadataDbHelper.DATE_COLUMN);
             final int fileSizeIndex = results.getColumnIndex(MetadataDbHelper.FILESIZE_COLUMN);
+            final int rawChecksumIndex =
+                    results.getColumnIndex(MetadataDbHelper.RAW_CHECKSUM_COLUMN);
             final int checksumIndex = results.getColumnIndex(MetadataDbHelper.CHECKSUM_COLUMN);
             final int localFilenameIndex =
                     results.getColumnIndex(MetadataDbHelper.LOCAL_FILENAME_COLUMN);
@@ -61,13 +62,13 @@ public class MetadataHandler {
             final int versionIndex = results.getColumnIndex(MetadataDbHelper.VERSION_COLUMN);
             final int formatVersionIndex =
                     results.getColumnIndex(MetadataDbHelper.FORMATVERSION_COLUMN);
-
             do {
                 buildingMetadata.add(new WordListMetadata(results.getString(idIndex),
                         results.getInt(typeColumn),
                         results.getString(descriptionColumn),
                         results.getLong(updateIndex),
                         results.getLong(fileSizeIndex),
+                        results.getString(rawChecksumIndex),
                         results.getString(checksumIndex),
                         results.getString(localFilenameIndex),
                         results.getString(remoteFilenameIndex),
@@ -75,8 +76,6 @@ public class MetadataHandler {
                         results.getInt(formatVersionIndex),
                         0, results.getString(localeColumn)));
             } while (results.moveToNext());
-
-            results.close();
         }
         return Collections.unmodifiableList(buildingMetadata);
     }
@@ -92,9 +91,14 @@ public class MetadataHandler {
         // If clientId is null, we get a cursor on the default database (see
         // MetadataDbHelper#getInstance() for more on this)
         final Cursor results = MetadataDbHelper.queryCurrentMetadata(context, clientId);
-        final List<WordListMetadata> resultList = makeMetadataObject(results);
-        results.close();
-        return resultList;
+        // If null, we should return makeMetadataObject(null), so we go through.
+        try {
+            return makeMetadataObject(results);
+        } finally {
+            if (null != results) {
+                results.close();
+            }
+        }
     }
 
     /**

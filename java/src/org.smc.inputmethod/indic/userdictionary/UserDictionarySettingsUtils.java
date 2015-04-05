@@ -16,13 +16,13 @@
 
 package org.smc.inputmethod.indic.userdictionary;
 
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.utils.LocaleUtils;
-
 import android.content.Context;
 import android.text.TextUtils;
 
 import java.util.Locale;
+
+import org.smc.inputmethod.indic.R;
+import com.android.inputmethod.latin.utils.LocaleUtils;
 
 /**
  * Utilities of the user dictionary settings

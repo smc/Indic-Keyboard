@@ -24,9 +24,6 @@ const float ProximityInfoParams::VERTICAL_SWEET_SPOT_SCALE = 1.0f;
 const float ProximityInfoParams::VERTICAL_SWEET_SPOT_SCALE_G = 0.5f;
 
 /* Per method constants */
-// Used by ProximityInfoStateUtils::initGeometricDistanceInfos()
-const float ProximityInfoParams::NEAR_KEY_NORMALIZED_SQUARED_THRESHOLD = 4.0f;
-
 // Used by ProximityInfoStateUtils::updateNearKeysDistances()
 const float ProximityInfoParams::NEAR_KEY_THRESHOLD_FOR_DISTANCE = 2.0f;
 
@@ -50,7 +47,7 @@ const int ProximityInfoParams::NUM_POINTS_FOR_SPEED_CALCULATION = 2;
 const int ProximityInfoParams::LAST_POINT_SKIP_DISTANCE_SCALE = 4;
 
 // Used by ProximityInfoStateUtils::updateAlignPointProbabilities()
-const float ProximityInfoParams::MIN_PROBABILITY = 0.000001f;
+const float ProximityInfoParams::MIN_PROBABILITY = 0.000005f;
 const float ProximityInfoParams::MAX_SKIP_PROBABILITY = 0.95f;
 const float ProximityInfoParams::SKIP_FIRST_POINT_PROBABILITY = 0.01f;
 const float ProximityInfoParams::SKIP_LAST_POINT_PROBABILITY = 0.1f;
@@ -76,8 +73,12 @@ const float ProximityInfoParams::MAX_SPEEDxANGLE_RATE_FOR_STANDARD_DEVIATION = 0
 const float ProximityInfoParams::SPEEDxNEAREST_WEIGHT_FOR_STANDARD_DEVIATION = 0.5f;
 const float ProximityInfoParams::MAX_SPEEDxNEAREST_RATE_FOR_STANDARD_DEVIATION = 0.15f;
 const float ProximityInfoParams::MIN_STANDARD_DEVIATION = 0.37f;
-const float ProximityInfoParams::PREV_DISTANCE_WEIGHT = 0.5f;
-const float ProximityInfoParams::NEXT_DISTANCE_WEIGHT = 0.6f;
+const float ProximityInfoParams::STANDARD_DEVIATION_X_WEIGHT_FOR_FIRST = 1.25f;
+const float ProximityInfoParams::STANDARD_DEVIATION_Y_WEIGHT_FOR_FIRST = 0.85f;
+const float ProximityInfoParams::STANDARD_DEVIATION_X_WEIGHT_FOR_LAST = 1.4f;
+const float ProximityInfoParams::STANDARD_DEVIATION_Y_WEIGHT_FOR_LAST = 0.95f;
+const float ProximityInfoParams::STANDARD_DEVIATION_X_WEIGHT = 1.1f;
+const float ProximityInfoParams::STANDARD_DEVIATION_Y_WEIGHT = 0.95f;
 
 // Used by ProximityInfoStateUtils::suppressCharProbabilities()
 const float ProximityInfoParams::SUPPRESSION_LENGTH_WEIGHT = 1.5f;
@@ -97,8 +98,5 @@ const float ProximityInfoParams::SEARCH_KEY_RADIUS_RATIO = 0.95f;
 const int ProximityInfoParams::LOOKUP_RADIUS_PERCENTILE = 50;
 const int ProximityInfoParams::FIRST_POINT_TIME_OFFSET_MILLIS = 150;
 const int ProximityInfoParams::STRONG_DOUBLE_LETTER_TIME_MILLIS = 600;
-
-// Used by ProximityInfoStateUtils::calculateNormalizedSquaredDistance()
-const int ProximityInfoParams::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR = 1 << 10;
 
 } // namespace latinime

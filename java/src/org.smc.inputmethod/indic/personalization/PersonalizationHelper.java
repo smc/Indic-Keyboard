@@ -16,36 +16,33 @@
 
 package org.smc.inputmethod.indic.personalization;
 
-import org.smc.inputmethod.indic.utils.CollectionUtils;
-
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FilenameFilter;
 import java.lang.ref.SoftReference;
+import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
+
+import com.android.inputmethod.latin.utils.FileUtils;
 
 public class PersonalizationHelper {
     private static final String TAG = PersonalizationHelper.class.getSimpleName();
     private static final boolean DEBUG = false;
     private static final ConcurrentHashMap<String, SoftReference<UserHistoryDictionary>>
-            sLangUserHistoryDictCache = CollectionUtils.newConcurrentHashMap();
-
+            sLangUserHistoryDictCache = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, SoftReference<PersonalizationDictionary>>
-            sLangPersonalizationDictCache = CollectionUtils.newConcurrentHashMap();
-
-    private static final ConcurrentHashMap<String,
-            SoftReference<PersonalizationPredictionDictionary>>
-                    sLangPersonalizationPredictionDictCache =
-                            CollectionUtils.newConcurrentHashMap();
+            sLangPersonalizationDictCache = new ConcurrentHashMap<>();
 
     public static UserHistoryDictionary getUserHistoryDictionary(
-            final Context context, final String locale, final SharedPreferences sp) {
+            final Context context, final Locale locale) {
+        final String localeStr = locale.toString();
         synchronized (sLangUserHistoryDictCache) {
-            if (sLangUserHistoryDictCache.containsKey(locale)) {
+            if (sLangUserHistoryDictCache.containsKey(localeStr)) {
                 final SoftReference<UserHistoryDictionary> ref =
-                        sLangUserHistoryDictCache.get(locale);
+                        sLangUserHistoryDictCache.get(localeStr);
                 final UserHistoryDictionary dict = ref == null ? null : ref.get();
                 if (dict != null) {
                     if (DEBUG) {
@@ -55,77 +52,111 @@ public class PersonalizationHelper {
                     return dict;
                 }
             }
-            final UserHistoryDictionary dict = new UserHistoryDictionary(context, locale, sp);
-            sLangUserHistoryDictCache.put(locale, new SoftReference<UserHistoryDictionary>(dict));
+            final UserHistoryDictionary dict = new UserHistoryDictionary(context, locale);
+            sLangUserHistoryDictCache.put(localeStr, new SoftReference<>(dict));
             return dict;
         }
     }
 
-    public static void tryDecayingAllOpeningUserHistoryDictionary() {
-        for (final ConcurrentHashMap.Entry<String, SoftReference<UserHistoryDictionary>> entry
-                : sLangUserHistoryDictCache.entrySet()) {
-            if (entry.getValue() != null) {
-                final UserHistoryDictionary dict = entry.getValue().get();
-                if (dict != null) {
-                    dict.decayIfNeeded();
-                }
-            }
+    private static int sCurrentTimestampForTesting = 0;
+    public static void currentTimeChangedForTesting(final int currentTimestamp) {
+        if (TimeUnit.MILLISECONDS.toSeconds(
+                DictionaryDecayBroadcastReciever.DICTIONARY_DECAY_INTERVAL)
+                        < currentTimestamp - sCurrentTimestampForTesting) {
+            runGCOnAllOpenedUserHistoryDictionaries();
+            runGCOnAllOpenedPersonalizationDictionaries();
         }
     }
 
-    public static void registerPersonalizationDictionaryUpdateSession(final Context context,
-            final PersonalizationDictionaryUpdateSession session, String locale) {
-        final PersonalizationPredictionDictionary predictionDictionary =
-                getPersonalizationPredictionDictionary(context, locale,
-                        PreferenceManager.getDefaultSharedPreferences(context));
-        predictionDictionary.registerUpdateSession(session);
-        final PersonalizationDictionary dictionary =
-                getPersonalizationDictionary(context, locale,
-                        PreferenceManager.getDefaultSharedPreferences(context));
-        dictionary.registerUpdateSession(session);
+    public static void runGCOnAllOpenedUserHistoryDictionaries() {
+        runGCOnAllDictionariesIfRequired(sLangUserHistoryDictCache);
+    }
+
+    public static void runGCOnAllOpenedPersonalizationDictionaries() {
+        runGCOnAllDictionariesIfRequired(sLangPersonalizationDictCache);
+    }
+
+    private static <T extends DecayingExpandableBinaryDictionaryBase>
+            void runGCOnAllDictionariesIfRequired(
+                    final ConcurrentHashMap<String, SoftReference<T>> dictionaryMap) {
+        for (final ConcurrentHashMap.Entry<String, SoftReference<T>> entry
+                : dictionaryMap.entrySet()) {
+            final DecayingExpandableBinaryDictionaryBase dict = entry.getValue().get();
+            if (dict != null) {
+                dict.runGCIfRequired();
+            } else {
+                dictionaryMap.remove(entry.getKey());
+            }
+        }
     }
 
     public static PersonalizationDictionary getPersonalizationDictionary(
-            final Context context, final String locale, final SharedPreferences sp) {
+            final Context context, final Locale locale) {
+        final String localeStr = locale.toString();
         synchronized (sLangPersonalizationDictCache) {
-            if (sLangPersonalizationDictCache.containsKey(locale)) {
+            if (sLangPersonalizationDictCache.containsKey(localeStr)) {
                 final SoftReference<PersonalizationDictionary> ref =
-                        sLangPersonalizationDictCache.get(locale);
+                        sLangPersonalizationDictCache.get(localeStr);
                 final PersonalizationDictionary dict = ref == null ? null : ref.get();
                 if (dict != null) {
                     if (DEBUG) {
-                        Log.w(TAG, "Use cached PersonalizationDictCache for " + locale);
+                        Log.w(TAG, "Use cached PersonalizationDictionary for " + locale);
                     }
                     return dict;
                 }
             }
-            final PersonalizationDictionary dict =
-                    new PersonalizationDictionary(context, locale, sp);
-            sLangPersonalizationDictCache.put(
-                    locale, new SoftReference<PersonalizationDictionary>(dict));
+            final PersonalizationDictionary dict = new PersonalizationDictionary(context, locale);
+            sLangPersonalizationDictCache.put(localeStr, new SoftReference<>(dict));
             return dict;
         }
     }
 
-    public static PersonalizationPredictionDictionary getPersonalizationPredictionDictionary(
-            final Context context, final String locale, final SharedPreferences sp) {
-        synchronized (sLangPersonalizationPredictionDictCache) {
-            if (sLangPersonalizationPredictionDictCache.containsKey(locale)) {
-                final SoftReference<PersonalizationPredictionDictionary> ref =
-                        sLangPersonalizationPredictionDictCache.get(locale);
-                final PersonalizationPredictionDictionary dict = ref == null ? null : ref.get();
-                if (dict != null) {
-                    if (DEBUG) {
-                        Log.w(TAG, "Use cached PersonalizationPredictionDictionary for " + locale);
+    public static void removeAllPersonalizationDictionaries(final Context context) {
+        removeAllDictionaries(context, sLangPersonalizationDictCache,
+                PersonalizationDictionary.NAME);
+    }
+
+    public static void removeAllUserHistoryDictionaries(final Context context) {
+        removeAllDictionaries(context, sLangUserHistoryDictCache,
+                UserHistoryDictionary.NAME);
+    }
+
+    private static <T extends DecayingExpandableBinaryDictionaryBase> void removeAllDictionaries(
+            final Context context, final ConcurrentHashMap<String, SoftReference<T>> dictionaryMap,
+            final String dictNamePrefix) {
+        synchronized (dictionaryMap) {
+            for (final ConcurrentHashMap.Entry<String, SoftReference<T>> entry
+                    : dictionaryMap.entrySet()) {
+                if (entry.getValue() != null) {
+                    final DecayingExpandableBinaryDictionaryBase dict = entry.getValue().get();
+                    if (dict != null) {
+                        dict.clear();
                     }
-                    return dict;
                 }
             }
-            final PersonalizationPredictionDictionary dict =
-                    new PersonalizationPredictionDictionary(context, locale, sp);
-            sLangPersonalizationPredictionDictCache.put(
-                    locale, new SoftReference<PersonalizationPredictionDictionary>(dict));
-            return dict;
+            dictionaryMap.clear();
+            final File filesDir = context.getFilesDir();
+            if (filesDir == null) {
+                Log.e(TAG, "context.getFilesDir() returned null.");
+                return;
+            }
+            if (!FileUtils.deleteFilteredFiles(filesDir, new DictFilter(dictNamePrefix))) {
+                Log.e(TAG, "Cannot remove all existing dictionary files. filesDir: "
+                        + filesDir.getAbsolutePath() + ", dictNamePrefix: " + dictNamePrefix);
+            }
+        }
+    }
+
+    private static class DictFilter implements FilenameFilter {
+        private final String mName;
+
+        DictFilter(final String name) {
+            mName = name;
+        }
+
+        @Override
+        public boolean accept(final File dir, final String name) {
+            return name.startsWith(mName);
         }
     }
 }

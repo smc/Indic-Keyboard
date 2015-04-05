@@ -21,8 +21,13 @@ import android.util.SparseArray;
 import com.android.inputmethod.keyboard.internal.KeyVisualAttributes;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.smc.inputmethod.indic.Constants;
-import org.smc.inputmethod.indic.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.CoordinateUtils;
 
 /**
  * Loads an XML description of a keyboard and stores the attributes of the keys. A keyboard
@@ -73,13 +78,13 @@ public class Keyboard {
     /** Maximum column for more keys keyboard */
     public final int mMaxMoreKeysKeyboardColumn;
 
-    /** Array of keys and icons in this keyboard */
-    private final Key[] mKeys;
-    public final Key[] mShiftKeys;
-    public final Key[] mAltCodeKeysWhileTyping;
+    /** List of keys in this keyboard */
+    private final List<Key> mSortedKeys;
+    public final List<Key> mShiftKeys;
+    public final List<Key> mAltCodeKeysWhileTyping;
     public final KeyboardIconsSet mIconsSet;
 
-    private final SparseArray<Key> mKeyCache = CollectionUtils.newSparseArray();
+    private final SparseArray<Key> mKeyCache = new SparseArray<>();
 
     private final ProximityInfo mProximityInfo;
     private final boolean mProximityCharsCorrectionEnabled;
@@ -99,15 +104,15 @@ public class Keyboard {
         mTopPadding = params.mTopPadding;
         mVerticalGap = params.mVerticalGap;
 
-        mKeys = params.mKeys.toArray(new Key[params.mKeys.size()]);
-        mShiftKeys = params.mShiftKeys.toArray(new Key[params.mShiftKeys.size()]);
-        mAltCodeKeysWhileTyping = params.mAltCodeKeysWhileTyping.toArray(
-                new Key[params.mAltCodeKeysWhileTyping.size()]);
+        mSortedKeys = Collections.unmodifiableList(new ArrayList<>(params.mSortedKeys));
+        mShiftKeys = Collections.unmodifiableList(params.mShiftKeys);
+        mAltCodeKeysWhileTyping = Collections.unmodifiableList(params.mAltCodeKeysWhileTyping);
         mIconsSet = params.mIconsSet;
 
         mProximityInfo = new ProximityInfo(params.mId.mLocale.toString(),
                 params.GRID_WIDTH, params.GRID_HEIGHT, mOccupiedWidth, mOccupiedHeight,
-                mMostCommonKeyWidth, mMostCommonKeyHeight, mKeys, params.mTouchPositionCorrection);
+                mMostCommonKeyWidth, mMostCommonKeyHeight, mSortedKeys,
+                params.mTouchPositionCorrection);
         mProximityCharsCorrectionEnabled = params.mProximityCharsCorrectionEnabled;
     }
 
@@ -126,7 +131,7 @@ public class Keyboard {
         mTopPadding = keyboard.mTopPadding;
         mVerticalGap = keyboard.mVerticalGap;
 
-        mKeys = keyboard.mKeys;
+        mSortedKeys = keyboard.mSortedKeys;
         mShiftKeys = keyboard.mShiftKeys;
         mAltCodeKeysWhileTyping = keyboard.mAltCodeKeysWhileTyping;
         mIconsSet = keyboard.mIconsSet;
@@ -151,17 +156,14 @@ public class Keyboard {
         return mProximityInfo;
     }
 
-    public Key[] getKeys() {
-        return mKeys;
-    }
-
-    public Key getKeyFromOutputText(final String outputText) {
-        for (final Key key : getKeys()) {
-            if (outputText.equals(key.getOutputText())) {
-                return key;
-            }
-        }
-        return null;
+    /**
+     * Return the sorted list of keys of this keyboard.
+     * The keys are sorted from top-left to bottom-right order.
+     * The list may contain {@link Key.Spacer} object as well.
+     * @return the sorted unmodifiable list of {@link Key}s of this keyboard.
+     */
+    public List<Key> getSortedKeys() {
+        return mSortedKeys;
     }
 
     public Key getKey(final int code) {
@@ -174,7 +176,7 @@ public class Keyboard {
                 return mKeyCache.valueAt(index);
             }
 
-            for (final Key key : getKeys()) {
+            for (final Key key : getSortedKeys()) {
                 if (key.getCode() == code) {
                     mKeyCache.put(code, key);
                     return key;
@@ -190,7 +192,7 @@ public class Keyboard {
             return true;
         }
 
-        for (final Key key : getKeys()) {
+        for (final Key key : getSortedKeys()) {
             if (key == aKey) {
                 mKeyCache.put(key.getCode(), key);
                 return true;
@@ -208,13 +210,29 @@ public class Keyboard {
      * Returns the array of the keys that are closest to the given point.
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
-     * @return the array of the nearest keys to the given point. If the given
+     * @return the list of the nearest keys to the given point. If the given
      * point is out of range, then an array of size zero is returned.
      */
-    public Key[] getNearestKeys(final int x, final int y) {
+    public List<Key> getNearestKeys(final int x, final int y) {
         // Avoid dead pixels at edges of the keyboard
         final int adjustedX = Math.max(0, Math.min(x, mOccupiedWidth - 1));
         final int adjustedY = Math.max(0, Math.min(y, mOccupiedHeight - 1));
         return mProximityInfo.getNearestKeys(adjustedX, adjustedY);
+    }
+
+    public int[] getCoordinates(final int[] codePoints) {
+        final int length = codePoints.length;
+        final int[] coordinates = CoordinateUtils.newCoordinateArray(length);
+        for (int i = 0; i < length; ++i) {
+            final Key key = getKey(codePoints[i]);
+            if (null != key) {
+                CoordinateUtils.setXYInArray(coordinates, i,
+                        key.getX() + key.getWidth() / 2, key.getY() + key.getHeight() / 2);
+            } else {
+                CoordinateUtils.setXYInArray(coordinates, i,
+                        Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
+            }
+        }
+        return coordinates;
     }
 }

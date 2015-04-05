@@ -22,52 +22,52 @@
     <style name="KeyboardIcons" />
     <!-- Default theme values -->
     <style name="Keyboard">
-        <item name="touchPositionCorrectionData">@array/touch_position_correction_data_default</item>
         <item name="rowHeight">25%p</item>
+        <item name="horizontalGap">@fraction/config_key_horizontal_gap_holo</item>
+        <item name="verticalGap">@fraction/config_key_vertical_gap_holo</item>
+        <item name="touchPositionCorrectionData">@array/touch_position_correction_data_holo</item>
+        <item name="keyboardTopPadding">@fraction/config_keyboard_top_padding_holo</item>
+        <item name="keyboardBottomPadding">@fraction/config_keyboard_bottom_padding_holo</item>
+        <item name="keyboardLeftPadding">@fraction/config_keyboard_left_padding</item>
+        <item name="keyboardRightPadding">@fraction/config_keyboard_right_padding</item>
         <item name="moreKeysTemplate">@xml/kbd_more_keys_keyboard_template</item>
-        <item name="keyboardLeftPadding">@fraction/keyboard_left_padding</item>
-        <item name="keyboardRightPadding">@fraction/keyboard_right_padding</item>
         <item name="maxMoreKeysColumn">@integer/config_max_more_keys_column</item>
     </style>
     <style name="KeyboardView">
+        <!-- This keyBackground is needed to run unit tests based on {@link InputTestBase}. -->
+        <!-- TODO: Apply default {@link KeyboardTheme} to {@link InputTestBase} and remove this. -->
         <item name="keyBackground">@drawable/btn_keyboard_key_klp</item>
-        <item name="keyLetterSize">@fraction/key_letter_ratio</item>
-        <item name="keyLargeLetterRatio">@fraction/key_large_letter_ratio</item>
-        <item name="keyLabelSize">@fraction/key_label_ratio</item>
-        <item name="keyLargeLabelRatio">@fraction/key_large_label_ratio</item>
-        <item name="keyHintLetterRatio">@fraction/key_hint_letter_ratio</item>
-        <item name="keyHintLabelRatio">@fraction/key_hint_label_ratio</item>
-        <item name="keyShiftedLetterHintRatio">@fraction/key_uppercase_letter_ratio</item>
         <item name="keyTypeface">normal</item>
-        <item name="keyLabelHorizontalPadding">@dimen/key_label_horizontal_padding</item>
-        <item name="keyHintLetterPadding">@dimen/key_hint_letter_padding</item>
-        <item name="keyPopupHintLetterPadding">@dimen/key_popup_hint_letter_padding</item>
-        <item name="keyShiftedLetterHintPadding">@dimen/key_uppercase_letter_padding</item>
-        <item name="keyPreviewTextRatio">@fraction/key_preview_text_ratio</item>
-        <item name="verticalCorrection">@dimen/keyboard_vertical_correction</item>
+        <!-- A negative value to disable key text shadow layer. -->
+        <item name="keyTextShadowRadius">-1.0</item>
+        <item name="keyHintLetterPadding">@dimen/config_key_hint_letter_padding</item>
+        <item name="keyPopupHintLetterPadding">@dimen/config_key_popup_hint_letter_padding</item>
+        <item name="keyShiftedLetterHintPadding">@dimen/config_key_shifted_letter_hint_padding</item>
+        <item name="keyPreviewTextRatio">@fraction/config_key_preview_text_ratio</item>
+        <item name="verticalCorrection">@dimen/config_keyboard_vertical_correction</item>
         <item name="backgroundDimAlpha">128</item>
-        <item name="gestureFloatingPreviewTextSize">@dimen/gesture_floating_preview_text_size</item>
-        <item name="gestureFloatingPreviewTextOffset">@dimen/gesture_floating_preview_text_offset</item>
-        <item name="gestureFloatingPreviewHorizontalPadding">@dimen/gesture_floating_preview_horizontal_padding</item>
-        <item name="gestureFloatingPreviewVerticalPadding">@dimen/gesture_floating_preview_vertical_padding</item>
-        <item name="gestureFloatingPreviewRoundRadius">@dimen/gesture_floating_preview_round_radius</item>
-        <item name="gestureTrailMinSamplingDistance">@dimen/gesture_trail_min_sampling_distance</item>
-        <item name="gestureTrailMaxInterpolationAngularThreshold">@integer/gesture_trail_max_interpolation_angular_threshold</item>
-        <item name="gestureTrailMaxInterpolationDistanceThreshold">@dimen/gesture_trail_max_interpolation_distance_threshold</item>
-        <item name="gestureTrailMaxInterpolationSegments">@integer/gesture_trail_max_interpolation_segments</item>
+        <item name="gestureFloatingPreviewTextSize">@dimen/config_gesture_floating_preview_text_size</item>
+        <item name="gestureFloatingPreviewTextOffset">@dimen/config_gesture_floating_preview_text_offset</item>
+        <item name="gestureFloatingPreviewHorizontalPadding">@dimen/config_gesture_floating_preview_horizontal_padding</item>
+        <item name="gestureFloatingPreviewVerticalPadding">@dimen/config_gesture_floating_preview_vertical_padding</item>
+        <item name="gestureFloatingPreviewRoundRadius">@dimen/config_gesture_floating_preview_round_radius</item>
+        <item name="gestureTrailMinSamplingDistance">@dimen/config_gesture_trail_min_sampling_distance</item>
+        <item name="gestureTrailMaxInterpolationAngularThreshold">@integer/config_gesture_trail_max_interpolation_angular_threshold</item>
+        <item name="gestureTrailMaxInterpolationDistanceThreshold">@dimen/config_gesture_trail_max_interpolation_distance_threshold</item>
+        <item name="gestureTrailMaxInterpolationSegments">@integer/config_gesture_trail_max_interpolation_segments</item>
         <item name="gestureTrailFadeoutStartDelay">@integer/config_gesture_trail_fadeout_start_delay</item>
         <item name="gestureTrailFadeoutDuration">@integer/config_gesture_trail_fadeout_duration</item>
         <item name="gestureTrailUpdateInterval">@integer/config_gesture_trail_update_interval</item>
-        <item name="gestureTrailStartWidth">@dimen/gesture_trail_start_width</item>
-        <item name="gestureTrailEndWidth">@dimen/gesture_trail_end_width</item>
-        <item name="gestureTrailBodyRatio">@integer/gesture_trail_body_ratio</item>
-        <item name="gestureTrailShadowRatio">@integer/gesture_trail_shadow_ratio</item>
+        <item name="gestureTrailStartWidth">@dimen/config_gesture_trail_start_width</item>
+        <item name="gestureTrailEndWidth">@dimen/config_gesture_trail_end_width</item>
+        <item name="gestureTrailBodyRatio">@integer/config_gesture_trail_body_ratio</item>
+        <item name="gestureTrailShadowRatio">@integer/config_gesture_trail_shadow_ratio</item>
         <!-- Common attributes of MainKeyboardView -->
         <item name="keyHysteresisDistance">@dimen/config_key_hysteresis_distance</item>
         <item name="keyHysteresisDistanceForSlidingModifier">@dimen/config_key_hysteresis_distance_for_sliding_modifier</item>
         <item name="touchNoiseThresholdTime">@integer/config_touch_noise_threshold_time</item>
         <item name="touchNoiseThresholdDistance">@dimen/config_touch_noise_threshold_distance</item>
-        <item name="slidingKeyInputEnable">@bool/config_sliding_key_input_enabled</item>
+        <item name="keySelectionByDraggingFinger">@bool/config_key_selection_by_dragging_finger</item>
         <item name="slidingKeyInputPreviewWidth">@dimen/config_sliding_key_input_preview_width</item>
         <item name="slidingKeyInputPreviewBodyRatio">@integer/config_sliding_key_input_preview_body_ratio</item>
         <item name="slidingKeyInputPreviewShadowRatio">@integer/config_sliding_key_input_preview_shadow_ratio</item>
@@ -75,11 +75,11 @@
         <item name="keyRepeatInterval">@integer/config_key_repeat_interval</item>
         <item name="longPressShiftLockTimeout">@integer/config_longpress_shift_lock_timeout</item>
         <item name="ignoreAltCodeKeyTimeout">@integer/config_ignore_alt_code_key_timeout</item>
-        <item name="keyPreviewHeight">@dimen/key_preview_height</item>
+        <!-- TODO: consolidate key preview linger timeout with the key preview animation parameters. -->
         <item name="keyPreviewLingerTimeout">@integer/config_key_preview_linger_timeout</item>
         <item name="moreKeysKeyboardLayout">@layout/more_keys_keyboard</item>
         <item name="showMoreKeysKeyboardAtTouchedPoint">@bool/config_show_more_keys_keyboard_at_touched_point</item>
-        <item name="spacebarTextRatio">@fraction/spacebar_text_ratio</item>
+        <item name="languageOnSpacebarTextRatio">@fraction/config_language_on_spacebar_text_ratio</item>
         <item name="languageOnSpacebarFinalAlpha">@integer/config_language_on_spacebar_final_alpha</item>
         <item name="languageOnSpacebarFadeoutAnimator">@anim/language_on_spacebar_fadeout</item>
         <!-- Remove animations for now because it could drain a non-negligible amount of battery while typing.
@@ -106,26 +106,25 @@
         parent="KeyboardView" />
     <!-- Though {@link EmojiPalettesView} doesn't extend {@link KeyboardView}, some views inside it,
          for instance delete button, need themed {@link KeyboardView} attributes. -->
-    <style
-        name="EmojiPalettesView"
-        parent="KeyboardView"
-    >
-        <item name="emojiTabLabelColor">@color/emoji_tab_label_color_holo</item>
-    </style>
+    <style name="EmojiPalettesView" />
     <style name="MoreKeysKeyboard" />
-    <style
-        name="MoreKeysKeyboardView"
-        parent="MainKeyboardView" />
-    <style name="MoreKeysKeyboardContainer" />
-    <style name="SuggestionStripView">
-        <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
-        <item name="centerSuggestionPercentile">@fraction/center_suggestion_percentile</item>
-        <item name="maxMoreSuggestionsRow">@integer/max_more_suggestions_row</item>
-        <item name="minMoreSuggestionsWidth">@fraction/min_more_suggestions_width</item>
-    </style>
-    <style name="SuggestionWord" />
-    <style name="MoreKeysKeyboardAnimation">
-        <item name="android:windowEnterAnimation">@anim/more_keys_keyboard_fadein</item>
-        <item name="android:windowExitAnimation">@anim/more_keys_keyboard_fadeout</item>
+    <style name="MoreKeysKeyboardView" />
+    <style name="SuggestionStripView" />
+    <style name="SuggestionWord">
+        <item name="android:minWidth">@dimen/config_suggestion_min_width</item>
+        <item name="android:textSize">@dimen/config_suggestion_text_size</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingLeft">@dimen/config_suggestion_text_horizontal_padding</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingRight">@dimen/config_suggestion_text_horizontal_padding</item>
+        <item name="android:paddingBottom">0dp</item>
+        <!-- Provide audio and haptic feedback by ourselves based on the keyboard settings.
+             We just need to ignore the system's audio and haptic feedback settings. -->
+        <item name="android:hapticFeedbackEnabled">false</item>
+        <item name="android:soundEffectsEnabled">false</item>
+        <item name="android:focusable">false</item>
+        <item name="android:clickable">false</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">none</item>
     </style>
 </resources>

@@ -29,37 +29,37 @@
 
             <!-- // Z: nya, nga -->
             <Key
-                latin:keyLabel="&#x0C99;"
+                latin:keySpec="&#x0C99;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- // X: ssa, nukta below, LLLA -->
             <Key
-                latin:keyLabel="&#x0CBC;"
+                latin:keySpec="&#x0CBC;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- // C: ca, cha -->
             <Key
-                latin:keyLabel="&#x0C9B;"
+                latin:keySpec="&#x0C9B;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- V: va, matra au, au -->
             <Key
-                latin:keyLabel="&#x0CCC;"
+                latin:keySpec="&#x0CCC;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- // B: ba, bha -->
             <Key
-                latin:keyLabel="&#x0CAD;"
+                latin:keySpec="&#x0CAD;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- N: na, nna -->
             <Key
-                latin:keyLabel="&#x0CA3;"
+                latin:keySpec="&#x0CA3;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- M: ma, anusvara, avagraha, Devanagari OM -->
             <Key
-                latin:keyLabel="&#x0C82;"
+                latin:keySpec="&#x0C82;"
                 latin:moreKeys="&#x0950;"
                 latin:keyHintLabel="&#x0950;"
                 latin:keyLabelFlags="fontNormal" />
@@ -68,41 +68,41 @@
         <default>
             <!-- // Z: nya, nga -->
             <Key
-                latin:keyLabel="&#x0C9E;"
+                latin:keySpec="&#x0C9E;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- // X: ssa, nukta below, LLLA -->
             <Key
-                latin:keyLabel="&#x0CB7;"
+                latin:keySpec="&#x0CB7;"
                 latin:moreKeys="&#x0CDE;"
                 latin:keyHintLabel="&#x0CDE;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- // C: ca, cha -->
             <Key
-                latin:keyLabel="&#x0C9A;"
+                latin:keySpec="&#x0C9A;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- V: va, matra au, au -->
             <Key
-                latin:keyLabel="&#x0CB5;"
+                latin:keySpec="&#x0CB5;"
                 latin:moreKeys="&#x0C94;"
                 latin:keyHintLabel="&#x0C94;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- // B: ba, bha -->
             <Key
-                latin:keyLabel="&#x0CAC;"
+                latin:keySpec="&#x0CAC;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- N: na, nna -->
             <Key
-                latin:keyLabel="&#x0CA8;"
+                latin:keySpec="&#x0CA8;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- M: ma, anusvara, avagraha, Devanagari OM -->
             <Key
-                latin:keyLabel="&#x0CAE;"
+                latin:keySpec="&#x0CAE;"
                 latin:moreKeys="&#x0CBD;"
                 latin:keyHintLabel="&#x0CBD;"
                 latin:keyLabelFlags="fontNormal" />

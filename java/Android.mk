@@ -17,18 +17,15 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_SRC_FILES := $(call all-java-files-under, src)
+LOCAL_SRC_FILES := $(call all-java-files-under, src ../java-overridable/src)
 
 LOCAL_PACKAGE_NAME := LatinIME
 
 LOCAL_CERTIFICATE := shared
 
-# We want to package libjni_latinime.so into the apk.
 LOCAL_JNI_SHARED_LIBRARIES := libjni_latinime
-# We want to install libjni_latinime.so to the system partition if LatinIME gets installed.
-LOCAL_REQUIRED_MODULES := libjni_latinime
 
-LOCAL_STATIC_JAVA_LIBRARIES := android-common inputmethod-common android-support-v4
+LOCAL_STATIC_JAVA_LIBRARIES := android-common inputmethod-common android-support-v4 jsr305
 
 # Do not compress dictionary files to mmap dict data runtime
 LOCAL_AAPT_FLAGS := -0 .dict

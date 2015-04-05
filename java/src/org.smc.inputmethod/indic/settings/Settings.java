@@ -19,27 +19,38 @@ package org.smc.inputmethod.indic.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
+
+import org.smc.inputmethod.compat.BuildCompatUtils;
 import org.smc.inputmethod.indic.AudioAndHapticFeedbackManager;
 import org.smc.inputmethod.indic.InputAttributes;
 import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.utils.AdditionalSubtypeUtils;
-import org.smc.inputmethod.indic.utils.LocaleUtils;
-import org.smc.inputmethod.indic.utils.ResourceUtils;
-import org.smc.inputmethod.indic.utils.RunInLocale;
-import org.smc.inputmethod.indic.utils.StringUtils;
-
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.concurrent.locks.ReentrantLock;
+import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
+import com.android.inputmethod.latin.utils.ResourceUtils;
+import com.android.inputmethod.latin.utils.RunInLocale;
+import com.android.inputmethod.latin.utils.StringUtils;
 
 public final class Settings implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = Settings.class.getSimpleName();
+    // Settings screens
+    public static final String SCREEN_PREFERENCES = "screen_preferences";
+    public static final String SCREEN_APPEARANCE = "screen_appearance";
+    public static final String SCREEN_THEME = "screen_theme";
+    public static final String SCREEN_MULTILINGUAL = "screen_multilingual";
+    public static final String SCREEN_GESTURE = "screen_gesture";
+    public static final String SCREEN_CORRECTION = "screen_correction";
+    public static final String SCREEN_ADVANCED = "screen_advanced";
+    public static final String SCREEN_DEBUG = "screen_debug";
     // In the same order as xml/prefs.xml
-    public static final String PREF_GENERAL_SETTINGS = "general_settings";
     public static final String PREF_AUTO_CAP = "auto_cap";
     public static final String PREF_VIBRATE_ON = "vibrate_on";
     public static final String PREF_SOUND_ON = "sound_on";
@@ -47,33 +58,36 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     // PREF_VOICE_MODE_OBSOLETE is obsolete. Use PREF_VOICE_INPUT_KEY instead.
     public static final String PREF_VOICE_MODE_OBSOLETE = "voice_mode";
     public static final String PREF_VOICE_INPUT_KEY = "pref_voice_input_key";
-    public static final String PREF_CORRECTION_SETTINGS = "correction_settings";
     public static final String PREF_EDIT_PERSONAL_DICTIONARY = "edit_personal_dictionary";
     public static final String PREF_CONFIGURE_DICTIONARIES_KEY = "configure_dictionaries_key";
     public static final String PREF_AUTO_CORRECTION_THRESHOLD = "auto_correction_threshold";
-    public static final String PREF_SHOW_SUGGESTIONS_SETTING = "show_suggestions_setting";
-    public static final String PREF_MISC_SETTINGS = "misc_settings";
-    public static final String PREF_LAST_USER_DICTIONARY_WRITE_TIME =
-            "last_user_dictionary_write_time";
-    public static final String PREF_ADVANCED_SETTINGS = "pref_advanced_settings";
+    // PREF_SHOW_SUGGESTIONS_SETTING_OBSOLETE is obsolete. Use PREF_SHOW_SUGGESTIONS instead.
+    public static final String PREF_SHOW_SUGGESTIONS_SETTING_OBSOLETE = "show_suggestions_setting";
+    public static final String PREF_SHOW_SUGGESTIONS = "show_suggestions";
     public static final String PREF_KEY_USE_CONTACTS_DICT = "pref_key_use_contacts_dict";
+    public static final String PREF_KEY_USE_PERSONALIZED_DICTS = "pref_key_use_personalized_dicts";
     public static final String PREF_KEY_USE_DOUBLE_SPACE_PERIOD =
             "pref_key_use_double_space_period";
     public static final String PREF_BLOCK_POTENTIALLY_OFFENSIVE =
             "pref_key_block_potentially_offensive";
+    // No multilingual options in Android L and above for now.
+    public static final boolean SHOW_MULTILINGUAL_SETTINGS =
+            BuildCompatUtils.EFFECTIVE_SDK_INT <= Build.VERSION_CODES.KITKAT;
+    public static final boolean ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS =
+            BuildCompatUtils.EFFECTIVE_SDK_INT <= Build.VERSION_CODES.KITKAT;
+    public static final boolean HAS_UI_TO_ACCEPT_TYPED_WORD =
+            BuildCompatUtils.EFFECTIVE_SDK_INT >= BuildCompatUtils.VERSION_CODES_LXX;
     public static final String PREF_SHOW_LANGUAGE_SWITCH_KEY =
             "pref_show_language_switch_key";
     public static final String PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST =
             "pref_include_other_imes_in_language_switch_list";
-    public static final String PREF_KEYBOARD_LAYOUT = "pref_keyboard_layout_20110916";
+    public static final String PREF_KEYBOARD_THEME = "pref_keyboard_theme";
     public static final String PREF_CUSTOM_INPUT_STYLES = "custom_input_styles";
+    // TODO: consolidate key preview dismiss delay with the key preview animation parameters.
     public static final String PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY =
             "pref_key_preview_popup_dismiss_delay";
     public static final String PREF_BIGRAM_PREDICTIONS = "next_word_prediction";
-    public static final String PREF_GESTURE_SETTINGS = "gesture_typing_settings";
     public static final String PREF_GESTURE_INPUT = "gesture_input";
-    public static final String PREF_SLIDING_KEY_INPUT_PREVIEW = "pref_sliding_key_input_preview";
-    public static final String PREF_KEY_LONGPRESS_TIMEOUT = "pref_key_longpress_timeout";
     public static final String PREF_VIBRATION_DURATION_SETTINGS =
             "pref_vibration_duration_settings";
     public static final String PREF_KEYPRESS_SOUND_VOLUME =
@@ -86,8 +100,9 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static final String PREF_INPUT_LANGUAGE = "input_language";
     public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
-    public static final String PREF_DEBUG_SETTINGS = "debug_settings";
     public static final String PREF_KEY_IS_INTERNAL = "pref_key_is_internal";
+
+    public static final String PREF_ENABLE_METRICS_LOGGING = "pref_enable_metrics_logging";
 
     // This preference key is deprecated. Use {@link #PREF_SHOW_LANGUAGE_SWITCH_KEY} instead.
     // This is being used only for the backward compatibility.
@@ -96,14 +111,20 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     private static final String PREF_LAST_USED_PERSONALIZATION_TOKEN =
             "pref_last_used_personalization_token";
-    public static final String PREF_SEND_FEEDBACK = "send_feedback";
-    public static final String PREF_ABOUT_KEYBOARD = "about_keyboard";
+    private static final String PREF_LAST_PERSONALIZATION_DICT_WIPED_TIME =
+            "pref_last_used_personalization_dict_wiped_time";
+    private static final String PREF_CORPUS_HANDLES_FOR_PERSONALIZATION =
+            "pref_corpus_handles_for_personalization";
 
     // Emoji
     public static final String PREF_EMOJI_RECENT_KEYS = "emoji_recent_keys";
     public static final String PREF_EMOJI_CATEGORY_LAST_TYPED_ID = "emoji_category_last_typed_id";
     public static final String PREF_LAST_SHOWN_EMOJI_CATEGORY_ID = "last_shown_emoji_category_id";
 
+    private static final float UNDEFINED_PREFERENCE_VALUE_FLOAT = -1.0f;
+    private static final int UNDEFINED_PREFERENCE_VALUE_INT = -1;
+
+    private Context mContext;
     private Resources mRes;
     private SharedPreferences mPrefs;
     private SettingsValues mSettingsValues;
@@ -124,6 +145,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void onCreate(final Context context) {
+        mContext = context;
         mRes = context.getResources();
         mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
@@ -143,20 +165,22 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
                 Log.w(TAG, "onSharedPreferenceChanged called before loadSettings.");
                 return;
             }
-            loadSettings(mSettingsValues.mLocale, mSettingsValues.mInputAttributes);
+            loadSettings(mContext, mSettingsValues.mLocale, mSettingsValues.mInputAttributes);
         } finally {
             mSettingsValuesLock.unlock();
         }
     }
 
-    public void loadSettings(final Locale locale, final InputAttributes inputAttributes) {
+    public void loadSettings(final Context context, final Locale locale,
+            final InputAttributes inputAttributes) {
         mSettingsValuesLock.lock();
+        mContext = context;
         try {
             final SharedPreferences prefs = mPrefs;
             final RunInLocale<SettingsValues> job = new RunInLocale<SettingsValues>() {
                 @Override
                 protected SettingsValues job(final Resources res) {
-                    return new SettingsValues(prefs, locale, res, inputAttributes);
+                    return new SettingsValues(context, prefs, res, inputAttributes);
                 }
             };
             mSettingsValues = job.runInLocale(mRes, locale);
@@ -174,10 +198,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
         return mSettingsValues.mIsInternal;
     }
 
-    public String getWordSeparators() {
-        return mSettingsValues.mWordSeparators;
-    }
-
     public boolean isWordSeparator(final int code) {
         return mSettingsValues.isWordSeparator(code);
     }
@@ -189,7 +209,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     // Accessed from the settings interface, hence public
     public static boolean readKeypressSoundEnabled(final SharedPreferences prefs,
             final Resources res) {
-        return prefs.getBoolean(Settings.PREF_SOUND_ON,
+        return prefs.getBoolean(PREF_SOUND_ON,
                 res.getBoolean(R.bool.config_default_sound_enabled));
     }
 
@@ -209,7 +229,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static boolean readBlockPotentiallyOffensive(final SharedPreferences prefs,
             final Resources res) {
-        return prefs.getBoolean(Settings.PREF_BLOCK_POTENTIALLY_OFFENSIVE,
+        return prefs.getBoolean(PREF_BLOCK_POTENTIALLY_OFFENSIVE,
                 res.getBoolean(R.bool.config_block_potentially_offensive));
     }
 
@@ -220,25 +240,24 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static boolean readGestureInputEnabled(final SharedPreferences prefs,
             final Resources res) {
         return readFromBuildConfigIfGestureInputEnabled(res)
-                && prefs.getBoolean(Settings.PREF_GESTURE_INPUT, true);
+                && prefs.getBoolean(PREF_GESTURE_INPUT, true);
     }
 
     public static boolean readPhraseGestureEnabled(final SharedPreferences prefs,
             final Resources res) {
-        return prefs.getBoolean(Settings.PREF_PHRASE_GESTURE_ENABLED,
+        return prefs.getBoolean(PREF_PHRASE_GESTURE_ENABLED,
                 res.getBoolean(R.bool.config_default_phrase_gesture_enabled));
     }
 
-    public static boolean readFromBuildConfigIfToShowKeyPreviewPopupSettingsOption(
-            final Resources res) {
-        return res.getBoolean(R.bool.config_enable_show_option_of_key_preview_popup);
+    public static boolean readFromBuildConfigIfToShowKeyPreviewPopupOption(final Resources res) {
+        return res.getBoolean(R.bool.config_enable_show_key_preview_popup_option);
     }
 
     public static boolean readKeyPreviewPopupEnabled(final SharedPreferences prefs,
             final Resources res) {
         final boolean defaultKeyPreviewPopup = res.getBoolean(
                 R.bool.config_default_key_preview_popup);
-        if (!readFromBuildConfigIfToShowKeyPreviewPopupSettingsOption(res)) {
+        if (!readFromBuildConfigIfToShowKeyPreviewPopupOption(res)) {
             return defaultKeyPreviewPopup;
         }
         return prefs.getBoolean(PREF_POPUP_ON, defaultKeyPreviewPopup);
@@ -263,28 +282,6 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
         return prefs.getBoolean(PREF_SHOW_LANGUAGE_SWITCH_KEY, true);
     }
 
-    public static int readKeyboardThemeIndex(final SharedPreferences prefs, final Resources res) {
-        final String defaultThemeIndex = res.getString(
-                R.string.config_default_keyboard_theme_index);
-        final String themeIndex = prefs.getString(PREF_KEYBOARD_LAYOUT, defaultThemeIndex);
-        try {
-            return Integer.valueOf(themeIndex);
-        } catch (final NumberFormatException e) {
-            // Format error, returns default keyboard theme index.
-            Log.e(TAG, "Illegal keyboard theme in preference: " + themeIndex + ", default to "
-                    + defaultThemeIndex, e);
-            return Integer.valueOf(defaultThemeIndex);
-        }
-    }
-
-    public static int resetAndGetDefaultKeyboardThemeIndex(final SharedPreferences prefs,
-            final Resources res) {
-        final String defaultThemeIndex = res.getString(
-                R.string.config_default_keyboard_theme_index);
-        prefs.edit().putString(PREF_KEYBOARD_LAYOUT, defaultThemeIndex).apply();
-        return Integer.valueOf(defaultThemeIndex);
-    }
-
     public static String readPrefAdditionalSubtypes(final SharedPreferences prefs,
             final Resources res) {
         final String predefinedPrefSubtypes = AdditionalSubtypeUtils.createPrefSubtypes(
@@ -294,24 +291,32 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static void writePrefAdditionalSubtypes(final SharedPreferences prefs,
             final String prefSubtypes) {
-        prefs.edit().putString(Settings.PREF_CUSTOM_INPUT_STYLES, prefSubtypes).apply();
+        prefs.edit().putString(PREF_CUSTOM_INPUT_STYLES, prefSubtypes).apply();
     }
 
     public static float readKeypressSoundVolume(final SharedPreferences prefs,
             final Resources res) {
-        final float volume = prefs.getFloat(PREF_KEYPRESS_SOUND_VOLUME, -1.0f);
-        return (volume >= 0) ? volume : readDefaultKeypressSoundVolume(res);
+        final float volume = prefs.getFloat(
+                PREF_KEYPRESS_SOUND_VOLUME, UNDEFINED_PREFERENCE_VALUE_FLOAT);
+        return (volume != UNDEFINED_PREFERENCE_VALUE_FLOAT) ? volume
+                : readDefaultKeypressSoundVolume(res);
     }
 
+    // Default keypress sound volume for unknown devices.
+    // The negative value means system default.
+    private static final String DEFAULT_KEYPRESS_SOUND_VOLUME = Float.toString(-1.0f);
+
     public static float readDefaultKeypressSoundVolume(final Resources res) {
-        return Float.parseFloat(
-                ResourceUtils.getDeviceOverrideValue(res, R.array.keypress_volumes));
+        return Float.parseFloat(ResourceUtils.getDeviceOverrideValue(res,
+                R.array.keypress_volumes, DEFAULT_KEYPRESS_SOUND_VOLUME));
     }
 
     public static int readKeyLongpressTimeout(final SharedPreferences prefs,
             final Resources res) {
-        final int ms = prefs.getInt(PREF_KEY_LONGPRESS_TIMEOUT, -1);
-        return (ms >= 0) ? ms : readDefaultKeyLongpressTimeout(res);
+        final int milliseconds = prefs.getInt(
+                DebugSettings.PREF_KEY_LONGPRESS_TIMEOUT, UNDEFINED_PREFERENCE_VALUE_INT);
+        return (milliseconds != UNDEFINED_PREFERENCE_VALUE_INT) ? milliseconds
+                : readDefaultKeyLongpressTimeout(res);
     }
 
     public static int readDefaultKeyLongpressTimeout(final Resources res) {
@@ -320,36 +325,31 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static int readKeypressVibrationDuration(final SharedPreferences prefs,
             final Resources res) {
-        final int ms = prefs.getInt(PREF_VIBRATION_DURATION_SETTINGS, -1);
-        return (ms >= 0) ? ms : readDefaultKeypressVibrationDuration(res);
+        final int milliseconds = prefs.getInt(
+                PREF_VIBRATION_DURATION_SETTINGS, UNDEFINED_PREFERENCE_VALUE_INT);
+        return (milliseconds != UNDEFINED_PREFERENCE_VALUE_INT) ? milliseconds
+                : readDefaultKeypressVibrationDuration(res);
     }
+
+    // Default keypress vibration duration for unknown devices.
+    // The negative value means system default.
+    private static final String DEFAULT_KEYPRESS_VIBRATION_DURATION = Integer.toString(-1);
 
     public static int readDefaultKeypressVibrationDuration(final Resources res) {
-        return Integer.parseInt(
-                ResourceUtils.getDeviceOverrideValue(res, R.array.keypress_vibration_durations));
+        return Integer.parseInt(ResourceUtils.getDeviceOverrideValue(res,
+                R.array.keypress_vibration_durations, DEFAULT_KEYPRESS_VIBRATION_DURATION));
     }
 
-    public static boolean readUsabilityStudyMode(final SharedPreferences prefs) {
-        return prefs.getBoolean(DebugSettings.PREF_USABILITY_STUDY_MODE, true);
+    public static float readKeyPreviewAnimationScale(final SharedPreferences prefs,
+            final String prefKey, final float defaultValue) {
+        final float fraction = prefs.getFloat(prefKey, UNDEFINED_PREFERENCE_VALUE_FLOAT);
+        return (fraction != UNDEFINED_PREFERENCE_VALUE_FLOAT) ? fraction : defaultValue;
     }
 
-    public static long readLastUserHistoryWriteTime(final SharedPreferences prefs,
-            final String locale) {
-        final String str = prefs.getString(PREF_LAST_USER_DICTIONARY_WRITE_TIME, "");
-        final HashMap<String, Long> map = LocaleUtils.localeAndTimeStrToHashMap(str);
-        if (map.containsKey(locale)) {
-            return map.get(locale);
-        }
-        return 0;
-    }
-
-    public static void writeLastUserHistoryWriteTime(final SharedPreferences prefs,
-            final String locale) {
-        final String oldStr = prefs.getString(PREF_LAST_USER_DICTIONARY_WRITE_TIME, "");
-        final HashMap<String, Long> map = LocaleUtils.localeAndTimeStrToHashMap(oldStr);
-        map.put(locale, System.currentTimeMillis());
-        final String newStr = LocaleUtils.localeAndTimeHashMapToStr(map);
-        prefs.edit().putString(PREF_LAST_USER_DICTIONARY_WRITE_TIME, newStr).apply();
+    public static int readKeyPreviewAnimationDuration(final SharedPreferences prefs,
+            final String prefKey, final int defaultValue) {
+        final int milliseconds = prefs.getInt(prefKey, UNDEFINED_PREFERENCE_VALUE_INT);
+        return (milliseconds != UNDEFINED_PREFERENCE_VALUE_INT) ? milliseconds : defaultValue;
     }
 
     public static boolean readUseFullscreenMode(final Resources res) {
@@ -363,40 +363,58 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
         if (!enableSetupWizardByConfig) {
             return false;
         }
-        if (!prefs.contains(Settings.PREF_SHOW_SETUP_WIZARD_ICON)) {
+        if (!prefs.contains(PREF_SHOW_SETUP_WIZARD_ICON)) {
             final ApplicationInfo appInfo = context.getApplicationInfo();
             final boolean isApplicationInSystemImage =
                     (appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
             // Default value
             return !isApplicationInSystemImage;
         }
-        return prefs.getBoolean(Settings.PREF_SHOW_SETUP_WIZARD_ICON, false);
+        return prefs.getBoolean(PREF_SHOW_SETUP_WIZARD_ICON, false);
+    }
+
+    public static boolean readHasHardwareKeyboard(final Configuration conf) {
+        // The standard way of finding out whether we have a hardware keyboard. This code is taken
+        // from InputMethodService#onEvaluateInputShown, which canonically determines this.
+        // In a nutshell, we have a keyboard if the configuration says the type of hardware keyboard
+        // is NOKEYS and if it's not hidden (e.g. folded inside the device).
+        return conf.keyboard != Configuration.KEYBOARD_NOKEYS
+                && conf.hardKeyboardHidden != Configuration.HARDKEYBOARDHIDDEN_YES;
     }
 
     public static boolean isInternal(final SharedPreferences prefs) {
-        return prefs.getBoolean(Settings.PREF_KEY_IS_INTERNAL, false);
-    }
-
-    public static boolean readUseOnlyPersonalizationDictionaryForDebug(
-            final SharedPreferences prefs) {
-        return prefs.getBoolean(
-                DebugSettings.PREF_USE_ONLY_PERSONALIZATION_DICTIONARY_FOR_DEBUG, false);
-    }
-
-    public static boolean readBoostPersonalizationDictionaryForDebug(
-            final SharedPreferences prefs) {
-        return prefs.getBoolean(
-                DebugSettings.PREF_BOOST_PERSONALIZATION_DICTIONARY_FOR_DEBUG, false);
+        return prefs.getBoolean(PREF_KEY_IS_INTERNAL, false);
     }
 
     public void writeLastUsedPersonalizationToken(byte[] token) {
-        final String tokenStr = StringUtils.byteArrayToHexString(token);
-        mPrefs.edit().putString(PREF_LAST_USED_PERSONALIZATION_TOKEN, tokenStr).apply();
+        if (token == null) {
+            mPrefs.edit().remove(PREF_LAST_USED_PERSONALIZATION_TOKEN).apply();
+        } else {
+            final String tokenStr = StringUtils.byteArrayToHexString(token);
+            mPrefs.edit().putString(PREF_LAST_USED_PERSONALIZATION_TOKEN, tokenStr).apply();
+        }
     }
 
     public byte[] readLastUsedPersonalizationToken() {
         final String tokenStr = mPrefs.getString(PREF_LAST_USED_PERSONALIZATION_TOKEN, null);
         return StringUtils.hexStringToByteArray(tokenStr);
+    }
+
+    public void writeLastPersonalizationDictWipedTime(final long timestamp) {
+        mPrefs.edit().putLong(PREF_LAST_PERSONALIZATION_DICT_WIPED_TIME, timestamp).apply();
+    }
+
+    public long readLastPersonalizationDictGeneratedTime() {
+        return mPrefs.getLong(PREF_LAST_PERSONALIZATION_DICT_WIPED_TIME, 0);
+    }
+
+    public void writeCorpusHandlesForPersonalization(final Set<String> corpusHandles) {
+        mPrefs.edit().putStringSet(PREF_CORPUS_HANDLES_FOR_PERSONALIZATION, corpusHandles).apply();
+    }
+
+    public Set<String> readCorpusHandlesForPersonalization() {
+        final Set<String> emptySet = Collections.emptySet();
+        return mPrefs.getStringSet(PREF_CORPUS_HANDLES_FOR_PERSONALIZATION, emptySet);
     }
 
     public static void writeEmojiRecentKeys(final SharedPreferences prefs, String str) {

@@ -17,12 +17,11 @@
 #ifndef LATINIME_PROBABILITY_UTILS_H
 #define LATINIME_PROBABILITY_UTILS_H
 
-#include <stdint.h>
-
 #include "defines.h"
 
 namespace latinime {
 
+// TODO: Quit using bigram probability to indicate the delta.
 class ProbabilityUtils {
  public:
     static AK_FORCE_INLINE int backoff(const int unigramProbability) {

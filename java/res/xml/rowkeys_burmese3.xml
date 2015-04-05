@@ -28,75 +28,75 @@
             >
             <!-- MYANMAR LETTER JA -->
              <Key
-                latin:keyLabel="&#x1007;"
+                latin:keySpec="&#x1007;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- MYANMAR LETTER TTHA -->
              <Key
-                latin:keyLabel="&#x100C;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x100C;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- MYANMAR LETTER GHA -->
              <Key
-                latin:keyLabel="&#x1003;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x1003;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- MYANMAR LETTER LLA
                  MYANMAR LETTER VOCALIC LL -->
              <Key
-                latin:keyLabel="&#x1020;"
+                latin:keySpec="&#x1020;"
                 latin:moreKeys="&#x1055;"
                 latin:keyHintLabel="&#x1055;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- MYANMAR LETTER YA -->
              <Key
-                latin:keyLabel="&#x101A;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x101A;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- MYANMAR LETTER NYA -->
              <Key
-                latin:keyLabel="&#x1009;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x1009;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- MYANMAR LETTER UUA -->
              <Key
-                latin:keyLabel="&#x1026;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x1026;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- MYANMAR SIGN LITTLE SECTION -->
              <Key
-                latin:keyLabel="&#x104A;"
+                latin:keySpec="&#x104A;"
                 latin:keyLabelFlags="fontNormal" />
         </case>
         <default>
             <!-- MYANMAR LETTER PHA -->
              <Key
-                latin:keyLabel="&#x1016;"
+                latin:keySpec="&#x1016;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- MYANMAR LETTER THA -->
              <Key
-                latin:keyLabel="&#x1011;"
+                latin:keySpec="&#x1011;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- MYANMAR LETTER KHA -->
              <Key
-                latin:keyLabel="&#x1001;"
+                latin:keySpec="&#x1001;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- MYANMAR LETTER LA
                  MYANMAR LETTER VOCALIC L -->
              <Key
-                latin:keyLabel="&#x101C;"
+                latin:keySpec="&#x101C;"
                 latin:moreKeys="&#x1054;"
                 latin:keyHintLabel="&#x1054;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- MYANMAR LETTER BHA -->
              <Key
-                latin:keyLabel="&#x1018;"
+                latin:keySpec="&#x1018;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- MYANMAR LETTER NNYA -->
              <Key
-                latin:keyLabel="&#x100A;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x100A;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- MYANMAR VOWEL SIGN AA -->
              <Key
-                latin:keyLabel="&#x102C;"
+                latin:keySpec="&#x102C;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- MYANMAR SIGN SECTION -->
              <Key
-                latin:keyLabel="&#x104B;"
+                latin:keySpec="&#x104B;"
                 latin:keyLabelFlags="fontNormal" />
         </default>
     </switch>

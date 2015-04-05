@@ -35,14 +35,15 @@
                 latin:keyLabelFlags="hasShiftedLetterHint" />
         </default>
     </switch>
-    <!-- Base key style for the key which may have settings or tab key as popup key. -->
+    <!-- Base key style for the key which may have settings key as more keys. -->
+    <key-style
+        latin:styleName="baseSettingsMoreKeysStyle" />
     <include
-        latin:keyboardLayout="@xml/key_styles_f1" />
+        latin:keyboardLayout="@xml/key_styles_settings" />
     <!-- Functional key styles -->
     <!-- Base style for shift key. A single space is used for dummy label in moreKeys. -->
     <key-style
         latin:styleName="baseForShiftKeyStyle"
-        latin:code="!code/key_shift"
         latin:keyActionFlags="noKeyPreview"
         latin:keyLabelFlags="preserveCase"
         latin:moreKeys="!noPanelAutoMoreKey!, |!code/key_capslock" />
@@ -52,7 +53,7 @@
         >
             <key-style
                 latin:styleName="shiftKeyStyle"
-                latin:keyIcon="!icon/shift_key_shifted"
+                latin:keySpec="!icon/shift_key_shifted|!code/key_shift"
                 latin:backgroundType="stickyOff"
                 latin:parentStyle="baseForShiftKeyStyle" />
         </case>
@@ -61,155 +62,110 @@
         >
             <key-style
                 latin:styleName="shiftKeyStyle"
-                latin:keyIcon="!icon/shift_key_shifted"
+                latin:keySpec="!icon/shift_key_shifted|!code/key_shift"
                 latin:backgroundType="stickyOn"
                 latin:parentStyle="baseForShiftKeyStyle" />
         </case>
         <default>
             <key-style
                 latin:styleName="shiftKeyStyle"
-                latin:keyIcon="!icon/shift_key"
+                latin:keySpec="!icon/shift_key|!code/key_shift"
                 latin:backgroundType="stickyOff"
                 latin:parentStyle="baseForShiftKeyStyle" />
         </default>
     </switch>
     <key-style
         latin:styleName="deleteKeyStyle"
-        latin:code="!code/key_delete"
-        latin:keyIcon="!icon/delete_key"
+        latin:keySpec="!icon/delete_key|!code/key_delete"
         latin:keyActionFlags="isRepeatable|noKeyPreview"
         latin:backgroundType="functional" />
+    <!-- emojiKeyStyle must be defined before including @xml/key_syles_enter. -->
+    <switch>
+        <case latin:keyboardTheme="ICS|KLP">
+            <key-style
+                latin:styleName="emojiKeyStyle"
+                latin:keySpec="!icon/emoji_action_key|!code/key_emoji"
+                latin:keyActionFlags="noKeyPreview"
+                latin:backgroundType="action" />
+        </case>
+        <!-- keyboardTheme="LXXLight|LXXDark" -->
+        <default>
+            <key-style
+                latin:styleName="emojiKeyStyle"
+                latin:keySpec="!icon/emoji_action_key|!code/key_emoji"
+                latin:keyLabelFlags="keepBackgroundAspectRatio"
+                latin:keyActionFlags="noKeyPreview"
+                latin:backgroundType="action" />
+        </default>
+    </switch>
     <include
         latin:keyboardLayout="@xml/key_styles_enter" />
+    <!-- TODO: Currently there is no way to specify icon alignment per theme. -->
     <key-style
         latin:styleName="spaceKeyStyle"
-        latin:code="!code/key_space"
+        latin:keySpec="!icon/space_key|!code/key_space"
+        latin:backgroundType="spacebar"
         latin:keyActionFlags="noKeyPreview|enableLongPress" />
     <!-- U+200C: ZERO WIDTH NON-JOINER
          U+200D: ZERO WIDTH JOINER -->
     <key-style
         latin:styleName="zwnjKeyStyle"
-        latin:code="0x200C"
-        latin:keyIcon="!icon/zwnj_key"
+        latin:keySpec="!icon/zwnj_key|&#x200C;"
         latin:moreKeys="!icon/zwj_key|&#x200D;"
         latin:keyLabelFlags="hasPopupHint"
         latin:keyActionFlags="noKeyPreview" />
     <key-style
         latin:styleName="shortcutKeyStyle"
-        latin:code="!code/key_shortcut"
-        latin:keyIcon="!icon/shortcut_key"
+        latin:keySpec="!icon/shortcut_key|!code/key_shortcut"
         latin:keyIconDisabled="!icon/shortcut_key_disabled"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
         latin:altCode="!code/key_space"
-        latin:parentStyle="f1MoreKeysStyle" />
+        latin:parentStyle="settingsMoreKeysStyle" />
     <key-style
         latin:styleName="settingsKeyStyle"
-        latin:code="!code/key_settings"
-        latin:keyIcon="!icon/settings_key"
+        latin:keySpec="!icon/settings_key|!code/key_settings"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping"
         latin:altCode="!code/key_space"
         latin:backgroundType="functional" />
     <key-style
         latin:styleName="languageSwitchKeyStyle"
-        latin:code="!code/key_language_switch"
-        latin:keyIcon="!icon/language_switch_key"
+        latin:keySpec="!icon/language_switch_key|!code/key_language_switch"
         latin:keyActionFlags="noKeyPreview|altCodeWhileTyping|enableLongPress"
         latin:altCode="!code/key_space" />
     <key-style
-        latin:styleName="emojiKeyStyle"
-        latin:code="!code/key_emoji"
-        latin:keyIcon="!icon/emoji_key"
-        latin:keyActionFlags="noKeyPreview"
-        latin:backgroundType="functional" />
-    <!-- Overriding EnterKeyStyle here -->
-    <switch>
-        <!-- Shift + Enter in textMultiLine field. -->
-        <case
-            latin:isMultiLine="true"
-            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLockShifted"
-        >
-            <key-style
-                latin:styleName="enterKeyStyle"
-                latin:parentStyle="shiftEnterKeyStyle" />
-        </case>
-        <!-- Smiley in textShortMessage field.
-             Overrides common enter key style. -->
-        <case
-            latin:mode="im"
-        >
-            <key-style
-                latin:styleName="enterKeyStyle"
-                latin:parentStyle="emojiKeyStyle" />
-        </case>
-    </switch>
-    <key-style
         latin:styleName="tabKeyStyle"
-        latin:code="!code/key_tab"
-        latin:keyIcon="!icon/tab_key"
-        latin:keyIconPreview="!icon/tab_key_preview"
+        latin:keySpec="!icon/tab_key|!code/key_tab"
         latin:backgroundType="functional" />
     <!-- Note: This key style is not for functional tab key. This is used for the tab key which is
          laid out as normal letter key. -->
     <key-style
         latin:styleName="nonSpecialBackgroundTabKeyStyle"
-        latin:code="!code/key_tab"
-        latin:keyIcon="!icon/tab_key"
-        latin:keyIconPreview="!icon/tab_key_preview" />
+        latin:keySpec="!icon/tab_key|!code/key_tab" />
     <key-style
         latin:styleName="baseForLayoutSwitchKeyStyle"
-        latin:keyLabelFlags="preserveCase"
+        latin:keyLabelFlags="preserveCase|followFunctionalTextColor"
         latin:keyActionFlags="noKeyPreview"
         latin:backgroundType="functional" />
-    <switch>
-        <!-- When this qwerty keyboard has no shortcut keys but shortcut key is enabled, then symbol
-             keyboard will have a shortcut key. That means we should use label_to_symbol_key label
-             and shortcut_for_label icon. -->
-        <case
-            latin:shortcutKeyOnSymbols="true"
-        >
-            <key-style
-                latin:styleName="baseForToSymbolKeyStyle"
-                latin:keyIcon="!icon/shortcut_for_label"
-                latin:keyLabel="!text/label_to_symbol_with_microphone_key"
-                latin:keyLabelFlags="withIconRight|preserveCase"
-                latin:parentStyle="baseForLayoutSwitchKeyStyle" />
-        </case>
-        <default>
-            <key-style
-                latin:styleName="baseForToSymbolKeyStyle"
-                latin:keyLabel="!text/label_to_symbol_key"
-                latin:parentStyle="baseForLayoutSwitchKeyStyle" />
-        </default>
-    </switch>
     <key-style
         latin:styleName="toSymbolKeyStyle"
-        latin:code="!code/key_switch_alpha_symbol"
-        latin:parentStyle="baseForToSymbolKeyStyle" />
+        latin:keySpec="!text/keylabel_to_symbol|!code/key_switch_alpha_symbol"
+        latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
         latin:styleName="toAlphaKeyStyle"
-        latin:code="!code/key_switch_alpha_symbol"
-        latin:keyLabel="!text/label_to_alpha_key"
+        latin:keySpec="!text/keylabel_to_alpha|!code/key_switch_alpha_symbol"
         latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
         latin:styleName="toMoreSymbolKeyStyle"
-        latin:code="!code/key_shift"
-        latin:keyLabel="!text/label_to_more_symbol_key"
+        latin:keySpec="!text/keylabel_to_more_symbol|!code/key_shift"
         latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
         latin:styleName="backFromMoreSymbolKeyStyle"
-        latin:code="!code/key_shift"
-        latin:parentStyle="baseForToSymbolKeyStyle" />
-    <key-style
-        latin:styleName="punctuationKeyStyle"
-        latin:keyLabel="."
-        latin:keyLabelFlags="hasPopupHint"
-        latin:moreKeys="!text/more_keys_for_punctuation"
-        latin:backgroundType="functional" />
+        latin:keySpec="!text/keylabel_to_symbol|!code/key_shift"
+        latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
         latin:styleName="comKeyStyle"
-        latin:keyLabel="!text/keylabel_for_popular_domain"
+        latin:keySpec="!text/keyspec_popular_domain"
         latin:keyLabelFlags="autoXScale|fontNormal|hasPopupHint|preserveCase"
-        latin:keyOutputText="!text/keylabel_for_popular_domain"
-        latin:moreKeys="!text/more_keys_for_popular_domain"
+        latin:moreKeys="!text/morekeys_popular_domain"
         latin:backgroundType="functional" />
 </merge>

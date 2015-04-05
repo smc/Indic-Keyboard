@@ -30,12 +30,12 @@ import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.utils.LocaleUtils;
-
 import java.util.List;
 import java.util.Locale;
 import java.util.TreeSet;
+
+import org.smc.inputmethod.indic.R;
+import com.android.inputmethod.latin.utils.LocaleUtils;
 
 // Caveat: This class is basically taken from
 // packages/apps/Settings/src/com/android/settings/inputmethod/UserDictionaryList.java
@@ -53,20 +53,24 @@ public class UserDictionaryList extends PreferenceFragment {
     }
 
     public static TreeSet<String> getUserDictionaryLocalesSet(Activity activity) {
-        @SuppressWarnings("deprecation")
-        final Cursor cursor = activity.managedQuery(UserDictionary.Words.CONTENT_URI,
+        final Cursor cursor = activity.getContentResolver().query(UserDictionary.Words.CONTENT_URI,
                 new String[] { UserDictionary.Words.LOCALE },
                 null, null, null);
-        final TreeSet<String> localeSet = new TreeSet<String>();
+        final TreeSet<String> localeSet = new TreeSet<>();
         if (null == cursor) {
             // The user dictionary service is not present or disabled. Return null.
             return null;
-        } else if (cursor.moveToFirst()) {
-            final int columnIndex = cursor.getColumnIndex(UserDictionary.Words.LOCALE);
-            do {
-                final String locale = cursor.getString(columnIndex);
-                localeSet.add(null != locale ? locale : "");
-            } while (cursor.moveToNext());
+        }
+        try {
+            if (cursor.moveToFirst()) {
+                final int columnIndex = cursor.getColumnIndex(UserDictionary.Words.LOCALE);
+                do {
+                    final String locale = cursor.getString(columnIndex);
+                    localeSet.add(null != locale ? locale : "");
+                } while (cursor.moveToNext());
+            }
+        } finally {
+            cursor.close();
         }
         if (!UserDictionarySettings.IS_SHORTCUT_API_SUPPORTED) {
             // For ICS, we need to show "For all languages" in case that the keyboard locale

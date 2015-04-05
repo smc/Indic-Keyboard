@@ -16,9 +16,9 @@
 
 package org.smc.inputmethod.indic;
 
-import org.smc.inputmethod.indic.utils.JniUtils;
-
 import java.util.Locale;
+
+import com.android.inputmethod.latin.utils.JniUtils;
 
 public final class DicTraverseSession {
     static {

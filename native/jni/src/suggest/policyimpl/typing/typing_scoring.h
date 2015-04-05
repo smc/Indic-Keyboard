@@ -18,7 +18,9 @@
 #define LATINIME_TYPING_SCORING_H
 
 #include "defines.h"
+#include "suggest/core/dictionary/error_type_utils.h"
 #include "suggest/core/policy/scoring.h"
+#include "suggest/core/session/dic_traverse_session.h"
 #include "suggest/policyimpl/typing/scoring_params.h"
 
 namespace latinime {
@@ -30,45 +32,51 @@ class TypingScoring : public Scoring {
  public:
     static const TypingScoring *getInstance() { return &sInstance; }
 
-    AK_FORCE_INLINE bool getMostProbableString(
-            const DicTraverseSession *const traverseSession, const int terminalSize,
-            const float languageWeight, int *const outputCodePoints, int *const type,
-            int *const freq) const {
-        return false;
-    }
-
-    AK_FORCE_INLINE void safetyNetForMostProbableString(const int terminalSize,
-            const int maxScore, int *const outputCodePoints, int *const frequencies) const {
-    }
-
-    AK_FORCE_INLINE void searchWordWithDoubleLetter(DicNode *terminals,
-            const int terminalSize, int *doubleLetterTerminalIndex,
-            DoubleLetterLevel *doubleLetterLevel) const {
-    }
+    AK_FORCE_INLINE void getMostProbableString(const DicTraverseSession *const traverseSession,
+            const float languageWeight, SuggestionResults *const outSuggestionResults) const {}
 
     AK_FORCE_INLINE float getAdjustedLanguageWeight(DicTraverseSession *const traverseSession,
-             DicNode *const terminals, const int size) const {
+            DicNode *const terminals, const int size) const {
         return 1.0f;
     }
 
-    AK_FORCE_INLINE int calculateFinalScore(const float compoundDistance,
-            const int inputSize, const bool forceCommit) const {
+    AK_FORCE_INLINE int calculateFinalScore(const float compoundDistance, const int inputSize,
+            const ErrorTypeUtils::ErrorType containedErrorTypes, const bool forceCommit,
+            const bool boostExactMatches) const {
         const float maxDistance = ScoringParams::DISTANCE_WEIGHT_LANGUAGE
                 + static_cast<float>(inputSize) * ScoringParams::TYPING_MAX_OUTPUT_SCORE_PER_INPUT;
-        const float score = ScoringParams::TYPING_BASE_OUTPUT_SCORE
-                - compoundDistance / maxDistance
-                + (forceCommit ? ScoringParams::AUTOCORRECT_OUTPUT_THRESHOLD : 0.0f);
+        float score = ScoringParams::TYPING_BASE_OUTPUT_SCORE - compoundDistance / maxDistance;
+        if (forceCommit) {
+            score += ScoringParams::AUTOCORRECT_OUTPUT_THRESHOLD;
+        }
+        if (boostExactMatches && ErrorTypeUtils::isExactMatch(containedErrorTypes)) {
+            score += ScoringParams::EXACT_MATCH_PROMOTION;
+            if ((ErrorTypeUtils::MATCH_WITH_CASE_ERROR & containedErrorTypes) != 0) {
+                score -= ScoringParams::CASE_ERROR_PENALTY_FOR_EXACT_MATCH;
+            }
+            if ((ErrorTypeUtils::MATCH_WITH_ACCENT_ERROR & containedErrorTypes) != 0) {
+                score -= ScoringParams::ACCENT_ERROR_PENALTY_FOR_EXACT_MATCH;
+            }
+            if ((ErrorTypeUtils::MATCH_WITH_DIGRAPH & containedErrorTypes) != 0) {
+                score -= ScoringParams::DIGRAPH_PENALTY_FOR_EXACT_MATCH;
+            }
+        }
         return static_cast<int>(score * SUGGEST_INTERFACE_OUTPUT_SCALE);
     }
 
-    AK_FORCE_INLINE float getDoubleLetterDemotionDistanceCost(const int terminalIndex,
-            const int doubleLetterTerminalIndex,
-            const DoubleLetterLevel doubleLetterLevel) const {
+    AK_FORCE_INLINE float getDoubleLetterDemotionDistanceCost(
+            const DicNode *const terminalDicNode) const {
         return 0.0f;
     }
 
-    AK_FORCE_INLINE bool doesAutoCorrectValidWord() const {
-        return false;
+    AK_FORCE_INLINE bool autoCorrectsToMultiWordSuggestionIfTop() const {
+        return true;
+    }
+
+    AK_FORCE_INLINE bool sameAsTyped(const DicTraverseSession *const traverseSession,
+            const DicNode *const dicNode) const {
+        return traverseSession->getProximityInfoState(0)->sameAsTyped(
+                dicNode->getOutputWordBuf(), dicNode->getNodeCodePointCount());
     }
 
  private:

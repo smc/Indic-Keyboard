@@ -23,13 +23,7 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Environment;
 
-import org.smc.inputmethod.indic.BinaryDictionaryFileDumper;
-import org.smc.inputmethod.indic.BinaryDictionaryGetter;
-import org.smc.inputmethod.indic.R;
-import com.android.inputmethod.latin.makedict.FormatSpec.FileHeader;
-import org.smc.inputmethod.indic.utils.CollectionUtils;
-import org.smc.inputmethod.indic.utils.DictionaryInfoUtils;
-import org.smc.inputmethod.indic.utils.LocaleUtils;
+import com.android.inputmethod.latin.makedict.DictionaryHeader;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -40,6 +34,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import org.smc.inputmethod.indic.BinaryDictionaryFileDumper;
+import org.smc.inputmethod.indic.BinaryDictionaryGetter;
+import org.smc.inputmethod.indic.R;
+import com.android.inputmethod.latin.utils.DialogUtils;
+import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
+import com.android.inputmethod.latin.utils.LocaleUtils;
+
 /**
  * A class to read a local file as a dictionary for debugging purposes.
  */
@@ -49,9 +50,9 @@ public class ExternalDictionaryGetterForDebug {
 
     private static String[] findDictionariesInTheDownloadedFolder() {
         final File[] files = new File(SOURCE_FOLDER).listFiles();
-        final ArrayList<String> eligibleList = CollectionUtils.newArrayList();
+        final ArrayList<String> eligibleList = new ArrayList<>();
         for (File f : files) {
-            final FileHeader header = DictionaryInfoUtils.getDictionaryFileHeaderOrNull(f);
+            final DictionaryHeader header = DictionaryInfoUtils.getDictionaryFileHeaderOrNull(f);
             if (null == header) continue;
             eligibleList.add(f.getName());
         }
@@ -70,7 +71,7 @@ public class ExternalDictionaryGetterForDebug {
     }
 
     private static void showNoFileDialog(final Context context) {
-        new AlertDialog.Builder(context)
+        new AlertDialog.Builder(DialogUtils.getPlatformDialogThemeContext(context))
                 .setMessage(R.string.read_external_dictionary_no_files_message)
                 .setPositiveButton(android.R.string.ok, new OnClickListener() {
                     @Override
@@ -81,8 +82,8 @@ public class ExternalDictionaryGetterForDebug {
     }
 
     private static void showChooseFileDialog(final Context context, final String[] fileNames) {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.read_external_dictionary_multiple_files_title)
+        new AlertDialog.Builder(DialogUtils.getPlatformDialogThemeContext(context))
+                .setTitle(R.string.read_external_dictionary_multiple_files_title)
                 .setItems(fileNames, new OnClickListener() {
                     @Override
                     public void onClick(final DialogInterface dialog, final int which) {
@@ -99,7 +100,7 @@ public class ExternalDictionaryGetterForDebug {
     public static void askInstallFile(final Context context, final String dirPath,
             final String fileName, final Runnable completeRunnable) {
         final File file = new File(dirPath, fileName.toString());
-        final FileHeader header = DictionaryInfoUtils.getDictionaryFileHeaderOrNull(file);
+        final DictionaryHeader header = DictionaryInfoUtils.getDictionaryFileHeaderOrNull(file);
         final StringBuilder message = new StringBuilder();
         final String locale = header.getLocaleString();
         for (String key : header.mDictionaryOptions.mAttributes.keySet()) {
@@ -111,7 +112,7 @@ public class ExternalDictionaryGetterForDebug {
         final String title = String.format(
                 context.getString(R.string.read_external_dictionary_confirm_install_message),
                 languageName);
-        new AlertDialog.Builder(context)
+        new AlertDialog.Builder(DialogUtils.getPlatformDialogThemeContext(context))
                 .setTitle(title)
                 .setMessage(message)
                 .setNegativeButton(android.R.string.cancel, new OnClickListener() {
@@ -143,7 +144,7 @@ public class ExternalDictionaryGetterForDebug {
     }
 
     private static void installFile(final Context context, final File file,
-            final FileHeader header) {
+            final DictionaryHeader header) {
         BufferedOutputStream outputStream = null;
         File tempFile = null;
         try {
@@ -167,8 +168,8 @@ public class ExternalDictionaryGetterForDebug {
             }
         } catch (IOException e) {
             // There was an error: show a dialog
-            new AlertDialog.Builder(context)
-                    .setTitle(R.string.error)
+            new AlertDialog.Builder(DialogUtils.getPlatformDialogThemeContext(context))
+                    .setTitle(R.string.read_external_dictionary_error)
                     .setMessage(e.toString())
                     .setPositiveButton(android.R.string.ok, new OnClickListener() {
                         @Override

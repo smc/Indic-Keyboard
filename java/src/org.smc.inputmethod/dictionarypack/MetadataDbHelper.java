@@ -20,18 +20,19 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 import android.util.Log;
-
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.utils.DebugLogUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
+
+import org.smc.inputmethod.indic.R;
+import com.android.inputmethod.latin.utils.DebugLogUtils;
 
 /**
  * Various helper functions for the state database
@@ -45,10 +46,8 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     // This is the first released version of the database that implements CLIENTID. It is
     // used to identify the versions for upgrades. This should never change going forward.
     private static final int METADATA_DATABASE_VERSION_WITH_CLIENTID = 6;
-    // This is the current database version. It should be updated when the database schema
-    // gets updated. It is passed to the framework constructor of SQLiteOpenHelper, so
-    // that's what the framework uses to track our database version.
-    private static final int METADATA_DATABASE_VERSION = 6;
+    // The current database version.
+    private static final int CURRENT_METADATA_DATABASE_VERSION = 9;
 
     private final static long NOT_A_DOWNLOAD_ID = -1;
 
@@ -68,7 +67,8 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     public static final String VERSION_COLUMN = "version";
     public static final String FORMATVERSION_COLUMN = "formatversion";
     public static final String FLAGS_COLUMN = "flags";
-    public static final int COLUMN_COUNT = 13;
+    public static final String RAW_CHECKSUM_COLUMN = "rawChecksum";
+    public static final int COLUMN_COUNT = 14;
 
     private static final String CLIENT_CLIENT_ID_COLUMN = "clientid";
     private static final String CLIENT_METADATA_URI_COLUMN = "uri";
@@ -121,8 +121,9 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
             + CHECKSUM_COLUMN + " TEXT, "
             + FILESIZE_COLUMN + " INTEGER, "
             + VERSION_COLUMN + " INTEGER,"
-            + FORMATVERSION_COLUMN + " INTEGER,"
-            + FLAGS_COLUMN + " INTEGER,"
+            + FORMATVERSION_COLUMN + " INTEGER, "
+            + FLAGS_COLUMN + " INTEGER, "
+            + RAW_CHECKSUM_COLUMN + " TEXT,"
             + "PRIMARY KEY (" + WORDLISTID_COLUMN + "," + VERSION_COLUMN + "));";
     private static final String METADATA_CREATE_CLIENT_TABLE =
             "CREATE TABLE IF NOT EXISTS " + CLIENT_TABLE_NAME + " ("
@@ -138,7 +139,8 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     static final String[] METADATA_TABLE_COLUMNS = { PENDINGID_COLUMN, TYPE_COLUMN,
             STATUS_COLUMN, WORDLISTID_COLUMN, LOCALE_COLUMN, DESCRIPTION_COLUMN,
             LOCAL_FILENAME_COLUMN, REMOTE_FILENAME_COLUMN, DATE_COLUMN, CHECKSUM_COLUMN,
-            FILESIZE_COLUMN, VERSION_COLUMN, FORMATVERSION_COLUMN, FLAGS_COLUMN };
+            FILESIZE_COLUMN, VERSION_COLUMN, FORMATVERSION_COLUMN, FLAGS_COLUMN,
+            RAW_CHECKSUM_COLUMN };
     // List of all client table columns.
     static final String[] CLIENT_TABLE_COLUMNS = { CLIENT_CLIENT_ID_COLUMN,
             CLIENT_METADATA_URI_COLUMN, CLIENT_PENDINGID_COLUMN, FLAGS_COLUMN };
@@ -158,7 +160,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
         // this legacy database. New clients should make sure to always pass a client ID so as
         // to avoid conflicts.
         final String clientId = null != clientIdOrNull ? clientIdOrNull : "";
-        if (null == sInstanceMap) sInstanceMap = new TreeMap<String, MetadataDbHelper>();
+        if (null == sInstanceMap) sInstanceMap = new TreeMap<>();
         MetadataDbHelper helper = sInstanceMap.get(clientId);
         if (null == helper) {
             helper = new MetadataDbHelper(context, clientId);
@@ -169,7 +171,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     private MetadataDbHelper(final Context context, final String clientId) {
         super(context,
                 METADATA_DATABASE_NAME_STEM + (TextUtils.isEmpty(clientId) ? "" : "." + clientId),
-                null, METADATA_DATABASE_VERSION);
+                null, CURRENT_METADATA_DATABASE_VERSION);
         mContext = context;
         mClientId = clientId;
     }
@@ -217,28 +219,68 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
         createClientTable(db);
     }
 
+    private void addRawChecksumColumnUnlessPresent(final SQLiteDatabase db, final String clientId) {
+        try {
+            db.execSQL("SELECT " + RAW_CHECKSUM_COLUMN + " FROM "
+                    + METADATA_TABLE_NAME + " LIMIT 0;");
+        } catch (SQLiteException e) {
+            Log.i(TAG, "No " + RAW_CHECKSUM_COLUMN + " column : creating it");
+            db.execSQL("ALTER TABLE " + METADATA_TABLE_NAME + " ADD COLUMN "
+                    + RAW_CHECKSUM_COLUMN + " TEXT;");
+        }
+    }
+
     /**
      * Upgrade the database. Upgrade from version 3 is supported.
+     * Version 3 has a DB named METADATA_DATABASE_NAME_STEM containing a table METADATA_TABLE_NAME.
+     * Version 6 and above has a DB named METADATA_DATABASE_NAME_STEM containing a
+     * table CLIENT_TABLE_NAME, and for each client a table called METADATA_TABLE_STEM + "." + the
+     * name of the client and contains a table METADATA_TABLE_NAME.
+     * For schemas, see the above create statements. The schemas have never changed so far.
+     *
+     * This method is called by the framework. See {@link SQLiteOpenHelper#onUpgrade}
+     * @param db The database we are upgrading
+     * @param oldVersion The old database version (the one on the disk)
+     * @param newVersion The new database version as supplied to the constructor of SQLiteOpenHelper
      */
     @Override
     public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion) {
         if (METADATA_DATABASE_INITIAL_VERSION == oldVersion
-                && METADATA_DATABASE_VERSION_WITH_CLIENTID == newVersion) {
+                && METADATA_DATABASE_VERSION_WITH_CLIENTID <= newVersion
+                && CURRENT_METADATA_DATABASE_VERSION >= newVersion) {
             // Upgrade from version METADATA_DATABASE_INITIAL_VERSION to version
             // METADATA_DATABASE_VERSION_WITH_CLIENT_ID
+            // Only the default database should contain the client table, so we test for mClientId.
             if (TextUtils.isEmpty(mClientId)) {
-                // Only the default database should contain the client table.
-                // Anyway in version 3 only the default table existed so the emptyness
+                // Anyway in version 3 only the default table existed so the emptiness
                 // test should always be true, but better check to be sure.
                 createClientTable(db);
             }
+        } else if (METADATA_DATABASE_VERSION_WITH_CLIENTID < newVersion
+                && CURRENT_METADATA_DATABASE_VERSION >= newVersion) {
+            // Here we drop the client table, so that all clients send us their information again.
+            // The client table contains the URL to hit to update the available dictionaries list,
+            // but the info about the dictionaries themselves is stored in the table called
+            // METADATA_TABLE_NAME and we want to keep it, so we only drop the client table.
+            db.execSQL("DROP TABLE IF EXISTS " + CLIENT_TABLE_NAME);
+            // Only the default database should contain the client table, so we test for mClientId.
+            if (TextUtils.isEmpty(mClientId)) {
+                createClientTable(db);
+            }
         } else {
-            // Version 3 was the earliest version, so we should never come here. If we do, we
-            // have no idea what this database is, so we'd better wipe it off.
+            // If we're not in the above case, either we are upgrading from an earlier versionCode
+            // and we should wipe the database, or we are handling a version we never heard about
+            // (can only be a bug) so it's safer to wipe the database.
             db.execSQL("DROP TABLE IF EXISTS " + METADATA_TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + CLIENT_TABLE_NAME);
             onCreate(db);
         }
+        // A rawChecksum column that did not exist in the previous versions was added that
+        // corresponds to the md5 checksum of the file after decompression/decryption. This is to
+        // strengthen the system against corrupted dictionary files.
+        // The most secure way to upgrade a database is to just test for the column presence, and
+        // add it if it's not there.
+        addRawChecksumColumnUnlessPresent(db, mClientId);
     }
 
     /**
@@ -410,7 +452,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     public static ContentValues makeContentValues(final int pendingId, final int type,
             final int status, final String wordlistId, final String locale,
             final String description, final String filename, final String url, final long date,
-            final String checksum, final long filesize, final int version,
+            final String rawChecksum, final String checksum, final long filesize, final int version,
             final int formatVersion) {
         final ContentValues result = new ContentValues(COLUMN_COUNT);
         result.put(PENDINGID_COLUMN, pendingId);
@@ -422,6 +464,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
         result.put(LOCAL_FILENAME_COLUMN, filename);
         result.put(REMOTE_FILENAME_COLUMN, url);
         result.put(DATE_COLUMN, date);
+        result.put(RAW_CHECKSUM_COLUMN, rawChecksum);
         result.put(CHECKSUM_COLUMN, checksum);
         result.put(FILESIZE_COLUMN, filesize);
         result.put(VERSION_COLUMN, version);
@@ -457,6 +500,8 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
         if (null == result.get(REMOTE_FILENAME_COLUMN)) result.put(REMOTE_FILENAME_COLUMN, "");
         // 0 for the update date : 1970/1/1. Unless specified.
         if (null == result.get(DATE_COLUMN)) result.put(DATE_COLUMN, 0);
+        // Raw checksum unknown unless specified
+        if (null == result.get(RAW_CHECKSUM_COLUMN)) result.put(RAW_CHECKSUM_COLUMN, "");
         // Checksum unknown unless specified
         if (null == result.get(CHECKSUM_COLUMN)) result.put(CHECKSUM_COLUMN, "");
         // No filesize unless specified
@@ -504,6 +549,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
             putStringResult(result, cursor, LOCAL_FILENAME_COLUMN);
             putStringResult(result, cursor, REMOTE_FILENAME_COLUMN);
             putIntResult(result, cursor, DATE_COLUMN);
+            putStringResult(result, cursor, RAW_CHECKSUM_COLUMN);
             putStringResult(result, cursor, CHECKSUM_COLUMN);
             putIntResult(result, cursor, FILESIZE_COLUMN);
             putIntResult(result, cursor, VERSION_COLUMN);
@@ -533,12 +579,17 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
                 PENDINGID_COLUMN + "= ?",
                 new String[] { Long.toString(id) },
                 null, null, null);
-        // There should never be more than one result. If because of some bug there are, returning
-        // only one result is the right thing to do, because we couldn't handle several anyway
-        // and we should still handle one.
-        final ContentValues result = getFirstLineAsContentValues(cursor);
-        cursor.close();
-        return result;
+        if (null == cursor) {
+            return null;
+        }
+        try {
+            // There should never be more than one result. If because of some bug there are,
+            // returning only one result is the right thing to do, because we couldn't handle
+            // several anyway and we should still handle one.
+            return getFirstLineAsContentValues(cursor);
+        } finally {
+            cursor.close();
+        }
     }
 
     /**
@@ -559,11 +610,16 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
                 new String[] { id, Integer.toString(STATUS_INSTALLED),
                         Integer.toString(STATUS_DELETING) },
                 null, null, null);
-        // There should only be one result, but if there are several, we can't tell which
-        // is the best, so we just return the first one.
-        final ContentValues result = getFirstLineAsContentValues(cursor);
-        cursor.close();
-        return result;
+        if (null == cursor) {
+            return null;
+        }
+        try {
+            // There should only be one result, but if there are several, we can't tell which
+            // is the best, so we just return the first one.
+            return getFirstLineAsContentValues(cursor);
+        } finally {
+            cursor.close();
+        }
     }
 
     /**
@@ -583,7 +639,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
     public static ArrayList<DownloadRecord> getDownloadRecordsForDownloadId(final Context context,
             final long downloadId) {
         final SQLiteDatabase defaultDb = getDb(context, "");
-        final ArrayList<DownloadRecord> results = new ArrayList<DownloadRecord>();
+        final ArrayList<DownloadRecord> results = new ArrayList<>();
         final Cursor cursor = defaultDb.query(CLIENT_TABLE_NAME, CLIENT_TABLE_COLUMNS,
                 null, null, null, null, null);
         try {
@@ -622,10 +678,15 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
                 METADATA_TABLE_COLUMNS,
                 WORDLISTID_COLUMN + "= ? AND " + VERSION_COLUMN + "= ?",
                 new String[] { id, Integer.toString(version) }, null, null, null);
-        // This is a lookup by primary key, so there can't be more than one result.
-        final ContentValues result = getFirstLineAsContentValues(cursor);
-        cursor.close();
-        return result;
+        if (null == cursor) {
+            return null;
+        }
+        try {
+            // This is a lookup by primary key, so there can't be more than one result.
+            return getFirstLineAsContentValues(cursor);
+        } finally {
+            cursor.close();
+        }
     }
 
     /**
@@ -641,10 +702,15 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
                 METADATA_TABLE_COLUMNS,
                 WORDLISTID_COLUMN + "= ?",
                 new String[] { id }, null, null, VERSION_COLUMN + " DESC", "1");
-        // This is a lookup by primary key, so there can't be more than one result.
-        final ContentValues result = getFirstLineAsContentValues(cursor);
-        cursor.close();
-        return result;
+        if (null == cursor) {
+            return null;
+        }
+        try {
+            // This is a lookup by primary key, so there can't be more than one result.
+            return getFirstLineAsContentValues(cursor);
+        } finally {
+            cursor.close();
+        }
     }
 
     /**
@@ -857,7 +923,7 @@ public class MetadataDbHelper extends SQLiteOpenHelper {
                 // - Remove the old entry from the table
                 // - Erase the old file
                 // We start by gathering the names of the files we should delete.
-                final List<String> filenames = new LinkedList<String>();
+                final List<String> filenames = new LinkedList<>();
                 final Cursor c = db.query(METADATA_TABLE_NAME,
                         new String[] { LOCAL_FILENAME_COLUMN },
                         LOCALE_COLUMN + " = ? AND " +

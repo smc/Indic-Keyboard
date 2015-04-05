@@ -27,135 +27,135 @@
         >
             <!--Q ఔ TELUGU LETTER AU-->
             <Key
-                latin:keyLabel="&#x0C14;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0C14;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--W ఐ TELUGU LETTER AI-->
             <Key
-                latin:keyLabel="&#x0C10;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0C10;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--E ఆ TELUGU LETTER AA-->
             <Key
-                latin:keyLabel="&#x0C06;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0C06;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--R ఈ TELUGU LETTER II-->
             <Key
-                latin:keyLabel="&#x0C08;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0C08;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--T ఊ TELUGU LETTER UU-->
             <Key
-                latin:keyLabel="&#x0C0A;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0C0A;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--Y భ TELUGU LETTER BHA-->
             <Key
-                latin:keyLabel="&#x0C2D;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0C2D;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--U ఙ TELUGU LETTER NGA-->
             <Key
-                latin:keyLabel="&#x0C19;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0C19;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--I ఘ TELUGU LETTER GHA-->
             <Key
-                latin:keyLabel="&#x0C18;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0C18;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--O ధ TELUGU LETTER DHA-->
             <Key
-                latin:keyLabel="&#x0C27;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0C27;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--P ఝ TELUGU LETTER JHA-->
             <Key
-                latin:keyLabel="&#x0C1D;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0C1D;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!-- U+0C22: TELUGU LETTER DDHA -->
             <Key
-                latin:keyLabel="&#x0C22;"
+                latin:keySpec="&#x0C22;"
                 latin:moreKeys="{"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--\} ఞ TELUGU LETTER NYA-->
             <Key
-                latin:keyLabel="&#x0C1E;"
+                latin:keySpec="&#x0C1E;"
                 latin:moreKeys="}"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keyLabel="|"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="|"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </case>
 
         <default>
             <!--q ౌ TELUGU VOWEL SIGN AU-->
             <Key
-                latin:keyLabel="&#x0C4C;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0C4C;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--w ై TELUGU VOWEL SIGN AI-->
             <Key
-                latin:keyLabel="&#x0C48;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0C48;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--e ా TELUGU VOWEL SIGN AA-->
             <Key
-                latin:keyLabel="&#x0C3E;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0C3E;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--r ీ TELUGU VOWEL SIGN II-->
             <Key
-                latin:keyLabel="&#x0C40;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0C40;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--t ూ TELUGU VOWEL SIGN UU-->
             <Key
-                latin:keyLabel="&#x0C42;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0C42;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--y బ TELUGU LETTER BA-->
             <Key
-                latin:keyLabel="&#x0C2C;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0C2C;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--u హ TELUGU LETTER HA-->
             <Key
-                latin:keyLabel="&#x0C39;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0C39;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--i గ TELUGU LETTER GA-->
             <Key
-                latin:keyLabel="&#x0C17;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0C17;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--o ద TELUGU LETTER DA-->
             <Key
-                latin:keyLabel="&#x0C26;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0C26;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--p జ TELUGU LETTER JA-->
             <Key
-                latin:keyLabel="&#x0C1C;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0C1C;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--[ TELUGU LETTER DDA-->
             <Key
-                latin:keyLabel="&#x0C21;"
+                latin:keySpec="&#x0C21;"
                 latin:moreKeys="["
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keyLabel="]"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="]"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keyLabel="\\"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="\\"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
          </default>
     </switch>
 </merge>

@@ -18,12 +18,12 @@
 #define LATINIME_PROXIMITY_INFO_STATE_H
 
 #include <cstring> // for memset()
+#include <unordered_map>
 #include <vector>
 
 #include "defines.h"
 #include "suggest/core/layout/proximity_info_params.h"
 #include "suggest/core/layout/proximity_info_state_utils.h"
-#include "utils/hash_map_compat.h"
 
 namespace latinime {
 
@@ -43,16 +43,16 @@ class ProximityInfoState {
     // Defined here                        //
     /////////////////////////////////////////
     AK_FORCE_INLINE ProximityInfoState()
-            : mProximityInfo(0), mMaxPointToKeyLength(0.0f), mAverageSpeed(0.0f),
+            : mProximityInfo(nullptr), mMaxPointToKeyLength(0.0f), mAverageSpeed(0.0f),
               mHasTouchPositionCorrectionData(false), mMostCommonKeyWidthSquare(0),
               mKeyCount(0), mCellHeight(0), mCellWidth(0), mGridHeight(0), mGridWidth(0),
               mIsContinuousSuggestionPossible(false), mHasBeenUpdatedByGeometricInput(false),
               mSampledInputXs(), mSampledInputYs(), mSampledTimes(), mSampledInputIndice(),
               mSampledLengthCache(), mBeelineSpeedPercentiles(),
               mSampledNormalizedSquaredLengthCache(), mSpeedRates(), mDirections(),
-              mCharProbabilities(), mSampledNearKeySets(), mSampledSearchKeySets(),
-              mSampledSearchKeyVectors(), mTouchPositionCorrectionEnabled(false),
-              mSampledInputSize(0), mMostProbableStringProbability(0.0f) {
+              mCharProbabilities(), mSampledSearchKeySets(), mSampledSearchKeyVectors(),
+              mTouchPositionCorrectionEnabled(false), mSampledInputSize(0),
+              mMostProbableStringProbability(0.0f) {
         memset(mInputProximities, 0, sizeof(mInputProximities));
         memset(mPrimaryInputWord, 0, sizeof(mPrimaryInputWord));
         memset(mMostProbableString, 0, sizeof(mMostProbableString));
@@ -64,6 +64,8 @@ class ProximityInfoState {
     inline int getPrimaryCodePointAt(const int index) const {
         return getProximityCodePointsAt(index)[0];
     }
+
+    int getPrimaryOriginalCodePointAt(const int index) const;
 
     inline bool sameAsTyped(const int *word, int length) const {
         if (length != mSampledInputSize) {
@@ -104,10 +106,6 @@ class ProximityInfoState {
             return true;
         }
         return false;
-    }
-
-    inline const int *getPrimaryInputWord() const {
-        return mPrimaryInputWord;
     }
 
     inline bool touchPositionCorrectionEnabled() const {
@@ -153,10 +151,6 @@ class ProximityInfoState {
             const bool checkProximityChars, int *proximityIndex = 0) const;
 
     ProximityType getProximityTypeG(const int index, const int codePoint) const;
-
-    const std::vector<int> *getSearchKeyVector(const int index) const {
-        return &mSampledSearchKeyVectors[index];
-    }
 
     float getSpeedRate(const int index) const {
         return mSpeedRates[index];
@@ -221,17 +215,13 @@ class ProximityInfoState {
     std::vector<float> mSpeedRates;
     std::vector<float> mDirections;
     // probabilities of skipping or mapping to a key for each point.
-    std::vector<hash_map_compat<int, float> > mCharProbabilities;
-    // The vector for the key code set which holds nearby keys for each sampled input point
-    // 1. Used to calculate the probability of the key
-    // 2. Used to calculate mSampledSearchKeySets
-    std::vector<ProximityInfoStateUtils::NearKeycodesSet> mSampledNearKeySets;
+    std::vector<std::unordered_map<int, float>> mCharProbabilities;
     // The vector for the key code set which holds nearby keys of some trailing sampled input points
     // for each sampled input point. These nearby keys contain the next characters which can be in
     // the dictionary. Specifically, currently we are looking for keys nearby trailing sampled
     // inputs including the current input point.
     std::vector<ProximityInfoStateUtils::NearKeycodesSet> mSampledSearchKeySets;
-    std::vector<std::vector<int> > mSampledSearchKeyVectors;
+    std::vector<std::vector<int>> mSampledSearchKeyVectors;
     bool mTouchPositionCorrectionEnabled;
     int mInputProximities[MAX_PROXIMITY_CHARS_SIZE * MAX_WORD_LENGTH];
     int mSampledInputSize;

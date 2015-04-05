@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+** Telugu KaChaTaThaPa layout
+** Author: Jishnu Mohan <jishnu7@gmail.com>
+** Copyright © 2014 Jishnu Mohan
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res-auto"
+ >
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+            >
+            <!-- ణ - TELUGU LETTER NNA -->
+            <Key
+                latin:keySpec="&#x0C23;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ఞ - TELUGU LETTER NYA -->
+            <Key
+                latin:keySpec="&#x0C1E;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- ఁ - TELUGU SIGN CANDRABINDU -->
+            <Key
+                latin:keySpec="&#x0C01;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- వ - TELUGU LETTER VA -->
+            <Key
+                latin:keySpec="&#x0C35;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- ఱ - TELUGU LETTER RRA -->
+            <Key
+                latin:keySpec="&#x0C31;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- ళ - TELUGU LETTER LLA -->
+            <Key
+                latin:keySpec="&#x0C33;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- శ - TELUGU LETTER SHA -->
+            <Key
+                latin:keySpec="&#x0C36;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- ష - TELUGU LETTER SSA -->
+            <Key
+                latin:keySpec="&#x0C37;"
+                latin:keyLabelFlags="fontNormal" />
+        </case>
+
+        <default>
+            <!-- న - TELUGU LETTER NA -->
+            <Key
+                latin:keySpec="&#x0C28;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- ఙ - TELUGU LETTER NGA -->
+            <Key
+                latin:keySpec="&#x0C19;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- మ - TELUGU LETTER MA -->
+            <Key
+                latin:keySpec="&#x0C2E;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- య - TELUGU LETTER YA -->
+            <Key
+                latin:keySpec="&#x0C2F;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- ర - TELUGU LETTER RA -->
+            <Key
+                latin:keySpec="&#x0C30;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- ల - TELUGU LETTER LA -->
+            <Key
+                latin:keySpec="&#x0C32;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- హ - TELUGU LETTER HA -->
+            <Key
+                latin:keySpec="&#x0C39;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- స - TELUGU LETTER SA -->
+            <Key
+                latin:keySpec="&#x0C38;"
+                latin:moreKeys="&#x0C15;&#x0C4D;&#x0C37;"
+                latin:keyHintLabel="&#x0C15;&#x0C4D;&#x0C37;"
+                latin:keyLabelFlags="fontNormal" />
+        </default>
+    </switch>
+</merge>

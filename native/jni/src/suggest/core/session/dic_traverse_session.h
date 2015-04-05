@@ -17,7 +17,6 @@
 #ifndef LATINIME_DIC_TRAVERSE_SESSION_H
 #define LATINIME_DIC_TRAVERSE_SESSION_H
 
-#include <stdint.h>
 #include <vector>
 
 #include "defines.h"
@@ -30,6 +29,7 @@ namespace latinime {
 
 class Dictionary;
 class DictionaryStructureWithBufferPolicy;
+class PrevWordsInfo;
 class ProximityInfo;
 class SuggestOptions;
 
@@ -45,32 +45,25 @@ class DicTraverseSession {
                 dictSize >= DICTIONARY_SIZE_THRESHOLD_TO_USE_LARGE_CACHE_FOR_SUGGESTION);
     }
 
-    static AK_FORCE_INLINE void initSessionInstance(DicTraverseSession *traverseSession,
-            const Dictionary *const dictionary, const int *prevWord, const int prevWordLength,
-            const SuggestOptions *const suggestOptions) {
-        if (traverseSession) {
-            DicTraverseSession *tSession = static_cast<DicTraverseSession *>(traverseSession);
-            tSession->init(dictionary, prevWord, prevWordLength, suggestOptions);
-        }
-    }
-
     static AK_FORCE_INLINE void releaseSessionInstance(DicTraverseSession *traverseSession) {
         delete traverseSession;
     }
 
     AK_FORCE_INLINE DicTraverseSession(JNIEnv *env, jstring localeStr, bool usesLargeCache)
-            : mPrevWordPos(NOT_A_DICT_POS), mProximityInfo(0),
-              mDictionary(0), mSuggestOptions(0), mDicNodesCache(usesLargeCache),
-              mMultiBigramMap(), mInputSize(0), mPartiallyCommited(false), mMaxPointerCount(1),
+            : mProximityInfo(nullptr), mDictionary(nullptr), mSuggestOptions(nullptr),
+              mDicNodesCache(usesLargeCache), mMultiBigramMap(), mInputSize(0), mMaxPointerCount(1),
               mMultiWordCostMultiplier(1.0f) {
         // NOTE: mProximityInfoStates is an array of instances.
         // No need to initialize it explicitly here.
+        for (size_t i = 0; i < NELEMS(mPrevWordsPtNodePos); ++i) {
+            mPrevWordsPtNodePos[i] = NOT_A_DICT_POS;
+        }
     }
 
     // Non virtual inline destructor -- never inherit this class
     AK_FORCE_INLINE ~DicTraverseSession() {}
 
-    void init(const Dictionary *dictionary, const int *prevWord, int prevWordLength,
+    void init(const Dictionary *dictionary, const PrevWordsInfo *const prevWordsInfo,
             const SuggestOptions *const suggestOptions);
     // TODO: Remove and merge into init
     void setupForGetSuggestions(const ProximityInfo *pInfo, const int *inputCodePoints,
@@ -86,19 +79,13 @@ class DicTraverseSession {
     //--------------------
     const ProximityInfo *getProximityInfo() const { return mProximityInfo; }
     const SuggestOptions *getSuggestOptions() const { return mSuggestOptions; }
-    int getPrevWordPos() const { return mPrevWordPos; }
-    // TODO: REMOVE
-    void setPrevWordPos(int pos) { mPrevWordPos = pos; }
-    // TODO: Use proper parameter when changed
-    int getDicRootPos() const { return 0; }
+    const int *getPrevWordsPtNodePos() const { return mPrevWordsPtNodePos; }
     DicNodesCache *getDicTraverseCache() { return &mDicNodesCache; }
     MultiBigramMap *getMultiBigramMap() { return &mMultiBigramMap; }
     const ProximityInfoState *getProximityInfoState(int id) const {
         return &mProximityInfoStates[id];
     }
     int getInputSize() const { return mInputSize; }
-    void setPartiallyCommited() { mPartiallyCommited = true; }
-    bool isPartiallyCommited() const { return mPartiallyCommited; }
 
     bool isOnlyOnePointerUsed(int *pointerId) const {
         // Not in the dictionary word
@@ -119,26 +106,13 @@ class DicTraverseSession {
         return true;
     }
 
-    void getSearchKeys(const DicNode *node, std::vector<int> *const outputSearchKeyVector) const {
-        for (int i = 0; i < MAX_POINTER_COUNT_G; ++i) {
-            if (!mProximityInfoStates[i].isUsed()) {
-                continue;
-            }
-            const int pointerId = node->getInputIndex(i);
-            const std::vector<int> *const searchKeyVector =
-                    mProximityInfoStates[i].getSearchKeyVector(pointerId);
-            outputSearchKeyVector->insert(outputSearchKeyVector->end(), searchKeyVector->begin(),
-                    searchKeyVector->end());
-        }
-    }
-
-    ProximityType getProximityTypeG(const DicNode *const node, const int childCodePoint) const {
+    ProximityType getProximityTypeG(const DicNode *const dicNode, const int childCodePoint) const {
         ProximityType proximityType = UNRELATED_CHAR;
         for (int i = 0; i < MAX_POINTER_COUNT_G; ++i) {
             if (!mProximityInfoStates[i].isUsed()) {
                 continue;
             }
-            const int pointerId = node->getInputIndex(i);
+            const int pointerId = dicNode->getInputIndex(i);
             proximityType = mProximityInfoStates[i].getProximityTypeG(pointerId, childCodePoint);
             ASSERT(proximityType == UNRELATED_CHAR || proximityType == MATCH_CHAR);
             // TODO: Make this more generic
@@ -192,7 +166,7 @@ class DicTraverseSession {
             const int *const inputYs, const int *const times, const int *const pointerIds,
             const int inputSize, const float maxSpatialDistance, const int maxPointerCount);
 
-    int mPrevWordPos;
+    int mPrevWordsPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
     const ProximityInfo *mProximityInfo;
     const Dictionary *mDictionary;
     const SuggestOptions *mSuggestOptions;
@@ -203,7 +177,6 @@ class DicTraverseSession {
     ProximityInfoState mProximityInfoStates[MAX_POINTER_COUNT_G];
 
     int mInputSize;
-    bool mPartiallyCommited;
     int mMaxPointerCount;
 
     /////////////////////////////////

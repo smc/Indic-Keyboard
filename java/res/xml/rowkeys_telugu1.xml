@@ -29,51 +29,51 @@
             <!-- U+0C9F: "ಠ" kannada TTA
                  +0CA0: "ಠ   Kannada TTHA  -->
             <Key
-                latin:keyLabel="&#x0C20;"
+                latin:keySpec="&#x0C20;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0CA1: "ಡ" kannada DA
                  +0CA2: "ಢ"   Kannada DHA  -->
             <Key
-                latin:keyLabel="&#x0C22;"
+                latin:keySpec="&#x0C22;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- E: matras, short E, long E
                  Vowels and Consonats  -->
             <Key
-                latin:keyLabel="&#x0C47;"
+                latin:keySpec="&#x0C47;"
                 latin:moreKeys="&#x0C0F;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- R: ra, vocalic R matra, vocalic R, RRA
                  Vowels and Consonats  -->
             <Key
-                latin:keyLabel="&#x0C43;"
+                latin:keySpec="&#x0C43;"
                 latin:moreKeys="&#x0C31;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- T: dental ta, tha -->
             <Key
-                latin:keyLabel="&#x0C25;"
+                latin:keySpec="&#x0C25;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- // Y: ya, ai matra, ai -->
             <Key
-                latin:keyLabel="&#x0C48;"
+                latin:keySpec="&#x0C48;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- // U: matras, u, uu -->
             <Key
-                latin:keyLabel="&#x0C42;"
+                latin:keySpec="&#x0C42;"
                 latin:moreKeys="&#x0C0A;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- // // I: matras, i, ii -->
             <Key
-                latin:keyLabel="&#x0C40;"
+                latin:keySpec="&#x0C40;"
                 latin:moreKeys="&#x0C08;"
                 latin:keyLabelFlags="fontNormal" />
             <!--  // O: matras, short o, long o -->
             <Key
-                latin:keyLabel="&#x0C4B;"
+                latin:keySpec="&#x0C4B;"
                 latin:moreKeys="&#x0C13;"
                 latin:keyLabelFlags="fontNormal" />
             <!--  // O: P: pa, pha -->
             <Key
-                latin:keyLabel="&#x0C2B;"
+                latin:keySpec="&#x0C2B;"
                 latin:keyLabelFlags="fontNormal" />
         </case>
 
@@ -81,52 +81,52 @@
             <!-- U+0C9F: "ಠ" kannada TTA
                  +0CA0: "ಠ   Kannada TTHA  -->
             <Key
-                latin:keyLabel="&#x0C1F;"
+                latin:keySpec="&#x0C1F;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- U+0CA1: "ಡ" kannada DA
                  +0CA2: "ಢ"   Kannada DHA  -->
             <Key
-                latin:keyLabel="&#x0C21;"
+                latin:keySpec="&#x0C21;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- E: matras, short E, long E
                  Vowels and Consonats  -->
             <Key
-                latin:keyLabel="&#x0C46;"
+                latin:keySpec="&#x0C46;"
                 latin:moreKeys="&#x0C0E;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- R: ra, vocalic R matra, vocalic R, RRA
                  Vowels and Consonats  -->
             <Key
-                latin:keyLabel="&#x0C30;"
+                latin:keySpec="&#x0C30;"
                 latin:moreKeys="&#x0C0B;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- T: dental ta, tha -->
             <Key
-                latin:keyLabel="&#x0C24;"
+                latin:keySpec="&#x0C24;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- // Y: ya, ai matra, ai -->
             <Key
-                latin:keyLabel="&#x0C2F;"
+                latin:keySpec="&#x0C2F;"
                 latin:moreKeys="&#x0C10;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- // U: matras, u, uu -->
             <Key
-                latin:keyLabel="&#x0C41;"
+                latin:keySpec="&#x0C41;"
                 latin:moreKeys="&#x0C09;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- // // I: matras, i, ii -->
             <Key
-                latin:keyLabel="&#x0C3F;"
+                latin:keySpec="&#x0C3F;"
                 latin:moreKeys="&#x0C07;"
                 latin:keyLabelFlags="fontNormal" />
             <!--  // O: matras, short o, long o -->
             <Key
-                latin:keyLabel="&#x0C4A;"
+                latin:keySpec="&#x0C4A;"
                 latin:moreKeys="&#x0C12;"
                 latin:keyLabelFlags="fontNormal" />
             <!--  // O: P: pa, pha -->
             <Key
-                latin:keyLabel="&#x0C2A;"
+                latin:keySpec="&#x0C2A;"
                 latin:keyLabelFlags="fontNormal" />
         </default>
     </switch>

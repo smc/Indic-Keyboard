@@ -35,7 +35,13 @@
 // Must be equal to ProximityInfo.MAX_PROXIMITY_CHARS_SIZE in Java
 #define MAX_PROXIMITY_CHARS_SIZE 16
 #define ADDITIONAL_PROXIMITY_CHAR_DELIMITER_CODE 2
-#define NELEMS(x) (sizeof(x) / sizeof((x)[0]))
+
+// TODO: Use size_t instead of int.
+// Disclaimer: You will see a compile error if you use this macro against a variable-length array.
+// Sorry for the inconvenience. It isn't supported.
+template <typename T, int N>
+char (&ArraySizeHelper(T (&array)[N]))[N];
+#define NELEMS(x) (sizeof(ArraySizeHelper(x)))
 
 AK_FORCE_INLINE static int intArrayToCharArray(const int *const source, const int sourceSize,
         char *dest, const int destSize) {
@@ -87,14 +93,24 @@ AK_FORCE_INLINE static int intArrayToCharArray(const int *const source, const in
 }
 
 #if defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
+#if defined(__ANDROID__)
 #include <android/log.h>
+#endif // defined(__ANDROID__)
 #ifndef LOG_TAG
 #define LOG_TAG "LatinIME: "
 #endif // LOG_TAG
+
+#if defined(HOST_TOOL)
+#include <stdio.h>
+#define AKLOGE(fmt, ...) printf(fmt "\n", ##__VA_ARGS__)
+#define AKLOGI(fmt, ...) printf(fmt "\n", ##__VA_ARGS__)
+#else // defined(HOST_TOOL)
 #define AKLOGE(fmt, ...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, fmt, ##__VA_ARGS__)
 #define AKLOGI(fmt, ...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##__VA_ARGS__)
+#endif // defined(HOST_TOOL)
 
-#define DUMP_RESULT(words, frequencies) do { dumpResult(words, frequencies); } while (0)
+#define DUMP_SUGGESTION(words, frequencies, index, score) \
+        do { dumpWordInfo(words, frequencies, index, score); } while (0)
 #define DUMP_WORD(word, length) do { dumpWord(word, length); } while (0)
 #define INTS_TO_CHARS(input, length, output, outlength) do { \
         intArrayToCharArray(input, length, output, outlength); } while (0)
@@ -106,14 +122,6 @@ static inline void dumpWordInfo(const int *word, const int length, const int ran
     if (N > 1) {
         AKLOGI("%2d [ %s ] (%d)", rank, charBuf, probability);
     }
-}
-
-static inline void dumpResult(const int *outWords, const int *frequencies) {
-    AKLOGI("--- DUMP RESULT ---------");
-    for (int i = 0; i < MAX_RESULTS; ++i) {
-        dumpWordInfo(&outWords[i * MAX_WORD_LENGTH], MAX_WORD_LENGTH, i, frequencies[i]);
-    }
-    AKLOGI("-------------------------");
 }
 
 static AK_FORCE_INLINE void dumpWord(const int *word, const int length) {
@@ -156,7 +164,7 @@ static inline void showStackTrace() {
 #else // defined(FLAG_DO_PROFILE) || defined(FLAG_DBG)
 #define AKLOGE(fmt, ...)
 #define AKLOGI(fmt, ...)
-#define DUMP_RESULT(words, frequencies)
+#define DUMP_SUGGESTION(words, frequencies, index, score)
 #define DUMP_WORD(word, length)
 #undef DO_ASSERT_TEST
 #define ASSERT(success)
@@ -285,23 +293,18 @@ static inline void prof_out(void) {
 #define M_PI_F 3.14159265f
 #define MAX_PERCENTILE 100
 
-// Number of base-10 digits in the largest integer + 1 to leave room for a zero terminator.
-// As such, this is the maximum number of characters will be needed to represent an int as a
-// string, including the terminator; this is used as the size of a string buffer large enough to
-// hold any value that is intended to fit in an integer, e.g. in the code that reads the header
-// of the binary dictionary where a {key,value} string pair scheme is used.
-#define LARGEST_INT_DIGIT_COUNT 11
-
 #define NOT_A_CODE_POINT (-1)
 #define NOT_A_DISTANCE (-1)
 #define NOT_A_COORDINATE (-1)
 #define NOT_AN_INDEX (-1)
 #define NOT_A_PROBABILITY (-1)
 #define NOT_A_DICT_POS (S_INT_MIN)
+#define NOT_A_TIMESTAMP (-1)
+#define NOT_A_LANGUAGE_WEIGHT (-1.0f)
 
 // A special value to mean the first word confidence makes no sense in this case,
 // e.g. this is not a multi-word suggestion.
-#define NOT_A_FIRST_WORD_CONFIDENCE (S_INT_MAX)
+#define NOT_A_FIRST_WORD_CONFIDENCE (S_INT_MIN)
 // How high the confidence needs to be for us to auto-commit. Arbitrary.
 // This needs to be the same as CONFIDENCE_FOR_AUTO_COMMIT in BinaryDictionary.java
 #define CONFIDENCE_FOR_AUTO_COMMIT (1000000)
@@ -315,13 +318,12 @@ static inline void prof_out(void) {
 #define KEYCODE_SPACE ' '
 #define KEYCODE_SINGLE_QUOTE '\''
 #define KEYCODE_HYPHEN_MINUS '-'
+// Code point to indicate beginning-of-sentence. This is not in the code point space of unicode.
+#define CODE_POINT_BEGINNING_OF_SENTENCE 0x110000
 
 #define SUGGEST_INTERFACE_OUTPUT_SCALE 1000000.0f
 #define MAX_PROBABILITY 255
 #define MAX_BIGRAM_ENCODED_PROBABILITY 15
-
-// Assuming locale strings such as en_US, sr-Latn etc.
-#define MAX_LOCALE_STRING_LENGTH 10
 
 // Max value for length, distance and probability which are used in weighting
 // TODO: Remove
@@ -334,19 +336,24 @@ static inline void prof_out(void) {
 #define MAX_POINTER_COUNT 1
 #define MAX_POINTER_COUNT_G 2
 
-template<typename T> AK_FORCE_INLINE const T &min(const T &a, const T &b) { return a < b ? a : b; }
-template<typename T> AK_FORCE_INLINE const T &max(const T &a, const T &b) { return a > b ? a : b; }
+// (MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1)-gram is supported.
+#define MAX_PREV_WORD_COUNT_FOR_N_GRAM 1
 
-// DEBUG
-#define INPUTLENGTH_FOR_DEBUG (-1)
-#define MIN_OUTPUT_INDEX_FOR_DEBUG (-1)
+#define DISALLOW_DEFAULT_CONSTRUCTOR(TypeName) \
+  TypeName() = delete
+
+#define DISALLOW_COPY_CONSTRUCTOR(TypeName) \
+  TypeName(const TypeName&) = delete
+
+#define DISALLOW_ASSIGNMENT_OPERATOR(TypeName) \
+  void operator=(const TypeName&) = delete
 
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
-  TypeName(const TypeName&);               \
-  void operator=(const TypeName&)
+  DISALLOW_COPY_CONSTRUCTOR(TypeName);     \
+  DISALLOW_ASSIGNMENT_OPERATOR(TypeName)
 
 #define DISALLOW_IMPLICIT_CONSTRUCTORS(TypeName) \
-  TypeName();                                    \
+  DISALLOW_DEFAULT_CONSTRUCTOR(TypeName);        \
   DISALLOW_COPY_AND_ASSIGN(TypeName)
 
 // Used as a return value for character comparison
@@ -392,24 +399,4 @@ typedef enum {
     // Create new word with space substitution
     CT_NEW_WORD_SPACE_SUBSTITUTION,
 } CorrectionType;
-
-// ErrorType is mainly decided by CorrectionType but it is also depending on if
-// the correction has really been performed or not.
-typedef enum {
-    // Substitution, omission and transposition
-    ET_EDIT_CORRECTION,
-    // Proximity error
-    ET_PROXIMITY_CORRECTION,
-    // Completion
-    ET_COMPLETION,
-    // New word
-    // TODO: Remove.
-    // A new word error should be an edit correction error or a proximity correction error.
-    ET_NEW_WORD,
-    // Treat error as an intentional omission when the CorrectionType is omission and the node can
-    // be intentional omission.
-    ET_INTENTIONAL_OMISSION,
-    // Not treated as an error. Tracked for checking exact match
-    ET_NOT_AN_ERROR
-} ErrorType;
 #endif // LATINIME_DEFINES_H

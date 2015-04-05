@@ -23,26 +23,23 @@ namespace latinime {
 
 class DicNode;
 class DicTraverseSession;
+class SuggestionResults;
 
 // This class basically tweaks suggestions and distances apart from CompoundDistance
 class Scoring {
  public:
     virtual int calculateFinalScore(const float compoundDistance, const int inputSize,
-            const bool forceCommit) const = 0;
-    virtual bool getMostProbableString(const DicTraverseSession *const traverseSession,
-            const int terminalSize, const float languageWeight, int *const outputCodePoints,
-            int *const type, int *const freq) const = 0;
-    virtual void safetyNetForMostProbableString(const int terminalSize,
-            const int maxScore, int *const outputCodePoints, int *const frequencies) const = 0;
-    // TODO: Make more generic
-    virtual void searchWordWithDoubleLetter(DicNode *terminals, const int terminalSize,
-            int *doubleLetterTerminalIndex, DoubleLetterLevel *doubleLetterLevel) const = 0;
+            const ErrorTypeUtils::ErrorType containedErrorTypes, const bool forceCommit,
+            const bool boostExactMatches) const = 0;
+    virtual void getMostProbableString(const DicTraverseSession *const traverseSession,
+            const float languageWeight, SuggestionResults *const outSuggestionResults) const = 0;
     virtual float getAdjustedLanguageWeight(DicTraverseSession *const traverseSession,
             DicNode *const terminals, const int size) const = 0;
-    virtual float getDoubleLetterDemotionDistanceCost(const int terminalIndex,
-            const int doubleLetterTerminalIndex,
-            const DoubleLetterLevel doubleLetterLevel) const = 0;
-    virtual bool doesAutoCorrectValidWord() const = 0;
+    virtual float getDoubleLetterDemotionDistanceCost(
+            const DicNode *const terminalDicNode) const = 0;
+    virtual bool autoCorrectsToMultiWordSuggestionIfTop() const = 0;
+    virtual bool sameAsTyped(const DicTraverseSession *const traverseSession,
+            const DicNode *const dicNode) const = 0;
 
  protected:
     Scoring() {}

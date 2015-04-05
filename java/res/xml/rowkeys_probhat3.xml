@@ -27,61 +27,61 @@
         latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
         >
             <Key
-                latin:keyLabel="&#x09AF;"
+                latin:keySpec="&#x09AF;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x09DD;"
+                latin:keySpec="&#x09DD;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x099B;"
+                latin:keySpec="&#x099B;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x098B;"
+                latin:keySpec="&#x098B;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x09AD;"
+                latin:keySpec="&#x09AD;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x09A3;"
+                latin:keySpec="&#x09A3;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x0999;"
+                latin:keySpec="&#x0999;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x09C3;"
+                latin:keySpec="&#x09C3;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x0981;"
+                latin:keySpec="&#x0981;"
                 latin:keyLabelFlags="fontNormal" />
         </case>
 
         <default>
             <Key
-                latin:keyLabel="&#x09DF;"
+                latin:keySpec="&#x09DF;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x09B6;"
+                latin:keySpec="&#x09B6;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x099A;"
+                latin:keySpec="&#x099A;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x0986;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0986;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="&#x09AC;"
+                latin:keySpec="&#x09AC;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x09A8;"
+                latin:keySpec="&#x09A8;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x09AE;"
+                latin:keySpec="&#x09AE;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x0964;"
+                latin:keySpec="&#x0964;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x09CD;"
+                latin:keySpec="&#x09CD;"
                 latin:keyLabelFlags="fontNormal" />
          </default>
     </switch>

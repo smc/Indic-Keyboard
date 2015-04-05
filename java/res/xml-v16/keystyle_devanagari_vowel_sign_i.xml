@@ -26,23 +26,31 @@
     xmlns:latin="http://schemas.android.com/apk/res-auto"
 >
     <switch>
-        <case
-            latin:keyboardLayoutSet="hindi"
-        >
+        <case latin:keyboardLayoutSet="hindi">
             <!-- U+093F/U+0902: "िं" DEVANAGARI VOWEL SIGN I/DEVANAGARI SIGN ANUSVARA -->
             <key-style
                 latin:styleName="moreKeysDevanagariVowelSignI"
                 latin:moreKeys="&#x093F;&#x0902;" />
         </case>
+        <case latin:keyboardLayoutSet="hindi_compact">
+            <!-- U+093F: "ि" DEVANAGARI VOWEL SIGN I -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignI"
+                latin:moreKeys="&#x093F;" />
+        </case>
+        <case latin:keyboardLayoutSet="marathi">
+            <!-- U+0907: "इ" DEVANAGARI LETTER I -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignI"
+                latin:moreKeys="&#x0907;" />
+        </case>
         <default>
-             <key-style
-                latin:styleName="moreKeysDevanagariVowelSignI" />
+            <key-style latin:styleName="moreKeysDevanagariVowelSignI" />
         </default>
     </switch>
     <!-- U+093F: "ि" DEVANAGARI VOWEL SIGN I -->
     <key-style
         latin:styleName="baseKeyDevanagariVowelSignI"
         latin:parentStyle="moreKeysDevanagariVowelSignI"
-        latin:keyLabel="&#x093F;"
-        latin:keyLabelFlags="fontNormal" />
+        latin:keySpec="&#x093F;" />
 </merge>

@@ -27,136 +27,136 @@
         >
             <!--Q ਔ GURMUKHI LETTER AU-->
             <Key
-                latin:keyLabel="&#x0A14;"
+                latin:keySpec="&#x0A14;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--W ਐ GURMUKHI LETTER AI-->
             <Key
-                latin:keyLabel="&#x0A10;"
+                latin:keySpec="&#x0A10;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--E ਆ GURMUKHI LETTER AA-->
             <Key
-                latin:keyLabel="&#x0A06;"
+                latin:keySpec="&#x0A06;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--R ਈ GURMUKHI LETTER II-->
             <Key
-                latin:keyLabel="&#x0A08;"
+                latin:keySpec="&#x0A08;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--T ਊ GURMUKHI LETTER UU-->
             <Key
-                latin:keyLabel="&#x0A0A;"
+                latin:keySpec="&#x0A0A;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--Y ਭ GURMUKHI LETTER BHA-->
             <Key
-                latin:keyLabel="&#x0A2D;"
+                latin:keySpec="&#x0A2D;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--U ਙ GURMUKHI LETTER NGA-->
             <Key
-                latin:keyLabel="&#x0A19;"
+                latin:keySpec="&#x0A19;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--I ਘ GURMUKHI LETTER GHA-->
             <Key
-                latin:keyLabel="&#x0A18;"
+                latin:keySpec="&#x0A18;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--O ਧ GURMUKHI LETTER DHA-->
             <Key
-                latin:keyLabel="&#x0A27;"
+                latin:keySpec="&#x0A27;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--P ਝ GURMUKHI LETTER JHA-->
             <Key
-                latin:keyLabel="&#x0A1D;"
+                latin:keySpec="&#x0A1D;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--\{ ਢ GURMUKHI LETTER DDHA-->
             <Key
-                latin:keyLabel="&#x0A22;"
+                latin:keySpec="&#x0A22;"
                 latin:moreKeys="{"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--\} ਞ GURMUKHI LETTER NYA-->
             <Key
-                latin:keyLabel="&#x0A1E;"
+                latin:keySpec="&#x0A1E;"
                 latin:moreKeys="}"
                 latin:keyLabelFlags="fontNormal" />
 
             <Key
-                latin:keyLabel="|"
+                latin:keySpec="|"
                 latin:keyLabelFlags="fontNormal" />
         </case>
 
         <default>
             <!--q ੌ GURMUKHI VOWEL SIGN AU-->
             <Key
-                latin:keyLabel="&#x0A4C;"
+                latin:keySpec="&#x0A4C;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--w ੈ GURMUKHI VOWEL SIGN AI-->
             <Key
-                latin:keyLabel="&#x0A48;"
+                latin:keySpec="&#x0A48;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--e ਾ GURMUKHI VOWEL SIGN AA-->
             <Key
-                latin:keyLabel="&#x0A3E;"
+                latin:keySpec="&#x0A3E;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--r ੀ GURMUKHI VOWEL SIGN II-->
             <Key
-                latin:keyLabel="&#x0A40;"
+                latin:keySpec="&#x0A40;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--t ੂ GURMUKHI VOWEL SIGN UU-->
             <Key
-                latin:keyLabel="&#x0A42;"
+                latin:keySpec="&#x0A42;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--y ਬ GURMUKHI LETTER BA-->
             <Key
-                latin:keyLabel="&#x0A2C;"
+                latin:keySpec="&#x0A2C;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--u ਹ GURMUKHI LETTER HA-->
             <Key
-                latin:keyLabel="&#x0A39;"
+                latin:keySpec="&#x0A39;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--i ਗ GURMUKHI LETTER GA-->
             <Key
-                latin:keyLabel="&#x0A17;"
+                latin:keySpec="&#x0A17;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--o ਦ GURMUKHI LETTER DA-->
             <Key
-                latin:keyLabel="&#x0A26;"
+                latin:keySpec="&#x0A26;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--p ਜ GURMUKHI LETTER JA-->
             <Key
-                latin:keyLabel="&#x0A1C;"
+                latin:keySpec="&#x0A1C;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--\[ ਡ GURMUKHI LETTER DDA-->
             <Key
-                latin:keyLabel="&#x0A21;"
+                latin:keySpec="&#x0A21;"
                 latin:moreKeys="["
                 latin:keyLabelFlags="fontNormal" />
 
             <!--\] ਼ GURMUKHI SIGN NUKTA-->
             <Key
-                latin:keyLabel="&#x0A3C;"
+                latin:keySpec="&#x0A3C;"
                 latin:moreKeys="]"
                 latin:keyLabelFlags="fontNormal" />
 
             <Key
-                latin:keyLabel="\\"
+                latin:keySpec="\\"
                 latin:keyLabelFlags="fontNormal" />
          </default>
     </switch>

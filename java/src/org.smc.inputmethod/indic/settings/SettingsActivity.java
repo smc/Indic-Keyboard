@@ -16,13 +16,38 @@
 
 package org.smc.inputmethod.indic.settings;
 
-import org.smc.inputmethod.indic.utils.FragmentUtils;
-
+import android.app.ActionBar;
 import android.content.Intent;
+import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.view.MenuItem;
+
+import com.android.inputmethod.latin.utils.FragmentUtils;
 
 public final class SettingsActivity extends PreferenceActivity {
+    public static final String EXTRA_SHOW_HOME_AS_UP = "show_home_as_up";
     private static final String DEFAULT_FRAGMENT = SettingsFragment.class.getName();
+    private boolean mShowHomeAsUp;
+
+    @Override
+    protected void onCreate(final Bundle savedState) {
+        super.onCreate(savedState);
+        final ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            mShowHomeAsUp = getIntent().getBooleanExtra(EXTRA_SHOW_HOME_AS_UP, true);
+            actionBar.setDisplayHomeAsUpEnabled(mShowHomeAsUp);
+            actionBar.setHomeButtonEnabled(mShowHomeAsUp);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        if (mShowHomeAsUp && item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public Intent getIntent() {
@@ -35,9 +60,8 @@ public final class SettingsActivity extends PreferenceActivity {
         return intent;
     }
 
-    // TODO: Uncomment the override annotation once we start using SDK version 19.
-    // @Override
-    public boolean isValidFragment(String fragmentName) {
+    @Override
+    public boolean isValidFragment(final String fragmentName) {
         return FragmentUtils.isValidFragment(fragmentName);
     }
 }

@@ -16,8 +16,6 @@
 
 package org.smc.inputmethod.indic;
 
-import org.smc.inputmethod.indic.personalization.AccountUtils;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
@@ -28,13 +26,22 @@ import android.os.SystemClock;
 import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
-import android.text.TextUtils;
 import android.util.Log;
 
-import org.smc.inputmethod.indic.utils.StringUtils;
-
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+// Package name change //
+import com.android.inputmethod.latin.BinaryDictionary;
+import com.android.inputmethod.latin.PrevWordsInfo;
+// Package name change //
+
+import org.smc.inputmethod.annotations.UsedForTesting;
+import org.smc.inputmethod.indic.personalization.AccountUtils;
+import com.android.inputmethod.latin.utils.ExecutorUtils;
+import com.android.inputmethod.latin.utils.StringUtils;
 
 public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
 
@@ -44,7 +51,8 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     private static final String TAG = ContactsBinaryDictionary.class.getSimpleName();
     private static final String NAME = "contacts";
 
-    private static boolean DEBUG = false;
+    private static final boolean DEBUG = false;
+    private static final boolean DEBUG_DUMP = false;
 
     /**
      * Frequency for contacts information into the dictionary
@@ -58,10 +66,10 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     private static final int INDEX_NAME = 1;
 
     /** The number of contacts in the most recent dictionary rebuild. */
-    static private int sContactCountAtLastRebuild = 0;
+    private int mContactCountAtLastRebuild = 0;
 
-    /** The locale for this contacts dictionary. Controls name bigram predictions. */
-    public final Locale mLocale;
+    /** The hash code of ArrayList of contacts names in the most recent dictionary rebuild. */
+    private int mHashCodeAtLastRebuild = 0;
 
     private ContentObserver mObserver;
 
@@ -70,34 +78,38 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
      */
     private final boolean mUseFirstLastBigrams;
 
-    public ContactsBinaryDictionary(final Context context, final Locale locale) {
-        super(context, getFilenameWithLocale(NAME, locale.toString()), Dictionary.TYPE_CONTACTS,
-                false /* isUpdatable */);
-        mLocale = locale;
+    protected ContactsBinaryDictionary(final Context context, final Locale locale,
+            final File dictFile, final String name) {
+        super(context, getDictName(name, locale, dictFile), locale, Dictionary.TYPE_CONTACTS,
+                dictFile);
         mUseFirstLastBigrams = useFirstLastBigramsForLocale(locale);
         registerObserver(context);
+        reloadDictionaryIfRequired();
+    }
 
-        // Load the current binary dictionary from internal storage. If no binary dictionary exists,
-        // loadDictionary will start a new thread to generate one asynchronously.
-        loadDictionary();
+    @UsedForTesting
+    public static ContactsBinaryDictionary getDictionary(final Context context, final Locale locale,
+            final File dictFile, final String dictNamePrefix) {
+        return new ContactsBinaryDictionary(context, locale, dictFile, dictNamePrefix + NAME);
     }
 
     private synchronized void registerObserver(final Context context) {
-        // Perform a managed query. The Activity will handle closing and requerying the cursor
-        // when needed.
         if (mObserver != null) return;
         ContentResolver cres = context.getContentResolver();
         cres.registerContentObserver(Contacts.CONTENT_URI, true, mObserver =
                 new ContentObserver(null) {
                     @Override
                     public void onChange(boolean self) {
-                        setRequiresReload(true);
+                        ExecutorUtils.getExecutor("Check Contacts").execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (haveContentsChanged()) {
+                                    setNeedsToRecreate();
+                                }
+                            }
+                        });
                     }
                 });
-    }
-
-    public void reopen(final Context context) {
-        registerObserver(context);
     }
 
     @Override
@@ -110,14 +122,14 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
     }
 
     @Override
-    public void loadDictionaryAsync() {
-        loadDeviceAccountsEmailAddresses();
-        loadDictionaryAsyncForUri(ContactsContract.Profile.CONTENT_URI);
+    public void loadInitialContentsLocked() {
+        loadDeviceAccountsEmailAddressesLocked();
+        loadDictionaryForUriLocked(ContactsContract.Profile.CONTENT_URI);
         // TODO: Switch this URL to the newer ContactsContract too
-        loadDictionaryAsyncForUri(Contacts.CONTENT_URI);
+        loadDictionaryForUriLocked(Contacts.CONTENT_URI);
     }
 
-    private void loadDeviceAccountsEmailAddresses() {
+    private void loadDeviceAccountsEmailAddressesLocked() {
         final List<String> accountVocabulary =
                 AccountUtils.getDeviceAccountsEmailAddresses(mContext);
         if (accountVocabulary == null || accountVocabulary.isEmpty()) {
@@ -127,29 +139,32 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
             if (DEBUG) {
                 Log.d(TAG, "loadAccountVocabulary: " + word);
             }
-            super.addWord(word, null /* shortcut */, FREQUENCY_FOR_CONTACTS, 0 /* shortcutFreq */,
-                    false /* isNotAWord */);
+            runGCIfRequiredLocked(true /* mindsBlockByGC */);
+            addUnigramLocked(word, FREQUENCY_FOR_CONTACTS, null /* shortcut */,
+                    0 /* shortcutFreq */, false /* isNotAWord */, false /* isBlacklisted */,
+                    BinaryDictionary.NOT_A_VALID_TIMESTAMP);
         }
     }
 
-    private void loadDictionaryAsyncForUri(final Uri uri) {
+    private void loadDictionaryForUriLocked(final Uri uri) {
+        Cursor cursor = null;
         try {
-            Cursor cursor = mContext.getContentResolver()
-                    .query(uri, PROJECTION, null, null, null);
-            if (cursor != null) {
-                try {
-                    if (cursor.moveToFirst()) {
-                        sContactCountAtLastRebuild = getContactCount();
-                        addWords(cursor);
-                    }
-                } finally {
-                    cursor.close();
-                }
+            cursor = mContext.getContentResolver().query(uri, PROJECTION, null, null, null);
+            if (null == cursor) {
+                return;
+            }
+            if (cursor.moveToFirst()) {
+                mContactCountAtLastRebuild = getContactCount();
+                addWordsLocked(cursor);
             }
         } catch (final SQLiteException e) {
             Log.e(TAG, "SQLiteException in the remote Contacts process.", e);
         } catch (final IllegalStateException e) {
             Log.e(TAG, "Contacts DB is having problems", e);
+        } finally {
+            if (null != cursor) {
+                cursor.close();
+            }
         }
     }
 
@@ -161,33 +176,42 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         return false;
     }
 
-    private void addWords(final Cursor cursor) {
+    private void addWordsLocked(final Cursor cursor) {
         int count = 0;
+        final ArrayList<String> names = new ArrayList<>();
         while (!cursor.isAfterLast() && count < MAX_CONTACT_COUNT) {
             String name = cursor.getString(INDEX_NAME);
             if (isValidName(name)) {
-                addName(name);
+                names.add(name);
+                addNameLocked(name);
                 ++count;
+            } else {
+                if (DEBUG_DUMP) {
+                    Log.d(TAG, "Invalid name: " + name);
+                }
             }
             cursor.moveToNext();
         }
+        mHashCodeAtLastRebuild = names.hashCode();
     }
 
     private int getContactCount() {
         // TODO: consider switching to a rawQuery("select count(*)...") on the database if
         // performance is a bottleneck.
+        Cursor cursor = null;
         try {
-            final Cursor cursor = mContext.getContentResolver().query(
-                    Contacts.CONTENT_URI, PROJECTION_ID_ONLY, null, null, null);
-            if (cursor != null) {
-                try {
-                    return cursor.getCount();
-                } finally {
-                    cursor.close();
-                }
+            cursor = mContext.getContentResolver().query(Contacts.CONTENT_URI, PROJECTION_ID_ONLY,
+                    null, null, null);
+            if (null == cursor) {
+                return 0;
             }
+            return cursor.getCount();
         } catch (final SQLiteException e) {
             Log.e(TAG, "SQLiteException in the remote Contacts process.", e);
+        } finally {
+            if (null != cursor) {
+                cursor.close();
+            }
         }
         return 0;
     }
@@ -196,31 +220,36 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
      * Adds the words in a name (e.g., firstname/lastname) to the binary dictionary along with their
      * bigrams depending on locale.
      */
-    private void addName(final String name) {
+    private void addNameLocked(final String name) {
         int len = StringUtils.codePointCount(name);
-        String prevWord = null;
+        PrevWordsInfo prevWordsInfo = PrevWordsInfo.EMPTY_PREV_WORDS_INFO;
         // TODO: Better tokenization for non-Latin writing systems
         for (int i = 0; i < len; i++) {
             if (Character.isLetter(name.codePointAt(i))) {
                 int end = getWordEndPosition(name, len, i);
                 String word = name.substring(i, end);
+                if (DEBUG_DUMP) {
+                    Log.d(TAG, "addName word = " + word);
+                }
                 i = end - 1;
                 // Don't add single letter words, possibly confuses
                 // capitalization of i.
                 final int wordLen = StringUtils.codePointCount(word);
-                if (wordLen < MAX_WORD_LENGTH && wordLen > 1) {
+                if (wordLen <= MAX_WORD_LENGTH && wordLen > 1) {
                     if (DEBUG) {
-                        Log.d(TAG, "addName " + name + ", " + word + ", " + prevWord);
+                        Log.d(TAG, "addName " + name + ", " + word + ", "  + prevWordsInfo);
                     }
-                    super.addWord(word, null /* shortcut */, FREQUENCY_FOR_CONTACTS,
-                            0 /* shortcutFreq */, false /* isNotAWord */);
-                    if (!TextUtils.isEmpty(prevWord)) {
-                        if (mUseFirstLastBigrams) {
-                            super.addBigram(prevWord, word, FREQUENCY_FOR_CONTACTS_BIGRAM,
-                                    0 /* lastModifiedTime */);
-                        }
+                    runGCIfRequiredLocked(true /* mindsBlockByGC */);
+                    addUnigramLocked(word, FREQUENCY_FOR_CONTACTS,
+                            null /* shortcut */, 0 /* shortcutFreq */, false /* isNotAWord */,
+                            false /* isBlacklisted */, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
+                    if (!prevWordsInfo.isValid() && mUseFirstLastBigrams) {
+                        runGCIfRequiredLocked(true /* mindsBlockByGC */);
+                        addNgramEntryLocked(prevWordsInfo, word, FREQUENCY_FOR_CONTACTS_BIGRAM,
+                                BinaryDictionary.NOT_A_VALID_TIMESTAMP);
                     }
-                    prevWord = word;
+                    prevWordsInfo = prevWordsInfo.getNextPrevWordsInfo(
+                            new PrevWordsInfo.WordInfo(word));
                 }
             }
         }
@@ -243,13 +272,7 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         return end;
     }
 
-    @Override
-    protected boolean needsToReloadBeforeWriting() {
-        return true;
-    }
-
-    @Override
-    protected boolean hasContentChanged() {
+    private boolean haveContentsChanged() {
         final long startTime = SystemClock.uptimeMillis();
         final int contactCount = getContactCount();
         if (contactCount > MAX_CONTACT_COUNT) {
@@ -258,9 +281,9 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
             // TODO: Sort and check only the MAX_CONTACT_COUNT most recent contacts?
             return false;
         }
-        if (contactCount != sContactCountAtLastRebuild) {
+        if (contactCount != mContactCountAtLastRebuild) {
             if (DEBUG) {
-                Log.d(TAG, "Contact count changed: " + sContactCountAtLastRebuild + " to "
+                Log.d(TAG, "Contact count changed: " + mContactCountAtLastRebuild + " to "
                         + contactCount);
             }
             return true;
@@ -268,26 +291,27 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
         // Check all contacts since it's not possible to find out which names have changed.
         // This is needed because it's possible to receive extraneous onChange events even when no
         // name has changed.
-        Cursor cursor = mContext.getContentResolver().query(
-                Contacts.CONTENT_URI, PROJECTION, null, null, null);
-        if (cursor != null) {
-            try {
-                if (cursor.moveToFirst()) {
-                    while (!cursor.isAfterLast()) {
-                        String name = cursor.getString(INDEX_NAME);
-                        if (isValidName(name) && !isNameInDictionary(name)) {
-                            if (DEBUG) {
-                                Log.d(TAG, "Contact name missing: " + name + " (runtime = "
-                                        + (SystemClock.uptimeMillis() - startTime) + " ms)");
-                            }
-                            return true;
-                        }
-                        cursor.moveToNext();
+        final Cursor cursor = mContext.getContentResolver().query(Contacts.CONTENT_URI, PROJECTION,
+                null, null, null);
+        if (null == cursor) {
+            return false;
+        }
+        final ArrayList<String> names = new ArrayList<>();
+        try {
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    String name = cursor.getString(INDEX_NAME);
+                    if (isValidName(name)) {
+                        names.add(name);
                     }
+                    cursor.moveToNext();
                 }
-            } finally {
-                cursor.close();
             }
+            if (names.hashCode() != mHashCodeAtLastRebuild) {
+                return true;
+            }
+        } finally {
+            cursor.close();
         }
         if (DEBUG) {
             Log.d(TAG, "No contacts changed. (runtime = " + (SystemClock.uptimeMillis() - startTime)
@@ -301,34 +325,5 @@ public class ContactsBinaryDictionary extends ExpandableBinaryDictionary {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Checks if the words in a name are in the current binary dictionary.
-     */
-    private boolean isNameInDictionary(final String name) {
-        int len = StringUtils.codePointCount(name);
-        String prevWord = null;
-        for (int i = 0; i < len; i++) {
-            if (Character.isLetter(name.codePointAt(i))) {
-                int end = getWordEndPosition(name, len, i);
-                String word = name.substring(i, end);
-                i = end - 1;
-                final int wordLen = StringUtils.codePointCount(word);
-                if (wordLen < MAX_WORD_LENGTH && wordLen > 1) {
-                    if (!TextUtils.isEmpty(prevWord) && mUseFirstLastBigrams) {
-                        if (!super.isValidBigramLocked(prevWord, word)) {
-                            return false;
-                        }
-                    } else {
-                        if (!super.isValidWordLocked(word)) {
-                            return false;
-                        }
-                    }
-                    prevWord = word;
-                }
-            }
-        }
-        return true;
     }
 }

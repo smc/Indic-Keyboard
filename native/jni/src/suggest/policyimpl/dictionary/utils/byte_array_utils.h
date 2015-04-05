@@ -17,7 +17,7 @@
 #ifndef LATINIME_BYTE_ARRAY_UTILS_H
 #define LATINIME_BYTE_ARRAY_UTILS_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "defines.h"
 
@@ -112,6 +112,24 @@ class ByteArrayUtils {
     static AK_FORCE_INLINE uint8_t readUint8AndAdvancePosition(
             const uint8_t *const buffer, int *const pos) {
         return buffer[(*pos)++];
+    }
+
+    static AK_FORCE_INLINE int readUint(const uint8_t *const buffer,
+            const int size, const int pos) {
+        // size must be in 1 to 4.
+        ASSERT(size >= 1 && size <= 4);
+        switch (size) {
+            case 1:
+                return ByteArrayUtils::readUint8(buffer, pos);
+            case 2:
+                return ByteArrayUtils::readUint16(buffer, pos);
+            case 3:
+                return ByteArrayUtils::readUint24(buffer, pos);
+            case 4:
+                return ByteArrayUtils::readUint32(buffer, pos);
+            default:
+                return 0;
+        }
     }
 
     /**

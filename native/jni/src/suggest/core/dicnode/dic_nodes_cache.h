@@ -17,7 +17,7 @@
 #ifndef LATINIME_DIC_NODES_CACHE_H
 #define LATINIME_DIC_NODES_CACHE_H
 
-#include <stdint.h>
+#include <algorithm>
 
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node_priority_queue.h"
@@ -48,15 +48,14 @@ class DicNodesCache {
     AK_FORCE_INLINE void reset(const int nextActiveSize, const int terminalSize) {
         mInputIndex = 0;
         mLastCachedInputIndex = 0;
-        // We want to use the max capacity for the current active dic node queue.
-        mActiveDicNodes->clearAndResizeToCapacity();
-        // nextActiveSize is used to limit the next iteration's active dic node size.
-        const int nextActiveSizeFittingToTheCapacity = min(nextActiveSize, getCacheCapacity());
+        // The size of current active DicNode queue doesn't have to be changed.
+        mActiveDicNodes->clear();
+        // nextActiveSize is used to limit the next iteration's active DicNode size.
+        const int nextActiveSizeFittingToTheCapacity = std::min(nextActiveSize, getCacheCapacity());
         mNextActiveDicNodes->clearAndResize(nextActiveSizeFittingToTheCapacity);
         mTerminalDicNodes->clearAndResize(terminalSize);
-        // We want to use the max capacity for the cached dic nodes that will be used for the
-        // continuous suggestion.
-        mCachedDicNodesForContinuousSuggestion->clearAndResizeToCapacity();
+        // The size of cached DicNode queue doesn't have to be changed.
+        mCachedDicNodesForContinuousSuggestion->clear();
     }
 
     AK_FORCE_INLINE void continueSearch() {
@@ -74,8 +73,6 @@ class DicNodesCache {
         mNextActiveDicNodes =
                 moveNodesAndReturnReusableEmptyQueue(mNextActiveDicNodes, &mActiveDicNodes);
     }
-
-    DicNode *setCommitPoint(int commitPoint);
 
     int activeSize() const { return mActiveDicNodes->getSize(); }
     int terminalSize() const { return mTerminalDicNodes->getSize(); }
@@ -96,19 +93,12 @@ class DicNodesCache {
         mActiveDicNodes->copyPush(dicNode);
     }
 
-    AK_FORCE_INLINE bool copyPushContinue(DicNode *dicNode) {
-        return mCachedDicNodesForContinuousSuggestion->copyPush(dicNode);
+    AK_FORCE_INLINE void copyPushContinue(DicNode *dicNode) {
+        mCachedDicNodesForContinuousSuggestion->copyPush(dicNode);
     }
 
     AK_FORCE_INLINE void copyPushNextActive(DicNode *dicNode) {
-        DicNode *pushedDicNode = mNextActiveDicNodes->copyPush(dicNode);
-        if (!pushedDicNode) {
-            if (dicNode->isCached()) {
-                dicNode->remove();
-            }
-            // We simply drop any dic node that was not cached, ignoring the slim chance
-            // that one of its children represents what the user really wanted.
-        }
+        mNextActiveDicNodes->copyPush(dicNode);
     }
 
     void popTerminal(DicNode *dest) {

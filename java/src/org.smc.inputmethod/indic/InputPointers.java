@@ -16,14 +16,18 @@
 
 package org.smc.inputmethod.indic;
 
-import org.smc.inputmethod.annotations.UsedForTesting;
-import org.smc.inputmethod.indic.utils.ResizableIntArray;
-
 import android.util.Log;
+import android.util.SparseIntArray;
+
+import org.smc.inputmethod.annotations.UsedForTesting;
+import org.smc.inputmethod.indic.define.DebugFlags;
+import com.android.inputmethod.latin.utils.ResizableIntArray;
 
 // TODO: This class is not thread-safe.
 public final class InputPointers {
     private static final String TAG = InputPointers.class.getSimpleName();
+    private static final boolean DEBUG_TIME = false;
+
     private final int mDefaultCapacity;
     private final ResizableIntArray mXCoordinates;
     private final ResizableIntArray mYCoordinates;
@@ -38,11 +42,29 @@ public final class InputPointers {
         mTimes = new ResizableIntArray(defaultCapacity);
     }
 
-    public void addPointer(int index, int x, int y, int pointerId, int time) {
-        mXCoordinates.add(index, x);
-        mYCoordinates.add(index, y);
-        mPointerIds.add(index, pointerId);
-        mTimes.add(index, time);
+    private void fillWithLastTimeUntil(final int index) {
+        final int fromIndex = mTimes.getLength();
+        // Fill the gap with the latest time.
+        // See {@link #getTime(int)} and {@link #isValidTimeStamps()}.
+        if (fromIndex <= 0) {
+            return;
+        }
+        final int fillLength = index - fromIndex + 1;
+        if (fillLength <= 0) {
+            return;
+        }
+        final int lastTime = mTimes.get(fromIndex - 1);
+        mTimes.fill(lastTime, fromIndex, fillLength);
+    }
+
+    public void addPointerAt(int index, int x, int y, int pointerId, int time) {
+        mXCoordinates.addAt(index, x);
+        mYCoordinates.addAt(index, y);
+        mPointerIds.addAt(index, pointerId);
+        if (DebugFlags.DEBUG_ENABLED || DEBUG_TIME) {
+            fillWithLastTimeUntil(index);
+        }
+        mTimes.addAt(index, time);
     }
 
     @UsedForTesting
@@ -65,23 +87,6 @@ public final class InputPointers {
         mYCoordinates.copy(ip.mYCoordinates);
         mPointerIds.copy(ip.mPointerIds);
         mTimes.copy(ip.mTimes);
-    }
-
-    /**
-     * Append the pointers in the specified {@link InputPointers} to the end of this.
-     * @param src the source {@link InputPointers} to read the data from.
-     * @param startPos the starting index of the pointers in {@code src}.
-     * @param length the number of pointers to be appended.
-     */
-    @UsedForTesting
-    void append(InputPointers src, int startPos, int length) {
-        if (length == 0) {
-            return;
-        }
-        mXCoordinates.append(src.mXCoordinates, startPos, length);
-        mYCoordinates.append(src.mYCoordinates, startPos, length);
-        mPointerIds.append(src.mPointerIds, startPos, length);
-        mTimes.append(src.mTimes, startPos, length);
     }
 
     /**
@@ -141,7 +146,7 @@ public final class InputPointers {
     }
 
     public int[] getTimes() {
-        if (LatinImeLogger.sDBG) {
+        if (DebugFlags.DEBUG_ENABLED || DEBUG_TIME) {
             if (!isValidTimeStamps()) {
                 throw new RuntimeException("Time stamps are invalid.");
             }
@@ -157,14 +162,21 @@ public final class InputPointers {
 
     private boolean isValidTimeStamps() {
         final int[] times = mTimes.getPrimitiveArray();
-        for (int i = 1; i < getPointerSize(); ++i) {
-            if (times[i] < times[i - 1]) {
+        final int[] pointerIds = mPointerIds.getPrimitiveArray();
+        final SparseIntArray lastTimeOfPointers = new SparseIntArray();
+        final int size = getPointerSize();
+        for (int i = 0; i < size; ++i) {
+            final int pointerId = pointerIds[i];
+            final int time = times[i];
+            final int lastTime = lastTimeOfPointers.get(pointerId, time);
+            if (time < lastTime) {
                 // dump
-                for (int j = 0; j < times.length; ++j) {
+                for (int j = 0; j < size; ++j) {
                     Log.d(TAG, "--- (" + j + ") " + times[j]);
                 }
                 return false;
             }
+            lastTimeOfPointers.put(pointerId, time);
         }
         return true;
     }

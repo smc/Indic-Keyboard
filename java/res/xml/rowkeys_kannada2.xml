@@ -30,49 +30,49 @@
             <!-- A: aa matra, aa, short a
             -->
             <Key
-                latin:keyLabel="&#x0C86;"
+                latin:keySpec="&#x0C86;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- S: sa, sha -->
             <Key
-                latin:keyLabel="&#x0CB6;"
+                latin:keySpec="&#x0CB6;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- D: dental da, dha -->
             <Key
-                latin:keyLabel="&#x0CA7;"
+                latin:keySpec="&#x0CA7;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- F: virama, vocalic RR matra, vocalic RR -->
             <Key
-                latin:keyLabel="&#x0CC4;"
+                latin:keySpec="&#x0CC4;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- G: ga, gha -->
             <Key
-                latin:keyLabel="&#x0C98;"
+                latin:keySpec="&#x0C98;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- H: ha, visarga, jihvanuliya, upadhmaniya -->
             <Key
-                latin:keyLabel="&#x0C83;"
+                latin:keySpec="&#x0C83;"
                 latin:moreKeys="&#x0CF2;"
                 latin:keyHintLabel="&#x0CF2;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- J: ja, jha -->
             <Key
-                latin:keyLabel="&#x0C9D;"
+                latin:keySpec="&#x0C9D;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- K: ka, kha -->
             <Key
-                latin:keyLabel="&#x0C96;"
+                latin:keySpec="&#x0C96;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- L: la, lla, vocalic L matra, vocalic L -->
             <Key
-                latin:keyLabel="&#x0CB3;"
+                latin:keySpec="&#x0CB3;"
                 latin:moreKeys="&#x0C8C;"
                 latin:keyHintLabel="&#x0C8C;"
                 latin:keyLabelFlags="fontNormal" />
@@ -81,53 +81,53 @@
         <default>
             <!-- A: aa matra, aa, short a -->
             <Key
-                latin:keyLabel="&#x0CBE;"
+                latin:keySpec="&#x0CBE;"
                 latin:moreKeys="&#x0C85;"
                 latin:keyHintLabel="&#x0C85;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--  S: sa, sha -->
             <Key
-                latin:keyLabel="&#x0CB8;"
+                latin:keySpec="&#x0CB8;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- D: dental da, dha -->
             <Key
-                latin:keyLabel="&#x0CA6;"
+                latin:keySpec="&#x0CA6;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- F: virama, vocalic RR matra, vocalic RR -->
             <Key
-                latin:keyLabel="&#x0CCD;"
+                latin:keySpec="&#x0CCD;"
                 latin:moreKeys="&#x0CE0;"
                 latin:keyHintLabel="&#x0CE0;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- G: ga, gha -->
             <Key
-                latin:keyLabel="&#x0C97;"
+                latin:keySpec="&#x0C97;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- H: ha, visarga, jihvanuliya, upadhmaniya -->
             <Key
-                latin:keyLabel="&#x0CB9;"
+                latin:keySpec="&#x0CB9;"
                 latin:moreKeys="&#x0CF1;"
                 latin:keyHintLabel="&#x0CF1;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- J: ja, jha -->
             <Key
-                latin:keyLabel="&#x0C9C;"
+                latin:keySpec="&#x0C9C;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- K: ka, kha -->
             <Key
-                latin:keyLabel="&#x0C95;"
+                latin:keySpec="&#x0C95;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!-- L: la, lla, vocalic L matra, vocalic L -->
             <Key
-                latin:keyLabel="&#x0CB2;"
+                latin:keySpec="&#x0CB2;"
                 latin:moreKeys="&#x0CE2;"
                 latin:keyHintLabel="&#x0CE2;"
                 latin:keyLabelFlags="fontNormal" />

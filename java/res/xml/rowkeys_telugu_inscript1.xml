@@ -26,135 +26,135 @@
         <case latin:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted" >
             <!--` ొ TELUGU VOWEL SIGN O-->
             <Key
-                latin:keyLabel="&#x0C4A;"
+                latin:keySpec="&#x0C4A;"
                 latin:moreKeys="`"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="!text/keylabel_for_symbols_1"
+                latin:keySpec="!text/keylabel_for_symbols_1"
                 latin:additionalMoreKeys="!text/additional_more_keys_for_symbols_1"
                 latin:moreKeys="!text/more_keys_for_symbols_1"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="!text/keylabel_for_symbols_2"
+                latin:keySpec="!text/keylabel_for_symbols_2"
                 latin:additionalMoreKeys="!text/additional_more_keys_for_symbols_2"
                 latin:moreKeys="!text/more_keys_for_symbols_2"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="!text/keylabel_for_symbols_3"
+                latin:keySpec="!text/keylabel_for_symbols_3"
                 latin:additionalMoreKeys="!text/additional_more_keys_for_symbols_3"
                 latin:moreKeys="!text/more_keys_for_symbols_3"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="!text/keylabel_for_symbols_4"
+                latin:keySpec="!text/keylabel_for_symbols_4"
                 latin:additionalMoreKeys="!text/additional_more_keys_for_symbols_4"
                 latin:moreKeys="!text/more_keys_for_symbols_4"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="!text/keylabel_for_symbols_5"
+                latin:keySpec="!text/keylabel_for_symbols_5"
                 latin:additionalMoreKeys="!text/additional_more_keys_for_symbols_5"
                 latin:moreKeys="!text/more_keys_for_symbols_5"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="!text/keylabel_for_symbols_6"
+                latin:keySpec="!text/keylabel_for_symbols_6"
                 latin:additionalMoreKeys="!text/additional_more_keys_for_symbols_6"
                 latin:moreKeys="!text/more_keys_for_symbols_6"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="!text/keylabel_for_symbols_7"
+                latin:keySpec="!text/keylabel_for_symbols_7"
                 latin:additionalMoreKeys="!text/additional_more_keys_for_symbols_7"
                 latin:moreKeys="!text/more_keys_for_symbols_7"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="!text/keylabel_for_symbols_8"
+                latin:keySpec="!text/keylabel_for_symbols_8"
                 latin:additionalMoreKeys="!text/additional_more_keys_for_symbols_8"
                 latin:moreKeys="!text/more_keys_for_symbols_8"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="!text/keylabel_for_symbols_9"
+                latin:keySpec="!text/keylabel_for_symbols_9"
                 latin:additionalMoreKeys="!text/additional_more_keys_for_symbols_9"
                 latin:moreKeys="!text/more_keys_for_symbols_9"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="!text/keylabel_for_symbols_0"
+                latin:keySpec="!text/keylabel_for_symbols_0"
                 latin:additionalMoreKeys="!text/additional_more_keys_for_symbols_0"
                 latin:moreKeys="!text/more_keys_for_symbols_0"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keyLabel="-"
+                latin:keySpec="-"
                 latin:moreKeys="&#x2013;,&#x2014;,&#x00B7;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- = &#x0C43; ృTELUGU VOWEL SIGN VOCALIC R\ -->
             <Key
-                latin:keyLabel="&#x0C43;"
+                latin:keySpec="&#x0C43;"
                 latin:moreKeys="="
                 latin:additionalMoreKeys="!fixedColumnOrder!4,&#x221E;,&#x2260;,&#x2248;,%"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </case>
         <default>
             <!--~ ఒ TELUGU LETTER O-->
             <Key
-                latin:keyLabel="&#x0C12;"
+                latin:keySpec="&#x0C12;"
                 latin:moreKeys="~"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="!"
+                latin:keySpec="!"
                 latin:additionalMoreKeys="!text/more_keys_for_symbols_exclamation"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- @ &#x0200C; ‌ZERO WIDTH NON-JOINER -->
             <Key
-                latin:keyLabel="&#x0200C;"
+                latin:keySpec="&#x0200C;"
                 latin:keyHintLabel="ZWJ"
                 latin:moreKeys="*"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- # &#x0C4D; ్ర -->
             <Key
-                latin:keyLabel="&#x0C4D;"
+                latin:keySpec="&#x0C4D;"
                 latin:moreKeys="\#"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="&#x20b9;"
+                latin:keySpec="&#x20b9;"
                 latin:additionalMoreKeys="!text/more_keys_for_currency_dollar"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- % &#x0C1C; జ్ఞ -->
             <Key
-                latin:keyLabel="&#x0C1C;"
+                latin:keySpec="&#x0C1C;"
                 latin:moreKeys="%"
                 latin:additionalMoreKeys="!text/more_keys_for_symbols_percent"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- ^ &#x0C24; త్ర -->
             <Key
-                latin:keyLabel="&#x0C24;"
+                latin:keySpec="&#x0C24;"
                 latin:moreKeys="^"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- & &#x0C15; క్ష -->
             <Key
-                latin:keyLabel="&#x0C15;"
+                latin:keySpec="&#x0C15;"
                 latin:moreKeys="&amp;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!--\* శ్ర  -->
             <Key
-                latin:keyLabel="&#x0C36;"
+                latin:keySpec="&#x0C36;"
                 latin:moreKeys="*"
                 latin:additionalMoreKeys="!text/more_keys_for_star"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel="("
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="("
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keyLabel=")"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec=")"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- \\- &#x0C03; ఃTELUGU SIGN VISARGA\ -->
             <Key
-                latin:keyLabel="&#x0C03;"
+                latin:keySpec="&#x0C03;"
                 latin:moreKeys="_"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!--\+ ఋ TELUGU LETTER VOCALIC R-->
             <Key
-                latin:keyLabel="&#x0C0B;"
+                latin:keySpec="&#x0C0B;"
                 latin:additionalMoreKeys="!text/more_keys_for_plus"
                 latin:moreKeys="+, &#x00B1;,&#x00D7;,&#x00F7;,&#x221A;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </default>
     </switch>
 

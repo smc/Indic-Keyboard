@@ -28,55 +28,55 @@
             >
             <!-- // Z: nya, nga -->
             <Key
-                latin:keyLabel="&#x0C19;"
+                latin:keySpec="&#x0C19;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x0C1B;"
+                latin:keySpec="&#x0C1B;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- V: va, matra au, au -->
             <Key
-                latin:keyLabel="&#x0C4C;"
+                latin:keySpec="&#x0C4C;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- // B: ba, bha -->
             <Key
-                latin:keyLabel="&#x0C2D;"
+                latin:keySpec="&#x0C2D;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- N: na, nna -->
             <Key
-                latin:keyLabel="&#x0C23;"
+                latin:keySpec="&#x0C23;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- M: ma, anusvara, avagraha, Devanagari OM -->
             <Key
-                latin:keyLabel="&#x0C02;"
+                latin:keySpec="&#x0C02;"
                 latin:moreKeys="&#x0950;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x0C58;"
+                latin:keySpec="&#x0C58;"
                 latin:keyLabelFlags="fontNormal" />
         </case>
 
         <default>
             <Key
-                latin:keyLabel="&#x0C1E;"
+                latin:keySpec="&#x0C1E;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x0C37;"
+                latin:keySpec="&#x0C37;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x0C1A;"
+                latin:keySpec="&#x0C1A;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x0C35;"
+                latin:keySpec="&#x0C35;"
                 latin:moreKeys="&#x0C14;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x0C2C;"
+                latin:keySpec="&#x0C2C;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x0C28;"
+                latin:keySpec="&#x0C28;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keyLabel="&#x0C2E;"
+                latin:keySpec="&#x0C2E;"
                 latin:keyLabelFlags="fontNormal" />
 
         </default>

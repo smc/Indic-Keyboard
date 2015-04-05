@@ -22,8 +22,7 @@
 -->
 
 <Keyboard
-    xmlns:latin="http://schemas.android.com/apk/res-auto"
->
+    xmlns:latin="http://schemas.android.com/apk/res-auto">
     <include
         latin:keyboardLayout="@xml/rows_malayalam" />
 </Keyboard>

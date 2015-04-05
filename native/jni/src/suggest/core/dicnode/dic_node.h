@@ -19,29 +19,35 @@
 
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node_profiler.h"
-#include "suggest/core/dicnode/dic_node_release_listener.h"
+#include "suggest/core/dicnode/dic_node_utils.h"
 #include "suggest/core/dicnode/internal/dic_node_state.h"
 #include "suggest/core/dicnode/internal/dic_node_properties.h"
 #include "suggest/core/dictionary/digraph_utils.h"
+#include "suggest/core/dictionary/error_type_utils.h"
+#include "suggest/core/layout/proximity_info_state.h"
 #include "utils/char_utils.h"
 
 #if DEBUG_DICT
 #define LOGI_SHOW_ADD_COST_PROP \
-        do { char charBuf[50]; \
-        INTS_TO_CHARS(getOutputWordBuf(), getNodeCodePointCount(), charBuf, NELEMS(charBuf)); \
-        AKLOGI("%20s, \"%c\", size = %03d, total = %03d, index(0) = %02d, dist = %.4f, %s,,", \
-                __FUNCTION__, getNodeCodePoint(), inputSize, getTotalInputIndex(), \
-                getInputIndex(0), getNormalizedCompoundDistance(), charBuf); } while (0)
+        do { \
+            char charBuf[50]; \
+            INTS_TO_CHARS(getOutputWordBuf(), getNodeCodePointCount(), charBuf, NELEMS(charBuf)); \
+            AKLOGI("%20s, \"%c\", size = %03d, total = %03d, index(0) = %02d, dist = %.4f, %s,,", \
+                    __FUNCTION__, getNodeCodePoint(), inputSize, getTotalInputIndex(), \
+                    getInputIndex(0), getNormalizedCompoundDistance(), charBuf); \
+        } while (0)
 #define DUMP_WORD_AND_SCORE(header) \
-        do { char charBuf[50]; char prevWordCharBuf[50]; \
-        INTS_TO_CHARS(getOutputWordBuf(), getNodeCodePointCount(), charBuf, NELEMS(charBuf)); \
-        INTS_TO_CHARS(mDicNodeState.mDicNodeStatePrevWord.mPrevWord, \
-                mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength(), prevWordCharBuf, \
-                NELEMS(prevWordCharBuf)); \
-        AKLOGI("#%8s, %5f, %5f, %5f, %5f, %s, %s, %d, %5f,", header, \
-                getSpatialDistanceForScoring(), getLanguageDistanceForScoring(), \
-                getNormalizedCompoundDistance(), getRawLength(), prevWordCharBuf, charBuf, \
-                getInputIndex(0), getNormalizedCompoundDistanceAfterFirstWord()); \
+        do { \
+            char charBuf[50]; \
+            INTS_TO_CHARS(getOutputWordBuf(), \
+                    getNodeCodePointCount() \
+                            + mDicNodeState.mDicNodeStateOutput.getPrevWordsLength(), \
+                    charBuf, NELEMS(charBuf)); \
+            AKLOGI("#%8s, %5f, %5f, %5f, %5f, %s, %d, %5f,", header, \
+                    getSpatialDistanceForScoring(), \
+                    mDicNodeState.mDicNodeStateScoring.getLanguageDistance(), \
+                    getNormalizedCompoundDistance(), getRawLength(), charBuf, \
+                    getInputIndex(0), getNormalizedCompoundDistanceAfterFirstWord()); \
         } while (0)
 #else
 #define LOGI_SHOW_ADD_COST_PROP
@@ -77,111 +83,72 @@ class DicNode {
 #if DEBUG_DICT
     DicNodeProfiler mProfiler;
 #endif
-    //////////////////
-    // Memory utils //
-    //////////////////
-    AK_FORCE_INLINE static void managedDelete(DicNode *node) {
-        node->remove();
-    }
-    // end
-    /////////////////
 
     AK_FORCE_INLINE DicNode()
             :
 #if DEBUG_DICT
               mProfiler(),
 #endif
-              mDicNodeProperties(), mDicNodeState(), mIsCachedForNextSuggestion(false),
-              mIsUsed(false), mReleaseListener(0) {}
+              mDicNodeProperties(), mDicNodeState(), mIsCachedForNextSuggestion(false) {}
 
     DicNode(const DicNode &dicNode);
     DicNode &operator=(const DicNode &dicNode);
-    virtual ~DicNode() {}
+    ~DicNode() {}
 
     // Init for copy
-    void initByCopy(const DicNode *dicNode) {
-        mIsUsed = true;
+    void initByCopy(const DicNode *const dicNode) {
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
-        mDicNodeProperties.init(&dicNode->mDicNodeProperties);
-        mDicNodeState.init(&dicNode->mDicNodeState);
+        mDicNodeProperties.initByCopy(&dicNode->mDicNodeProperties);
+        mDicNodeState.initByCopy(&dicNode->mDicNodeState);
         PROF_NODE_COPY(&dicNode->mProfiler, mProfiler);
     }
 
-    // Init for root with prevWordNodePos which is used for bigram
-    void initAsRoot(const int rootGroupPos, const int prevWordNodePos) {
-        mIsUsed = true;
+    // Init for root with prevWordsPtNodePos which is used for n-gram
+    void initAsRoot(const int rootPtNodeArrayPos, const int *const prevWordsPtNodePos) {
         mIsCachedForNextSuggestion = false;
-        mDicNodeProperties.init(
-                NOT_A_DICT_POS /* pos */, rootGroupPos, NOT_A_CODE_POINT /* nodeCodePoint */,
-                NOT_A_PROBABILITY /* probability */, false /* isTerminal */,
-                true /* hasChildren */, false /* isBlacklistedOrNotAWord */, 0 /* depth */,
-                0 /* terminalDepth */);
-        mDicNodeState.init(prevWordNodePos);
+        mDicNodeProperties.init(rootPtNodeArrayPos, prevWordsPtNodePos);
+        mDicNodeState.init();
         PROF_NODE_RESET(mProfiler);
     }
 
     // Init for root with previous word
-    void initAsRootWithPreviousWord(DicNode *dicNode, const int rootGroupPos) {
-        mIsUsed = true;
+    void initAsRootWithPreviousWord(const DicNode *const dicNode, const int rootPtNodeArrayPos) {
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
-        mDicNodeProperties.init(
-                NOT_A_DICT_POS /* pos */, rootGroupPos, NOT_A_CODE_POINT /* nodeCodePoint */,
-                NOT_A_PROBABILITY /* probability */, false /* isTerminal */,
-                true /* hasChildren */, false /* isBlacklistedOrNotAWord */,  0 /* depth */,
-                0 /* terminalDepth */);
-        // TODO: Move to dicNodeState?
-        mDicNodeState.mDicNodeStateOutput.init(); // reset for next word
-        mDicNodeState.mDicNodeStateInput.init(
-                &dicNode->mDicNodeState.mDicNodeStateInput, true /* resetTerminalDiffCost */);
-        mDicNodeState.mDicNodeStateScoring.init(
-                &dicNode->mDicNodeState.mDicNodeStateScoring);
-        mDicNodeState.mDicNodeStatePrevWord.init(
-                dicNode->mDicNodeState.mDicNodeStatePrevWord.getPrevWordCount() + 1,
-                dicNode->mDicNodeProperties.getProbability(),
-                dicNode->mDicNodeProperties.getPos(),
-                dicNode->mDicNodeState.mDicNodeStatePrevWord.mPrevWord,
-                dicNode->mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength(),
-                dicNode->getOutputWordBuf(),
-                dicNode->mDicNodeProperties.getDepth(),
-                dicNode->mDicNodeState.mDicNodeStatePrevWord.getSecondWordFirstInputIndex(),
-                mDicNodeState.mDicNodeStateInput.getInputIndex(0) /* lastInputIndex */);
+        int newPrevWordsPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+        newPrevWordsPtNodePos[0] = dicNode->mDicNodeProperties.getPtNodePos();
+        for (size_t i = 1; i < NELEMS(newPrevWordsPtNodePos); ++i) {
+            newPrevWordsPtNodePos[i] = dicNode->getPrevWordsTerminalPtNodePos()[i - 1];
+        }
+        mDicNodeProperties.init(rootPtNodeArrayPos, newPrevWordsPtNodePos);
+        mDicNodeState.initAsRootWithPreviousWord(&dicNode->mDicNodeState,
+                dicNode->mDicNodeProperties.getDepth());
         PROF_NODE_COPY(&dicNode->mProfiler, mProfiler);
     }
 
-    void initAsPassingChild(DicNode *parentNode) {
-        mIsUsed = true;
-        mIsCachedForNextSuggestion = parentNode->mIsCachedForNextSuggestion;
-        const int c = parentNode->getNodeTypedCodePoint();
-        mDicNodeProperties.init(&parentNode->mDicNodeProperties, c);
-        mDicNodeState.init(&parentNode->mDicNodeState);
-        PROF_NODE_COPY(&parentNode->mProfiler, mProfiler);
+    void initAsPassingChild(const DicNode *parentDicNode) {
+        mIsCachedForNextSuggestion = parentDicNode->mIsCachedForNextSuggestion;
+        const int codePoint =
+                parentDicNode->mDicNodeState.mDicNodeStateOutput.getCurrentWordCodePointAt(
+                            parentDicNode->getNodeCodePointCount());
+        mDicNodeProperties.init(&parentDicNode->mDicNodeProperties, codePoint);
+        mDicNodeState.initByCopy(&parentDicNode->mDicNodeState);
+        PROF_NODE_COPY(&parentDicNode->mProfiler, mProfiler);
     }
 
-    void initAsChild(const DicNode *const dicNode, const int pos, const int childrenPos,
-            const int probability, const bool isTerminal, const bool hasChildren,
-            const bool isBlacklistedOrNotAWord, const uint16_t mergedNodeCodePointCount,
-            const int *const mergedNodeCodePoints) {
-        mIsUsed = true;
+    void initAsChild(const DicNode *const dicNode, const int ptNodePos,
+            const int childrenPtNodeArrayPos, const int probability, const bool isTerminal,
+            const bool hasChildren, const bool isBlacklistedOrNotAWord,
+            const uint16_t mergedNodeCodePointCount, const int *const mergedNodeCodePoints) {
         uint16_t newDepth = static_cast<uint16_t>(dicNode->getNodeCodePointCount() + 1);
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
         const uint16_t newLeavingDepth = static_cast<uint16_t>(
                 dicNode->mDicNodeProperties.getLeavingDepth() + mergedNodeCodePointCount);
-        mDicNodeProperties.init(pos, childrenPos, mergedNodeCodePoints[0], probability,
-                isTerminal, hasChildren, isBlacklistedOrNotAWord, newDepth, newLeavingDepth);
+        mDicNodeProperties.init(ptNodePos, childrenPtNodeArrayPos, mergedNodeCodePoints[0],
+                probability, isTerminal, hasChildren, isBlacklistedOrNotAWord, newDepth,
+                newLeavingDepth, dicNode->mDicNodeProperties.getPrevWordsTerminalPtNodePos());
         mDicNodeState.init(&dicNode->mDicNodeState, mergedNodeCodePointCount,
                 mergedNodeCodePoints);
         PROF_NODE_COPY(&dicNode->mProfiler, mProfiler);
-    }
-
-    AK_FORCE_INLINE void remove() {
-        mIsUsed = false;
-        if (mReleaseListener) {
-            mReleaseListener->onReleased(this);
-        }
-    }
-
-    bool isUsed() const {
-        return mIsUsed;
     }
 
     bool isRoot() const {
@@ -209,11 +176,6 @@ class DicNode {
         mIsCachedForNextSuggestion = true;
     }
 
-    // Used to expand the node in DicNodeUtils
-    int getNodeTypedCodePoint() const {
-        return mDicNodeState.mDicNodeStateOutput.getCodePointAt(getNodeCodePointCount());
-    }
-
     // Check if the current word and the previous word can be considered as a valid multiple word
     // suggestion.
     bool isValidMultipleWordSuggestion() const {
@@ -222,19 +184,15 @@ class DicNode {
         }
         // Treat suggestion as invalid if the current and the previous word are single character
         // words.
-        const int prevWordLen = mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength()
-                - mDicNodeState.mDicNodeStatePrevWord.getPrevWordStart() - 1;
+        const int prevWordLen = mDicNodeState.mDicNodeStateOutput.getPrevWordsLength()
+                - mDicNodeState.mDicNodeStateOutput.getPrevWordStart() - 1;
         const int currentWordLen = getNodeCodePointCount();
         return (prevWordLen != 1 || currentWordLen != 1);
     }
 
     bool isFirstCharUppercase() const {
-        const int c = getOutputWordBuf()[0];
+        const int c = mDicNodeState.mDicNodeStateOutput.getCurrentWordCodePointAt(0);
         return CharUtils::isAsciiUpper(c);
-    }
-
-    bool isFirstWord() const {
-        return mDicNodeState.mDicNodeStatePrevWord.getPrevWordNodePos() == NOT_A_DICT_POS;
     }
 
     bool isCompletion(const int inputSize) const {
@@ -245,94 +203,73 @@ class DicNode {
         return mDicNodeState.mDicNodeStateInput.getInputIndex(0) < inputSize - 1;
     }
 
-    // Used to get bigram probability in DicNodeUtils
-    int getPos() const {
-        return mDicNodeProperties.getPos();
+    // Used to get n-gram probability in DicNodeUtils.
+    int getPtNodePos() const {
+        return mDicNodeProperties.getPtNodePos();
     }
 
-    // Used to get bigram probability in DicNodeUtils
-    int getPrevWordPos() const {
-        return mDicNodeState.mDicNodeStatePrevWord.getPrevWordNodePos();
+    // TODO: Use view class to return PtNodePos array.
+    const int *getPrevWordsTerminalPtNodePos() const {
+        return mDicNodeProperties.getPrevWordsTerminalPtNodePos();
     }
 
     // Used in DicNodeUtils
-    int getChildrenPos() const {
-        return mDicNodeProperties.getChildrenPos();
+    int getChildrenPtNodeArrayPos() const {
+        return mDicNodeProperties.getChildrenPtNodeArrayPos();
     }
 
     int getProbability() const {
         return mDicNodeProperties.getProbability();
     }
 
-    AK_FORCE_INLINE bool isTerminalWordNode() const {
-        const bool isTerminalNodes = mDicNodeProperties.isTerminal();
-        const int currentNodeDepth = getNodeCodePointCount();
-        const int terminalNodeDepth = mDicNodeProperties.getLeavingDepth();
-        return isTerminalNodes && currentNodeDepth > 0 && currentNodeDepth == terminalNodeDepth;
+    AK_FORCE_INLINE bool isTerminalDicNode() const {
+        const bool isTerminalPtNode = mDicNodeProperties.isTerminal();
+        const int currentDicNodeDepth = getNodeCodePointCount();
+        const int terminalDicNodeDepth = mDicNodeProperties.getLeavingDepth();
+        return isTerminalPtNode && currentDicNodeDepth > 0
+                && currentDicNodeDepth == terminalDicNodeDepth;
     }
 
     bool shouldBeFilteredBySafetyNetForBigram() const {
         const uint16_t currentDepth = getNodeCodePointCount();
-        const int prevWordLen = mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength()
-                - mDicNodeState.mDicNodeStatePrevWord.getPrevWordStart() - 1;
+        const int prevWordLen = mDicNodeState.mDicNodeStateOutput.getPrevWordsLength()
+                - mDicNodeState.mDicNodeStateOutput.getPrevWordStart() - 1;
         return !(currentDepth > 0 && (currentDepth != 1 || prevWordLen != 1));
     }
 
-    bool isTotalInputSizeExceedingLimit() const {
-        const int prevWordsLen = mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength();
-        const int currentWordDepth = getNodeCodePointCount();
-        // TODO: 3 can be 2? Needs to be investigated.
-        // TODO: Have a const variable for 3 (or 2)
-        return prevWordsLen + currentWordDepth > MAX_WORD_LENGTH - 3;
+    bool hasMatchedOrProximityCodePoints() const {
+        // This DicNode does not have matched or proximity code points when all code points have
+        // been handled as edit corrections or completion so far.
+        const int editCorrectionCount = mDicNodeState.mDicNodeStateScoring.getEditCorrectionCount();
+        const int completionCount = mDicNodeState.mDicNodeStateScoring.getCompletionCount();
+        return (editCorrectionCount + completionCount) < getNodeCodePointCount();
     }
 
-    // TODO: This may be defective. Needs to be revised.
-    bool truncateNode(const DicNode *const topNode, const int inputCommitPoint) {
-        const int prevWordLenOfTop = mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength();
-        int newPrevWordStartIndex = inputCommitPoint;
-        int charCount = 0;
-        // Find new word start index
-        for (int i = 0; i < prevWordLenOfTop; ++i) {
-            const int c = mDicNodeState.mDicNodeStatePrevWord.getPrevWordCodePointAt(i);
-            // TODO: Check other separators.
-            if (c != KEYCODE_SPACE && c != KEYCODE_SINGLE_QUOTE) {
-                if (charCount == inputCommitPoint) {
-                    newPrevWordStartIndex = i;
-                    break;
-                }
-                ++charCount;
-            }
-        }
-        if (!mDicNodeState.mDicNodeStatePrevWord.startsWith(
-                &topNode->mDicNodeState.mDicNodeStatePrevWord, newPrevWordStartIndex - 1)) {
-            // Node mismatch.
-            return false;
-        }
-        mDicNodeState.mDicNodeStateInput.truncate(inputCommitPoint);
-        mDicNodeState.mDicNodeStatePrevWord.truncate(newPrevWordStartIndex);
-        return true;
+    bool isTotalInputSizeExceedingLimit() const {
+        // TODO: 3 can be 2? Needs to be investigated.
+        // TODO: Have a const variable for 3 (or 2)
+        return getTotalNodeCodePointCount() > MAX_WORD_LENGTH - 3;
     }
 
     void outputResult(int *dest) const {
-        const uint16_t prevWordLength = mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength();
-        const uint16_t currentDepth = getNodeCodePointCount();
-        DicNodeUtils::appendTwoWords(mDicNodeState.mDicNodeStatePrevWord.mPrevWord,
-                   prevWordLength, getOutputWordBuf(), currentDepth, dest);
+        memmove(dest, getOutputWordBuf(), getTotalNodeCodePointCount() * sizeof(dest[0]));
         DUMP_WORD_AND_SCORE("OUTPUT");
     }
 
     // "Total" in this context (and other methods in this class) means the whole suggestion. When
     // this represents a multi-word suggestion, the referenced PtNode (in mDicNodeState) is only
     // the one that corresponds to the last word of the suggestion, and all the previous words
-    // are concatenated together in mPrevWord - which contains a space at the end.
+    // are concatenated together in mDicNodeStateOutput.
     int getTotalNodeSpaceCount() const {
-        if (isFirstWord()) return 0;
-        return CharUtils::getSpaceCount(mDicNodeState.mDicNodeStatePrevWord.mPrevWord,
-                mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength());
+        if (!hasMultipleWords()) {
+            return 0;
+        }
+        return CharUtils::getSpaceCount(mDicNodeState.mDicNodeStateOutput.getCodePointBuf(),
+                mDicNodeState.mDicNodeStateOutput.getPrevWordsLength());
     }
 
     int getSecondWordFirstInputIndex(const ProximityInfoState *const pInfoState) const {
-        const int inputIndex = mDicNodeState.mDicNodeStatePrevWord.getSecondWordFirstInputIndex();
+        const int inputIndex = mDicNodeState.mDicNodeStateOutput.getSecondWordFirstInputIndex();
         if (inputIndex == NOT_AN_INDEX) {
             return NOT_AN_INDEX;
         } else {
@@ -341,7 +278,7 @@ class DicNode {
     }
 
     bool hasMultipleWords() const {
-        return mDicNodeState.mDicNodeStatePrevWord.getPrevWordCount() > 0;
+        return mDicNodeState.mDicNodeStateOutput.getPrevWordCount() > 0;
     }
 
     int getProximityCorrectionCount() const {
@@ -373,13 +310,8 @@ class DicNode {
         return mDicNodeState.mDicNodeStateScoring.getCompoundDistance(languageWeight);
     }
 
-    // Used to commit input partially
-    int getPrevWordNodePos() const {
-        return mDicNodeState.mDicNodeStatePrevWord.getPrevWordNodePos();
-    }
-
     AK_FORCE_INLINE const int *getOutputWordBuf() const {
-        return mDicNodeState.mDicNodeStateOutput.mCodePointsBuf;
+        return mDicNodeState.mDicNodeStateOutput.getCodePointBuf();
     }
 
     int getPrevCodePointG(int pointerId) const {
@@ -410,7 +342,7 @@ class DicNode {
     // TODO: Remove once touch path is merged into ProximityInfoState
     // Note: Returned codepoint may be a digraph codepoint if the node is in a composite glyph.
     int getNodeCodePoint() const {
-        const int codePoint = mDicNodeProperties.getNodeCodePoint();
+        const int codePoint = mDicNodeProperties.getDicNodeCodePoint();
         const DigraphUtils::DigraphCodePointIndex digraphIndex =
                 mDicNodeState.mDicNodeStateScoring.getDigraphIndex();
         if (digraphIndex == DigraphUtils::NOT_A_DIGRAPH_INDEX) {
@@ -423,8 +355,8 @@ class DicNode {
     // Utils for cost calculation //
     ////////////////////////////////
     AK_FORCE_INLINE bool isSameNodeCodePoint(const DicNode *const dicNode) const {
-        return mDicNodeProperties.getNodeCodePoint()
-                == dicNode->mDicNodeProperties.getNodeCodePoint();
+        return mDicNodeProperties.getDicNodeCodePoint()
+                == dicNode->mDicNodeProperties.getDicNodeCodePoint();
     }
 
     // TODO: remove
@@ -440,10 +372,6 @@ class DicNode {
         return mDicNodeState.mDicNodeStateScoring.getSpatialDistance();
     }
 
-    float getLanguageDistanceForScoring() const {
-        return mDicNodeState.mDicNodeStateScoring.getLanguageDistance();
-    }
-
     // For space-aware gestures, we store the normalized distance at the char index
     // that ends the first word of the suggestion. We call this the distance after
     // first word.
@@ -451,20 +379,8 @@ class DicNode {
         return mDicNodeState.mDicNodeStateScoring.getNormalizedCompoundDistanceAfterFirstWord();
     }
 
-    float getLanguageDistanceRatePerWordForScoring() const {
-        const float langDist = getLanguageDistanceForScoring();
-        const float totalWordCount =
-                static_cast<float>(mDicNodeState.mDicNodeStatePrevWord.getPrevWordCount() + 1);
-        return langDist / totalWordCount;
-    }
-
     float getRawLength() const {
         return mDicNodeState.mDicNodeStateScoring.getRawLength();
-    }
-
-    bool isLessThanOneErrorForScoring() const {
-        return mDicNodeState.mDicNodeStateScoring.getEditCorrectionCount()
-                + mDicNodeState.mDicNodeStateScoring.getProximityCorrectionCount() <= 1;
     }
 
     DoubleLetterLevel getDoubleLetterLevel() const {
@@ -484,8 +400,8 @@ class DicNode {
         mDicNodeState.mDicNodeStateScoring.advanceDigraphIndex();
     }
 
-    bool isExactMatch() const {
-        return mDicNodeState.mDicNodeStateScoring.isExactMatch();
+    ErrorTypeUtils::ErrorType getContainedErrorTypes() const {
+        return mDicNodeState.mDicNodeStateScoring.getContainedErrorTypes();
     }
 
     bool isBlacklistedOrNotAWord() const {
@@ -498,7 +414,7 @@ class DicNode {
 
     // Returns code point count including spaces
     inline uint16_t getTotalNodeCodePointCount() const {
-        return getNodeCodePointCount() + mDicNodeState.mDicNodeStatePrevWord.getPrevWordLength();
+        return getNodeCodePointCount() + mDicNodeState.mDicNodeStateOutput.getPrevWordsLength();
     }
 
     AK_FORCE_INLINE void dump(const char *tag) const {
@@ -510,24 +426,10 @@ class DicNode {
 #endif
     }
 
-    void setReleaseListener(DicNodeReleaseListener *releaseListener) {
-        mReleaseListener = releaseListener;
-    }
-
-    AK_FORCE_INLINE bool compare(const DicNode *right) {
-        if (!isUsed() && !right->isUsed()) {
-            // Compare pointer values here for stable comparison
-            return this > right;
-        }
-        if (!isUsed()) {
-            return true;
-        }
-        if (!right->isUsed()) {
-            return false;
-        }
+    AK_FORCE_INLINE bool compare(const DicNode *right) const {
         // Promote exact matches to prevent them from being pruned.
-        const bool leftExactMatch = isExactMatch();
-        const bool rightExactMatch = right->isExactMatch();
+        const bool leftExactMatch = ErrorTypeUtils::isExactMatch(getContainedErrorTypes());
+        const bool rightExactMatch = ErrorTypeUtils::isExactMatch(right->getContainedErrorTypes());
         if (leftExactMatch != rightExactMatch) {
             return leftExactMatch;
         }
@@ -545,8 +447,9 @@ class DicNode {
             return depthDiff > 0;
         }
         for (int i = 0; i < depth; ++i) {
-            const int codePoint = mDicNodeState.mDicNodeStateOutput.getCodePointAt(i);
-            const int rightCodePoint = right->mDicNodeState.mDicNodeStateOutput.getCodePointAt(i);
+            const int codePoint = mDicNodeState.mDicNodeStateOutput.getCurrentWordCodePointAt(i);
+            const int rightCodePoint =
+                    right->mDicNodeState.mDicNodeStateOutput.getCurrentWordCodePointAt(i);
             if (codePoint != rightCodePoint) {
                 return rightCodePoint > codePoint;
             }
@@ -560,8 +463,6 @@ class DicNode {
     DicNodeState mDicNodeState;
     // TODO: Remove
     bool mIsCachedForNextSuggestion;
-    bool mIsUsed;
-    DicNodeReleaseListener *mReleaseListener;
 
     AK_FORCE_INLINE int getTotalInputIndex() const {
         int index = 0;
@@ -574,7 +475,8 @@ class DicNode {
     // Caveat: Must not be called outside Weighting
     // This restriction is guaranteed by "friend"
     AK_FORCE_INLINE void addCost(const float spatialCost, const float languageCost,
-            const bool doNormalization, const int inputSize, const ErrorType errorType) {
+            const bool doNormalization, const int inputSize,
+            const ErrorTypeUtils::ErrorType errorType) {
         if (DEBUG_GEO_FULL) {
             LOGI_SHOW_ADD_COST_PROP;
         }
@@ -602,8 +504,8 @@ class DicNode {
     }
 
     AK_FORCE_INLINE void updateInputIndexG(const DicNode_InputStateG *const inputStateG) {
-        if (mDicNodeState.mDicNodeStatePrevWord.getPrevWordCount() == 1 && isFirstLetter()) {
-            mDicNodeState.mDicNodeStatePrevWord.setSecondWordFirstInputIndex(
+        if (mDicNodeState.mDicNodeStateOutput.getPrevWordCount() == 1 && isFirstLetter()) {
+            mDicNodeState.mDicNodeStateOutput.setSecondWordFirstInputIndex(
                     inputStateG->mInputIndex);
         }
         mDicNodeState.mDicNodeStateInput.updateInputIndexG(inputStateG->mPointerId,

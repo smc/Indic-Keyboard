@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard.tools;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -23,6 +24,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Locale;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -58,8 +60,8 @@ public final class JarUtils {
         public boolean accept(String dirName, String name);
     }
 
-    public static ArrayList<String> getNameListing(final JarFile jar, final JarFilter filter) {
-        final ArrayList<String> result = new ArrayList<String>();
+    public static ArrayList<String> getEntryNameListing(final JarFile jar, final JarFilter filter) {
+        final ArrayList<String> result = new ArrayList<>();
         final Enumeration<JarEntry> entries = jar.entries();
         while (entries.hasMoreElements()) {
             final JarEntry entry = entries.nextElement();
@@ -74,12 +76,42 @@ public final class JarUtils {
         return result;
     }
 
-    public static ArrayList<String> getNameListing(final JarFile jar, final String filterName) {
-        return getNameListing(jar, new JarFilter() {
+    public static ArrayList<String> getEntryNameListing(final JarFile jar,
+            final String filterName) {
+        return getEntryNameListing(jar, new JarFilter() {
             @Override
             public boolean accept(final String dirName, final String name) {
                 return name.equals(filterName);
             }
         });
+    }
+
+    // The locale is taken from string resource jar entry name (values-<locale>/)
+    // or {@link LocaleUtils#DEFAULT_LOCALE} for the default string resource
+    // directory (values/).
+    public static Locale getLocaleFromEntryName(final String jarEntryName) {
+        final String dirName = jarEntryName.substring(0, jarEntryName.lastIndexOf('/'));
+        final int pos = dirName.lastIndexOf('/');
+        final String parentName = (pos >= 0) ? dirName.substring(pos + 1) : dirName;
+        final int localePos = parentName.indexOf('-');
+        if (localePos < 0) {
+            // Default resource name.
+            return LocaleUtils.DEFAULT_LOCALE;
+        }
+        final String localeStr = parentName.substring(localePos + 1);
+        final int regionPos = localeStr.indexOf("-r");
+        if (regionPos < 0) {
+            return LocaleUtils.constructLocaleFromString(localeStr);
+        }
+        return LocaleUtils.constructLocaleFromString(localeStr.replace("-r", "_"));
+    }
+
+    public static void close(final Closeable stream) {
+        try {
+            if (stream != null) {
+                stream.close();
+            }
+        } catch (IOException e) {
+        }
     }
 }

@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.+'
+        classpath 'com.android.tools.build:gradle:1.0.1+'
     }
 }
 apply plugin: 'com.android.application'
@@ -15,24 +15,25 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:20.0.0'
+    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.google.code.findbugs:jsr305:3.0.0'
     compile fileTree(dir: 'libs', include: '*.jar')
     // TODO: not working because xml files are not packed
     //compile project(':morelangs')
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "20"
+    compileSdkVersion 22
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 19
+        targetSdkVersion 21
     }
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
+            java.srcDirs = ['../java-overridable/src', 'src']
             resources.srcDirs = ['src']
             aidl.srcDirs = ['src']
             renderscript.srcDirs = ['src']
@@ -55,8 +56,11 @@ android {
     }
     buildTypes {
         release {
-            runProguard true
-            proguardFile getDefaultProguardFile('proguard-android.txt')
+            /*runProguard true*/
+            /*proguardFile getDefaultProguardFile('proguard-android.txt')*/
+
+            /*minifyEnabled false*/
+            /*proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'*/
             signingConfig signingConfigs.release
         }
     }

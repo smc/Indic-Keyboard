@@ -26,24 +26,32 @@
     xmlns:latin="http://schemas.android.com/apk/res-auto"
 >
     <switch>
-        <case
-            latin:keyboardLayoutSet="hindi"
-        >
+        <case latin:keyboardLayoutSet="hindi">
             <!-- U+093E/U+0902: "ां" DEVANAGARI VOWEL SIGN AA/DEVANAGARI SIGN ANUSVARA
                  U+093E/U+0901: "ाँ" DEVANAGARI VOWEL SIGN AA/DEVANAGARI SIGN CANDRABINDU -->
             <key-style
                 latin:styleName="moreKeysDevanagariVowelSignAa"
                 latin:moreKeys="&#x093E;&#x0902;,&#x093E;&#x0901;,%" />
         </case>
-        <default>
+        <case latin:keyboardLayoutSet="hindi_compact">
+            <!-- U+093E: "ा" DEVANAGARI VOWEL SIGN AA -->
             <key-style
-                latin:styleName="moreKeysDevanagariVowelSignAa" />
+                latin:styleName="moreKeysDevanagariVowelSignAa"
+                latin:moreKeys="&#x093E;,%" />
+        </case>
+        <case latin:keyboardLayoutSet="marathi">
+            <!-- U+0906: "आ" DEVANAGARI LETTER AA -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignAa"
+                latin:moreKeys="&#x0906;,%" />
+        </case>
+        <default>
+            <key-style latin:styleName="moreKeysDevanagariVowelSignAa" />
         </default>
     </switch>
     <!-- U+093E: "ा" DEVANAGARI VOWEL SIGN AA -->
     <key-style
         latin:styleName="baseKeyDevanagariVowelSignAa"
         latin:parentStyle="moreKeysDevanagariVowelSignAa"
-        latin:keyLabel="&#x093E;"
-        latin:keyLabelFlags="fontNormal" />
+        latin:keySpec="&#x093E;" />
 </merge>

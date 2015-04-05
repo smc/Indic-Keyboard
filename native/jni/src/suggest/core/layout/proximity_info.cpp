@@ -18,6 +18,7 @@
 
 #include "suggest/core/layout/proximity_info.h"
 
+#include <algorithm>
 #include <cstring>
 #include <cmath>
 
@@ -57,13 +58,12 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr,
         const jfloatArray sweetSpotCenterYs, const jfloatArray sweetSpotRadii)
         : GRID_WIDTH(gridWidth), GRID_HEIGHT(gridHeight), MOST_COMMON_KEY_WIDTH(mostCommonKeyWidth),
           MOST_COMMON_KEY_WIDTH_SQUARE(mostCommonKeyWidth * mostCommonKeyWidth),
-          MOST_COMMON_KEY_HEIGHT(mostCommonKeyHeight),
           NORMALIZED_SQUARED_MOST_COMMON_KEY_HYPOTENUSE(1.0f +
                   GeometryUtils::SQUARE_FLOAT(static_cast<float>(mostCommonKeyHeight) /
                           static_cast<float>(mostCommonKeyWidth))),
           CELL_WIDTH((keyboardWidth + gridWidth - 1) / gridWidth),
           CELL_HEIGHT((keyboardHeight + gridHeight - 1) / gridHeight),
-          KEY_COUNT(min(keyCount, MAX_KEY_COUNT_IN_A_KEYBOARD)),
+          KEY_COUNT(std::min(keyCount, MAX_KEY_COUNT_IN_A_KEYBOARD)),
           KEYBOARD_WIDTH(keyboardWidth), KEYBOARD_HEIGHT(keyboardHeight),
           KEYBOARD_HYPOTENUSE(hypotf(KEYBOARD_WIDTH, KEYBOARD_HEIGHT)),
           HAS_TOUCH_POSITION_CORRECTION_DATA(keyCount > 0 && keyXCoordinates && keyYCoordinates
@@ -71,7 +71,7 @@ ProximityInfo::ProximityInfo(JNIEnv *env, const jstring localeJStr,
                   && sweetSpotCenterYs && sweetSpotRadii),
           mProximityCharsArray(new int[GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE
                   /* proximityCharsLength */]),
-          mCodeToKeyMap() {
+          mLowerCodePointToKeyMap() {
     /* Let's check the input array length here to make sure */
     const jsize proximityCharsLength = env->GetArrayLength(proximityChars);
     if (proximityCharsLength != GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE) {
@@ -147,7 +147,14 @@ int ProximityInfo::getCodePointOf(const int keyIndex) const {
     if (keyIndex < 0 || keyIndex >= KEY_COUNT) {
         return NOT_A_CODE_POINT;
     }
-    return mKeyIndexToCodePointG[keyIndex];
+    return mKeyIndexToLowerCodePointG[keyIndex];
+}
+
+int ProximityInfo::getOriginalCodePointOf(const int keyIndex) const {
+    if (keyIndex < 0 || keyIndex >= KEY_COUNT) {
+        return NOT_A_CODE_POINT;
+    }
+    return mKeyIndexToOriginalCodePoint[keyIndex];
 }
 
 void ProximityInfo::initializeG() {
@@ -164,8 +171,9 @@ void ProximityInfo::initializeG() {
             const float gapY = sweetSpotCenterY - mCenterYsG[i];
             mSweetSpotCenterYsG[i] = static_cast<int>(mCenterYsG[i] + gapY * verticalScale);
         }
-        mCodeToKeyMap[lowerCode] = i;
-        mKeyIndexToCodePointG[i] = lowerCode;
+        mLowerCodePointToKeyMap[lowerCode] = i;
+        mKeyIndexToOriginalCodePoint[i] = code;
+        mKeyIndexToLowerCodePointG[i] = lowerCode;
     }
     for (int i = 0; i < KEY_COUNT; i++) {
         mKeyKeyDistancesG[i][i] = 0;
@@ -218,7 +226,7 @@ int ProximityInfo::getKeyCenterXOfKeyIdG(
 // When the referencePointY is NOT_A_COORDINATE, this method calculates the return value without
 // using the line segment.
 int ProximityInfo::getKeyCenterYOfKeyIdG(
-        const int keyId,  const int referencePointY, const bool isGeometric) const {
+        const int keyId, const int referencePointY, const bool isGeometric) const {
     // TODO: Remove "isGeometric" and have separate "proximity_info"s for gesture and typing.
     if (keyId < 0) {
         return 0;

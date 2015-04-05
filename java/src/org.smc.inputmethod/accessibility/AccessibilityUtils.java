@@ -17,7 +17,6 @@
 package org.smc.inputmethod.accessibility;
 
 import android.content.Context;
-import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.SystemClock;
@@ -36,7 +35,7 @@ import android.view.inputmethod.EditorInfo;
 import org.smc.inputmethod.compat.SettingsSecureCompatUtils;
 import org.smc.inputmethod.indic.R;
 import org.smc.inputmethod.indic.SuggestedWords;
-import org.smc.inputmethod.indic.utils.InputTypeUtils;
+import com.android.inputmethod.latin.utils.InputTypeUtils;
 
 public final class AccessibilityUtils {
     private static final String TAG = AccessibilityUtils.class.getSimpleName();
@@ -63,13 +62,11 @@ public final class AccessibilityUtils {
      */
     private static final boolean ENABLE_ACCESSIBILITY = true;
 
-    public static void init(final InputMethodService inputMethod) {
+    public static void init(final Context context) {
         if (!ENABLE_ACCESSIBILITY) return;
 
         // These only need to be initialized if the kill switch is off.
-        sInstance.initInternal(inputMethod);
-        KeyCodeDescriptionMapper.init();
-        AccessibleKeyboardViewProxy.init(inputMethod);
+        sInstance.initInternal(context);
     }
 
     public static AccessibilityUtils getInstance() {
@@ -116,7 +113,7 @@ public final class AccessibilityUtils {
      * @param event The event to check.
      * @return {@true} is the event is a touch exploration event
      */
-    public boolean isTouchExplorationEvent(final MotionEvent event) {
+    public static boolean isTouchExplorationEvent(final MotionEvent event) {
         final int action = event.getAction();
         return action == MotionEvent.ACTION_HOVER_ENTER
                 || action == MotionEvent.ACTION_HOVER_EXIT
@@ -158,7 +155,7 @@ public final class AccessibilityUtils {
      * @param typedWord the currently typed word
      */
     public void setAutoCorrection(final SuggestedWords suggestedWords, final String typedWord) {
-        if (suggestedWords != null && suggestedWords.mWillAutoCorrect) {
+        if (suggestedWords.mWillAutoCorrect) {
             mAutoCorrectionWord = suggestedWords.getWord(SuggestedWords.INDEX_OF_AUTO_CORRECTION);
             mTypedWord = typedWord;
         } else {

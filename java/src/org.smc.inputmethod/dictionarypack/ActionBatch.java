@@ -16,7 +16,6 @@
 
 package org.smc.inputmethod.dictionarypack;
 
-import android.app.DownloadManager;
 import android.app.DownloadManager.Request;
 import android.content.ContentValues;
 import android.content.Context;
@@ -26,13 +25,13 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.smc.inputmethod.compat.DownloadManagerCompatUtils;
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.utils.ApplicationUtils;
-import org.smc.inputmethod.indic.utils.DebugLogUtils;
-
 import java.util.LinkedList;
 import java.util.Queue;
+
+import org.smc.inputmethod.compat.DownloadManagerCompatUtils;
+import org.smc.inputmethod.indic.R;
+import com.android.inputmethod.latin.utils.ApplicationUtils;
+import com.android.inputmethod.latin.utils.DebugLogUtils;
 
 /**
  * Object representing an upgrade from one state to another.
@@ -117,16 +116,11 @@ public final class ActionBatch {
             final ContentValues values = MetadataDbHelper.getContentValuesByWordListId(db,
                     mWordList.mId, mWordList.mVersion);
             final int status = values.getAsInteger(MetadataDbHelper.STATUS_COLUMN);
-            final DownloadManager manager =
-                    (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+            final DownloadManagerWrapper manager = new DownloadManagerWrapper(context);
             if (MetadataDbHelper.STATUS_DOWNLOADING == status) {
                 // The word list is still downloading. Cancel the download and revert the
                 // word list status to "available".
-                if (null != manager) {
-                    // DownloadManager is disabled (or not installed?). We can't cancel - there
-                    // is nothing we can do. We still need to mark the entry as available.
-                    manager.remove(values.getAsLong(MetadataDbHelper.PENDINGID_COLUMN));
-                }
+                 manager.remove(values.getAsLong(MetadataDbHelper.PENDINGID_COLUMN));
                 MetadataDbHelper.markEntryAsAvailable(db, mWordList.mId, mWordList.mVersion);
             } else if (MetadataDbHelper.STATUS_AVAILABLE != status) {
                 // Should never happen
@@ -135,9 +129,6 @@ public final class ActionBatch {
             }
             // Download it.
             DebugLogUtils.l("Upgrade word list, downloading", mWordList.mRemoteFilename);
-
-            // TODO: if DownloadManager is disabled or not installed, download by ourselves
-            if (null == manager) return;
 
             // This is an upgraded word list: we should download it.
             // Adding a disambiguator to circumvent a bug in older versions of DownloadManager.
@@ -293,13 +284,8 @@ public final class ActionBatch {
                 }
                 // The word list is still downloading. Cancel the download and revert the
                 // word list status to "available".
-                final DownloadManager manager =
-                        (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-                if (null != manager) {
-                    // If we can't cancel the download because DownloadManager is not available,
-                    // we still need to mark the entry as available.
-                    manager.remove(values.getAsLong(MetadataDbHelper.PENDINGID_COLUMN));
-                }
+                final DownloadManagerWrapper manager = new DownloadManagerWrapper(context);
+                manager.remove(values.getAsLong(MetadataDbHelper.PENDINGID_COLUMN));
                 MetadataDbHelper.markEntryAsAvailable(db, mWordList.mId, mWordList.mVersion);
             }
         }
@@ -338,8 +324,9 @@ public final class ActionBatch {
                     MetadataDbHelper.TYPE_BULK, MetadataDbHelper.STATUS_AVAILABLE,
                     mWordList.mId, mWordList.mLocale, mWordList.mDescription,
                     null == mWordList.mLocalFilename ? "" : mWordList.mLocalFilename,
-                    mWordList.mRemoteFilename, mWordList.mLastUpdate, mWordList.mChecksum,
-                    mWordList.mFileSize, mWordList.mVersion, mWordList.mFormatVersion);
+                    mWordList.mRemoteFilename, mWordList.mLastUpdate, mWordList.mRawChecksum,
+                    mWordList.mChecksum, mWordList.mFileSize, mWordList.mVersion,
+                    mWordList.mFormatVersion);
             PrivateLog.log("Insert 'available' record for " + mWordList.mDescription
                     + " and locale " + mWordList.mLocale);
             db.insert(MetadataDbHelper.METADATA_TABLE_NAME, null, values);
@@ -387,7 +374,7 @@ public final class ActionBatch {
             final ContentValues values = MetadataDbHelper.makeContentValues(0,
                     MetadataDbHelper.TYPE_BULK, MetadataDbHelper.STATUS_INSTALLED,
                     mWordList.mId, mWordList.mLocale, mWordList.mDescription,
-                    "", mWordList.mRemoteFilename, mWordList.mLastUpdate,
+                    "", mWordList.mRemoteFilename, mWordList.mLastUpdate, mWordList.mRawChecksum,
                     mWordList.mChecksum, mWordList.mFileSize, mWordList.mVersion,
                     mWordList.mFormatVersion);
             PrivateLog.log("Insert 'preinstalled' record for " + mWordList.mDescription
@@ -429,8 +416,9 @@ public final class ActionBatch {
                     oldValues.getAsInteger(MetadataDbHelper.STATUS_COLUMN),
                     mWordList.mId, mWordList.mLocale, mWordList.mDescription,
                     oldValues.getAsString(MetadataDbHelper.LOCAL_FILENAME_COLUMN),
-                    mWordList.mRemoteFilename, mWordList.mLastUpdate, mWordList.mChecksum,
-                    mWordList.mFileSize, mWordList.mVersion, mWordList.mFormatVersion);
+                    mWordList.mRemoteFilename, mWordList.mLastUpdate, mWordList.mRawChecksum,
+                    mWordList.mChecksum, mWordList.mFileSize, mWordList.mVersion,
+                    mWordList.mFormatVersion);
             PrivateLog.log("Updating record for " + mWordList.mDescription
                     + " and locale " + mWordList.mLocale);
             db.update(MetadataDbHelper.METADATA_TABLE_NAME, values,
@@ -611,7 +599,7 @@ public final class ActionBatch {
     private final Queue<Action> mActions;
 
     public ActionBatch() {
-        mActions = new LinkedList<Action>();
+        mActions = new LinkedList<>();
     }
 
     public void add(final Action a) {

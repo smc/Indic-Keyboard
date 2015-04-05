@@ -20,20 +20,20 @@ import android.content.res.TypedArray;
 import android.util.Log;
 import android.util.SparseArray;
 
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.utils.CollectionUtils;
-import org.smc.inputmethod.indic.utils.XmlParseUtils;
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.util.Arrays;
 import java.util.HashMap;
+
+import org.smc.inputmethod.indic.R;
+import com.android.inputmethod.latin.utils.XmlParseUtils;
 
 public final class KeyStylesSet {
     private static final String TAG = KeyStylesSet.class.getSimpleName();
     private static final boolean DEBUG = false;
 
-    private final HashMap<String, KeyStyle> mStyles = CollectionUtils.newHashMap();
+    private final HashMap<String, KeyStyle> mStyles = new HashMap<>();
 
     private final KeyboardTextsSet mTextsSet;
     private final KeyStyle mEmptyKeyStyle;
@@ -74,7 +74,7 @@ public final class KeyStylesSet {
     private static final class DeclaredKeyStyle extends KeyStyle {
         private final HashMap<String, KeyStyle> mStyles;
         private final String mParentStyleName;
-        private final SparseArray<Object> mStyleAttributes = CollectionUtils.newSparseArray();
+        private final SparseArray<Object> mStyleAttributes = new SparseArray<>();
 
         public DeclaredKeyStyle(final String parentStyleName, final KeyboardTextsSet textsSet,
                 final HashMap<String, KeyStyle> styles) {
@@ -90,7 +90,8 @@ public final class KeyStylesSet {
             }
             final Object value = mStyleAttributes.get(index);
             if (value != null) {
-                return (String[])value;
+                final String[] array = (String[])value;
+                return Arrays.copyOf(array, array.length);
             }
             final KeyStyle parentStyle = mStyles.get(mParentStyleName);
             return parentStyle.getStringArray(a, index);
@@ -133,17 +134,13 @@ public final class KeyStylesSet {
 
         public void readKeyAttributes(final TypedArray keyAttr) {
             // TODO: Currently not all Key attributes can be declared as style.
-            readString(keyAttr, R.styleable.Keyboard_Key_code);
             readString(keyAttr, R.styleable.Keyboard_Key_altCode);
-            readString(keyAttr, R.styleable.Keyboard_Key_keyLabel);
-            readString(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
+            readString(keyAttr, R.styleable.Keyboard_Key_keySpec);
             readString(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
             readStringArray(keyAttr, R.styleable.Keyboard_Key_moreKeys);
             readStringArray(keyAttr, R.styleable.Keyboard_Key_additionalMoreKeys);
             readFlags(keyAttr, R.styleable.Keyboard_Key_keyLabelFlags);
-            readString(keyAttr, R.styleable.Keyboard_Key_keyIcon);
             readString(keyAttr, R.styleable.Keyboard_Key_keyIconDisabled);
-            readString(keyAttr, R.styleable.Keyboard_Key_keyIconPreview);
             readInt(keyAttr, R.styleable.Keyboard_Key_maxMoreKeysColumn);
             readInt(keyAttr, R.styleable.Keyboard_Key_backgroundType);
             readFlags(keyAttr, R.styleable.Keyboard_Key_keyActionFlags);

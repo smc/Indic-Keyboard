@@ -18,6 +18,8 @@ package org.smc.inputmethod.indic;
 
 import java.io.File;
 
+import com.android.inputmethod.latin.utils.FileUtils;
+
 /**
  * Immutable class to hold the address of an asset.
  * As opposed to a normal file, an asset is usually represented as a contiguous byte array in
@@ -51,5 +53,13 @@ public final class AssetFileAddress {
         final File f = new File(filename);
         if (!f.isFile()) return null;
         return new AssetFileAddress(filename, offset, length);
+    }
+
+    public boolean pointsToPhysicalFile() {
+        return 0 == mOffset;
+    }
+
+    public void deleteUnderlyingFile() {
+        FileUtils.deleteRecursively(new File(mFilename));
     }
 }

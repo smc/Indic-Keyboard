@@ -70,38 +70,47 @@ public final class Constants {
 
         public static final class ExtraValue {
             /**
-             * The subtype extra value used to indicate that the subtype keyboard layout is capable
-             * for typing ASCII characters.
+             * The subtype extra value used to indicate that this subtype is capable of
+             * entering ASCII characters.
              */
             public static final String ASCII_CAPABLE = "AsciiCapable";
 
             /**
-             * The subtype extra value used to indicate that the subtype keyboard layout is capable
-             * for typing EMOJI characters.
+             * The subtype extra value used to indicate that this subtype is enabled
+             * when the default subtype is not marked as ascii capable.
+             */
+            public static final String ENABLED_WHEN_DEFAULT_IS_NOT_ASCII_CAPABLE =
+                    "EnabledWhenDefaultIsNotAsciiCapable";
+
+            /**
+             * The subtype extra value used to indicate that this subtype is capable of
+             * entering emoji characters.
              */
             public static final String EMOJI_CAPABLE = "EmojiCapable";
+
             /**
-             * The subtype extra value used to indicate that the subtype require network connection
-             * to work.
+             * The subtype extra value used to indicate that this subtype requires a network
+             * connection to work.
              */
             public static final String REQ_NETWORK_CONNECTIVITY = "requireNetworkConnectivity";
 
             /**
-             * The subtype extra value used to indicate that the subtype display name contains "%s"
-             * for replacement mark and it should be replaced by this extra value.
+             * The subtype extra value used to indicate that the display name of this subtype
+             * contains a "%s" for printf-like replacement and it should be replaced by
+             * this extra value.
              * This extra value is supported on JellyBean and later.
              */
             public static final String UNTRANSLATABLE_STRING_IN_SUBTYPE_NAME =
                     "UntranslatableReplacementStringInSubtypeName";
 
             /**
-             * The subtype extra value used to indicate that the subtype keyboard layout set name.
+             * The subtype extra value used to indicate this subtype keyboard layout set name.
              * This extra value is private to LatinIME.
              */
             public static final String KEYBOARD_LAYOUT_SET = "KeyboardLayoutSet";
 
             /**
-             * The subtype extra value used to indicate that the subtype is additional subtype
+             * The subtype extra value used to indicate that this subtype is an additional subtype
              * that the user defined. This extra value is private to LatinIME.
              */
             public static final String IS_ADDITIONAL_SUBTYPE = "isAdditionalSubtype";
@@ -111,6 +120,11 @@ public final class Constants {
              * scheme to do it's work
              */
             public static final String TRANSLITERATION_METHOD = "TransliterationMethod";
+
+            /**
+             * The subtype extra value used to specify the combining rules.
+             */
+            public static final String COMBINING_RULES = "CombiningRules";
 
             private ExtraValue() {
                 // This utility class is not publicly instantiable.
@@ -130,6 +144,8 @@ public final class Constants {
          * {@link android.text.TextUtils#CAP_MODE_WORDS}, and
          * {@link android.text.TextUtils#CAP_MODE_SENTENCES}.
          */
+        // TODO: Straighten this out. It's bizarre to have to use android.text.TextUtils.CAP_MODE_*
+        // except for OFF that is in Constants.TextUtils.
         public static final int CAP_MODE_OFF = 0;
 
         private TextUtils() {
@@ -138,7 +154,8 @@ public final class Constants {
     }
 
     public static final int NOT_A_CODE = -1;
-
+    public static final int NOT_A_CURSOR_POSITION = -1;
+    // TODO: replace the following constants with state in InputTransaction?
     public static final int NOT_A_COORDINATE = -1;
     public static final int SUGGESTION_STRIP_COORDINATE = -2;
     public static final int SPELL_CHECKER_COORDINATE = -3;
@@ -147,9 +164,26 @@ public final class Constants {
     // A hint on how many characters to cache from the TextView. A good value of this is given by
     // how many characters we need to be able to almost always find the caps mode.
     public static final int EDITOR_CONTENTS_CACHE_SIZE = 1024;
+    // How many characters we accept for the recapitalization functionality. This needs to be
+    // large enough for all reasonable purposes, but avoid purposeful attacks. 100k sounds about
+    // right for this.
+    public static final int MAX_CHARACTERS_FOR_RECAPITALIZATION = 1024 * 100;
 
     // Must be equal to MAX_WORD_LENGTH in native/jni/src/defines.h
     public static final int DICTIONARY_MAX_WORD_LENGTH = 48;
+
+    // (MAX_PREV_WORD_COUNT_FOR_N_GRAM + 1)-gram is supported in Java side. Needs to modify
+    // MAX_PREV_WORD_COUNT_FOR_N_GRAM in native/jni/src/defines.h for suggestions.
+    public static final int MAX_PREV_WORD_COUNT_FOR_N_GRAM = 2;
+
+    // Key events coming any faster than this are long-presses.
+    public static final int LONG_PRESS_MILLISECONDS = 200;
+    // TODO: Set this value appropriately.
+    public static final int GET_SUGGESTED_WORDS_TIMEOUT = 200;
+    // How many continuous deletes at which to start deleting at a higher speed.
+    public static final int DELETE_ACCELERATE_AT = 20;
+
+    public static final String WORD_SEPARATOR = " ";
 
     public static boolean isValidCoordinate(final int coordinate) {
         // Detect {@link NOT_A_COORDINATE}, {@link SUGGESTION_STRIP_COORDINATE},
@@ -171,13 +205,15 @@ public final class Constants {
     public static final int CODE_TAB = '\t';
     public static final int CODE_SPACE = ' ';
     public static final int CODE_PERIOD = '.';
-    public static final int CODE_ARMENIAN_PERIOD = 0x0589;
+    public static final int CODE_COMMA = ',';
     public static final int CODE_DASH = '-';
     public static final int CODE_SINGLE_QUOTE = '\'';
     public static final int CODE_DOUBLE_QUOTE = '"';
     public static final int CODE_QUESTION_MARK = '?';
     public static final int CODE_EXCLAMATION_MARK = '!';
     public static final int CODE_SLASH = '/';
+    public static final int CODE_BACKSLASH = '\\';
+    public static final int CODE_VERTICAL_BAR = '|';
     public static final int CODE_COMMERCIAL_AT = '@';
     public static final int CODE_PLUS = '+';
     public static final int CODE_PERCENT = '%';
@@ -185,6 +221,12 @@ public final class Constants {
     public static final int CODE_CLOSING_SQUARE_BRACKET = ']';
     public static final int CODE_CLOSING_CURLY_BRACKET = '}';
     public static final int CODE_CLOSING_ANGLE_BRACKET = '>';
+    public static final int CODE_INVERTED_QUESTION_MARK = 0xBF; // ¿
+    public static final int CODE_INVERTED_EXCLAMATION_MARK = 0xA1; // ¡
+
+    public static final String REGEXP_PERIOD = "\\.";
+    public static final String STRING_SPACE = " ";
+    public static final String STRING_PERIOD_AND_SPACE = ". ";
 
     /**
      * Special keys code. Must be negative.
@@ -203,8 +245,10 @@ public final class Constants {
     public static final int CODE_LANGUAGE_SWITCH = -10;
     public static final int CODE_EMOJI = -11;
     public static final int CODE_SHIFT_ENTER = -12;
+    public static final int CODE_SYMBOL_SHIFT = -13;
+    public static final int CODE_ALPHA_FROM_EMOJI = -14;
     // Code value representing the code is not specified.
-    public static final int CODE_UNSPECIFIED = -13;
+    public static final int CODE_UNSPECIFIED = -15;
 
     public static boolean isLetterCode(final int code) {
         return code >= CODE_SPACE;
@@ -224,20 +268,50 @@ public final class Constants {
         case CODE_LANGUAGE_SWITCH: return "languageSwitch";
         case CODE_EMOJI: return "emoji";
         case CODE_SHIFT_ENTER: return "shiftEnter";
+        case CODE_ALPHA_FROM_EMOJI: return "alpha";
         case CODE_UNSPECIFIED: return "unspec";
         case CODE_TAB: return "tab";
         case CODE_ENTER: return "enter";
+        case CODE_SPACE: return "space";
         default:
-            if (code < CODE_SPACE) return String.format("'\\u%02x'", code);
-            if (code < 0x100) return String.format("'%c'", code);
-            return String.format("'\\u%04x'", code);
+            if (code < CODE_SPACE) return String.format("\\u%02X", code);
+            if (code < 0x100) return String.format("%c", code);
+            if (code < 0x10000) return String.format("\\u%04X", code);
+            return String.format("\\U%05X", code);
         }
+    }
+
+    public static String printableCodes(final int[] codes) {
+        final StringBuilder sb = new StringBuilder();
+        boolean addDelimiter = false;
+        for (final int code : codes) {
+            if (code == NOT_A_CODE) break;
+            if (addDelimiter) sb.append(", ");
+            sb.append(printableCode(code));
+            addDelimiter = true;
+        }
+        return "[" + sb + "]";
     }
 
     public static final int MAX_INT_BIT_COUNT = 32;
 
+    /**
+     * Screen metrics (a.k.a. Device form factor) constants of
+     * {@link R.integer#config_screen_metrics}.
+     */
+    public static final int SCREEN_METRICS_SMALL_PHONE = 0;
+    public static final int SCREEN_METRICS_LARGE_PHONE = 1;
+    public static final int SCREEN_METRICS_LARGE_TABLET = 2;
+    public static final int SCREEN_METRICS_SMALL_TABLET = 3;
+
+    /**
+     * Default capacity of gesture points container.
+     * This constant is used by {@link BatchInputArbiter} and etc. to preallocate regions that
+     * contain gesture event points.
+     */
+    public static final int DEFAULT_GESTURE_POINTS_CAPACITY = 128;
+
     private Constants() {
         // This utility class is not publicly instantiable.
     }
-
 }

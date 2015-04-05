@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.latin.makedict;
 
-import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
+import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 
 import junit.framework.TestCase;
@@ -32,13 +32,12 @@ public class BinaryDictEncoderFlattenTreeTests extends TestCase {
     // that it does not contain any duplicates.
     public void testFlattenNodes() {
         final FusionDictionary dict = new FusionDictionary(new PtNodeArray(),
-                new DictionaryOptions(new HashMap<String, String>(),
-                        false /* germanUmlautProcessing */, false /* frenchLigatureProcessing */));
-        dict.add("foo", 1, null, false /* isNotAWord */);
-        dict.add("fta", 1, null, false /* isNotAWord */);
-        dict.add("ftb", 1, null, false /* isNotAWord */);
-        dict.add("bar", 1, null, false /* isNotAWord */);
-        dict.add("fool", 1, null, false /* isNotAWord */);
+                new DictionaryOptions(new HashMap<String, String>()));
+        dict.add("foo", new ProbabilityInfo(1), null, false /* isNotAWord */);
+        dict.add("fta", new ProbabilityInfo(1), null, false /* isNotAWord */);
+        dict.add("ftb", new ProbabilityInfo(1), null, false /* isNotAWord */);
+        dict.add("bar", new ProbabilityInfo(1), null, false /* isNotAWord */);
+        dict.add("fool", new ProbabilityInfo(1), null, false /* isNotAWord */);
         final ArrayList<PtNodeArray> result =
                 BinaryDictEncoderUtils.flattenTree(dict.mRootNodeArray);
         assertEquals(4, result.size());

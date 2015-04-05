@@ -16,19 +16,23 @@
 
 package com.android.inputmethod.latin.dicttool;
 
+import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary;
-import com.android.inputmethod.latin.makedict.FusionDictionary.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
-import com.android.inputmethod.latin.makedict.FusionDictionary.WeightedString;
-import com.android.inputmethod.latin.makedict.Word;
+import com.android.inputmethod.latin.makedict.ProbabilityInfo;
+import com.android.inputmethod.latin.makedict.WeightedString;
+import com.android.inputmethod.latin.makedict.WordProperty;
 
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
+
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Writer;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeSet;
@@ -36,10 +40,6 @@ import java.util.TreeSet;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * Reads and writes XML files for a FusionDictionary.
@@ -52,13 +52,9 @@ public class XmlDictInputOutput {
     private static final String WORD_TAG = "w";
     private static final String BIGRAM_TAG = "bigram";
     private static final String SHORTCUT_TAG = "shortcut";
-    private static final String FREQUENCY_ATTR = "f";
+    private static final String PROBABILITY_ATTR = "f";
     private static final String WORD_ATTR = "word";
     private static final String NOT_A_WORD_ATTR = "not_a_word";
-
-    private static final String OPTIONS_KEY = "options";
-    private static final String GERMAN_UMLAUT_PROCESSING_OPTION = "german_umlaut_processing";
-    private static final String FRENCH_LIGATURE_PROCESSING_OPTION = "french_ligature_processing";
 
     /**
      * SAX handler for a unigram XML file.
@@ -68,6 +64,7 @@ public class XmlDictInputOutput {
         private static final int START = 1;
         private static final int WORD = 2;
         private static final int UNKNOWN = 3;
+        private static final int SHORTCUT_ONLY_WORD_PROBABILITY = 1;
 
         FusionDictionary mDictionary;
         int mState; // the state of the parser
@@ -92,7 +89,8 @@ public class XmlDictInputOutput {
             final FusionDictionary dict = mDictionary;
             for (final String shortcutOnly : mShortcutsMap.keySet()) {
                 if (dict.hasWord(shortcutOnly)) continue;
-                dict.add(shortcutOnly, 1, mShortcutsMap.get(shortcutOnly), true /* isNotAWord */);
+                dict.add(shortcutOnly, new ProbabilityInfo(SHORTCUT_ONLY_WORD_PROBABILITY),
+                        mShortcutsMap.get(shortcutOnly), true /* isNotAWord */);
             }
             mDictionary = null;
             mShortcutsMap.clear();
@@ -109,23 +107,18 @@ public class XmlDictInputOutput {
                 mWord = "";
                 for (int attrIndex = 0; attrIndex < attrs.getLength(); ++attrIndex) {
                     final String attrName = attrs.getLocalName(attrIndex);
-                    if (FREQUENCY_ATTR.equals(attrName)) {
+                    if (PROBABILITY_ATTR.equals(attrName)) {
                         mFreq = Integer.parseInt(attrs.getValue(attrIndex));
                     }
                 }
             } else if (ROOT_TAG.equals(localName)) {
-                final HashMap<String, String> attributes = new HashMap<String, String>();
+                final HashMap<String, String> attributes = new HashMap<>();
                 for (int attrIndex = 0; attrIndex < attrs.getLength(); ++attrIndex) {
                     final String attrName = attrs.getLocalName(attrIndex);
                     attributes.put(attrName, attrs.getValue(attrIndex));
                 }
-                final String optionsString = attributes.get(OPTIONS_KEY);
-                final boolean processUmlauts =
-                        GERMAN_UMLAUT_PROCESSING_OPTION.equals(optionsString);
-                final boolean processLigatures =
-                        FRENCH_LIGATURE_PROCESSING_OPTION.equals(optionsString);
                 mDictionary = new FusionDictionary(new PtNodeArray(),
-                        new DictionaryOptions(attributes, processUmlauts, processLigatures));
+                        new DictionaryOptions(attributes));
             } else {
                 mState = UNKNOWN;
             }
@@ -144,7 +137,8 @@ public class XmlDictInputOutput {
         @Override
         public void endElement(String uri, String localName, String qName) {
             if (WORD == mState) {
-                mDictionary.add(mWord, mFreq, mShortcutsMap.get(mWord), false /* isNotAWord */);
+                mDictionary.add(mWord, new ProbabilityInfo(mFreq), mShortcutsMap.get(mWord),
+                        false /* isNotAWord */);
                 mState = START;
             }
         }
@@ -174,7 +168,7 @@ public class XmlDictInputOutput {
             DST_ATTRIBUTE = dstAttribute;
             DST_FREQ = dstFreq;
             mSrc = null;
-            mAssocMap = new HashMap<String, ArrayList<WeightedString>>();
+            mAssocMap = new HashMap<>();
         }
 
         @Override
@@ -186,7 +180,7 @@ public class XmlDictInputOutput {
                 int freq = getValueFromFreqString(attrs.getValue(uri, DST_FREQ));
                 WeightedString bigram = new WeightedString(dst, freq / XML_TO_MEMORY_RATIO);
                 ArrayList<WeightedString> bigramList = mAssocMap.get(mSrc);
-                if (null == bigramList) bigramList = new ArrayList<WeightedString>();
+                if (null == bigramList) bigramList = new ArrayList<>();
                 bigramList.add(bigram);
                 mAssocMap.put(mSrc, bigramList);
             }
@@ -246,14 +240,13 @@ public class XmlDictInputOutput {
         protected int getValueFromFreqString(final String freqString) {
             if (WHITELIST_MARKER.equals(freqString)) {
                 return WHITELIST_FREQ_VALUE;
-            } else {
-                final int intValue = super.getValueFromFreqString(freqString);
-                if (intValue < MIN_FREQ || intValue > MAX_FREQ) {
-                    throw new RuntimeException("Shortcut freq out of range. Accepted range is "
-                            + MIN_FREQ + ".." + MAX_FREQ);
-                }
-                return intValue;
             }
+            final int intValue = super.getValueFromFreqString(freqString);
+            if (intValue < MIN_FREQ || intValue > MAX_FREQ) {
+                throw new RuntimeException("Shortcut freq out of range. Accepted range is "
+                        + MIN_FREQ + ".." + MAX_FREQ);
+            }
+            return intValue;
         }
 
         // As per getAssocMap(), this never returns null.
@@ -271,23 +264,12 @@ public class XmlDictInputOutput {
      * @return true if the file is in the unigram XML format, false otherwise
      */
     public static boolean isXmlUnigramDictionary(final String filename) {
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new FileReader(new File(filename)));
+        try (final BufferedReader reader = new BufferedReader(
+                new InputStreamReader(new FileInputStream(filename), "UTF-8"))) {
             final String firstLine = reader.readLine();
             return firstLine.matches("^\\s*<wordlist .*>\\s*$");
-        } catch (FileNotFoundException e) {
+        } catch (final IOException e) {
             return false;
-        } catch (IOException e) {
-            return false;
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    // do nothing
-                }
-            }
         }
     }
 
@@ -302,8 +284,8 @@ public class XmlDictInputOutput {
      * @param bigrams the file to read the bigrams from, or null.
      * @return the in-memory representation of the dictionary.
      */
-    public static FusionDictionary readDictionaryXml(final InputStream unigrams,
-            final InputStream shortcuts, final InputStream bigrams)
+    public static FusionDictionary readDictionaryXml(final BufferedInputStream unigrams,
+            final BufferedInputStream shortcuts, final BufferedInputStream bigrams)
             throws SAXException, IOException, ParserConfigurationException {
         final SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
@@ -325,7 +307,7 @@ public class XmlDictInputOutput {
             final ArrayList<WeightedString> bigramList = bigramMap.get(firstWord);
             for (final WeightedString bigram : bigramList) {
                 if (!dict.hasWord(bigram.mWord)) continue;
-                dict.setBigram(firstWord, bigram.mWord, bigram.mFrequency);
+                dict.setBigram(firstWord, bigram.mWord, bigram.mProbabilityInfo);
             }
         }
         return dict;
@@ -352,44 +334,40 @@ public class XmlDictInputOutput {
      * @param destination a destination stream to write to.
      * @param dict the dictionary to write.
      */
-    public static void writeDictionaryXml(Writer destination, FusionDictionary dict)
-            throws IOException {
-        final TreeSet<Word> set = new TreeSet<Word>();
-        for (Word word : dict) {
-            set.add(word);
+    public static void writeDictionaryXml(final BufferedWriter destination,
+            final FusionDictionary dict) throws IOException {
+        final TreeSet<WordProperty> wordPropertiesInDict = new TreeSet<>();
+        for (WordProperty wordProperty : dict) {
+            wordPropertiesInDict.add(wordProperty);
         }
         // TODO: use an XMLSerializer if this gets big
         destination.write("<wordlist format=\"2\"");
-        final HashMap<String, String> options = dict.mOptions.mAttributes;
-        if (dict.mOptions.mGermanUmlautProcessing) {
-            destination.write(" " + OPTIONS_KEY + "=\"" + GERMAN_UMLAUT_PROCESSING_OPTION + "\"");
-        } else if (dict.mOptions.mFrenchLigatureProcessing) {
-            destination.write(" " + OPTIONS_KEY + "=\"" + FRENCH_LIGATURE_PROCESSING_OPTION + "\"");
-        }
         for (final String key : dict.mOptions.mAttributes.keySet()) {
             final String value = dict.mOptions.mAttributes.get(key);
             destination.write(" " + key + "=\"" + value + "\"");
         }
         destination.write(">\n");
         destination.write("<!-- Warning: there is no code to read this format yet. -->\n");
-        for (Word word : set) {
-            destination.write("  <" + WORD_TAG + " " + WORD_ATTR + "=\"" + word.mWord + "\" "
-                    + FREQUENCY_ATTR + "=\"" + word.mFrequency
-                    + (word.mIsNotAWord ? "\" " + NOT_A_WORD_ATTR + "=\"true" : "") + "\">");
-            if (null != word.mShortcutTargets) {
+        for (WordProperty wordProperty : wordPropertiesInDict) {
+            destination.write("  <" + WORD_TAG + " " + WORD_ATTR + "=\"" + wordProperty.mWord
+                    + "\" " + PROBABILITY_ATTR + "=\"" + wordProperty.getProbability()
+                    + (wordProperty.mIsNotAWord ? "\" " + NOT_A_WORD_ATTR + "=\"true" : "")
+                    + "\">");
+            if (null != wordProperty.mShortcutTargets) {
                 destination.write("\n");
-                for (WeightedString target : word.mShortcutTargets) {
-                    destination.write("    <" + SHORTCUT_TAG + " " + FREQUENCY_ATTR + "=\""
-                            + target.mFrequency + "\">" + target.mWord + "</" + SHORTCUT_TAG
+                for (WeightedString target : wordProperty.mShortcutTargets) {
+                    destination.write("    <" + SHORTCUT_TAG + " " + PROBABILITY_ATTR + "=\""
+                            + target.getProbability() + "\">" + target.mWord + "</" + SHORTCUT_TAG
                             + ">\n");
                 }
                 destination.write("  ");
             }
-            if (null != word.mBigrams) {
+            if (null != wordProperty.mBigrams) {
                 destination.write("\n");
-                for (WeightedString bigram : word.mBigrams) {
-                    destination.write("    <" + BIGRAM_TAG + " " + FREQUENCY_ATTR + "=\""
-                            + bigram.mFrequency + "\">" + bigram.mWord + "</" + BIGRAM_TAG + ">\n");
+                for (WeightedString bigram : wordProperty.mBigrams) {
+                    destination.write("    <" + BIGRAM_TAG + " " + PROBABILITY_ATTR + "=\""
+                            + bigram.getProbability() + "\">" + bigram.mWord
+                            + "</" + BIGRAM_TAG + ">\n");
                 }
                 destination.write("  ");
             }

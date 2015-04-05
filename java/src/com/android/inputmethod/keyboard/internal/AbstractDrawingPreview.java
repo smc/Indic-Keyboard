@@ -22,36 +22,50 @@ import android.view.View;
 import com.android.inputmethod.keyboard.PointerTracker;
 
 /**
- * Abstract base class for previews that are drawn on PreviewPlacerView, e.g.,
- * GestureFloatingPrevewText, GestureTrail, and SlidingKeyInputPreview.
+ * Abstract base class for previews that are drawn on DrawingPreviewPlacerView, e.g.,
+ * GestureFloatingTextDrawingPreview, GestureTrailsDrawingPreview, and
+ * SlidingKeyInputDrawingPreview.
  */
 public abstract class AbstractDrawingPreview {
-    private final View mDrawingView;
+    private View mDrawingView;
     private boolean mPreviewEnabled;
+    private boolean mHasValidGeometry;
 
-    protected AbstractDrawingPreview(final View drawingView) {
+    public void setDrawingView(final DrawingPreviewPlacerView drawingView) {
         mDrawingView = drawingView;
+        drawingView.addPreview(this);
     }
 
-    public final View getDrawingView() {
-        return mDrawingView;
+    protected void invalidateDrawingView() {
+        if (mDrawingView != null) {
+            mDrawingView.invalidate();
+        }
+    }
+
+    protected final boolean isPreviewEnabled() {
+        return mPreviewEnabled && mHasValidGeometry;
     }
 
     public final void setPreviewEnabled(final boolean enabled) {
         mPreviewEnabled = enabled;
     }
 
-    public boolean isPreviewEnabled() {
-        return mPreviewEnabled;
+    /**
+     * Set {@link MainKeyboardView} geometry and position in the {@link SoftInputWindow}.
+     * The class that is overriding this method must call this super implementation.
+     *
+     * @param originCoords the top-left coordinates of the {@link MainKeyboardView} in
+     *        {@link SoftInputWindow} coordinate-system. This is unused but has a point in an
+     *        extended class, such as {@link GestureTrailsDrawingPreview}.
+     * @param width the width of {@link MainKeyboardView}.
+     * @param height the height of {@link MainKeyboardView}.
+     */
+    public void setKeyboardViewGeometry(final int[] originCoords, final int width,
+            final int height) {
+        mHasValidGeometry = (width > 0 && height > 0);
     }
 
-    public void setKeyboardGeometry(final int[] originCoords, final int width, final int height) {
-        // Default implementation is empty.
-    }
-
-    public void onDetachFromWindow() {
-        // Default implementation is empty.
-    }
+    public abstract void onDeallocateMemory();
 
     /**
      * Draws the preview

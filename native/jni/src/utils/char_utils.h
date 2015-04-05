@@ -18,6 +18,8 @@
 #define LATINIME_CHAR_UTILS_H
 
 #include <cctype>
+#include <cstring>
+#include <vector>
 
 #include "defines.h"
 
@@ -85,10 +87,35 @@ class CharUtils {
         return spaceCount;
     }
 
+    static AK_FORCE_INLINE int isInUnicodeSpace(const int codePoint) {
+        return codePoint >= MIN_UNICODE_CODE_POINT && codePoint <= MAX_UNICODE_CODE_POINT;
+    }
+
     static unsigned short latin_tolower(const unsigned short c);
+    static const std::vector<int> EMPTY_STRING;
+
+    // Returns updated code point count. Returns 0 when the code points cannot be marked as a
+    // Beginning-of-Sentence.
+    static AK_FORCE_INLINE int attachBeginningOfSentenceMarker(int *const codePoints,
+            const int codePointCount, const int maxCodePoint) {
+        if (codePointCount > 0 && codePoints[0] == CODE_POINT_BEGINNING_OF_SENTENCE) {
+            // Marker has already been attached.
+            return codePointCount;
+        }
+        if (codePointCount >= maxCodePoint) {
+            // the code points cannot be marked as a Beginning-of-Sentence.
+            return 0;
+        }
+        memmove(codePoints + 1, codePoints, sizeof(int) * codePointCount);
+        codePoints[0] = CODE_POINT_BEGINNING_OF_SENTENCE;
+        return codePointCount + 1;
+    }
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(CharUtils);
+
+    static const int MIN_UNICODE_CODE_POINT;
+    static const int MAX_UNICODE_CODE_POINT;
 
     /**
      * Table mapping most combined Latin, Greek, and Cyrillic characters

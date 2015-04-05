@@ -17,8 +17,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         coreApp="true"
         package="org.smc.inputmethod.indic"
-        android:versionCode="15"
-        android:versionName="1.3">
+        android:versionCode="20"
+        android:versionName="0.9.8">
 
     <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="19" />
 
@@ -32,9 +32,10 @@
     <uses-permission android:name="android.permission.WRITE_USER_DICTIONARY" />
 
     <application android:label="@string/english_ime_name"
-            android:icon="@mipmap/ic_launcher_keyboard"
+            android:icon="@drawable/ic_launcher_keyboard"
             android:killAfterRestore="false"
-            android:supportsRtl="true">
+            android:supportsRtl="true"
+            android:allowBackup="true">
 
         <service android:name="LatinIME"
                 android:label="@string/english_ime_name"
@@ -56,8 +57,9 @@
         </service>
 
         <activity android:name=".setup.SetupActivity"
+                android:theme="@style/platformActivityTheme"
                 android:label="@string/english_ime_name"
-                android:icon="@mipmap/ic_launcher_keyboard"
+                android:icon="@drawable/ic_launcher_keyboard"
                 android:launchMode="singleTask"
                 android:noHistory="true">
             <intent-filter>
@@ -67,6 +69,7 @@
         </activity>
 
         <activity android:name=".setup.SetupWizardActivity"
+                android:theme="@style/platformActivityTheme"
                 android:label="@string/english_ime_name"
                 android:clearTaskOnLaunch="true">
             <intent-filter>
@@ -74,15 +77,17 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".setup.LauncherIconVisibilityManager">
+        <receiver android:name="SystemBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.USER_INITIALIZE" />
+                <action android:name="android.intent.action.LOCALE_CHANGED" />
             </intent-filter>
         </receiver>
 
         <activity android:name=".settings.SettingsActivity"
+                android:theme="@style/platformSettingsTheme"
                 android:label="@string/english_ime_settings"
                 android:uiOptions="splitActionBarWhenNarrow">
             <intent-filter>
@@ -91,14 +96,8 @@
         </activity>
 
         <activity android:name=".spellcheck.SpellCheckerSettingsActivity"
+                  android:theme="@style/platformSettingsTheme"
                   android:label="@string/android_spell_checker_settings">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name=".settings.DebugSettingsActivity"
-                android:label="@string/english_ime_debug_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -110,13 +109,14 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".personalization.DictionaryDecayBroadcastReciever">
+        <receiver android:name=".personalization.DictionaryDecayBroadcastReciever"
+            android:exported="false">
             <intent-filter>
                 <action android:name="org.smc.inputmethod.indic.personalization.DICT_DECAY" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".DictionaryPackInstallBroadcastReceiver">
+        <receiver android:name=".DictionaryPackInstallBroadcastReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="org.smc.inputmethod.dictionarypack.aosp.UNKNOWN_CLIENT" />
             </intent-filter>
@@ -143,8 +143,8 @@
         </receiver>
 
         <activity android:name="org.smc.inputmethod.dictionarypack.DictionarySettingsActivity"
+                android:theme="@style/platformSettingsTheme"
                 android:label="@string/dictionary_settings_title"
-                android:theme="@android:style/Theme.Holo"
                 android:uiOptions="splitActionBarWhenNarrow">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -152,8 +152,8 @@
         </activity>
 
         <activity android:name="org.smc.inputmethod.dictionarypack.DownloadOverMeteredDialog"
-                android:label="@string/dictionary_install_over_metered_network_prompt"
-                android:theme="@android:style/Theme.Holo">
+                android:theme="@style/platformActivityTheme"
+                android:label="@string/dictionary_install_over_metered_network_prompt">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>

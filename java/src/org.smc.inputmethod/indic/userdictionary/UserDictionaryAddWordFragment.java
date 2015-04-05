@@ -16,10 +16,6 @@
 
 package org.smc.inputmethod.indic.userdictionary;
 
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.userdictionary.UserDictionaryAddWordContents.LocaleRenderer;
-import org.smc.inputmethod.indic.userdictionary.UserDictionaryLocalePicker.LocationChangedListener;
-
 import android.app.Fragment;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
@@ -35,6 +31,10 @@ import android.widget.Spinner;
 
 import java.util.ArrayList;
 import java.util.Locale;
+
+import org.smc.inputmethod.indic.R;
+import org.smc.inputmethod.indic.userdictionary.UserDictionaryAddWordContents.LocaleRenderer;
+import org.smc.inputmethod.indic.userdictionary.UserDictionaryLocalePicker.LocationChangedListener;
 
 // Caveat: This class is basically taken from
 // packages/apps/Settings/src/com/android/settings/inputmethod/UserDictionaryAddWordFragment.java
@@ -134,8 +134,8 @@ public class UserDictionaryAddWordFragment extends Fragment
 
         final Spinner localeSpinner =
                 (Spinner)mRootView.findViewById(R.id.user_dictionary_add_locale);
-        final ArrayAdapter<LocaleRenderer> adapter = new ArrayAdapter<LocaleRenderer>(getActivity(),
-                android.R.layout.simple_spinner_item, localesList);
+        final ArrayAdapter<LocaleRenderer> adapter = new ArrayAdapter<>(
+                getActivity(), android.R.layout.simple_spinner_item, localesList);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         localeSpinner.setAdapter(adapter);
         localeSpinner.setOnItemSelectedListener(this);

@@ -16,11 +16,11 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import org.smc.inputmethod.annotations.UsedForTesting;
-
 import android.util.Log;
 
 import java.util.Arrays;
+
+import org.smc.inputmethod.annotations.UsedForTesting;
 
 /**
  * Utilities for matrix operations. Don't instantiate objects inside this class to prevent

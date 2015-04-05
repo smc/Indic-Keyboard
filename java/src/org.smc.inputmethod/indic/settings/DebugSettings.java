@@ -16,121 +16,31 @@
 
 package org.smc.inputmethod.indic.settings;
 
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.os.Process;
-import android.preference.CheckBoxPreference;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
-
-import com.android.inputmethod.keyboard.KeyboardSwitcher;
-import org.smc.inputmethod.indic.LatinImeLogger;
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.debug.ExternalDictionaryGetterForDebug;
-import org.smc.inputmethod.indic.utils.ApplicationUtils;
-
-public final class DebugSettings extends PreferenceFragment
-        implements SharedPreferences.OnSharedPreferenceChangeListener {
-
+public final class DebugSettings {
     public static final String PREF_DEBUG_MODE = "debug_mode";
     public static final String PREF_FORCE_NON_DISTINCT_MULTITOUCH = "force_non_distinct_multitouch";
-    public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
-    public static final String PREF_STATISTICS_LOGGING = "enable_logging";
-    public static final String PREF_USE_ONLY_PERSONALIZATION_DICTIONARY_FOR_DEBUG =
-            "use_only_personalization_dictionary_for_debug";
-    public static final String PREF_BOOST_PERSONALIZATION_DICTIONARY_FOR_DEBUG =
-            "boost_personalization_dictionary_for_debug";
-    private static final String PREF_READ_EXTERNAL_DICTIONARY = "read_external_dictionary";
-    private static final boolean SHOW_STATISTICS_LOGGING = false;
+    public static final String PREF_FORCE_PHYSICAL_KEYBOARD_SPECIAL_KEY =
+            "force_physical_keyboard_special_key";
+    public static final String PREF_SHOW_UI_TO_ACCEPT_TYPED_WORD =
+            "pref_show_ui_to_accept_typed_word";
+    public static final String PREF_HAS_CUSTOM_KEY_PREVIEW_ANIMATION_PARAMS =
+            "pref_has_custom_key_preview_animation_params";
+    public static final String PREF_KEY_PREVIEW_SHOW_UP_START_X_SCALE =
+            "pref_key_preview_show_up_start_x_scale";
+    public static final String PREF_KEY_PREVIEW_SHOW_UP_START_Y_SCALE =
+            "pref_key_preview_show_up_start_y_scale";
+    public static final String PREF_KEY_PREVIEW_DISMISS_END_X_SCALE =
+            "pref_key_preview_dismiss_end_x_scale";
+    public static final String PREF_KEY_PREVIEW_DISMISS_END_Y_SCALE =
+            "pref_key_preview_dismiss_end_y_scale";
+    public static final String PREF_KEY_PREVIEW_SHOW_UP_DURATION =
+            "pref_key_preview_show_up_duration";
+    public static final String PREF_KEY_PREVIEW_DISMISS_DURATION =
+            "pref_key_preview_dismiss_duration";
+    public static final String PREF_SLIDING_KEY_INPUT_PREVIEW = "pref_sliding_key_input_preview";
+    public static final String PREF_KEY_LONGPRESS_TIMEOUT = "pref_key_longpress_timeout";
 
-    private boolean mServiceNeedsRestart = false;
-    private CheckBoxPreference mDebugMode;
-    private CheckBoxPreference mStatisticsLoggingPref;
-
-    @Override
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
-        addPreferencesFromResource(R.xml.prefs_for_debug);
-        SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
-        prefs.registerOnSharedPreferenceChangeListener(this);
-
-        final Preference usabilityStudyPref = findPreference(PREF_USABILITY_STUDY_MODE);
-        if (usabilityStudyPref instanceof CheckBoxPreference) {
-            final CheckBoxPreference checkbox = (CheckBoxPreference)usabilityStudyPref;
-            checkbox.setChecked(prefs.getBoolean(PREF_USABILITY_STUDY_MODE,
-                    LatinImeLogger.getUsabilityStudyMode(prefs)));
-            checkbox.setSummary(R.string.settings_warning_researcher_mode);
-        }
-        final Preference statisticsLoggingPref = findPreference(PREF_STATISTICS_LOGGING);
-        if (statisticsLoggingPref instanceof CheckBoxPreference) {
-            mStatisticsLoggingPref = (CheckBoxPreference) statisticsLoggingPref;
-            if (!SHOW_STATISTICS_LOGGING) {
-                getPreferenceScreen().removePreference(statisticsLoggingPref);
-            }
-        }
-
-        final PreferenceScreen readExternalDictionary =
-                (PreferenceScreen) findPreference(PREF_READ_EXTERNAL_DICTIONARY);
-        if (null != readExternalDictionary) {
-            readExternalDictionary.setOnPreferenceClickListener(
-                    new Preference.OnPreferenceClickListener() {
-                        @Override
-                        public boolean onPreferenceClick(final Preference arg0) {
-                            ExternalDictionaryGetterForDebug.chooseAndInstallDictionary(
-                                    getActivity());
-                            mServiceNeedsRestart = true;
-                            return true;
-                        }
-                    });
-        }
-
-        mServiceNeedsRestart = false;
-        mDebugMode = (CheckBoxPreference) findPreference(PREF_DEBUG_MODE);
-        updateDebugMode();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mServiceNeedsRestart) Process.killProcess(Process.myPid());
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        if (key.equals(PREF_DEBUG_MODE)) {
-            if (mDebugMode != null) {
-                mDebugMode.setChecked(prefs.getBoolean(PREF_DEBUG_MODE, false));
-                final boolean checked = mDebugMode.isChecked();
-                if (mStatisticsLoggingPref != null) {
-                    if (checked) {
-                        getPreferenceScreen().addPreference(mStatisticsLoggingPref);
-                    } else {
-                        getPreferenceScreen().removePreference(mStatisticsLoggingPref);
-                    }
-                }
-                updateDebugMode();
-                mServiceNeedsRestart = true;
-            }
-        } else if (key.equals(PREF_FORCE_NON_DISTINCT_MULTITOUCH)
-                || key.equals(PREF_USE_ONLY_PERSONALIZATION_DICTIONARY_FOR_DEBUG)) {
-            mServiceNeedsRestart = true;
-        }
-    }
-
-    private void updateDebugMode() {
-        if (mDebugMode == null) {
-            return;
-        }
-        boolean isDebugMode = mDebugMode.isChecked();
-        final String version = getResources().getString(
-                R.string.version_text, ApplicationUtils.getVersionName(getActivity()));
-        if (!isDebugMode) {
-            mDebugMode.setTitle(version);
-            mDebugMode.setSummary("");
-        } else {
-            mDebugMode.setTitle(getResources().getString(R.string.prefs_debug_mode));
-            mDebugMode.setSummary(version);
-        }
+    private DebugSettings() {
+        // This class is not publicly instantiable.
     }
 }

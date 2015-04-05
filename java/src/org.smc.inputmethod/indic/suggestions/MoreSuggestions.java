@@ -23,23 +23,17 @@ import android.graphics.drawable.Drawable;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
+
+import org.smc.inputmethod.indic.Constants;
 import org.smc.inputmethod.indic.R;
 import org.smc.inputmethod.indic.SuggestedWords;
-import org.smc.inputmethod.indic.SuggestedWords.SuggestedWordInfo;
-import org.smc.inputmethod.indic.utils.TypefaceUtils;
+import com.android.inputmethod.latin.utils.TypefaceUtils;
 
 public final class MoreSuggestions extends Keyboard {
-    public static final int SUGGESTION_CODE_BASE = 1024;
-
     public final SuggestedWords mSuggestedWords;
-
-    public static abstract class MoreSuggestionsListener extends KeyboardActionListener.Adapter {
-        public abstract void onSuggestionSelected(final int index, final SuggestedWordInfo info);
-    }
 
     MoreSuggestions(final MoreSuggestionsParam params, final SuggestedWords suggestedWords) {
         super(params);
@@ -47,10 +41,10 @@ public final class MoreSuggestions extends Keyboard {
     }
 
     private static final class MoreSuggestionsParam extends KeyboardParams {
-        private final int[] mWidths = new int[SuggestionStripView.MAX_SUGGESTIONS];
-        private final int[] mRowNumbers = new int[SuggestionStripView.MAX_SUGGESTIONS];
-        private final int[] mColumnOrders = new int[SuggestionStripView.MAX_SUGGESTIONS];
-        private final int[] mNumColumnsInRow = new int[SuggestionStripView.MAX_SUGGESTIONS];
+        private final int[] mWidths = new int[SuggestedWords.MAX_SUGGESTIONS];
+        private final int[] mRowNumbers = new int[SuggestedWords.MAX_SUGGESTIONS];
+        private final int[] mColumnOrders = new int[SuggestedWords.MAX_SUGGESTIONS];
+        private final int[] mNumColumnsInRow = new int[SuggestedWords.MAX_SUGGESTIONS];
         private static final int MAX_COLUMNS_IN_ROW = 3;
         private int mNumRows;
         public Drawable mDivider;
@@ -66,16 +60,23 @@ public final class MoreSuggestions extends Keyboard {
             clearKeys();
             mDivider = res.getDrawable(R.drawable.more_suggestions_divider);
             mDividerWidth = mDivider.getIntrinsicWidth();
-            final float padding = res.getDimension(R.dimen.more_suggestions_key_horizontal_padding);
+            final float padding = res.getDimension(
+                    R.dimen.config_more_suggestions_key_horizontal_padding);
 
             int row = 0;
             int index = fromIndex;
             int rowStartIndex = fromIndex;
-            final int size = Math.min(suggestedWords.size(), SuggestionStripView.MAX_SUGGESTIONS);
+            final int size = Math.min(suggestedWords.size(), SuggestedWords.MAX_SUGGESTIONS);
             while (index < size) {
-                final String word = suggestedWords.getWord(index);
+                final String word;
+                if (isIndexSubjectToAutoCorrection(suggestedWords, index)) {
+                    // INDEX_OF_AUTO_CORRECTION and INDEX_OF_TYPED_WORD got swapped.
+                    word = suggestedWords.getLabel(SuggestedWords.INDEX_OF_TYPED_WORD);
+                } else {
+                    word = suggestedWords.getLabel(index);
+                }
                 // TODO: Should take care of text x-scaling.
-                mWidths[index] = (int)(TypefaceUtils.getLabelWidth(word, paint) + padding);
+                mWidths[index] = (int)(TypefaceUtils.getStringWidth(word, paint) + padding);
                 final int numColumn = index - rowStartIndex + 1;
                 final int columnWidth =
                         (maxWidth - mDividerWidth * (numColumn - 1)) / numColumn;
@@ -125,9 +126,9 @@ public final class MoreSuggestions extends Keyboard {
         }
 
         private static final int[][] COLUMN_ORDER_TO_NUMBER = {
-            { 0, },
-            { 1, 0, },
-            { 2, 0, 1},
+            { 0 }, // center
+            { 1, 0 }, // right-left
+            { 1, 0, 2 }, // center-left-right
         };
 
         public int getNumColumnInRow(final int index) {
@@ -171,6 +172,11 @@ public final class MoreSuggestions extends Keyboard {
         }
     }
 
+    static boolean isIndexSubjectToAutoCorrection(final SuggestedWords suggestedWords,
+            final int index) {
+        return suggestedWords.mWillAutoCorrect && index == SuggestedWords.INDEX_OF_AUTO_CORRECTION;
+    }
+
     public static final class Builder extends KeyboardBuilder<MoreSuggestionsParam> {
         private final MoreSuggestionsView mPaneView;
         private SuggestedWords mSuggestedWords;
@@ -188,7 +194,6 @@ public final class MoreSuggestions extends Keyboard {
             final int xmlId = R.xml.kbd_suggestions_pane_template;
             load(xmlId, parentKeyboard.mId);
             mParams.mVerticalGap = mParams.mTopPadding = parentKeyboard.mVerticalGap / 2;
-
             mPaneView.updateKeyboardGeometry(mParams.mDefaultRowHeight);
             final int count = mParams.layout(suggestedWords, fromIndex, maxWidth, minWidth, maxRow,
                     mPaneView.newLabelPaint(null /* key */), mResources);
@@ -205,13 +210,17 @@ public final class MoreSuggestions extends Keyboard {
                 final int x = params.getX(index);
                 final int y = params.getY(index);
                 final int width = params.getWidth(index);
-                final String word = mSuggestedWords.getWord(index);
-                final String info = mSuggestedWords.getDebugString(index);
-                final int indexInMoreSuggestions = index + SUGGESTION_CODE_BASE;
-                final Key key = new Key(
-                        params, word, info, KeyboardIconsSet.ICON_UNDEFINED, indexInMoreSuggestions,
-                        null /* outputText */, x, y, width, params.mDefaultRowHeight,
-                        0 /* labelFlags */, Key.BACKGROUND_TYPE_NORMAL);
+                final String word;
+                final String info;
+                if (isIndexSubjectToAutoCorrection(mSuggestedWords, index)) {
+                    // INDEX_OF_AUTO_CORRECTION and INDEX_OF_TYPED_WORD got swapped.
+                    word = mSuggestedWords.getLabel(SuggestedWords.INDEX_OF_TYPED_WORD);
+                    info = mSuggestedWords.getDebugString(SuggestedWords.INDEX_OF_TYPED_WORD);
+                } else {
+                    word = mSuggestedWords.getLabel(index);
+                    info = mSuggestedWords.getDebugString(index);
+                }
+                final Key key = new MoreSuggestionKey(word, info, index, params);
                 params.markAsEdgeKey(key, index);
                 params.onAddKey(key);
                 final int columnNumber = params.getColumnNumber(index);
@@ -223,6 +232,19 @@ public final class MoreSuggestions extends Keyboard {
                 }
             }
             return new MoreSuggestions(params, mSuggestedWords);
+        }
+    }
+
+    static final class MoreSuggestionKey extends Key {
+        public final int mSuggestedWordIndex;
+
+        public MoreSuggestionKey(final String word, final String info, final int index,
+                final MoreSuggestionsParam params) {
+            super(word /* label */, KeyboardIconsSet.ICON_UNDEFINED, Constants.CODE_OUTPUT_TEXT,
+                    word /* outputText */, info, 0 /* labelFlags */, Key.BACKGROUND_TYPE_NORMAL,
+                    params.getX(index), params.getY(index), params.getWidth(index),
+                    params.mDefaultRowHeight, params.mHorizontalGap, params.mVerticalGap);
+            mSuggestedWordIndex = index;
         }
     }
 

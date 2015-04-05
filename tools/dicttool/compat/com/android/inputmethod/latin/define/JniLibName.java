@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin.define;
+package org.smc.inputmethod.indic.define;
 
 public final class JniLibName {
     private JniLibName() {
         // This class is not publicly instantiable.
     }
 
-    public static final String JNI_LIB_NAME = "latinime-dicttool-host";
+    public static final String JNI_LIB_NAME = "latinime-aosp-dicttool-host";
 }

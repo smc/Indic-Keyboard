@@ -26,89 +26,89 @@
         <case
             latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
         >
-            <Key latin:keyLabel="" />
+            <Key latin:keySpec="" />
 
             <!--X ঁ BENGALI SIGN CANDRABINDU-->
             <Key
-                latin:keyLabel="&#x0981;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0981;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--C ণ BENGALI LETTER NNA-->
             <Key
-                latin:keyLabel="&#x09A3;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x09A3;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keyLabel="" />
-            <Key latin:keyLabel="" />
-            <Key latin:keyLabel="" />
+            <Key latin:keySpec="" />
+            <Key latin:keySpec="" />
+            <Key latin:keySpec="" />
 
             <!--M শ BENGALI LETTER SHA-->
             <Key
-                latin:keyLabel="&#x09B6;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x09B6;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--\< ষ BENGALI LETTER SSA-->
             <Key
-                latin:keyLabel="&#x09B7;"
+                latin:keySpec="&#x09B7;"
                 latin:moreKeys="&lt;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--\> ৤  -->
             <Key
-                latin:keyLabel="&#x09E4;"
+                latin:keySpec="&#x09E4;"
                 latin:moreKeys="&gt;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--&#x09AF; যBENGALI LETTER YA-->
             <Key
-                latin:keyLabel="&#x09AF;"
+                latin:keySpec="&#x09AF;"
                 latin:moreKeys="\?"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </case>
 
         <default>
-            <Key latin:keyLabel="" />
+            <Key latin:keySpec="" />
 
             <!--x ং BENGALI SIGN ANUSVARA-->
             <Key
-                latin:keyLabel="&#x0982;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0982;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--c ম BENGALI LETTER MA-->
             <Key
-                latin:keyLabel="&#x09AE;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x09AE;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--v ন BENGALI LETTER NA-->
             <Key
-                latin:keyLabel="&#x09A8;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x09A8;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keyLabel="" />
+            <Key latin:keySpec="" />
 
             <!--n ল BENGALI LETTER LA-->
             <Key
-                latin:keyLabel="&#x09B2;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x09B2;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--m স BENGALI LETTER SA-->
             <Key
-                latin:keyLabel="&#x09B8;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x09B8;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keyLabel=","
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec=","
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keyLabel="."
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="."
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--/ য় BENGALI LETTER YYA-->
             <Key
-                latin:keyLabel="&#x09DF;"
+                latin:keySpec="&#x09DF;"
                 latin:moreKeys="/"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
          </default>
     </switch>
 </merge>

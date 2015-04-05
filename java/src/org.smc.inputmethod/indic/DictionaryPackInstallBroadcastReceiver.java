@@ -16,9 +16,6 @@
 
 package org.smc.inputmethod.indic;
 
-import org.smc.inputmethod.dictionarypack.DictionaryPackConstants;
-import org.smc.inputmethod.indic.utils.TargetPackageInfoGetterTask;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -27,6 +24,10 @@ import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.net.Uri;
 import android.util.Log;
+
+import org.smc.inputmethod.dictionarypack.DictionaryPackConstants;
+
+import com.android.inputmethod.latin.utils.TargetPackageInfoGetterTask;
 
 /**
  * Receives broadcasts pertaining to dictionary management and takes the appropriate action.

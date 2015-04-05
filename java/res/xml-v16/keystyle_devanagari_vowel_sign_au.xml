@@ -26,23 +26,31 @@
     xmlns:latin="http://schemas.android.com/apk/res-auto"
 >
     <switch>
-        <case
-            latin:keyboardLayoutSet="hindi"
-        >
+        <case latin:keyboardLayoutSet="hindi">
             <!--U+094C/U+0902: "ौं" DEVANAGARI VOWEL SIGN AU/DEVANAGARI SIGN ANUSVARA -->
             <key-style
                 latin:styleName="moreKeysDevanagariVowelSignAu"
                 latin:moreKeys="&#x094C;&#x0902;,%" />
         </case>
+        <case latin:keyboardLayoutSet="hindi_compact">
+            <!-- U+094C: "ौ" DEVANAGARI VOWEL SIGN AU -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignAu"
+                latin:moreKeys="&#x094C;,%" />
+        </case>
+        <case latin:keyboardLayoutSet="marathi">
+            <!-- U+0914: "औ" DEVANAGARI LETTER AU -->
+            <key-style
+                latin:styleName="moreKeysDevanagariVowelSignAu"
+                latin:moreKeys="&#x0914;,%" />
+        </case>
         <default>
-             <key-style
-                latin:styleName="moreKeysDevanagariVowelSignAu" />
+            <key-style latin:styleName="moreKeysDevanagariVowelSignAu" />
         </default>
     </switch>
     <!-- U+094C: "ौ" DEVANAGARI VOWEL SIGN AU -->
     <key-style
         latin:styleName="baseKeyDevanagariVowelSignAu"
         latin:parentStyle="moreKeysDevanagariVowelSignAu"
-        latin:keyLabel="&#x094C;"
-        latin:keyLabelFlags="fontNormal" />
+        latin:keySpec="&#x094C;" />
 </merge>

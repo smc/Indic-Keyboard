@@ -36,37 +36,30 @@ class DicNode;
 class DicTraverseSession;
 class ProximityInfo;
 class Scoring;
+class SuggestionResults;
 class Traversal;
 class Weighting;
 
 class Suggest : public SuggestInterface {
  public:
     AK_FORCE_INLINE Suggest(const SuggestPolicy *const suggestPolicy)
-            : TRAVERSAL(suggestPolicy ? suggestPolicy->getTraversal() : 0),
-              SCORING(suggestPolicy ? suggestPolicy->getScoring() : 0),
-              WEIGHTING(suggestPolicy ? suggestPolicy->getWeighting() : 0) {}
+            : TRAVERSAL(suggestPolicy ? suggestPolicy->getTraversal() : nullptr),
+              SCORING(suggestPolicy ? suggestPolicy->getScoring() : nullptr),
+              WEIGHTING(suggestPolicy ? suggestPolicy->getWeighting() : nullptr) {}
     AK_FORCE_INLINE virtual ~Suggest() {}
-    int getSuggestions(ProximityInfo *pInfo, void *traverseSession, int *inputXs, int *inputYs,
-            int *times, int *pointerIds, int *inputCodePoints, int inputSize, int commitPoint,
-            int *outWords, int *frequencies, int *outputIndices, int *outputTypes,
-            int *outputAutoCommitFirstWordConfidence) const;
+    void getSuggestions(ProximityInfo *pInfo, void *traverseSession, int *inputXs, int *inputYs,
+            int *times, int *pointerIds, int *inputCodePoints, int inputSize,
+            const float languageWeight, SuggestionResults *const outSuggestionResults) const;
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(Suggest);
     void createNextWordDicNode(DicTraverseSession *traverseSession, DicNode *dicNode,
             const bool spaceSubstitution) const;
-    int outputSuggestions(DicTraverseSession *traverseSession, int *frequencies,
-            int *outputCodePoints, int *outputIndicesToPartialCommit, int *outputTypes,
-            int *outputAutoCommitFirstWordConfidence) const;
-    int computeFirstWordConfidence(const DicNode *const terminalDicNode) const;
-    void initializeSearch(DicTraverseSession *traverseSession, int commitPoint) const;
+    void initializeSearch(DicTraverseSession *traverseSession) const;
     void expandCurrentDicNodes(DicTraverseSession *traverseSession) const;
     void processTerminalDicNode(DicTraverseSession *traverseSession, DicNode *dicNode) const;
     void processExpandedDicNode(DicTraverseSession *traverseSession, DicNode *dicNode) const;
     void weightChildNode(DicTraverseSession *traverseSession, DicNode *dicNode) const;
-    float getAutocorrectScore(DicTraverseSession *traverseSession, DicNode *dicNode) const;
-    void generateFeatures(
-            DicTraverseSession *traverseSession, DicNode *dicNode, float *features) const;
     void processDicNodeAsOmission(DicTraverseSession *traverseSession, DicNode *dicNode) const;
     void processDicNodeAsDigraph(DicTraverseSession *traverseSession, DicNode *dicNode) const;
     void processDicNodeAsTransposition(DicTraverseSession *traverseSession,
@@ -79,12 +72,7 @@ class Suggest : public SuggestInterface {
     void processDicNodeAsMatch(DicTraverseSession *traverseSession,
             DicNode *childDicNode) const;
 
-    // Inputs longer than this will autocorrect if the suggestion is multi-word
-    static const int MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT;
     static const int MIN_CONTINUOUS_SUGGESTION_INPUT_SIZE;
-
-    // Threshold for autocorrection classifier
-    static const float AUTOCORRECT_CLASSIFICATION_THRESHOLD;
 
     const Traversal *const TRAVERSAL;
     const Scoring *const SCORING;

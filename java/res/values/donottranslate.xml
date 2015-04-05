@@ -18,118 +18,9 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- TODO: these settings depend on the language. They should be put either in the dictionary
-         header, or in the subtype maybe? -->
-    <!-- Symbols that are suggested between words -->
-    <string name="suggested_punctuations">!,?,\\,,:,;,\",(,),\',-,/,@,_</string>
-    <!-- Symbols that are normally preceded by a space (used to add an auto-space before these) -->
-    <string name="symbols_preceded_by_space">([{&amp;</string>
-    <!-- Symbols that are normally followed by a space (used to add an auto-space after these) -->
-    <string name="symbols_followed_by_space">.,;:!?)]}&amp;</string>
-    <!-- Symbols that separate words -->
-    <!-- Don't remove the enclosing double quotes, they protect whitespace (not just U+0020) -->
-    <string name="symbols_word_separators">"&#x0009;&#x0020;\n"()[]{}*&amp;&lt;&gt;+=|.,;:!?/_\"</string>
-    <!-- Word connectors -->
-    <string name="symbols_word_connectors">\'-</string>
-    <!-- The sentence separator code point, for capitalization -->
-    <!-- U+002E: "." FULL STOP   ; 2Eh = 46d -->
-    <integer name="sentence_separator">46</integer>
-    <!-- Whether this language uses spaces between words -->
-    <bool name="current_language_has_spaces">true</bool>
-
-    <!--  Always show the suggestion strip -->
-    <string name="prefs_suggestion_visibility_show_value">0</string>
-    <!--  Show the suggestion strip only on portrait mode -->
-    <string name="prefs_suggestion_visibility_show_only_portrait_value">1</string>
-    <!--  Always hide the suggestion strip -->
-    <string name="prefs_suggestion_visibility_hide_value">2</string>
-    <!--  Default value of the visibility of the suggestion strip -->
-    <string name="prefs_suggestion_visibility_default_value">0</string>
-    <!--  Option to show/hide the suggestion strip -->
-    <string-array name="prefs_suggestion_visibility_values">
-       <item>@string/prefs_suggestion_visibility_show_value</item>
-       <item>@string/prefs_suggestion_visibility_show_only_portrait_value</item>
-       <item>@string/prefs_suggestion_visibility_hide_value</item>
-    </string-array>
-    <string-array name="prefs_suggestion_visibilities">
-       <item>@string/prefs_suggestion_visibility_show_name</item>
-       <item>@string/prefs_suggestion_visibility_show_only_portrait_name</item>
-       <item>@string/prefs_suggestion_visibility_hide_name</item>
-    </string-array>
-
-    <string name="auto_correction_threshold_mode_index_off">0</string>
-    <string name="auto_correction_threshold_mode_index_modest">1</string>
-    <string name="auto_correction_threshold_mode_index_aggressive">2</string>
-    <string name="auto_correction_threshold_mode_index_very_aggressive">3</string>
-    <string-array name="auto_correction_threshold_mode_indexes">
-      <item>@string/auto_correction_threshold_mode_index_off</item>
-      <item>@string/auto_correction_threshold_mode_index_modest</item>
-      <item>@string/auto_correction_threshold_mode_index_aggressive</item>
-      <item>@string/auto_correction_threshold_mode_index_very_aggressive</item>
-    </string-array>
-    <string-array name="auto_correction_threshold_modes">
-      <item>@string/auto_correction_threshold_mode_off</item>
-      <item>@string/auto_correction_threshold_mode_modest</item>
-      <item>@string/auto_correction_threshold_mode_aggressive</item>
-      <item>@string/auto_correction_threshold_mode_very_aggressive</item>
-    </string-array>
-
+    <!-- For backward compatibility.
+         See {@link SettingsValues#needsToShowVoiceInputKey(SharedPreferences,Resources)} -->
     <string name="voice_mode_main">0</string>
-    <string name="voice_mode_symbols">1</string>
-    <string name="voice_mode_off">2</string>
-    <string-array name="voice_input_modes_values">
-        <item>@string/voice_mode_main</item>
-        <item>@string/voice_mode_symbols</item>
-        <item>@string/voice_mode_off</item>
-    </string-array>
-    <!-- Array of Voice Input modes -->
-    <string-array name="voice_input_modes">
-        <item>@string/voice_input_modes_main_keyboard</item>
-        <item>@string/voice_input_modes_symbols_keyboard</item>
-        <item>@string/voice_input_modes_off</item>
-    </string-array>
-    <!-- Array of Voice Input modes summary -->
-    <string-array name="voice_input_modes_summary">
-        <item>@string/voice_input_modes_summary_main_keyboard</item>
-        <item>@string/voice_input_modes_summary_symbols_keyboard</item>
-        <item>@string/voice_input_modes_summary_off</item>
-    </string-array>
-
-    <!-- Title for Latin keyboard debug settings activity / dialog -->
-    <string name="english_ime_debug_settings">Android keyboard Debug settings</string>
-    <string name="prefs_debug_mode">Debug Mode</string>
-    <string name="prefs_force_non_distinct_multitouch">Force non-distinct multitouch</string>
-
-    <!-- Keyboard theme names -->
-    <string name="layout_gingerbread">Gingerbread</string>
-    <string name="layout_ics">IceCreamSandwich</string>
-    <string name="layout_klp">KeyLimePie</string>
-
-    <!-- For keyboard theme switcher dialog -->
-    <string-array name="keyboard_layout_modes">
-        <item>@string/layout_ics</item>
-        <item>@string/layout_gingerbread</item>
-        <item>@string/layout_klp</item>
-    </string-array>
-    <!-- An element must be an index of {@link KeyboardSwitcher#KEYBOARD_THEMES[]}. -->
-    <string-array name="keyboard_layout_modes_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-    </string-array>
-
-    <!-- For keyboard color scheme option dialog. -->
-    <string-array name="keyboard_color_schemes">
-        <item>@string/keyboard_color_scheme_white</item>
-        <item>@string/keyboard_color_scheme_blue</item>
-        <item>@string/keyboard_color_scheme_material</item>
-    </string-array>
-    <!-- An element must be an index of {@link KeyboardSwitcher#KEYBOARD_THEMES[]}. -->
-    <string-array name="keyboard_color_schemes_values">
-        <item>2</item>
-        <item>0</item>
-        <item>3</item>
-    </string-array>
 
     <!-- Subtype locale display name exceptions.
          For each exception, there should be related string resources for display name that may have
@@ -139,6 +30,7 @@
         <item>en_US</item>
         <item>en_GB</item>
         <item>es_US</item>
+        <item>mnw</item>
     </string-array>
 
     <!-- Generic subtype label -->
@@ -157,6 +49,7 @@
          The string resource with "No language" also must be added to strings.xml and the resource
          name must be "subtype_no_language_<layout name>" -->
     <string name="subtype_generic_qwerty">%s (QWERTY)</string>
+    <string name="subtype_mnw">Mon</string>
 
     <!-- Description for Bulgarian (BDS) subtype. -->
     <string name="subtype_bulgarian_bds">%s (BDS)</string>
@@ -206,6 +99,4 @@
         <item>tr:AsciiCapable,SupportTouchPositionCorrection,EmojiCapable</item>
         <item>qwerty</item>
     </string-array>
-
-    <string name="settings_warning_researcher_mode">Attention!  You are using the special keyboard for research purposes.</string>
 </resources>

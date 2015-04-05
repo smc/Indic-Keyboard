@@ -17,10 +17,11 @@
 #ifndef LATINIME_PROXIMITY_INFO_H
 #define LATINIME_PROXIMITY_INFO_H
 
+#include <unordered_map>
+
 #include "defines.h"
 #include "jni.h"
 #include "suggest/core/layout/proximity_info_utils.h"
-#include "utils/hash_map_compat.h"
 
 namespace latinime {
 
@@ -35,10 +36,10 @@ class ProximityInfo {
             const jfloatArray sweetSpotCenterYs, const jfloatArray sweetSpotRadii);
     ~ProximityInfo();
     bool hasSpaceProximity(const int x, const int y) const;
-    int getNormalizedSquaredDistance(const int inputIndex, const int proximityIndex) const;
     float getNormalizedSquaredDistanceFromCenterFloatG(
             const int keyId, const int x, const int y, const bool isGeometric) const;
     int getCodePointOf(const int keyIndex) const;
+    int getOriginalCodePointOf(const int keyIndex) const;
     bool hasSweetSpotData(const int keyIndex) const {
         // When there are no calibration data for a key,
         // the radius of the key is assigned to zero.
@@ -47,8 +48,6 @@ class ProximityInfo {
     float getSweetSpotRadiiAt(int keyIndex) const { return mSweetSpotRadii[keyIndex]; }
     float getSweetSpotCenterXAt(int keyIndex) const { return mSweetSpotCenterXs[keyIndex]; }
     float getSweetSpotCenterYAt(int keyIndex) const { return mSweetSpotCenterYs[keyIndex]; }
-    void calculateNearbyKeyCodes(
-            const int x, const int y, const int primaryKey, int *inputCodes) const;
     bool hasTouchPositionCorrectionData() const { return HAS_TOUCH_POSITION_CORRECTION_DATA; }
     int getMostCommonKeyWidth() const { return MOST_COMMON_KEY_WIDTH; }
     int getMostCommonKeyWidthSquare() const { return MOST_COMMON_KEY_WIDTH_SQUARE; }
@@ -76,11 +75,11 @@ class ProximityInfo {
         ProximityInfoUtils::initializeProximities(inputCodes, inputXCoordinates, inputYCoordinates,
                 inputSize, mKeyXCoordinates, mKeyYCoordinates, mKeyWidths, mKeyHeights,
                 mProximityCharsArray, CELL_HEIGHT, CELL_WIDTH, GRID_WIDTH, MOST_COMMON_KEY_WIDTH,
-                KEY_COUNT, mLocaleStr, &mCodeToKeyMap, allInputCodes);
+                KEY_COUNT, mLocaleStr, &mLowerCodePointToKeyMap, allInputCodes);
     }
 
     AK_FORCE_INLINE int getKeyIndexOf(const int c) const {
-        return ProximityInfoUtils::getKeyIndexOf(KEY_COUNT, c, &mCodeToKeyMap);
+        return ProximityInfoUtils::getKeyIndexOf(KEY_COUNT, c, &mLowerCodePointToKeyMap);
     }
 
     AK_FORCE_INLINE bool isCodePointOnKeyboard(const int codePoint) const {
@@ -96,7 +95,6 @@ class ProximityInfo {
     const int GRID_HEIGHT;
     const int MOST_COMMON_KEY_WIDTH;
     const int MOST_COMMON_KEY_WIDTH_SQUARE;
-    const int MOST_COMMON_KEY_HEIGHT;
     const float NORMALIZED_SQUARED_MOST_COMMON_KEY_HYPOTENUSE;
     const int CELL_WIDTH;
     const int CELL_HEIGHT;
@@ -105,6 +103,8 @@ class ProximityInfo {
     const int KEYBOARD_HEIGHT;
     const float KEYBOARD_HYPOTENUSE;
     const bool HAS_TOUCH_POSITION_CORRECTION_DATA;
+    // Assuming locale strings such as en_US, sr-Latn etc.
+    static const int MAX_LOCALE_STRING_LENGTH = 10;
     char mLocaleStr[MAX_LOCALE_STRING_LENGTH];
     int *mProximityCharsArray;
     int mKeyXCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];
@@ -117,13 +117,12 @@ class ProximityInfo {
     // Sweet spots for geometric input. Note that we have extra sweet spots only for Y coordinates.
     float mSweetSpotCenterYsG[MAX_KEY_COUNT_IN_A_KEYBOARD];
     float mSweetSpotRadii[MAX_KEY_COUNT_IN_A_KEYBOARD];
-    hash_map_compat<int, int> mCodeToKeyMap;
-
-    int mKeyIndexToCodePointG[MAX_KEY_COUNT_IN_A_KEYBOARD];
+    std::unordered_map<int, int> mLowerCodePointToKeyMap;
+    int mKeyIndexToOriginalCodePoint[MAX_KEY_COUNT_IN_A_KEYBOARD];
+    int mKeyIndexToLowerCodePointG[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int mCenterXsG[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int mCenterYsG[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int mKeyKeyDistancesG[MAX_KEY_COUNT_IN_A_KEYBOARD][MAX_KEY_COUNT_IN_A_KEYBOARD];
-    // TODO: move to correction.h
 };
 } // namespace latinime
 #endif // LATINIME_PROXIMITY_INFO_H

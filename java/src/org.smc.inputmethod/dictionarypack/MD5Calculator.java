@@ -16,11 +16,11 @@
 
 package org.smc.inputmethod.dictionarypack;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.MessageDigest;
 
-final class MD5Calculator {
+public final class MD5Calculator {
     private MD5Calculator() {} // This helper class is not instantiable
 
     public static String checksum(final InputStream in) throws IOException {

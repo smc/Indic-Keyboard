@@ -25,6 +25,20 @@ const uint32_t FormatUtils::MAGIC_NUMBER = 0x9BC13AFE;
 // Magic number (4 bytes), version (2 bytes), flags (2 bytes), header size (4 bytes) = 12
 const int FormatUtils::DICTIONARY_MINIMUM_SIZE = 12;
 
+/* static */ FormatUtils::FORMAT_VERSION FormatUtils::getFormatVersion(const int formatVersion) {
+    switch (formatVersion) {
+        case VERSION_2:
+            return VERSION_2;
+        case VERSION_4_ONLY_FOR_TESTING:
+            return VERSION_4_ONLY_FOR_TESTING;
+        case VERSION_4:
+            return VERSION_4;
+        case VERSION_4_DEV:
+            return VERSION_4_DEV;
+        default:
+            return UNKNOWN_VERSION;
+    }
+}
 /* static */ FormatUtils::FORMAT_VERSION FormatUtils::detectFormatVersion(
         const uint8_t *const dict, const int dictSize) {
     // The magic number is stored big-endian.
@@ -36,18 +50,15 @@ const int FormatUtils::DICTIONARY_MINIMUM_SIZE = 12;
     const uint32_t magicNumber = ByteArrayUtils::readUint32(dict, 0);
     switch (magicNumber) {
         case MAGIC_NUMBER:
-            // Version 2 header is as follows:
+            // The layout of the header is as follows:
             // Magic number (4 bytes) 0x9B 0xC1 0x3A 0xFE
             // Dictionary format version number (2 bytes)
             // Options (2 bytes)
             // Header size (4 bytes) : integer, big endian
-            if (ByteArrayUtils::readUint16(dict, 4) == 2) {
-                return VERSION_2;
-            } else if (ByteArrayUtils::readUint16(dict, 4) == 3) {
-                return VERSION_3;
-            } else {
-                return UNKNOWN_VERSION;
-            }
+            // Conceptually this converts the hardcoded value of the bytes in the file into
+            // the symbolic value we use in the code. But we want the constants to be the
+            // same so we use them for both here.
+            return getFormatVersion(ByteArrayUtils::readUint16(dict, 4));
         default:
             return UNKNOWN_VERSION;
     }

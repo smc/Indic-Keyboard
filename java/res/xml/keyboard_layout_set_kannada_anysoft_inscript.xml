@@ -21,7 +21,7 @@
 
 <KeyboardLayoutSet
     xmlns:latin="http://schemas.android.com/apk/res-auto">
-    <Element
+   <Element
         latin:elementName="alphabet"
         latin:elementKeyboard="@xml/kbd_kannada_anysoft_inscript"
         latin:enableProximityCharsCorrection="true" />

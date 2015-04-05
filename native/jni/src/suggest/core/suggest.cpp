@@ -19,23 +19,19 @@
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_priority_queue.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
-#include "suggest/core/dictionary/binary_dictionary_shortcut_iterator.h"
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/dictionary/digraph_utils.h"
-#include "suggest/core/dictionary/shortcut_utils.h"
 #include "suggest/core/layout/proximity_info.h"
 #include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
-#include "suggest/core/policy/scoring.h"
 #include "suggest/core/policy/traversal.h"
 #include "suggest/core/policy/weighting.h"
+#include "suggest/core/result/suggestions_output_utils.h"
 #include "suggest/core/session/dic_traverse_session.h"
 
 namespace latinime {
 
 // Initialization of class constants.
-const int Suggest::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
 const int Suggest::MIN_CONTINUOUS_SUGGESTION_INPUT_SIZE = 2;
-const float Suggest::AUTOCORRECT_CLASSIFICATION_THRESHOLD = 0.33f;
 
 /**
  * Returns a set of suggestions for the given input touch points. The commitPoint argument indicates
@@ -46,10 +42,10 @@ const float Suggest::AUTOCORRECT_CLASSIFICATION_THRESHOLD = 0.33f;
  * automatically activated for sequential calls that share the same starting input.
  * TODO: Stop detecting continuous suggestion. Start using traverseSession instead.
  */
-int Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
+void Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
         int *inputXs, int *inputYs, int *times, int *pointerIds, int *inputCodePoints,
-        int inputSize, int commitPoint, int *outWords, int *frequencies, int *outputIndices,
-        int *outputTypes, int *outputAutoCommitFirstWordConfidence) const {
+        int inputSize, const float languageWeight,
+        SuggestionResults *const outSuggestionResults) const {
     PROF_OPEN;
     PROF_START(0);
     const float maxSpatialDistance = TRAVERSAL->getMaxSpatialDistance();
@@ -58,7 +54,7 @@ int Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
             pointerIds, maxSpatialDistance, TRAVERSAL->getMaxPointerCount());
     // TODO: Add the way to evaluate cache
 
-    initializeSearch(tSession, commitPoint);
+    initializeSearch(tSession);
     PROF_END(0);
     PROF_START(1);
 
@@ -70,244 +66,35 @@ int Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
     }
     PROF_END(1);
     PROF_START(2);
-    const int size = outputSuggestions(tSession, frequencies, outWords, outputIndices, outputTypes,
-            outputAutoCommitFirstWordConfidence);
+    SuggestionsOutputUtils::outputSuggestions(
+            SCORING, tSession, languageWeight, outSuggestionResults);
     PROF_END(2);
     PROF_CLOSE;
-    return size;
 }
 
 /**
  * Initializes the search at the root of the lexicon trie. Note that when possible the search will
  * continue suggestion from where it left off during the last call.
  */
-void Suggest::initializeSearch(DicTraverseSession *traverseSession, int commitPoint) const {
+void Suggest::initializeSearch(DicTraverseSession *traverseSession) const {
     if (!traverseSession->getProximityInfoState(0)->isUsed()) {
         return;
     }
 
-    // Never auto partial commit for now.
-    commitPoint = 0;
-
     if (traverseSession->getInputSize() > MIN_CONTINUOUS_SUGGESTION_INPUT_SIZE
             && traverseSession->isContinuousSuggestionPossible()) {
-        if (commitPoint == 0) {
-            // Continue suggestion
-            traverseSession->getDicTraverseCache()->continueSearch();
-        } else {
-            // Continue suggestion after partial commit.
-            DicNode *topDicNode =
-                    traverseSession->getDicTraverseCache()->setCommitPoint(commitPoint);
-            traverseSession->setPrevWordPos(topDicNode->getPrevWordNodePos());
-            traverseSession->getDicTraverseCache()->continueSearch();
-            traverseSession->setPartiallyCommited();
-        }
+        // Continue suggestion
+        traverseSession->getDicTraverseCache()->continueSearch();
     } else {
         // Restart recognition at the root.
         traverseSession->resetCache(TRAVERSAL->getMaxCacheSize(traverseSession->getInputSize()),
-                MAX_RESULTS);
+                TRAVERSAL->getTerminalCacheSize());
         // Create a new dic node here
         DicNode rootNode;
         DicNodeUtils::initAsRoot(traverseSession->getDictionaryStructurePolicy(),
-                traverseSession->getPrevWordPos(), &rootNode);
+                traverseSession->getPrevWordsPtNodePos(), &rootNode);
         traverseSession->getDicTraverseCache()->copyPushActive(&rootNode);
     }
-}
-
-/**
- * Outputs the final list of suggestions (i.e., terminal nodes).
- */
-int Suggest::outputSuggestions(DicTraverseSession *traverseSession, int *frequencies,
-        int *outputCodePoints, int *outputIndicesToPartialCommit, int *outputTypes,
-        int *outputAutoCommitFirstWordConfidence) const {
-#if DEBUG_EVALUATE_MOST_PROBABLE_STRING
-    const int terminalSize = 0;
-#else
-    const int terminalSize = min(MAX_RESULTS,
-            static_cast<int>(traverseSession->getDicTraverseCache()->terminalSize()));
-#endif
-    DicNode terminals[MAX_RESULTS]; // Avoiding non-POD variable length array
-
-    for (int index = terminalSize - 1; index >= 0; --index) {
-        traverseSession->getDicTraverseCache()->popTerminal(&terminals[index]);
-    }
-
-    const float languageWeight = SCORING->getAdjustedLanguageWeight(
-            traverseSession, terminals, terminalSize);
-
-    int outputWordIndex = 0;
-    // Insert most probable word at index == 0 as long as there is one terminal at least
-    const bool hasMostProbableString =
-            SCORING->getMostProbableString(traverseSession, terminalSize, languageWeight,
-                    &outputCodePoints[0], &outputTypes[0], &frequencies[0]);
-    if (hasMostProbableString) {
-        outputIndicesToPartialCommit[outputWordIndex] = NOT_AN_INDEX;
-        ++outputWordIndex;
-    }
-
-    // Initial value of the loop index for terminal nodes (words)
-    int doubleLetterTerminalIndex = -1;
-    DoubleLetterLevel doubleLetterLevel = NOT_A_DOUBLE_LETTER;
-    SCORING->searchWordWithDoubleLetter(terminals, terminalSize,
-            &doubleLetterTerminalIndex, &doubleLetterLevel);
-
-    int maxScore = S_INT_MIN;
-    // Force autocorrection for obvious long multi-word suggestions when the top suggestion is
-    // a long multiple words suggestion.
-    // TODO: Implement a smarter auto-commit method for handling multi-word suggestions.
-    // traverseSession->isPartiallyCommited() always returns false because we never auto partial
-    // commit for now.
-    const bool forceCommitMultiWords = (terminalSize > 0) ?
-            TRAVERSAL->autoCorrectsToMultiWordSuggestionIfTop()
-                    && (traverseSession->isPartiallyCommited()
-                            || (traverseSession->getInputSize()
-                                    >= MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT
-                                            && terminals[0].hasMultipleWords())) : false;
-    // TODO: have partial commit work even with multiple pointers.
-    const bool outputSecondWordFirstLetterInputIndex =
-            traverseSession->isOnlyOnePointerUsed(0 /* pointerId */);
-    if (terminalSize > 0) {
-        // If we have no suggestions, don't write this
-        outputAutoCommitFirstWordConfidence[0] =
-                computeFirstWordConfidence(&terminals[0]);
-    }
-
-    // Output suggestion results here
-    for (int terminalIndex = 0; terminalIndex < terminalSize && outputWordIndex < MAX_RESULTS;
-            ++terminalIndex) {
-        DicNode *terminalDicNode = &terminals[terminalIndex];
-        if (DEBUG_GEO_FULL) {
-            terminalDicNode->dump("OUT:");
-        }
-        const float doubleLetterCost = SCORING->getDoubleLetterDemotionDistanceCost(
-                terminalIndex, doubleLetterTerminalIndex, doubleLetterLevel);
-        const float compoundDistance = terminalDicNode->getCompoundDistance(languageWeight)
-                + doubleLetterCost;
-        const bool isPossiblyOffensiveWord =
-                traverseSession->getDictionaryStructurePolicy()->getProbability(
-                        terminalDicNode->getProbability(), NOT_A_PROBABILITY) <= 0;
-        const bool isExactMatch = terminalDicNode->isExactMatch();
-        const bool isFirstCharUppercase = terminalDicNode->isFirstCharUppercase();
-        // Heuristic: We exclude freq=0 first-char-uppercase words from exact match.
-        // (e.g. "AMD" and "and")
-        const bool isSafeExactMatch = isExactMatch
-                && !(isPossiblyOffensiveWord && isFirstCharUppercase);
-        const int outputTypeFlags =
-                (isPossiblyOffensiveWord ? Dictionary::KIND_FLAG_POSSIBLY_OFFENSIVE : 0)
-                | (isSafeExactMatch ? Dictionary::KIND_FLAG_EXACT_MATCH : 0);
-
-        // Entries that are blacklisted or do not represent a word should not be output.
-        const bool isValidWord = !terminalDicNode->isBlacklistedOrNotAWord();
-
-        // Increase output score of top typing suggestion to ensure autocorrection.
-        // TODO: Better integration with java side autocorrection logic.
-        const int finalScore = SCORING->calculateFinalScore(
-                compoundDistance, traverseSession->getInputSize(),
-                terminalDicNode->isExactMatch()
-                        || (forceCommitMultiWords && terminalDicNode->hasMultipleWords())
-                                || (isValidWord && SCORING->doesAutoCorrectValidWord()));
-        if (maxScore < finalScore && isValidWord) {
-            maxScore = finalScore;
-        }
-
-        // Don't output invalid words. However, we still need to submit their shortcuts if any.
-        if (isValidWord) {
-            outputTypes[outputWordIndex] = Dictionary::KIND_CORRECTION | outputTypeFlags;
-            frequencies[outputWordIndex] = finalScore;
-            if (outputSecondWordFirstLetterInputIndex) {
-                outputIndicesToPartialCommit[outputWordIndex] =
-                        terminalDicNode->getSecondWordFirstInputIndex(
-                                traverseSession->getProximityInfoState(0));
-            } else {
-                outputIndicesToPartialCommit[outputWordIndex] = NOT_AN_INDEX;
-            }
-            // Populate the outputChars array with the suggested word.
-            const int startIndex = outputWordIndex * MAX_WORD_LENGTH;
-            terminalDicNode->outputResult(&outputCodePoints[startIndex]);
-            ++outputWordIndex;
-        }
-
-        if (!terminalDicNode->hasMultipleWords()) {
-            BinaryDictionaryShortcutIterator shortcutIt(
-                    traverseSession->getDictionaryStructurePolicy()->getShortcutsStructurePolicy(),
-                    traverseSession->getDictionaryStructurePolicy()
-                            ->getShortcutPositionOfPtNode(terminalDicNode->getPos()));
-            // Shortcut is not supported for multiple words suggestions.
-            // TODO: Check shortcuts during traversal for multiple words suggestions.
-            const bool sameAsTyped = TRAVERSAL->sameAsTyped(traverseSession, terminalDicNode);
-            const int updatedOutputWordIndex = ShortcutUtils::outputShortcuts(&shortcutIt,
-                    outputWordIndex,  finalScore, outputCodePoints, frequencies, outputTypes,
-                    sameAsTyped);
-            const int secondWordFirstInputIndex = terminalDicNode->getSecondWordFirstInputIndex(
-                    traverseSession->getProximityInfoState(0));
-            for (int i = outputWordIndex; i < updatedOutputWordIndex; ++i) {
-                if (outputSecondWordFirstLetterInputIndex) {
-                    outputIndicesToPartialCommit[i] = secondWordFirstInputIndex;
-                } else {
-                    outputIndicesToPartialCommit[i] = NOT_AN_INDEX;
-                }
-            }
-            outputWordIndex = updatedOutputWordIndex;
-        }
-        DicNode::managedDelete(terminalDicNode);
-    }
-
-    if (hasMostProbableString) {
-        SCORING->safetyNetForMostProbableString(terminalSize, maxScore,
-                &outputCodePoints[0], &frequencies[0]);
-    }
-    return outputWordIndex;
-}
-
-int Suggest::computeFirstWordConfidence(const DicNode *const terminalDicNode) const {
-    // Get the number of spaces in the first suggestion
-    const int spaceCount = terminalDicNode->getTotalNodeSpaceCount();
-    // Get the number of characters in the first suggestion
-    const int length = terminalDicNode->getTotalNodeCodePointCount();
-    // Get the distance for the first word of the suggestion
-    const float distance = terminalDicNode->getNormalizedCompoundDistanceAfterFirstWord();
-
-    // Arbitrarily, we give a score whose useful values range from 0 to 1,000,000.
-    // 1,000,000 will be the cutoff to auto-commit. It's fine if the number is under 0 or
-    // above 1,000,000 : under 0 just means it's very bad to commit, and above 1,000,000 means
-    // we are very confident.
-    // Expected space count is 1 ~ 5
-    static const int MIN_EXPECTED_SPACE_COUNT = 1;
-    static const int MAX_EXPECTED_SPACE_COUNT = 5;
-    // Expected length is about 4 ~ 30
-    static const int MIN_EXPECTED_LENGTH = 4;
-    static const int MAX_EXPECTED_LENGTH = 30;
-    // Expected distance is about 0.2 ~ 2.0, but consider 0.0 ~ 2.0
-    static const float MIN_EXPECTED_DISTANCE = 0.0;
-    static const float MAX_EXPECTED_DISTANCE = 2.0;
-    // This is not strict: it's where most stuff will be falling, but it's still fine if it's
-    // outside these values. We want to output a value that reflects all of these. Each factor
-    // contributes a bit.
-
-    // We need at least a space.
-    if (spaceCount < 1) return NOT_A_FIRST_WORD_CONFIDENCE;
-
-    // The smaller the edit distance, the higher the contribution. MIN_EXPECTED_DISTANCE means 0
-    // contribution, while MAX_EXPECTED_DISTANCE means full contribution according to the
-    // weight of the distance. Clamp to avoid overflows.
-    const float clampedDistance = distance < MIN_EXPECTED_DISTANCE ? MIN_EXPECTED_DISTANCE
-            : distance > MAX_EXPECTED_DISTANCE ? MAX_EXPECTED_DISTANCE : distance;
-    const int distanceContribution = DISTANCE_WEIGHT_FOR_AUTO_COMMIT
-            * (MAX_EXPECTED_DISTANCE - clampedDistance)
-            / (MAX_EXPECTED_DISTANCE - MIN_EXPECTED_DISTANCE);
-    // The larger the suggestion length, the larger the contribution. MIN_EXPECTED_LENGTH is no
-    // contribution, MAX_EXPECTED_LENGTH is full contribution according to the weight of the
-    // length. Length is guaranteed to be between 1 and 48, so we don't need to clamp.
-    const int lengthContribution = LENGTH_WEIGHT_FOR_AUTO_COMMIT
-            * (length - MIN_EXPECTED_LENGTH) / (MAX_EXPECTED_LENGTH - MIN_EXPECTED_LENGTH);
-    // The more spaces, the larger the contribution. MIN_EXPECTED_SPACE_COUNT space is no
-    // contribution, MAX_EXPECTED_SPACE_COUNT spaces is full contribution according to the
-    // weight of the space count.
-    const int spaceContribution = SPACE_COUNT_WEIGHT_FOR_AUTO_COMMIT
-            * (spaceCount - MIN_EXPECTED_SPACE_COUNT)
-            / (MAX_EXPECTED_SPACE_COUNT - MIN_EXPECTED_SPACE_COUNT);
-
-    return distanceContribution + lengthContribution + spaceContribution;
 }
 
 /**
@@ -421,15 +208,15 @@ void Suggest::expandCurrentDicNodes(DicTraverseSession *traverseSession) const {
                         }
                         break;
                     case UNRELATED_CHAR:
-                        // Just drop this node and do nothing.
+                        // Just drop this dicNode and do nothing.
                         break;
                     default:
-                        // Just drop this node and do nothing.
+                        // Just drop this dicNode and do nothing.
                         break;
                 }
             }
 
-            // Push the node for look-ahead correction
+            // Push the dicNode for look-ahead correction
             if (allowsErrorCorrections && canDoLookAheadCorrection) {
                 traverseSession->getDicTraverseCache()->copyPushNextActive(&dicNode);
             }
@@ -442,15 +229,17 @@ void Suggest::processTerminalDicNode(
     if (dicNode->getCompoundDistance() >= static_cast<float>(MAX_VALUE_FOR_WEIGHTING)) {
         return;
     }
-    if (!dicNode->isTerminalWordNode()) {
+    if (!dicNode->isTerminalDicNode()) {
         return;
     }
     if (dicNode->shouldBeFilteredBySafetyNetForBigram()) {
         return;
     }
+    if (!dicNode->hasMatchedOrProximityCodePoints()) {
+        return;
+    }
     // Create a non-cached node here.
-    DicNode terminalDicNode;
-    DicNodeUtils::initByCopy(dicNode, &terminalDicNode);
+    DicNode terminalDicNode(*dicNode);
     if (TRAVERSAL->needsToTraverseAllUserInput()
             && dicNode->getInputIndex(0) < traverseSession->getInputSize()) {
         Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_TERMINAL_INSERTION, traverseSession, 0,
@@ -463,7 +252,7 @@ void Suggest::processTerminalDicNode(
 
 /**
  * Adds the expanded dicNode to the next search priority queue. Also creates an additional next word
- * (by the space omission error correction) search path if input dicNode is on a terminal node.
+ * (by the space omission error correction) search path if input dicNode is on a terminal.
  */
 void Suggest::processExpandedDicNode(
         DicTraverseSession *traverseSession, DicNode *dicNode) const {
@@ -478,7 +267,6 @@ void Suggest::processExpandedDicNode(
             traverseSession->getDicTraverseCache()->copyPushNextActive(dicNode);
         }
     }
-    DicNode::managedDelete(dicNode);
 }
 
 void Suggest::processDicNodeAsMatch(DicTraverseSession *traverseSession,
@@ -505,7 +293,7 @@ void Suggest::processDicNodeAsSubstitution(DicTraverseSession *traverseSession,
     processExpandedDicNode(traverseSession, childDicNode);
 }
 
-// Process the node codepoint as a digraph. This means that composite glyphs like the German
+// Process the DicNode codepoint as a digraph. This means that composite glyphs like the German
 // u-umlaut is expanded to the transliteration "ue". Note that this happens in parallel with
 // the normal non-digraph traversal, so both "uber" and "ueber" can be corrected to "[u-umlaut]ber".
 void Suggest::processDicNodeAsDigraph(DicTraverseSession *traverseSession,
@@ -518,7 +306,7 @@ void Suggest::processDicNodeAsDigraph(DicTraverseSession *traverseSession,
 /**
  * Handle the dicNode as an omission error (e.g., ths => this). Skip the current letter and consider
  * matches for all possible next letters. Note that just skipping the current letter without any
- * other conditions tends to flood the search dic nodes cache with omission nodes. Instead, check
+ * other conditions tends to flood the search DicNodes cache with omission DicNodes. Instead, check
  * the possible *next* letters after the omission to better limit search to plausible omissions.
  * Note that apostrophes are handled as omissions.
  */
@@ -572,6 +360,7 @@ void Suggest::processDicNodeAsTransposition(DicTraverseSession *traverseSession,
         DicNode *dicNode) const {
     const int16_t pointIndex = dicNode->getInputIndex(0);
     DicNodeVector childDicNodes1;
+    DicNodeVector childDicNodes2;
     DicNodeUtils::getAllChildDicNodes(dicNode, traverseSession->getDictionaryStructurePolicy(),
             &childDicNodes1);
     const int childSize1 = childDicNodes1.getSizeAndLock();
@@ -583,7 +372,7 @@ void Suggest::processDicNodeAsTransposition(DicTraverseSession *traverseSession,
             continue;
         }
         if (childDicNodes1[i]->hasChildren()) {
-            DicNodeVector childDicNodes2;
+            childDicNodes2.clear();
             DicNodeUtils::getAllChildDicNodes(childDicNodes1[i],
                     traverseSession->getDictionaryStructurePolicy(), &childDicNodes2);
             const int childSize2 = childDicNodes2.getSizeAndLock();
@@ -600,12 +389,11 @@ void Suggest::processDicNodeAsTransposition(DicTraverseSession *traverseSession,
                 processExpandedDicNode(traverseSession, childDicNode2);
             }
         }
-        DicNode::managedDelete(childDicNodes1[i]);
     }
 }
 
 /**
- * Weight child node by aligning it to the key
+ * Weight child dicNode by aligning it to the key
  */
 void Suggest::weightChildNode(DicTraverseSession *traverseSession, DicNode *dicNode) const {
     const int inputSize = traverseSession->getInputSize();

@@ -21,6 +21,7 @@ import android.util.Log;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public final class CompatUtils {
@@ -33,31 +34,31 @@ public final class CompatUtils {
     public static Class<?> getClass(final String className) {
         try {
             return Class.forName(className);
-        } catch (ClassNotFoundException e) {
+        } catch (final ClassNotFoundException e) {
             return null;
         }
     }
 
     public static Method getMethod(final Class<?> targetClass, final String name,
             final Class<?>... parameterTypes) {
-        if (targetClass == null || TextUtils.isEmpty(name)) return null;
+        if (targetClass == null || TextUtils.isEmpty(name)) {
+            return null;
+        }
         try {
             return targetClass.getMethod(name, parameterTypes);
-        } catch (SecurityException e) {
-            // ignore
-        } catch (NoSuchMethodException e) {
+        } catch (final SecurityException | NoSuchMethodException e) {
             // ignore
         }
         return null;
     }
 
     public static Field getField(final Class<?> targetClass, final String name) {
-        if (targetClass == null || TextUtils.isEmpty(name)) return null;
+        if (targetClass == null || TextUtils.isEmpty(name)) {
+            return null;
+        }
         try {
             return targetClass.getField(name);
-        } catch (SecurityException e) {
-            // ignore
-        } catch (NoSuchFieldException e) {
+        } catch (final SecurityException | NoSuchFieldException e) {
             // ignore
         }
         return null;
@@ -65,22 +66,25 @@ public final class CompatUtils {
 
     public static Constructor<?> getConstructor(final Class<?> targetClass,
             final Class<?> ... types) {
-        if (targetClass == null || types == null) return null;
+        if (targetClass == null || types == null) {
+            return null;
+        }
         try {
             return targetClass.getConstructor(types);
-        } catch (SecurityException e) {
-            // ignore
-        } catch (NoSuchMethodException e) {
+        } catch (final SecurityException | NoSuchMethodException e) {
             // ignore
         }
         return null;
     }
 
     public static Object newInstance(final Constructor<?> constructor, final Object ... args) {
-        if (constructor == null) return null;
+        if (constructor == null) {
+            return null;
+        }
         try {
             return constructor.newInstance(args);
-        } catch (Exception e) {
+        } catch (final InstantiationException | IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
             Log.e(TAG, "Exception in newInstance", e);
         }
         return null;
@@ -88,10 +92,13 @@ public final class CompatUtils {
 
     public static Object invoke(final Object receiver, final Object defaultValue,
             final Method method, final Object... args) {
-        if (method == null) return defaultValue;
+        if (method == null) {
+            return defaultValue;
+        }
         try {
             return method.invoke(receiver, args);
-        } catch (Exception e) {
+        } catch (final IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
             Log.e(TAG, "Exception in invoke", e);
         }
         return defaultValue;
@@ -99,21 +106,113 @@ public final class CompatUtils {
 
     public static Object getFieldValue(final Object receiver, final Object defaultValue,
             final Field field) {
-        if (field == null) return defaultValue;
+        if (field == null) {
+            return defaultValue;
+        }
         try {
             return field.get(receiver);
-        } catch (Exception e) {
+        } catch (final IllegalAccessException | IllegalArgumentException e) {
             Log.e(TAG, "Exception in getFieldValue", e);
         }
         return defaultValue;
     }
 
     public static void setFieldValue(final Object receiver, final Field field, final Object value) {
-        if (field == null) return;
+        if (field == null) {
+            return;
+        }
         try {
             field.set(receiver, value);
-        } catch (Exception e) {
+        } catch (final IllegalAccessException | IllegalArgumentException e) {
             Log.e(TAG, "Exception in setFieldValue", e);
+        }
+    }
+
+    public static ClassWrapper getClassWrapper(final String className) {
+        return new ClassWrapper(getClass(className));
+    }
+
+    public static final class ClassWrapper {
+        private final Class<?> mClass;
+        public ClassWrapper(final Class<?> targetClass) {
+            mClass = targetClass;
+        }
+
+        public boolean exists() {
+            return mClass != null;
+        }
+
+        public <T> ToObjectMethodWrapper<T> getMethod(final String name,
+                final T defaultValue, final Class<?>... parameterTypes) {
+            return new ToObjectMethodWrapper<T>(CompatUtils.getMethod(mClass, name, parameterTypes),
+                    defaultValue);
+        }
+
+        public ToIntMethodWrapper getPrimitiveMethod(final String name, final int defaultValue,
+                final Class<?>... parameterTypes) {
+            return new ToIntMethodWrapper(CompatUtils.getMethod(mClass, name, parameterTypes),
+                    defaultValue);
+        }
+
+        public ToFloatMethodWrapper getPrimitiveMethod(final String name, final float defaultValue,
+                final Class<?>... parameterTypes) {
+            return new ToFloatMethodWrapper(CompatUtils.getMethod(mClass, name, parameterTypes),
+                    defaultValue);
+        }
+
+        public ToBooleanMethodWrapper getPrimitiveMethod(final String name,
+                final boolean defaultValue, final Class<?>... parameterTypes) {
+            return new ToBooleanMethodWrapper(CompatUtils.getMethod(mClass, name, parameterTypes),
+                    defaultValue);
+        }
+    }
+
+    public static final class ToObjectMethodWrapper<T> {
+        private final Method mMethod;
+        private final T mDefaultValue;
+        public ToObjectMethodWrapper(final Method method, final T defaultValue) {
+            mMethod = method;
+            mDefaultValue = defaultValue;
+        }
+        @SuppressWarnings("unchecked")
+        public T invoke(final Object receiver, final Object... args) {
+            return (T) CompatUtils.invoke(receiver, mDefaultValue, mMethod, args);
+        }
+    }
+
+    public static final class ToIntMethodWrapper {
+        private final Method mMethod;
+        private final int mDefaultValue;
+        public ToIntMethodWrapper(final Method method, final int defaultValue) {
+            mMethod = method;
+            mDefaultValue = defaultValue;
+        }
+        public int invoke(final Object receiver, final Object... args) {
+            return (int) CompatUtils.invoke(receiver, mDefaultValue, mMethod, args);
+        }
+    }
+
+    public static final class ToFloatMethodWrapper {
+        private final Method mMethod;
+        private final float mDefaultValue;
+        public ToFloatMethodWrapper(final Method method, final float defaultValue) {
+            mMethod = method;
+            mDefaultValue = defaultValue;
+        }
+        public float invoke(final Object receiver, final Object... args) {
+            return (float) CompatUtils.invoke(receiver, mDefaultValue, mMethod, args);
+        }
+    }
+
+    public static final class ToBooleanMethodWrapper {
+        private final Method mMethod;
+        private final boolean mDefaultValue;
+        public ToBooleanMethodWrapper(final Method method, final boolean defaultValue) {
+            mMethod = method;
+            mDefaultValue = defaultValue;
+        }
+        public boolean invoke(final Object receiver, final Object... args) {
+            return (boolean) CompatUtils.invoke(receiver, mDefaultValue, mMethod, args);
         }
     }
 }

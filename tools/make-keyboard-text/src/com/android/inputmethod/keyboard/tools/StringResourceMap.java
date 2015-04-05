@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -34,31 +35,45 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 public class StringResourceMap {
+    // Locale of this string resource map.
+    public final Locale mLocale;
     // String resource list.
     private final List<StringResource> mResources;
     // Name to string resource map.
     private final Map<String, StringResource> mResourcesMap;
 
-    public StringResourceMap(final InputStream is) {
+    // The length of String[] that is created from this {@link StringResourceMap}. The length is
+    // calculated in {@link MoreKeysResources#dumpTexts(OutputStream)} and recorded by
+    // {@link #setOutputArraySize(int)}. The recorded length is used as a part of comment by
+    // {@link MoreKeysResources#dumpLocaleMap(OutputStream)} via {@link #getOutputArraySize()}.
+    private int mOutputArraySize;
+
+    public StringResourceMap(final String jarEntryName) {
+        mLocale = JarUtils.getLocaleFromEntryName(jarEntryName);
         final StringResourceHandler handler = new StringResourceHandler();
         final SAXParserFactory factory = SAXParserFactory.newInstance();
         factory.setNamespaceAware(true);
+        final InputStream stream = JarUtils.openResource(jarEntryName);
         try {
             final SAXParser parser = factory.newSAXParser();
             // In order to get comment tag.
             parser.setProperty("http://xml.org/sax/properties/lexical-handler", handler);
-            parser.parse(is, handler);
+            parser.parse(stream, handler);
         } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e.getMessage(), e);
         } catch (SAXParseException e) {
             throw new RuntimeException(e.getMessage() + " at line " + e.getLineNumber()
-                    + ", column " + e.getColumnNumber());
+                    + ", column " + e.getColumnNumber(), e);
         } catch (SAXException e) {
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException(e.getMessage(), e);
         } catch (IOException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        } finally {
+            JarUtils.close(stream);
         }
 
         mResources = Collections.unmodifiableList(handler.mResources);
-        final HashMap<String,StringResource> map = new HashMap<String,StringResource>();
+        final HashMap<String, StringResource> map = new HashMap<>();
         for (final StringResource res : mResources) {
             map.put(res.mName, res);
         }
@@ -77,12 +92,20 @@ public class StringResourceMap {
         return mResourcesMap.get(name);
     }
 
+    public void setOutputArraySize(final int arraySize) {
+        mOutputArraySize = arraySize;
+    }
+
+    public int getOutputArraySize() {
+        return mOutputArraySize;
+    }
+
     static class StringResourceHandler extends DefaultHandler2 {
         private static final String TAG_RESOURCES = "resources";
         private static final String TAG_STRING = "string";
         private static final String ATTR_NAME = "name";
 
-        final ArrayList<StringResource> mResources = new ArrayList<StringResource>();
+        final ArrayList<StringResource> mResources = new ArrayList<>();
 
         private String mName;
         private final StringBuilder mValue = new StringBuilder();

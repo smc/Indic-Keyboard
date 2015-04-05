@@ -38,6 +38,6 @@
     <string name="additional_more_keys_for_symbols_8">8</string>
     <string name="additional_more_keys_for_symbols_9">9</string>
     <string name="additional_more_keys_for_symbols_0">0</string>
-    <string name="label_to_alpha_key">&#x0B05;</string>
+    <string name="keylabel_to_alpha">&#x0B05;</string>
     <string name="label_to_symbol_key">&#x0B67;&#x0B68;&#x0B69;</string>
 </resources>

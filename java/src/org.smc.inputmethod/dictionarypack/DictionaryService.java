@@ -24,13 +24,13 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.widget.Toast;
 
-import org.smc.inputmethod.indic.R;
-
 import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import org.smc.inputmethod.indic.R;
 
 /**
  * Service that handles background tasks for the dictionary provider.

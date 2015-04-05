@@ -17,9 +17,12 @@
 package org.smc.inputmethod.indic;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
-import org.smc.inputmethod.indic.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.PrevWordsInfo;
 
 import java.util.ArrayList;
+
+import org.smc.inputmethod.indic.SuggestedWords.SuggestedWordInfo;
+import org.smc.inputmethod.indic.settings.SettingsValuesForSuggestion;
 
 /**
  * Abstract base class for a dictionary that can do a fuzzy search for words based on a set of key
@@ -27,6 +30,7 @@ import java.util.ArrayList;
  */
 public abstract class Dictionary {
     public static final int NOT_A_PROBABILITY = -1;
+    public static final float NOT_A_LANGUAGE_WEIGHT = -1.0f;
 
     // The following types do not actually come from real dictionary instances, so we create
     // corresponding instances.
@@ -52,13 +56,12 @@ public abstract class Dictionary {
     public static final String TYPE_CONTACTS = "contacts";
     // User dictionary, the system-managed one.
     public static final String TYPE_USER = "user";
-    // User history dictionary internal to LatinIME. This assumes bigram prediction for now.
+    // User history dictionary internal to LatinIME.
     public static final String TYPE_USER_HISTORY = "history";
-    // Personalization binary dictionary internal to LatinIME.
+    // Personalization dictionary.
     public static final String TYPE_PERSONALIZATION = "personalization";
-    // Personalization prediction dictionary internal to LatinIME's Java code.
-    public static final String TYPE_PERSONALIZATION_PREDICTION_IN_JAVA =
-            "personalization_prediction_in_java";
+    // Contextual dictionary.
+    public static final String TYPE_CONTEXTUAL = "contextual";
     public final String mDictType;
 
     public Dictionary(final String dictType) {
@@ -69,36 +72,40 @@ public abstract class Dictionary {
      * Searches for suggestions for a given context. For the moment the context is only the
      * previous word.
      * @param composer the key sequence to match with coordinate info, as a WordComposer
-     * @param prevWord the previous word, or null if none
+     * @param prevWordsInfo the information of previous words.
      * @param proximityInfo the object for key proximity. May be ignored by some implementations.
-     * @param blockOffensiveWords whether to block potentially offensive words
-     * @param additionalFeaturesOptions options about additional features used for the suggestion.
+     * @param settingsValuesForSuggestion the settings values used for the suggestion.
+     * @param sessionId the session id.
+     * @param inOutLanguageWeight the language weight used for generating suggestions.
+     * inOutLanguageWeight is a float array that has only one element. This can be updated when the
+     * different language weight is used.
      * @return the list of suggestions (possibly null if none)
      */
-    // TODO: pass more context than just the previous word, to enable better suggestions (n-gram
-    // and more)
     abstract public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final String prevWord, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions);
+            final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
+            final SettingsValuesForSuggestion settingsValuesForSuggestion,
+            final int sessionId, final float[] inOutLanguageWeight);
 
-    // The default implementation of this method ignores sessionId.
-    // Subclasses that want to use sessionId need to override this method.
-    public ArrayList<SuggestedWordInfo> getSuggestionsWithSessionId(final WordComposer composer,
-            final String prevWord, final ProximityInfo proximityInfo,
-            final boolean blockOffensiveWords, final int[] additionalFeaturesOptions,
-            final int sessionId) {
-        return getSuggestions(composer, prevWord, proximityInfo, blockOffensiveWords,
-                additionalFeaturesOptions);
+    /**
+     * Checks if the given word has to be treated as a valid word. Please note that some
+     * dictionaries have entries that should be treated as invalid words.
+     * @param word the word to search for. The search should be case-insensitive.
+     * @return true if the word is valid, false otherwise
+     */
+    public boolean isValidWord(final String word) {
+        return isInDictionary(word);
     }
 
     /**
-     * Checks if the given word occurs in the dictionary
-     * @param word the word to search for. The search should be case-insensitive.
-     * @return true if the word exists, false otherwise
+     * Checks if the given word is in the dictionary regardless of it being valid or not.
      */
-    abstract public boolean isValidWord(final String word);
+    abstract public boolean isInDictionary(final String word);
 
     public int getFrequency(final String word) {
+        return NOT_A_PROBABILITY;
+    }
+
+    public int getMaxFrequencyOfExactMatches(final String word) {
         return NOT_A_PROBABILITY;
     }
 
@@ -161,13 +168,14 @@ public abstract class Dictionary {
 
         @Override
         public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-                final String prevWord, final ProximityInfo proximityInfo,
-                final boolean blockOffensiveWords, final int[] additionalFeaturesOptions) {
+                final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
+                final SettingsValuesForSuggestion settingsValuesForSuggestion,
+                final int sessionId, final float[] inOutLanguageWeight) {
             return null;
         }
 
         @Override
-        public boolean isValidWord(String word) {
+        public boolean isInDictionary(String word) {
             return false;
         }
     }

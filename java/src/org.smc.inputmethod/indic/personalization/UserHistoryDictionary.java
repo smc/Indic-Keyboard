@@ -16,25 +16,74 @@
 
 package org.smc.inputmethod.indic.personalization;
 
+import android.content.Context;
+import android.text.TextUtils;
+
+import com.android.inputmethod.latin.PrevWordsInfo;
+
+import java.io.File;
+import java.util.Locale;
+
+import org.smc.inputmethod.annotations.UsedForTesting;
+import org.smc.inputmethod.indic.Constants;
 import org.smc.inputmethod.indic.Dictionary;
 import org.smc.inputmethod.indic.ExpandableBinaryDictionary;
-
-import android.content.Context;
-import android.content.SharedPreferences;
+import com.android.inputmethod.latin.utils.DistracterFilter;
 
 /**
  * Locally gathers stats about the words user types and various other signals like auto-correction
  * cancellation or manual picks. This allows the keyboard to adapt to the typist over time.
  */
 public class UserHistoryDictionary extends DecayingExpandableBinaryDictionaryBase {
-    /* package for tests */ static final String NAME =
-            UserHistoryDictionary.class.getSimpleName();
-    /* package */ UserHistoryDictionary(final Context context, final String locale,
-            final SharedPreferences sp) {
-        super(context, locale, sp, Dictionary.TYPE_USER_HISTORY, getDictionaryFileName(locale));
+    /* package */ static final String NAME = UserHistoryDictionary.class.getSimpleName();
+
+    // TODO: Make this constructor private
+    /* package */ UserHistoryDictionary(final Context context, final Locale locale) {
+        super(context, getDictName(NAME, locale, null /* dictFile */), locale,
+                Dictionary.TYPE_USER_HISTORY, null /* dictFile */);
     }
 
-    private static String getDictionaryFileName(final String locale) {
-        return NAME + "." + locale + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
+    @UsedForTesting
+    public static UserHistoryDictionary getDictionary(final Context context, final Locale locale,
+            final File dictFile, final String dictNamePrefix) {
+        return PersonalizationHelper.getUserHistoryDictionary(context, locale);
+    }
+
+    /**
+     * Add a word to the user history dictionary.
+     *
+     * @param userHistoryDictionary the user history dictionary
+     * @param prevWordsInfo the information of previous words
+     * @param word the word the user inputted
+     * @param isValid whether the word is valid or not
+     * @param timestamp the timestamp when the word has been inputted
+     * @param distracterFilter the filter to check whether the word is a distracter
+     */
+    public static void addToDictionary(final ExpandableBinaryDictionary userHistoryDictionary,
+            final PrevWordsInfo prevWordsInfo, final String word, final boolean isValid,
+            final int timestamp, final DistracterFilter distracterFilter) {
+        final CharSequence prevWord = prevWordsInfo.mPrevWordsInfo[0].mWord;
+        if (word.length() > Constants.DICTIONARY_MAX_WORD_LENGTH ||
+                (prevWord != null && prevWord.length() > Constants.DICTIONARY_MAX_WORD_LENGTH)) {
+            return;
+        }
+        final int frequency = isValid ?
+                FREQUENCY_FOR_WORDS_IN_DICTS : FREQUENCY_FOR_WORDS_NOT_IN_DICTS;
+        userHistoryDictionary.addUnigramEntryWithCheckingDistracter(word, frequency,
+                null /* shortcutTarget */, 0 /* shortcutFreq */, false /* isNotAWord */,
+                false /* isBlacklisted */, timestamp, distracterFilter);
+        // Do not insert a word as a bigram of itself
+        if (TextUtils.equals(word, prevWord)) {
+            return;
+        }
+        if (null != prevWord) {
+            if (prevWordsInfo.mPrevWordsInfo[0].mIsBeginningOfSentence) {
+                // Beginning-of-Sentence n-gram entry is treated as a n-gram entry of invalid word.
+                userHistoryDictionary.addNgramEntry(prevWordsInfo, word,
+                        FREQUENCY_FOR_WORDS_NOT_IN_DICTS, timestamp);
+            } else {
+                userHistoryDictionary.addNgramEntry(prevWordsInfo, word, frequency, timestamp);
+            }
+        }
     }
 }

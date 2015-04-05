@@ -27,110 +27,110 @@
         >
             <!---Q ஔ TAMIL LETTER AU-->
             <Key
-              latin:keyLabel="&#x0B94;"
-              latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio|autoXScale" />
+              latin:keySpec="&#x0B94;"
+              latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
 
             <!---W ஐ TAMIL LETTER AI-->
             <Key
-              latin:keyLabel="&#x0B90;"
-              latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+              latin:keySpec="&#x0B90;"
+              latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!---E ஆ TAMIL LETTER AA-->
             <Key
-              latin:keyLabel="&#x0B86;"
-              latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+              latin:keySpec="&#x0B86;"
+              latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!---R ஈ TAMIL LETTER II-->
             <Key
-              latin:keyLabel="&#x0B88;"
-              latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+              latin:keySpec="&#x0B88;"
+              latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!---T ஊ TAMIL LETTER UU-->
             <Key
-              latin:keyLabel="&#x0B8A;"
-              latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+              latin:keySpec="&#x0B8A;"
+              latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keyLabel="" />
+            <Key latin:keySpec="" />
 
             <!---U ங TAMIL LETTER NGA-->
             <Key
-              latin:keyLabel="&#x0B99;"
-              latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+              latin:keySpec="&#x0B99;"
+              latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keyLabel="" />
+            <Key latin:keySpec="" />
 
-            <Key latin:keyLabel="" />
+            <Key latin:keySpec="" />
 
-            <Key latin:keyLabel="" />
+            <Key latin:keySpec="" />
 
             <Key
-                latin:keyLabel="{"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="{"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!---\} ஞ TAMIL LETTER NYA-->
             <Key
-                latin:keyLabel="&#x0B9E;"
+                latin:keySpec="&#x0B9E;"
                 latin:moreKeys="}"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keyLabel="|"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="|"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </case>
 
         <default>
             <!---q ௌ TAMIL VOWEL SIGN AU-->
             <Key
-                latin:keyLabel="&#x0BCC;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio|autoXScale" />
+                latin:keySpec="&#x0BCC;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
 
             <!---w ை TAMIL VOWEL SIGN AI-->
             <Key
-                latin:keyLabel="&#x0BC8;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio|autoXScale" />
+                latin:keySpec="&#x0BC8;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
 
             <!---e ா TAMIL VOWEL SIGN AA-->
             <Key
-                latin:keyLabel="&#x0BBE;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0BBE;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!---r ீ TAMIL VOWEL SIGN II-->
             <Key
-                latin:keyLabel="&#x0BC0;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0BC0;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!---t ூ TAMIL VOWEL SIGN UU-->
             <Key
-                latin:keyLabel="&#x0BC2;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0BC2;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keyLabel="" />
+            <Key latin:keySpec="" />
 
             <!---u ஹ TAMIL LETTER HA-->
             <Key
-                latin:keyLabel="&#x0BB9;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio|autoXScale" />
+                latin:keySpec="&#x0BB9;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
 
-            <Key latin:keyLabel="" />
+            <Key latin:keySpec="" />
 
-            <Key latin:keyLabel="" />
+            <Key latin:keySpec="" />
 
             <!---p ஜ TAMIL LETTER JA-->
             <Key
-                latin:keyLabel="&#x0B9C;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0B9C;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keyLabel="["
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="["
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keyLabel="]"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="]"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keyLabel="\\"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="\\"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
          </default>
     </switch>
 </merge>

@@ -17,6 +17,7 @@
 package org.smc.inputmethod.accessibility;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseIntArray;
@@ -25,42 +26,32 @@ import android.view.inputmethod.EditorInfo;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
+
+import java.util.Locale;
+
 import org.smc.inputmethod.indic.Constants;
 import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.StringUtils;
 
-import java.util.HashMap;
-
-public final class KeyCodeDescriptionMapper {
+final class KeyCodeDescriptionMapper {
     private static final String TAG = KeyCodeDescriptionMapper.class.getSimpleName();
+    private static final String SPOKEN_LETTER_RESOURCE_NAME_FORMAT = "spoken_accented_letter_%04X";
+    private static final String SPOKEN_SYMBOL_RESOURCE_NAME_FORMAT = "spoken_symbol_%04X";
+    private static final String SPOKEN_EMOJI_RESOURCE_NAME_FORMAT = "spoken_emoji_%04X";
 
     // The resource ID of the string spoken for obscured keys
     private static final int OBSCURED_KEY_RES_ID = R.string.spoken_description_dot;
 
-    private static KeyCodeDescriptionMapper sInstance = new KeyCodeDescriptionMapper();
-
-    // Map of key labels to spoken description resource IDs
-    private final HashMap<CharSequence, Integer> mKeyLabelMap = CollectionUtils.newHashMap();
-
-    // Sparse array of spoken description resource IDs indexed by key codes
-    private final SparseIntArray mKeyCodeMap;
-
-    public static void init() {
-        sInstance.initInternal();
-    }
+    private static final KeyCodeDescriptionMapper sInstance = new KeyCodeDescriptionMapper();
 
     public static KeyCodeDescriptionMapper getInstance() {
         return sInstance;
     }
 
+    // Sparse array of spoken description resource IDs indexed by key codes
+    private final SparseIntArray mKeyCodeMap = new SparseIntArray();
+
     private KeyCodeDescriptionMapper() {
-        mKeyCodeMap = new SparseIntArray();
-    }
-
-    private void initInternal() {
-        // Manual label substitutions for key labels with no string resource
-        mKeyLabelMap.put(":-)", R.string.spoken_description_smiley);
-
         // Special non-character codes defined in Keyboard
         mKeyCodeMap.put(Constants.CODE_SPACE, R.string.spoken_description_space);
         mKeyCodeMap.put(Constants.CODE_DELETE, R.string.spoken_description_delete);
@@ -75,19 +66,21 @@ public final class KeyCodeDescriptionMapper {
         mKeyCodeMap.put(Constants.CODE_ACTION_NEXT, R.string.spoken_description_action_next);
         mKeyCodeMap.put(Constants.CODE_ACTION_PREVIOUS,
                 R.string.spoken_description_action_previous);
+        mKeyCodeMap.put(Constants.CODE_EMOJI, R.string.spoken_description_emoji);
+        // Because the upper-case and lower-case mappings of the following letters is depending on
+        // the locale, the upper case descriptions should be defined here. The lower case
+        // descriptions are handled in {@link #getSpokenLetterDescriptionId(Context,int)}.
+        // U+0049: "I" LATIN CAPITAL LETTER I
+        // U+0069: "i" LATIN SMALL LETTER I
+        // U+0130: "İ" LATIN CAPITAL LETTER I WITH DOT ABOVE
+        // U+0131: "ı" LATIN SMALL LETTER DOTLESS I
+        mKeyCodeMap.put(0x0049, R.string.spoken_letter_0049);
+        mKeyCodeMap.put(0x0130, R.string.spoken_letter_0130);
     }
 
     /**
      * Returns the localized description of the action performed by a specified
      * key based on the current keyboard state.
-     * <p>
-     * The order of precedence for key descriptions is:
-     * <ol>
-     * <li>Manually-defined based on the key label</li>
-     * <li>Automatic or manually-defined based on the key code</li>
-     * <li>Automatically based on the key label</li>
-     * <li>{code null} for keys with no label or key code defined</li>
-     * </p>
      *
      * @param context The package's context.
      * @param keyboard The keyboard on which the key resides.
@@ -116,18 +109,26 @@ public final class KeyCodeDescriptionMapper {
             return getDescriptionForActionKey(context, keyboard, key);
         }
 
-        if (!TextUtils.isEmpty(key.getLabel())) {
-            final String label = key.getLabel().trim();
-
-            // First, attempt to map the label to a pre-defined description.
-            if (mKeyLabelMap.containsKey(label)) {
-                return context.getString(mKeyLabelMap.get(label));
-            }
+        if (code == Constants.CODE_OUTPUT_TEXT) {
+            return key.getOutputText();
         }
 
         // Just attempt to speak the description.
-        if (key.getCode() != Constants.CODE_UNSPECIFIED) {
-            return getDescriptionForKeyCode(context, keyboard, key, shouldObscure);
+        if (code != Constants.CODE_UNSPECIFIED) {
+            // If the key description should be obscured, now is the time to do it.
+            final boolean isDefinedNonCtrl = Character.isDefined(code)
+                    && !Character.isISOControl(code);
+            if (shouldObscure && isDefinedNonCtrl) {
+                return context.getString(OBSCURED_KEY_RES_ID);
+            }
+            final String description = getDescriptionForCodePoint(context, code);
+            if (description != null) {
+                return description;
+            }
+            if (!TextUtils.isEmpty(key.getLabel())) {
+                return key.getLabel();
+            }
+            return context.getString(R.string.spoken_description_unknown);
         }
         return null;
     }
@@ -141,7 +142,7 @@ public final class KeyCodeDescriptionMapper {
      * @param keyboard The keyboard on which the key resides.
      * @return a character sequence describing the action performed by pressing the key
      */
-    private String getDescriptionForSwitchAlphaSymbol(final Context context,
+    private static String getDescriptionForSwitchAlphaSymbol(final Context context,
             final Keyboard keyboard) {
         final KeyboardId keyboardId = keyboard.mId;
         final int elementId = keyboardId.mElementId;
@@ -179,7 +180,8 @@ public final class KeyCodeDescriptionMapper {
      * @param keyboard The keyboard on which the key resides.
      * @return A context-sensitive description of the "Shift" key.
      */
-    private String getDescriptionForShiftKey(final Context context, final Keyboard keyboard) {
+    private static String getDescriptionForShiftKey(final Context context,
+            final Keyboard keyboard) {
         final KeyboardId keyboardId = keyboard.mId;
         final int elementId = keyboardId.mElementId;
         final int resId;
@@ -191,8 +193,13 @@ public final class KeyCodeDescriptionMapper {
             break;
         case KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED:
         case KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED:
-        case KeyboardId.ELEMENT_SYMBOLS_SHIFTED:
             resId = R.string.spoken_description_shift_shifted;
+            break;
+        case KeyboardId.ELEMENT_SYMBOLS:
+            resId = R.string.spoken_description_symbols_shift;
+            break;
+        case KeyboardId.ELEMENT_SYMBOLS_SHIFTED:
+            resId = R.string.spoken_description_symbols_shift_shifted;
             break;
         default:
             resId = R.string.spoken_description_shift;
@@ -208,7 +215,7 @@ public final class KeyCodeDescriptionMapper {
      * @param key The key to describe.
      * @return Returns a context-sensitive description of the "Enter" action key.
      */
-    private String getDescriptionForActionKey(final Context context, final Keyboard keyboard,
+    private static String getDescriptionForActionKey(final Context context, final Keyboard keyboard,
             final Key key) {
         final KeyboardId keyboardId = keyboard.mId;
         final int actionId = keyboardId.imeAction();
@@ -247,42 +254,91 @@ public final class KeyCodeDescriptionMapper {
 
     /**
      * Returns a localized character sequence describing what will happen when
-     * the specified key is pressed based on its key code.
-     * <p>
-     * The order of precedence for key code descriptions is:
-     * <ol>
-     * <li>Manually-defined shift-locked description</li>
-     * <li>Manually-defined shifted description</li>
-     * <li>Manually-defined normal description</li>
-     * <li>Automatic based on the character represented by the key code</li>
-     * <li>Fall-back for undefined or control characters</li>
-     * </ol>
-     * </p>
+     * the specified key is pressed based on its key code point.
      *
      * @param context The package's context.
-     * @param keyboard The keyboard on which the key resides.
-     * @param key The key from which to obtain a description.
-     * @param shouldObscure {@true} if text (e.g. non-control) characters should be obscured.
-     * @return a character sequence describing the action performed by pressing the key
+     * @param codePoint The code point from which to obtain a description.
+     * @return a character sequence describing the code point.
      */
-    private String getDescriptionForKeyCode(final Context context, final Keyboard keyboard,
-            final Key key, final boolean shouldObscure) {
-        final int code = key.getCode();
-
+    public String getDescriptionForCodePoint(final Context context, final int codePoint) {
         // If the key description should be obscured, now is the time to do it.
-        final boolean isDefinedNonCtrl = Character.isDefined(code) && !Character.isISOControl(code);
-        if (shouldObscure && isDefinedNonCtrl) {
-            return context.getString(OBSCURED_KEY_RES_ID);
+        final int index = mKeyCodeMap.indexOfKey(codePoint);
+        if (index >= 0) {
+            return context.getString(mKeyCodeMap.valueAt(index));
         }
-        if (mKeyCodeMap.indexOfKey(code) >= 0) {
-            return context.getString(mKeyCodeMap.get(code));
+        final String accentedLetter = getSpokenAccentedLetterDescription(context, codePoint);
+        if (accentedLetter != null) {
+            return accentedLetter;
         }
-        if (isDefinedNonCtrl) {
-            return Character.toString((char) code);
+        // Here, <code>code</code> may be a base (non-accented) letter.
+        final String unsupportedSymbol = getSpokenSymbolDescription(context, codePoint);
+        if (unsupportedSymbol != null) {
+            return unsupportedSymbol;
         }
-        if (!TextUtils.isEmpty(key.getLabel())) {
-            return key.getLabel();
+        final String emojiDescription = getSpokenEmojiDescription(context, codePoint);
+        if (emojiDescription != null) {
+            return emojiDescription;
         }
-        return context.getString(R.string.spoken_description_unknown, code);
+        if (Character.isDefined(codePoint) && !Character.isISOControl(codePoint)) {
+            return StringUtils.newSingleCodePointString(codePoint);
+        }
+        return null;
+    }
+
+    // TODO: Remove this method once TTS supports those accented letters' verbalization.
+    private String getSpokenAccentedLetterDescription(final Context context, final int code) {
+        final boolean isUpperCase = Character.isUpperCase(code);
+        final int baseCode = isUpperCase ? Character.toLowerCase(code) : code;
+        final int baseIndex = mKeyCodeMap.indexOfKey(baseCode);
+        final int resId = (baseIndex >= 0) ? mKeyCodeMap.valueAt(baseIndex)
+                : getSpokenDescriptionId(context, baseCode, SPOKEN_LETTER_RESOURCE_NAME_FORMAT);
+        if (resId == 0) {
+            return null;
+        }
+        final String spokenText = context.getString(resId);
+        return isUpperCase ? context.getString(R.string.spoken_description_upper_case, spokenText)
+                : spokenText;
+    }
+
+    // TODO: Remove this method once TTS supports those symbols' verbalization.
+    private String getSpokenSymbolDescription(final Context context, final int code) {
+        final int resId = getSpokenDescriptionId(context, code, SPOKEN_SYMBOL_RESOURCE_NAME_FORMAT);
+        if (resId == 0) {
+            return null;
+        }
+        final String spokenText = context.getString(resId);
+        if (!TextUtils.isEmpty(spokenText)) {
+            return spokenText;
+        }
+        // If a translated description is empty, fall back to unknown symbol description.
+        return context.getString(R.string.spoken_symbol_unknown);
+    }
+
+    // TODO: Remove this method once TTS supports emoji verbalization.
+    private String getSpokenEmojiDescription(final Context context, final int code) {
+        final int resId = getSpokenDescriptionId(context, code, SPOKEN_EMOJI_RESOURCE_NAME_FORMAT);
+        if (resId == 0) {
+            return null;
+        }
+        final String spokenText = context.getString(resId);
+        if (!TextUtils.isEmpty(spokenText)) {
+            return spokenText;
+        }
+        // If a translated description is empty, fall back to unknown emoji description.
+        return context.getString(R.string.spoken_emoji_unknown);
+    }
+
+    private int getSpokenDescriptionId(final Context context, final int code,
+            final String resourceNameFormat) {
+        final String resourceName = String.format(Locale.ROOT, resourceNameFormat, code);
+        final Resources resources = context.getResources();
+        // Note that the resource package name may differ from the context package name.
+        final String resourcePackageName = resources.getResourcePackageName(
+                R.string.spoken_description_unknown);
+        final int resId = resources.getIdentifier(resourceName, "string", resourcePackageName);
+        if (resId != 0) {
+            mKeyCodeMap.append(code, resId);
+        }
+        return resId;
     }
 }

@@ -23,24 +23,24 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.SuggestionSpan;
 
-import org.smc.inputmethod.indic.LatinImeLogger;
-import org.smc.inputmethod.indic.SuggestedWords;
-import org.smc.inputmethod.indic.SuggestionSpanPickedNotificationReceiver;
-import org.smc.inputmethod.indic.utils.CollectionUtils;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+
+import org.smc.inputmethod.indic.SuggestedWords;
+import org.smc.inputmethod.indic.SuggestedWords.SuggestedWordInfo;
+import org.smc.inputmethod.indic.SuggestionSpanPickedNotificationReceiver;
+import org.smc.inputmethod.indic.define.DebugFlags;
 
 public final class SuggestionSpanUtils {
     // Note that SuggestionSpan.FLAG_AUTO_CORRECTION has been introduced
     // in API level 15 (Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1).
-    public static final Field FIELD_FLAG_AUTO_CORRECTION = CompatUtils.getField(
+    private static final Field FIELD_FLAG_AUTO_CORRECTION = CompatUtils.getField(
             SuggestionSpan.class, "FLAG_AUTO_CORRECTION");
-    public static final Integer OBJ_FLAG_AUTO_CORRECTION = (Integer) CompatUtils.getFieldValue(
+    private static final Integer OBJ_FLAG_AUTO_CORRECTION = (Integer) CompatUtils.getFieldValue(
             null /* receiver */, null /* defaultValue */, FIELD_FLAG_AUTO_CORRECTION);
 
     static {
-        if (LatinImeLogger.sDBG) {
+        if (DebugFlags.DEBUG_ENABLED) {
             if (OBJ_FLAG_AUTO_CORRECTION == null) {
                 throw new RuntimeException("Field is accidentially null.");
             }
@@ -66,30 +66,30 @@ public final class SuggestionSpanUtils {
     }
 
     public static CharSequence getTextWithSuggestionSpan(final Context context,
-            final String pickedWord, final SuggestedWords suggestedWords,
-            final boolean dictionaryAvailable) {
-        if (!dictionaryAvailable || TextUtils.isEmpty(pickedWord) || suggestedWords.isEmpty()
-                || suggestedWords.mIsPrediction || suggestedWords.mIsPunctuationSuggestions) {
+            final String pickedWord, final SuggestedWords suggestedWords) {
+        if (TextUtils.isEmpty(pickedWord) || suggestedWords.isEmpty()
+                || suggestedWords.isPrediction() || suggestedWords.isPunctuationSuggestions()) {
             return pickedWord;
         }
 
-        final Spannable spannable = new SpannableString(pickedWord);
-        final ArrayList<String> suggestionsList = CollectionUtils.newArrayList();
+        final ArrayList<String> suggestionsList = new ArrayList<>();
         for (int i = 0; i < suggestedWords.size(); ++i) {
             if (suggestionsList.size() >= SuggestionSpan.SUGGESTIONS_MAX_SIZE) {
                 break;
+            }
+            final SuggestedWordInfo info = suggestedWords.getInfo(i);
+            if (info.isKindOf(SuggestedWordInfo.KIND_PREDICTION)) {
+                continue;
             }
             final String word = suggestedWords.getWord(i);
             if (!TextUtils.equals(pickedWord, word)) {
                 suggestionsList.add(word.toString());
             }
         }
-
-        // TODO: We should avoid adding suggestion span candidates that came from the bigram
-        // prediction.
         final SuggestionSpan suggestionSpan = new SuggestionSpan(context, null /* locale */,
                 suggestionsList.toArray(new String[suggestionsList.size()]), 0 /* flags */,
                 SuggestionSpanPickedNotificationReceiver.class);
+        final Spannable spannable = new SpannableString(pickedWord);
         spannable.setSpan(suggestionSpan, 0, pickedWord.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return spannable;
     }

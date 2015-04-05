@@ -37,6 +37,7 @@ public class MetadataParser {
     private static final String DESCRIPTION_FIELD_NAME = MetadataDbHelper.DESCRIPTION_COLUMN;
     private static final String UPDATE_FIELD_NAME = "update";
     private static final String FILESIZE_FIELD_NAME = MetadataDbHelper.FILESIZE_COLUMN;
+    private static final String RAW_CHECKSUM_FIELD_NAME = MetadataDbHelper.RAW_CHECKSUM_COLUMN;
     private static final String CHECKSUM_FIELD_NAME = MetadataDbHelper.CHECKSUM_COLUMN;
     private static final String REMOTE_FILENAME_FIELD_NAME =
             MetadataDbHelper.REMOTE_FILENAME_COLUMN;
@@ -51,7 +52,7 @@ public class MetadataParser {
      */
     private static WordListMetadata parseOneWordList(final JsonReader reader)
             throws IOException, BadFormatException {
-        final TreeMap<String, String> arguments = new TreeMap<String, String>();
+        final TreeMap<String, String> arguments = new TreeMap<>();
         reader.beginObject();
         while (reader.hasNext()) {
             final String name = reader.nextName();
@@ -80,6 +81,7 @@ public class MetadataParser {
                 arguments.get(DESCRIPTION_FIELD_NAME),
                 Long.parseLong(arguments.get(UPDATE_FIELD_NAME)),
                 Long.parseLong(arguments.get(FILESIZE_FIELD_NAME)),
+                arguments.get(RAW_CHECKSUM_FIELD_NAME),
                 arguments.get(CHECKSUM_FIELD_NAME),
                 null,
                 arguments.get(REMOTE_FILENAME_FIELD_NAME),
@@ -98,7 +100,7 @@ public class MetadataParser {
     public static List<WordListMetadata> parseMetadata(final InputStreamReader input)
             throws IOException, BadFormatException {
         JsonReader reader = new JsonReader(input);
-        final ArrayList<WordListMetadata> readInfo = new ArrayList<WordListMetadata>();
+        final ArrayList<WordListMetadata> readInfo = new ArrayList<>();
         reader.beginArray();
         while (reader.hasNext()) {
             final WordListMetadata thisMetadata = parseOneWordList(reader);

@@ -27,114 +27,114 @@
         >
             <!--A ଓ ORIYA LETTER O-->
             <Key
-                latin:keyLabel="&#x0B13;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0B13;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--S ଏ ORIYA LETTER E-->
             <Key
-                latin:keyLabel="&#x0B0F;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0B0F;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--D ଅ ORIYA LETTER A-->
             <Key
-                latin:keyLabel="&#x0B05;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0B05;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--F ଇ ORIYA LETTER I-->
             <Key
-                latin:keyLabel="&#x0B07;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0B07;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--G ଉ ORIYA LETTER U-->
             <Key
-                latin:keyLabel="&#x0B09;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0B09;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--H ଫ ORIYA LETTER PHA-->
             <Key
-                latin:keyLabel="&#x0B2B;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0B2B;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keyLabel="" />
+            <Key latin:keySpec="" />
 
             <!--K ଖ ORIYA LETTER KHA-->
             <Key
-                latin:keyLabel="&#x0B16;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0B16;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--L ଥ ORIYA LETTER THA-->
             <Key
-                latin:keyLabel="&#x0B25;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0B25;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--\: ଛ ORIYA LETTER CHA-->
             <Key
-                latin:keyLabel="&#x0B1B;"
+                latin:keySpec="&#x0B1B;"
                 latin:moreKeys=":"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keyLabel="&#x0B20;"
+                latin:keySpec="&#x0B20;"
                 latin:moreKeys="&quot;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </case>
 
         <default>
             <!--a ୋ ORIYA VOWEL SIGN O-->
             <Key
-                latin:keyLabel="&#x0B4B;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0B4B;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--s େ ORIYA VOWEL SIGN E-->
             <Key
-                latin:keyLabel="&#x0B47;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0B47;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--d ୍ ORIYA SIGN VIRAMA-->
             <Key
-                latin:keyLabel="&#x0B4D;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0B4D;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--f ି ORIYA VOWEL SIGN I-->
             <Key
-                latin:keyLabel="&#x0B3F;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0B3F;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--g ୁ ORIYA VOWEL SIGN U-->
             <Key
-                latin:keyLabel="&#x0B41;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0B41;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--h ପ ORIYA LETTER PA-->
             <Key
-                latin:keyLabel="&#x0B2A;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0B2A;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--j ର ORIYA LETTER RA-->
             <Key
-                latin:keyLabel="&#x0B30;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0B30;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--k କ ORIYA LETTER KA-->
             <Key
-                latin:keyLabel="&#x0B15;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0B15;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--l ତ ORIYA LETTER TA-->
             <Key
-                latin:keyLabel="&#x0B24;"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keySpec="&#x0B24;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--\; ଚ ORIYA LETTER CA-->
             <Key
-                latin:keyLabel="&#x0B1A;"
+                latin:keySpec="&#x0B1A;"
                 latin:moreKeys=";"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keyLabel="&#x0B1F;"
+                latin:keySpec="&#x0B1F;"
                 latin:moreKeys="'"
-                latin:keyLabelFlags="fontNormal|followKeyLargeLabelRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
          </default>
     </switch>
 </merge>

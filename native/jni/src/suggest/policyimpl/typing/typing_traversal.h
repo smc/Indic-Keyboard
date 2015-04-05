@@ -17,7 +17,7 @@
 #ifndef LATINIME_TYPING_TRAVERSAL_H
 #define LATINIME_TYPING_TRAVERSAL_H
 
-#include <stdint.h>
+#include <cstdint>
 
 #include "defines.h"
 #include "suggest/core/dicnode/dic_node.h"
@@ -81,7 +81,7 @@ class TypingTraversal : public Traversal {
             return false;
         }
         const int point0Index = dicNode->getInputIndex(0);
-        return dicNode->isTerminalWordNode()
+        return dicNode->isTerminalDicNode()
                 && traverseSession->getProximityInfoState(0)->
                         hasSpaceProximity(point0Index);
     }
@@ -96,7 +96,7 @@ class TypingTraversal : public Traversal {
         if (dicNode->isCompletion(inputSize)) {
             return false;
         }
-        if (!dicNode->isTerminalWordNode()) {
+        if (!dicNode->isTerminalDicNode()) {
             return false;
         }
         const int16_t pointIndex = dicNode->getInputIndex(0);
@@ -137,23 +137,17 @@ class TypingTraversal : public Traversal {
         return ScoringParams::MAX_SPATIAL_DISTANCE;
     }
 
-    AK_FORCE_INLINE bool autoCorrectsToMultiWordSuggestionIfTop() const {
-        return true;
-    }
-
     AK_FORCE_INLINE int getDefaultExpandDicNodeSize() const {
         return DicNodeVector::DEFAULT_NODES_SIZE_FOR_OPTIMIZATION;
-    }
-
-    AK_FORCE_INLINE bool sameAsTyped(
-            const DicTraverseSession *const traverseSession, const DicNode *const dicNode) const {
-        return traverseSession->getProximityInfoState(0)->sameAsTyped(
-                dicNode->getOutputWordBuf(), dicNode->getNodeCodePointCount());
     }
 
     AK_FORCE_INLINE int getMaxCacheSize(const int inputSize) const {
         return (inputSize <= 1) ? ScoringParams::MAX_CACHE_DIC_NODE_SIZE_FOR_SINGLE_POINT
                 : ScoringParams::MAX_CACHE_DIC_NODE_SIZE;
+    }
+
+    AK_FORCE_INLINE int getTerminalCacheSize() const {
+        return MAX_RESULTS;
     }
 
     AK_FORCE_INLINE bool isPossibleOmissionChildNode(
@@ -172,9 +166,8 @@ class TypingTraversal : public Traversal {
         if (probability < ScoringParams::THRESHOLD_NEXT_WORD_PROBABILITY) {
             return false;
         }
-        const int c = dicNode->getOutputWordBuf()[0];
         const bool shortCappedWord = dicNode->getNodeCodePointCount()
-                < ScoringParams::THRESHOLD_SHORT_WORD_LENGTH && CharUtils::isAsciiUpper(c);
+                < ScoringParams::THRESHOLD_SHORT_WORD_LENGTH && dicNode->isFirstCharUppercase();
         return !shortCappedWord
                 || probability >= ScoringParams::THRESHOLD_NEXT_WORD_PROBABILITY_FOR_CAPPED;
     }

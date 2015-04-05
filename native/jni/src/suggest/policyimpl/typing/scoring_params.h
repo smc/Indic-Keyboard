@@ -32,6 +32,11 @@ class ScoringParams {
     static const int MAX_CACHE_DIC_NODE_SIZE_FOR_SINGLE_POINT;
     static const int THRESHOLD_SHORT_WORD_LENGTH;
 
+    static const float EXACT_MATCH_PROMOTION;
+    static const float CASE_ERROR_PENALTY_FOR_EXACT_MATCH;
+    static const float ACCENT_ERROR_PENALTY_FOR_EXACT_MATCH;
+    static const float DIGRAPH_PENALTY_FOR_EXACT_MATCH;
+
     // Numerically optimized parameters (currently for tap typing only).
     // TODO: add ability to modify these constants programmatically.
     // TODO: explore optimization of gesture parameters.
@@ -39,6 +44,7 @@ class ScoringParams {
     static const float PROXIMITY_COST;
     static const float FIRST_CHAR_PROXIMITY_COST;
     static const float FIRST_PROXIMITY_COST;
+    static const float INTENTIONAL_OMISSION_COST;
     static const float OMISSION_COST;
     static const float OMISSION_COST_SAME_CHAR;
     static const float OMISSION_COST_FIRST_CHAR;
@@ -54,8 +60,8 @@ class ScoringParams {
     static const float COST_NEW_WORD;
     static const float COST_SECOND_OR_LATER_WORD_FIRST_CHAR_UPPERCASE;
     static const float DISTANCE_WEIGHT_LANGUAGE;
-    static const float COST_FIRST_LOOKAHEAD;
-    static const float COST_LOOKAHEAD;
+    static const float COST_FIRST_COMPLETION;
+    static const float COST_COMPLETION;
     static const float HAS_PROXIMITY_TERMINAL_COST;
     static const float HAS_EDIT_CORRECTION_TERMINAL_COST;
     static const float HAS_MULTI_WORD_TERMINAL_COST;

@@ -22,13 +22,13 @@ import android.util.Xml;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.utils.CollectionUtils;
-import org.smc.inputmethod.indic.utils.ResourceUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayDeque;
+
+import org.smc.inputmethod.indic.R;
+import com.android.inputmethod.latin.utils.ResourceUtils;
 
 /**
  * Container for keys in the keyboard. All keys in a row are at the same Y-coordinate.
@@ -44,8 +44,9 @@ public final class KeyboardRow {
     /** The height of this row. */
     private final int mRowHeight;
 
-    private final ArrayDeque<RowAttributes> mRowAttributesStack = CollectionUtils.newArrayDeque();
+    private final ArrayDeque<RowAttributes> mRowAttributesStack = new ArrayDeque<>();
 
+    // TODO: Add keyActionFlags.
     private static class RowAttributes {
         /** Default width of a key in this row. */
         public final float mDefaultKeyWidth;

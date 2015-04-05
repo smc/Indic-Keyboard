@@ -18,6 +18,12 @@ package org.smc.inputmethod.indic;
 
 import android.text.TextUtils;
 
+import com.android.inputmethod.latin.PrevWordsInfo;
+
+import java.util.ArrayList;
+
+import org.smc.inputmethod.event.Event;
+
 /**
  * This class encapsulates data about a word previously composed, but that has been
  * committed already. This is used for resuming suggestion, and cancel auto-correction.
@@ -40,11 +46,11 @@ public final class LastComposedWord {
 
     public static final String NOT_A_SEPARATOR = "";
 
-    public final int[] mPrimaryKeyCodes;
+    public final ArrayList<Event> mEvents;
     public final String mTypedWord;
-    public final String mCommittedWord;
+    public final CharSequence mCommittedWord;
     public final String mSeparatorString;
-    public final String mPrevWord;
+    public final PrevWordsInfo mPrevWordsInfo;
     public final int mCapitalizedMode;
     public final InputPointers mInputPointers =
             new InputPointers(Constants.DICTIONARY_MAX_WORD_LENGTH);
@@ -52,23 +58,24 @@ public final class LastComposedWord {
     private boolean mActive;
 
     public static final LastComposedWord NOT_A_COMPOSED_WORD =
-            new LastComposedWord(null, null, "", "", NOT_A_SEPARATOR, null,
-            WordComposer.CAPS_MODE_OFF);
+            new LastComposedWord(new ArrayList<Event>(), null, "", "",
+            NOT_A_SEPARATOR, null, WordComposer.CAPS_MODE_OFF);
 
     // Warning: this is using the passed objects as is and fully expects them to be
     // immutable. Do not fiddle with their contents after you passed them to this constructor.
-    public LastComposedWord(final int[] primaryKeyCodes, final InputPointers inputPointers,
-            final String typedWord, final String committedWord, final String separatorString,
-            final String prevWord, final int capitalizedMode) {
-        mPrimaryKeyCodes = primaryKeyCodes;
+    public LastComposedWord(final ArrayList<Event> events,
+            final InputPointers inputPointers, final String typedWord,
+            final CharSequence committedWord, final String separatorString,
+            final PrevWordsInfo prevWordsInfo, final int capitalizedMode) {
         if (inputPointers != null) {
             mInputPointers.copy(inputPointers);
         }
         mTypedWord = typedWord;
+        mEvents = new ArrayList<>(events);
         mCommittedWord = committedWord;
         mSeparatorString = separatorString;
         mActive = true;
-        mPrevWord = prevWord;
+        mPrevWordsInfo = prevWordsInfo;
         mCapitalizedMode = capitalizedMode;
     }
 

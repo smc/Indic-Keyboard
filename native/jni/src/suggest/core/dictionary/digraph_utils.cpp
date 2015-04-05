@@ -28,11 +28,8 @@ const DigraphUtils::digraph_t DigraphUtils::GERMAN_UMLAUT_DIGRAPHS[] =
         { { 'a', 'e', 0x00E4 }, // U+00E4 : LATIN SMALL LETTER A WITH DIAERESIS
         { 'o', 'e', 0x00F6 },   // U+00F6 : LATIN SMALL LETTER O WITH DIAERESIS
         { 'u', 'e', 0x00FC } }; // U+00FC : LATIN SMALL LETTER U WITH DIAERESIS
-const DigraphUtils::digraph_t DigraphUtils::FRENCH_LIGATURES_DIGRAPHS[] =
-        { { 'a', 'e', 0x00E6 }, // U+00E6 : LATIN SMALL LETTER AE
-        { 'o', 'e', 0x0153 } }; // U+0153 : LATIN SMALL LIGATURE OE
 const DigraphUtils::DigraphType DigraphUtils::USED_DIGRAPH_TYPES[] =
-        { DIGRAPH_TYPE_GERMAN_UMLAUT, DIGRAPH_TYPE_FRENCH_LIGATURES };
+        { DIGRAPH_TYPE_GERMAN_UMLAUT };
 
 /* static */ bool DigraphUtils::hasDigraphForCodePoint(
         const DictionaryHeaderStructurePolicy *const headerPolicy,
@@ -49,9 +46,6 @@ const DigraphUtils::DigraphType DigraphUtils::USED_DIGRAPH_TYPES[] =
         const DictionaryHeaderStructurePolicy *const headerPolicy) {
     if (headerPolicy->requiresGermanUmlautProcessing()) {
         return DIGRAPH_TYPE_GERMAN_UMLAUT;
-    }
-    if (headerPolicy->requiresFrenchLigatureProcessing()) {
-        return DIGRAPH_TYPE_FRENCH_LIGATURES;
     }
     return DIGRAPH_TYPE_NONE;
 }
@@ -86,15 +80,11 @@ const DigraphUtils::DigraphType DigraphUtils::USED_DIGRAPH_TYPES[] =
         *digraphs = GERMAN_UMLAUT_DIGRAPHS;
         return NELEMS(GERMAN_UMLAUT_DIGRAPHS);
     }
-    if (digraphType == DIGRAPH_TYPE_FRENCH_LIGATURES) {
-        *digraphs = FRENCH_LIGATURES_DIGRAPHS;
-        return NELEMS(FRENCH_LIGATURES_DIGRAPHS);
-    }
     return 0;
 }
 
 /**
- * Returns the digraph for the input composite glyph codepoint, or 0 if none exists.
+ * Returns the digraph for the input composite glyph codepoint, or nullptr if none exists.
  * compositeGlyphCodePoint: the method returns the digraph corresponding to this codepoint.
  */
 /* static */ const DigraphUtils::digraph_t *DigraphUtils::getDigraphForCodePoint(
@@ -106,17 +96,17 @@ const DigraphUtils::DigraphType DigraphUtils::USED_DIGRAPH_TYPES[] =
             return digraph;
         }
     }
-    return 0;
+    return nullptr;
 }
 
 /**
- * Returns the digraph for the input composite glyph codepoint, or 0 if none exists.
+ * Returns the digraph for the input composite glyph codepoint, or nullptr if none exists.
  * digraphType: the type of digraphs supported.
  * compositeGlyphCodePoint: the method returns the digraph corresponding to this codepoint.
  */
 /* static */ const DigraphUtils::digraph_t *DigraphUtils::getDigraphForDigraphTypeAndCodePoint(
         const DigraphUtils::DigraphType digraphType, const int compositeGlyphCodePoint) {
-    const DigraphUtils::digraph_t *digraphs = 0;
+    const DigraphUtils::digraph_t *digraphs = nullptr;
     const int compositeGlyphLowerCodePoint = CharUtils::toLowerCase(compositeGlyphCodePoint);
     const int digraphsSize =
             DigraphUtils::getAllDigraphsForDigraphTypeAndReturnSize(digraphType, &digraphs);
@@ -125,7 +115,7 @@ const DigraphUtils::DigraphType DigraphUtils::USED_DIGRAPH_TYPES[] =
             return &digraphs[i];
         }
     }
-    return 0;
+    return nullptr;
 }
 
 } // namespace latinime

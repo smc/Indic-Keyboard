@@ -25,8 +25,9 @@
         <item name="mainKeyboardViewStyle">@style/MainKeyboardView.ICS</item>
         <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.ICS</item>
         <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.ICS</item>
+        <!-- Note: ICS theme uses the same style for both general more keys and action more keys. -->
         <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.ICS</item>
-        <item name="moreKeysKeyboardContainerStyle">@style/MoreKeysKeyboardContainer.ICS</item>
+        <item name="moreKeysKeyboardViewForActionStyle">@style/MoreKeysKeyboardView.ICS</item>
         <item name="suggestionStripViewStyle">@style/SuggestionStripView.ICS</item>
         <item name="suggestionWordStyle">@style/SuggestionWord.ICS</item>
     </style>
@@ -34,54 +35,61 @@
         name="Keyboard.ICS"
         parent="Keyboard"
     >
-        <!-- This should be aligned with KeyboardSwitcher.KEYBOARD_THEMES[] -->
-        <item name="themeId">2</item>
-        <item name="keyboardTopPadding">@fraction/keyboard_top_padding_holo</item>
-        <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding_holo</item>
-        <item name="horizontalGap">@fraction/key_horizontal_gap_holo</item>
-        <item name="verticalGap">@fraction/key_bottom_gap_holo</item>
-        <item name="touchPositionCorrectionData">@array/touch_position_correction_data_holo</item>
+        <!-- This should be aligned with KeyboardTheme.THEME_ID_* -->
+        <item name="themeId">ICS</item>
     </style>
     <style
         name="KeyboardView.ICS"
-        parent="KeyboardView"
+        parent="KeyboardView.Holo"
     >
         <item name="android:background">@drawable/keyboard_background_holo</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_ics</item>
-        <item name="keyTypeface">bold</item>
+        <item name="functionalKeyBackground">@drawable/btn_keyboard_key_functional_ics</item>
+        <item name="spacebarBackground">@drawable/btn_keyboard_spacebar_ics</item>
         <item name="keyTextColor">@color/key_text_color_holo</item>
         <item name="keyTextInactivatedColor">@color/key_text_inactivated_color_holo</item>
+        <item name="functionalTextColor">@color/key_text_color_holo</item>
         <item name="keyHintLetterColor">@color/key_hint_letter_color_holo</item>
         <item name="keyHintLabelColor">@color/key_hint_label_color_holo</item>
         <item name="keyShiftedLetterHintInactivatedColor">@color/key_shifted_letter_hint_inactivated_color_holo</item>
         <item name="keyShiftedLetterHintActivatedColor">@color/key_shifted_letter_hint_activated_color_holo</item>
         <item name="keyPreviewTextColor">@color/key_text_color_holo</item>
-        <item name="keyTextShadowColor">@color/key_text_shadow_color_holo</item>
-        <item name="keyTextShadowRadius">0.0</item>
     </style>
     <style
         name="MainKeyboardView.ICS"
         parent="KeyboardView.ICS"
     >
-        <item name="keyPreviewLayout">@layout/key_preview_ics</item>
-        <item name="keyPreviewOffset">@dimen/key_preview_offset_holo</item>
+        <item name="keyPreviewBackground">@drawable/keyboard_key_feedback_ics</item>
+        <item name="keyPreviewHeight">@dimen/config_key_preview_height_holo</item>
+        <item name="keyPreviewOffset">@dimen/config_key_preview_offset_holo</item>
+        <item name="keyPreviewShowUpAnimator">@anim/key_preview_show_up_holo</item>
+        <item name="keyPreviewDismissAnimator">@anim/key_preview_dismiss_holo</item>
         <item name="gestureFloatingPreviewTextColor">@color/highlight_color_ics</item>
         <item name="gestureFloatingPreviewColor">@color/gesture_floating_preview_color_holo</item>
         <item name="gestureTrailColor">@color/highlight_color_ics</item>
         <item name="slidingKeyInputPreviewColor">@color/highlight_translucent_color_ics</item>
-        <item name="autoCorrectionSpacebarLedEnabled">false</item>
-        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_holo</item>
-        <item name="spacebarTextColor">@color/spacebar_text_color_holo</item>
-        <item name="spacebarTextShadowColor">@color/spacebar_text_shadow_color_holo</item>
+        <item name="languageOnSpacebarTextColor">@color/spacebar_text_color_holo</item>
+        <item name="languageOnSpacebarTextShadowRadius">1.0</item>
+        <item name="languageOnSpacebarTextShadowColor">@color/spacebar_text_shadow_color_holo</item>
     </style>
     <!-- Though {@link EmojiPalettesView} doesn't extend {@link KeyboardView}, some views inside it,
          for instance delete button, need themed {@link KeyboardView} attributes. -->
     <style
         name="EmojiPalettesView.ICS"
-        parent="KeyboardView.ICS"
+        parent="MainKeyboardView.ICS"
     >
-        <item name="keyBackgroundEmojiFunctional">@drawable/btn_keyboard_key_functional_ics</item>
-        <item name="emojiTabLabelColor">@color/emoji_tab_label_color_holo</item>
+        <item name="categoryIndicatorEnabled">true</item>
+        <item name="categoryIndicatorDrawable">@drawable/emoji_category_tab_selected_ics</item>
+        <item name="categoryIndicatorBackground">@drawable/emoji_category_tab_unselected_holo_dark</item>
+        <item name="categoryPageIndicatorColor">@color/highlight_color_ics</item>
+        <item name="categoryPageIndicatorBackground">@color/emoji_tab_page_indicator_background_holo</item>
+        <item name="iconEmojiRecentsTab">@drawable/ic_emoji_recents_holo_dark</item>
+        <item name="iconEmojiCategory1Tab">@drawable/ic_emoji_people_holo_dark</item>
+        <item name="iconEmojiCategory2Tab">@drawable/ic_emoji_objects_holo_dark</item>
+        <item name="iconEmojiCategory3Tab">@drawable/ic_emoji_nature_holo_dark</item>
+        <item name="iconEmojiCategory4Tab">@drawable/ic_emoji_places_holo_dark</item>
+        <item name="iconEmojiCategory5Tab">@drawable/ic_emoji_symbols_holo_dark</item>
+        <item name="iconEmojiCategory6Tab">@drawable/ic_emoji_emoticons_holo_dark</item>
     </style>
     <style
         name="MoreKeysKeyboard.ICS"
@@ -96,29 +104,34 @@
         name="MoreKeysKeyboardView.ICS"
         parent="KeyboardView.ICS"
     >
-        <item name="android:background">@null</item>
-        <item name="keyBackground">@drawable/btn_keyboard_key_popup_ics</item>
-        <item name="keyTypeface">normal</item>
-        <item name="verticalCorrection">@dimen/more_keys_keyboard_vertical_correction_holo</item>
-    </style>
-    <style
-        name="MoreKeysKeyboardContainer.ICS"
-    >
         <item name="android:background">@drawable/keyboard_popup_panel_background_ics</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_popup_ics</item>
+        <item name="divider">@drawable/more_keys_divider</item>
+        <item name="keyTypeface">normal</item>
+        <item name="verticalCorrection">@dimen/config_more_keys_keyboard_vertical_correction_holo</item>
     </style>
     <style
         name="SuggestionStripView.ICS"
-        parent="SuggestionStripView"
+        parent="KeyboardView.ICS"
     >
+        <item name="suggestionsCountInStrip">@integer/config_suggestions_count_in_strip</item>
+        <item name="centerSuggestionPercentile">@fraction/config_center_suggestion_percentile</item>
+        <item name="maxMoreSuggestionsRow">@integer/config_max_more_suggestions_row</item>
+        <item name="minMoreSuggestionsWidth">@fraction/config_min_more_suggestions_width</item>
         <item name="android:background">@drawable/keyboard_suggest_strip_holo</item>
-        <item name="suggestionStripOption">autoCorrectBold|validTypedWordBold</item>
+        <item name="android:src">@drawable/suggestions_strip_divider_holo</item>
+        <item name="suggestionStripOptions">autoCorrectBold|validTypedWordBold</item>
         <item name="colorValidTypedWord">@color/typed_word_color_ics</item>
         <item name="colorTypedWord">@color/typed_word_color_ics</item>
         <item name="colorAutoCorrect">@color/highlight_color_ics</item>
         <item name="colorSuggested">@color/suggested_word_color_ics</item>
         <item name="alphaObsoleted">70%</item>
     </style>
-    <style name="SuggestionWord.ICS">
+    <style
+        name="SuggestionWord.ICS"
+        parent="SuggestionWord"
+    >
         <item name="android:background">@drawable/btn_suggestion_ics</item>
+        <item name="android:textColor">@color/highlight_color_ics</item>
     </style>
 </resources>
