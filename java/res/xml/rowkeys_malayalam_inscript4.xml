@@ -38,7 +38,7 @@
                 latin:keySpec="&#x0D23;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="" />
+                latin:keySpec="&#x0020;" />
             <Key
                 latin:keySpec="&#x0D34;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
@@ -58,7 +58,7 @@
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
                 latin:keySpec="\?"
-                latin:moreKeys="!text/more_keys_for_symbols_question"
+                latin:moreKeys="!text/morekeys_question"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </case>
 

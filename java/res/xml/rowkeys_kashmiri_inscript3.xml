@@ -55,7 +55,7 @@
                 latin:keySpec="&#x0925;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!--:-->
-            <Key latin:keySpec=""
+            <Key latin:keySpec="#x0020;"
                 latin:moreKeys=":"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!--" ठ DEVANAGARI LETTER TTHA-->

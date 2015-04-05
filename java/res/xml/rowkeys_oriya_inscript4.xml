@@ -26,7 +26,7 @@
         <case
             latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
         >
-            <Key latin:keySpec="" />
+            <Key latin:keySpec="#x0020;" />
 
             <!--X ଁ ORIYA SIGN CANDRABINDU-->
             <Key
@@ -38,8 +38,8 @@
                 latin:keySpec="&#x0B23;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keySpec="" />
-            <Key latin:keySpec="" />
+            <Key latin:keySpec="#x0020;" />
+            <Key latin:keySpec="#x0020;" />
 
             <!--N ଳ ORIYA LETTER LLA-->
             <Key
@@ -72,7 +72,7 @@
         </case>
 
         <default>
-            <Key latin:keySpec="" />
+            <Key latin:keySpec="#x0020;" />
 
             <!--x ଂ ORIYA SIGN ANUSVARA-->
             <Key

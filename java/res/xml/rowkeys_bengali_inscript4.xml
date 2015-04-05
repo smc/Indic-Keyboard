@@ -26,7 +26,7 @@
         <case
             latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
         >
-            <Key latin:keySpec="" />
+            <Key latin:keySpec="#x0020;" />
 
             <!--X ঁ BENGALI SIGN CANDRABINDU-->
             <Key
@@ -38,9 +38,9 @@
                 latin:keySpec="&#x09A3;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keySpec="" />
-            <Key latin:keySpec="" />
-            <Key latin:keySpec="" />
+            <Key latin:keySpec="#x0020;" />
+            <Key latin:keySpec="#x0020;" />
+            <Key latin:keySpec="#x0020;" />
 
             <!--M শ BENGALI LETTER SHA-->
             <Key
@@ -67,7 +67,7 @@
         </case>
 
         <default>
-            <Key latin:keySpec="" />
+            <Key latin:keySpec="#x0020;" />
 
             <!--x ং BENGALI SIGN ANUSVARA-->
             <Key
@@ -84,7 +84,7 @@
                 latin:keySpec="&#x09A8;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keySpec="" />
+            <Key latin:keySpec="#x0020;" />
 
             <!--n ল BENGALI LETTER LA-->
             <Key

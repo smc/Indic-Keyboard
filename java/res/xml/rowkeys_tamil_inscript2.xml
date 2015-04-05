@@ -50,18 +50,18 @@
               latin:keySpec="&#x0B8A;"
               latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keySpec="" />
+            <Key latin:keySpec="#x0020;" />
 
             <!---U ங TAMIL LETTER NGA-->
             <Key
               latin:keySpec="&#x0B99;"
               latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keySpec="" />
+            <Key latin:keySpec="#x0020;" />
 
-            <Key latin:keySpec="" />
+            <Key latin:keySpec="#x0020;" />
 
-            <Key latin:keySpec="" />
+            <Key latin:keySpec="#x0020;" />
 
             <Key
                 latin:keySpec="{"
@@ -104,16 +104,16 @@
                 latin:keySpec="&#x0BC2;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keySpec="" />
+            <Key latin:keySpec="#x0020;" />
 
             <!---u ஹ TAMIL LETTER HA-->
             <Key
                 latin:keySpec="&#x0BB9;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
 
-            <Key latin:keySpec="" />
+            <Key latin:keySpec="#x0020;" />
 
-            <Key latin:keySpec="" />
+            <Key latin:keySpec="#x0020;" />
 
             <!---p ஜ TAMIL LETTER JA-->
             <Key

@@ -22,7 +22,7 @@
 <merge xmlns:latin="http://schemas.android.com/apk/res-auto">
     <switch>
         <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted" >
-            <Key latin:keySpec="" />
+            <Key latin:keySpec="#x0020;" />
             <!--X ँ DEVANAGARI SIGN CANDRABINDU-->
             <Key
                 latin:keySpec="&#x0901;"
@@ -31,8 +31,8 @@
             <Key
                 latin:keySpec="&#x0923;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
-            <Key latin:keySpec="" />
-            <Key latin:keySpec="" />
+            <Key latin:keySpec="#x0020;" />
+            <Key latin:keySpec="#x0020;" />
             <!--N ळ DEVANAGARI LETTER LLA-->
             <Key
                 latin:keySpec="&#x0933;"
@@ -56,7 +56,7 @@
         </case>
 
         <default>
-            <Key latin:keySpec="" />
+            <Key latin:keySpec="#x0020;" />
             <!--x ं DEVANAGARI SIGN ANUSVARA-->
             <Key
                 latin:keySpec="&#x0902;"

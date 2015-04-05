@@ -50,7 +50,7 @@
                 latin:keySpec="&#x0A89;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keySpec="" />
+            <Key latin:keySpec="#x0020;" />
 
             <!--H ફ GUJARATI LETTER PHA-->
             <Key

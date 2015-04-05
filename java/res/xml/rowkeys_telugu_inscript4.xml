@@ -41,8 +41,8 @@
                 latin:keySpec="&#x0C23;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keySpec="" />
-            <Key latin:keySpec="" />
+            <Key latin:keySpec="#x0020;" />
+            <Key latin:keySpec="#x0020;" />
 
             <!--N ళ TELUGU LETTER LLA-->
             <Key
