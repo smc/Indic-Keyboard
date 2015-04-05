@@ -30,6 +30,7 @@ import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import android.util.Log;
 
 import javax.annotation.Nonnull;
 
@@ -167,6 +168,46 @@ public final class WordComposer {
         return processedEvent;
     }
 
+    private String context = "";
+    static int firstDivergence(String str1, String str2) {
+        int length = str1.length() > str2.length() ? str2.length() : str1.length();
+        for(int i = 0; i < length; i++) {
+            if(str1.charAt(i) != str2.charAt(i)) {
+                return i;
+            }
+        }
+        return length - 1; // Default
+    }
+
+    public void applyTransliteration(final Event event) {
+        final int primaryCode = event.mCodePoint;
+
+        refreshTypedWordCache();
+
+        String mTypedWord = mTypedWordCache.toString();
+
+        Log.d("IndicKeyboard", "applyProcessedEvent: " + primaryCode);
+
+        /* if we've a transliteration method set, use that. Else just append the code and get on with life */
+        if(mTransliterationMethod != null && Constants.CODE_DELETE != event.mKeyCode) {
+            Log.d("IndicKeyboard", "transliteration...: " + mTypedWord);
+            String current = new String(Character.toChars(primaryCode));
+            int startPos = mTypedWord.length() > mTransliterationMethod.getMaxKeyLength() ? mTypedWord.length() - mTransliterationMethod.getMaxKeyLength() : 0;
+            String input = mTypedWord.subSequence(startPos, mTypedWord.length()).toString();
+            String replacement = mTransliterationMethod.transliterate(input, context, false);
+
+            Log.d("IndicKeyboard", "input: " + input + ", Replacement: " + replacement);
+
+            int divIndex = firstDivergence(input, replacement);
+            replacement = replacement.substring(divIndex);
+
+            //mTypedWordCache = mTypedWord.replace(input, replacement);
+            Log.d("IndicKeyboard", mTypedWordCache + ", out: " + mTypedWordCache + ", first: " + replacement);
+            Log.d("IndicKeyboard", "--------");
+            mCombinerChain.replace(startPos + divIndex, startPos + divIndex + replacement.length() + 2, replacement);
+        }
+    }
+
     /**
      * Apply a processed input event.
      *
@@ -181,6 +222,9 @@ public final class WordComposer {
         final int keyX = event.mX;
         final int keyY = event.mY;
         final int newIndex = size();
+
+        applyTransliteration(event);
+
         refreshTypedWordCache();
         mCursorPositionWithinWord = mCodePointSize;
         // We may have deleted the last one.
@@ -268,6 +312,7 @@ public final class WordComposer {
     }
 
     public void setBatchInputWord(final String word) {
+        Log.d("IndicKeyboard", "WordComposer: setBatchInputWord");
         reset();
         mIsBatchMode = true;
         final int length = word.length();
@@ -288,6 +333,7 @@ public final class WordComposer {
      * @param coordinates the x, y coordinates of the key in the CoordinateUtils format
      */
     public void setComposingWord(final int[] codePoints, final int[] coordinates) {
+        Log.d("IndicKeyboard", "WordComposer: setComposingWord");
         reset();
         final int length = codePoints.length;
         for (int i = 0; i < length; ++i) {
@@ -417,6 +463,7 @@ public final class WordComposer {
     // committedWord should contain suggestion spans if applicable.
     public LastComposedWord commitWord(final int type, final CharSequence committedWord,
             final String separatorString, final NgramContext ngramContext) {
+        Log.d("IndicKeyboard", "=========CommitWord:" + committedWord + ", " + mTypedWordCache.toString());
         // Note: currently, we come here whenever we commit a word. If it's a MANUAL_PICK
         // or a DECIDED_WORD we may cancel the commit later; otherwise, we should deactivate
         // the last composed word to ensure this does not happen.

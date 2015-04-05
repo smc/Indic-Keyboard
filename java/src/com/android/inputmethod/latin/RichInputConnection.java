@@ -51,6 +51,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.wikimedia.morelangs.InputMethod;
 /**
  * Enrichment class for InputConnection to simplify interaction and add functionality.
  *
@@ -133,6 +134,8 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      * The timestamp of the last slow InputConnection operation
      */
     private long mLastSlowInputConnectionTime = -SLOW_INPUTCONNECTION_PERSIST_MS;
+
+    private InputMethod mTransliterationMethod;
 
     public RichInputConnection(final InputMethodService parent) {
         mParent = parent;
@@ -291,6 +294,46 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         if (isConnected()) {
             mIC.finishComposingText();
         }
+    }
+
+    public void setTransliterationMethod(InputMethod transliterationMethod) {
+        mTransliterationMethod = transliterationMethod;
+    }
+
+    static int firstDivergence(String str1, String str2) {
+        int length = str1.length() > str2.length() ? str2.length() : str1.length();
+        for(int i = 0; i < length; i++) {
+            if(str1.charAt(i) != str2.charAt(i)) {
+                return i;
+            }
+        }
+        return length - 1; // Default
+    }
+
+    public void applyTransliteration(final CharSequence text, final int newCursorPosition) {
+        String replacement = "";
+
+        /* if we've a transliteration method set, use that. Else just append the code and get on with life */
+        if(mTransliterationMethod != null && text.length() > 0 && !TextUtils.isEmpty(text)) {
+            Log.d("IndicKeyboard", "Text: " + mCommittedTextBeforeComposingText.toString());
+            Log.d("IndicKeyboard", "transliteration...: " + text);
+            int startPos = mCommittedTextBeforeComposingText.length() > mTransliterationMethod.getMaxKeyLength() ? mCommittedTextBeforeComposingText.length() - mTransliterationMethod.getMaxKeyLength() : 0;
+            String input = mCommittedTextBeforeComposingText.subSequence(startPos, mCommittedTextBeforeComposingText.length()).toString() + text;
+            replacement = mTransliterationMethod.transliterate(input, "", false);
+
+            Log.d("IndicKeyboard", "input: " + input + ", Replacement: " + replacement);
+
+            int divIndex = firstDivergence(input, replacement);
+            replacement = replacement.substring(divIndex);
+
+            Log.d("IndicKeyboard", "--------: " + Integer.toString(replacement.length()));
+            deleteSurroundingText(replacement.length(), 0);
+
+            //mCommittedTextBeforeComposingText.replace(startPos + divIndex, startPos + divIndex + replacement.length() + 2, replacement);
+
+            //Log.d("IndicKeyboard", "--------" + mCommittedTextBeforeComposingText.toString());
+        }
+        commitTextWithBackgroundColor(replacement, newCursorPosition, Color.TRANSPARENT, replacement.length());
     }
 
     /**

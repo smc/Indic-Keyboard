@@ -566,6 +566,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         AudioAndHapticFeedbackManager.init(this);
         AccessibilityUtils.init(this);
         mStatsUtilsManager.onCreate(this /* context */, mDictionaryFacilitator);
+        checkForTransliteration();
         super.onCreate();
 
         mHandler.onCreate();
@@ -596,6 +597,23 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         registerReceiver(mDictionaryDumpBroadcastReceiver, dictDumpFilter);
 
         StatsUtils.onCreate(mSettings.getCurrent(), mRichImm);
+    }
+
+    private boolean checkForTransliteration() {
+        InputMethodSubtype currentSubtype = mSubtypeSwitcher.getCurrentSubtype();
+        if(currentSubtype.containsExtraValueKey(Constants.Subtype.ExtraValue.TRANSLITERATION_METHOD)) {
+            try {
+                String transliterationName = currentSubtype.getExtraValueOf(Constants.Subtype.ExtraValue.TRANSLITERATION_METHOD);
+                mInputLogic.enableTransliteration(transliterationName);
+                Log.d("IndicKeyboard", "-------------transliteration enabled-----------");
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        }
+        Log.d("IndicKeyboard", "-------------transliteration disabled----------------");
+        return false;
     }
 
     // Has to be package-visible for unit tests

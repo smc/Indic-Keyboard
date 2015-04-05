@@ -126,6 +126,10 @@ public class CombinerChain {
         updateStateFeedback();
     }
 
+    public void replace(int start, int end, String text) {
+        mCombinedText.replace(start, end, text);
+    }
+
     /**
      * Get the char sequence that should be displayed as the composing word. It may include
      * styling spans.

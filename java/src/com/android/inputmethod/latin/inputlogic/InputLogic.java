@@ -66,6 +66,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
+import org.wikimedia.morelangs.InputMethod;
 /**
  * This class manages the input logic.
  */
@@ -109,6 +110,8 @@ public final class InputLogic {
     // Note: This does not have a composing span, so it must be handled separately.
     private String mWordBeingCorrectedByCursor = null;
 
+    private boolean transliterationFlag;
+
     /**
      * Create a new instance of the input logic.
      * @param latinIME the instance of the parent LatinIME. We should remove this when we can.
@@ -137,6 +140,7 @@ public final class InputLogic {
      * @param settingsValues the current settings values
      */
     public void startInput(final String combiningSpec, final SettingsValues settingsValues) {
+        Log.d("IndicKeyboard", "startInput");
         mEnteredText = null;
         mWordBeingCorrectedByCursor = null;
         mConnection.onStartInput();
@@ -176,6 +180,7 @@ public final class InputLogic {
      * @param settingsValues the current settings values
      */
     public void onSubtypeChanged(final String combiningSpec, final SettingsValues settingsValues) {
+        Log.d("IndicKeyboard", "onSubtypeChanged");
         finishInput();
         startInput(combiningSpec, settingsValues);
     }
@@ -201,6 +206,7 @@ public final class InputLogic {
      * Clean up the input logic after input is finished.
      */
     public void finishInput() {
+        Log.d("IndicKeyboard", "finishInput");
         if (mWordComposer.isComposingWord()) {
             mConnection.finishComposingText();
             StatsUtils.onWordCommitUserTyped(
@@ -234,6 +240,7 @@ public final class InputLogic {
     public InputTransaction onTextInput(final SettingsValues settingsValues, final Event event,
             final int keyboardShiftMode, final LatinIME.UIHandler handler) {
         final String rawText = event.getTextToCommit().toString();
+        Log.d("IndicKeyboard", "onTextInput: " + rawText);
         final InputTransaction inputTransaction = new InputTransaction(settingsValues, event,
                 SystemClock.uptimeMillis(), mSpaceState,
                 getActualCapsMode(settingsValues, keyboardShiftMode));
@@ -438,6 +445,7 @@ public final class InputLogic {
             @Nonnull final Event event, final int keyboardShiftMode,
             final int currentKeyboardScriptId, final LatinIME.UIHandler handler) {
         mWordBeingCorrectedByCursor = null;
+        Log.d("IndicKeyboard", "InputLogic: onCodeInput");
         final Event processedEvent = mWordComposer.processEvent(event);
         final InputTransaction inputTransaction = new InputTransaction(settingsValues,
                 processedEvent, SystemClock.uptimeMillis(), mSpaceState,
@@ -576,6 +584,7 @@ public final class InputLogic {
     // TODO: on the long term, this method should become private, but it will be difficult.
     // Especially, how do we deal with InputMethodService.onDisplayCompletions?
     public void setSuggestedWords(final SuggestedWords suggestedWords) {
+        Log.d("IndicKeyboard", "setSuggestedWords");
         if (!suggestedWords.isEmpty()) {
             final SuggestedWordInfo suggestedWordInfo;
             if (suggestedWords.mWillAutoCorrect) {
@@ -762,6 +771,8 @@ public final class InputLogic {
     private void handleNonSpecialCharacterEvent(final Event event,
             final InputTransaction inputTransaction,
             final LatinIME.UIHandler handler) {
+        Log.d("IndicKeyboard", "handle non special character");
+
         final int codePoint = event.mCodePoint;
         mSpaceState = SpaceState.NONE;
         if (inputTransaction.mSettingsValues.isWordSeparator(codePoint)
@@ -793,6 +804,7 @@ public final class InputLogic {
      */
     private void handleNonSeparatorEvent(final Event event, final SettingsValues settingsValues,
             final InputTransaction inputTransaction) {
+        Log.d("IndicKeyboard", "handle non seperator");
         final int codePoint = event.mCodePoint;
         // TODO: refactor this method to stop flipping isComposingWord around all the time, and
         // make it shorter (possibly cut into several pieces). Also factor
@@ -800,6 +812,7 @@ public final class InputLogic {
         // not the same.
         boolean isComposingWord = mWordComposer.isComposingWord();
 
+        Log.d("IndicKeyboard", "isComposingWord: " + String.valueOf(isComposingWord));
         // TODO: remove isWordConnector() and use isUsuallyFollowedBySpace() instead.
         // See onStartBatchInput() to see how to do it.
         if (SpaceState.PHANTOM == inputTransaction.mSpaceState
@@ -812,6 +825,7 @@ public final class InputLogic {
         }
 
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
+            Log.d("IndicKeyboard", "InputLogic: isCursorFrontOrMiddleOfComposingWord");
             // If we are in the middle of a recorrection, we need to commit the recorrection
             // first so that we can insert the character at the current cursor position.
             // We also need to unlearn the original word that is now being corrected.
@@ -846,12 +860,14 @@ public final class InputLogic {
             // separators and they should be treated as normal characters, except in the first
             // position where they should not start composing a word.
             isComposingWord = !settingsValues.mSpacingAndPunctuations.isWordConnector(codePoint);
+            Log.d("IndicKeyboard", "InputLogic: space and punct");
             // Here we don't need to reset the last composed word. It will be reset
             // when we commit this one, if we ever do; if on the other hand we backspace
             // it entirely and resume suggestions on the previous word, we'd like to still
             // have touch coordinates for it.
             resetComposingState(false /* alsoResetLastComposedWord */);
         }
+        Log.d("IndicKeyboard", "isComposingWord: " + String.valueOf(isComposingWord));
         if (isComposingWord) {
             mWordComposer.applyProcessedEvent(event);
             // If it's the first letter, make note of auto-caps state
@@ -879,6 +895,7 @@ public final class InputLogic {
      */
     private void handleSeparatorEvent(final Event event, final InputTransaction inputTransaction,
             final LatinIME.UIHandler handler) {
+        Log.d("IndicKeyboard", "handle special character");
         final int codePoint = event.mCodePoint;
         final SettingsValues settingsValues = inputTransaction.mSettingsValues;
         final boolean wasComposingWord = mWordComposer.isComposingWord();
@@ -1450,6 +1467,7 @@ public final class InputLogic {
             startTimeMillis = System.currentTimeMillis();
             Log.d(TAG, "performUpdateSuggestionStripSync()");
         }
+        Log.w("IndicKeyboard", "performUpdateSuggestionStripSync");
         // Check if we have a suggestion engine attached.
         if (!settingsValues.needsToLookupSuggestions()) {
             if (mWordComposer.isComposingWord()) {
@@ -1515,6 +1533,7 @@ public final class InputLogic {
             final boolean forStartInput,
             // TODO: remove this argument, put it into settingsValues
             final int currentKeyboardScriptId) {
+        Log.d("IndicKeyboard", "InputLogidc: restartSuggestionsOnWordTouchedByCursor");
         // HACK: We may want to special-case some apps that exhibit bad behavior in case of
         // recorrection. This is a temporary, stopgap measure that will be removed later.
         // TODO: remove this.
@@ -1633,6 +1652,7 @@ public final class InputLogic {
      */
     private void revertCommit(final InputTransaction inputTransaction,
             final SettingsValues settingsValues) {
+        Log.d("IndicKeyboard", "InputLogidc: revertCommit");
         final CharSequence originallyTypedWord = mLastComposedWord.mTypedWord;
         final String originallyTypedWordString =
                 originallyTypedWord != null ? originallyTypedWord.toString() : "";
@@ -1990,6 +2010,7 @@ public final class InputLogic {
      */
     // TODO: replace these two parameters with an InputTransaction
     private void sendKeyCodePoint(final SettingsValues settingsValues, final int codePoint) {
+        Log.d("IndicKeyboard", "sendKeyCodePoint: " + Integer.toString(codePoint) + "/" + Integer.toString(Constants.CODE_ENTER));
         // TODO: Remove this special handling of digit letters.
         // For backward compatibility. See {@link InputMethodService#sendKeyChar(char)}.
         if (codePoint >= '0' && codePoint <= '9') {
@@ -2004,6 +2025,9 @@ public final class InputLogic {
             // reasons (there are race conditions with commits) but some applications are
             // relying on this behavior so we continue to support it for older apps.
             sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER);
+        } else if (Constants.CODE_ENTER != codePoint && Constants.CODE_SPACE != codePoint) {
+            Log.d("IndicKeyboard", "sendKeyCodePoint: " + StringUtils.newSingleCodePointString(codePoint));
+            mConnection.applyTransliteration(StringUtils.newSingleCodePointString(codePoint), 1);
         } else {
             mConnection.commitText(StringUtils.newSingleCodePointString(codePoint), 1);
         }
@@ -2349,5 +2373,18 @@ public final class InputLogic {
     // never need to know this.
     public int getComposingLength() {
         return mWordComposer.size();
+    }
+
+    public void enableTransliteration(String transliterationMethod) {
+        InputMethod im;
+        try {
+            im = InputMethod.fromName(transliterationMethod);
+            mWordComposer.setTransliterationMethod(im);
+            mConnection.setTransliterationMethod(im);
+            transliterationFlag = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 }
