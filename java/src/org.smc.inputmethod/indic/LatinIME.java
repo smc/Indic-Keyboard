@@ -106,8 +106,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import org.wikimedia.morelangs.InputMethod;
-
 /**
  * Input method implementation for Qwerty'ish keyboard.
  */
@@ -163,7 +161,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
     private final SubtypeSwitcher mSubtypeSwitcher;
     private final SubtypeState mSubtypeState = new SubtypeState();
-    private boolean mTransliterationOn;
 
     private final SpecialKeyDetector mSpecialKeyDetector;
     // Working variable for {@link #startShowingInputView()} and
@@ -535,14 +532,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         DebugFlags.init(PreferenceManager.getDefaultSharedPreferences(this));
         RichInputMethodManager.init(this);
         mRichImm = RichInputMethodManager.getInstance();
-        //checkForTransliteration();
+
         SubtypeSwitcher.init(this);
         KeyboardSwitcher.init(this);
         AudioAndHapticFeedbackManager.init(this);
         AccessibilityUtils.init(this);
         StatsUtils.init(this);
 
+        checkForTransliteration();
         super.onCreate();
+
 
         mHandler.onCreate();
         DEBUG = DebugFlags.DEBUG_ENABLED;
@@ -582,31 +581,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if(currentSubtype.containsExtraValueKey(Constants.Subtype.ExtraValue.TRANSLITERATION_METHOD)) {
             try {
                 String transliterationName = currentSubtype.getExtraValueOf(Constants.Subtype.ExtraValue.TRANSLITERATION_METHOD);
-                enableTransliteration(transliterationName);
+                mInputLogic.enableTransliteration(transliterationName);
+                Log.d("IndicKeyboard", "-------------transliteration enabled-----------");
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
-        } else {
-            disableTransliteration();
         }
+        Log.d("IndicKeyboard", "-------------transliteration disabled----------------");
         return false;
-    }
-
-    void enableTransliteration(String transliterationMethod) {
-        InputMethod im;
-        try {
-            im = InputMethod.fromName(transliterationMethod);
-            mTransliterationOn = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
-
-    void disableTransliteration() {
-        mTransliterationOn = false;
     }
 
     // Has to be package-visible for unit tests
@@ -850,7 +834,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
         // is not guaranteed. It may even be called at the same time on a different thread.
         mSubtypeSwitcher.onSubtypeChanged(subtype);
-        //checkForTransliteration();
+        checkForTransliteration();
         mInputLogic.onSubtypeChanged(SubtypeLocaleUtils.getCombiningRulesExtraValue(subtype),
                 mSettings.getCurrent());
         loadKeyboard();
