@@ -201,7 +201,6 @@ public final class WordComposer {
         return processedEvent;
     }
 
-    private String context = "";
     static int firstDivergence(String str1, String str2) {
         int length = str1.length() > str2.length() ? str2.length() : str1.length();
         for(int i = 0; i < length; i++) {
@@ -212,6 +211,7 @@ public final class WordComposer {
         return length - 1; // Default
     }
 
+    private String context = "";
     public void applyTransliteration(final Event event) {
         final int primaryCode = event.mCodePoint;
 
@@ -225,7 +225,8 @@ public final class WordComposer {
         if(mTransliterationMethod != null && Constants.CODE_DELETE != event.mKeyCode) {
             Log.d("IndicKeyboard", "transliteration...: " + mTypedWord);
             String current = new String(Character.toChars(primaryCode));
-            int startPos = mTypedWord.length() > mTransliterationMethod.getMaxKeyLength() ? mTypedWord.length() - mTransliterationMethod.getMaxKeyLength() : 0;
+            Log.d("IndicKeyboard", "typed length: " + Integer.toString(mTypedWord.length()) + ", maxkeyLength: " + Integer.toString(mTransliterationMethod.getMaxKeyLength()));
+            int startPos = mTypedWord.length() - 1 > mTransliterationMethod.getMaxKeyLength() ? mTypedWord.length() - mTransliterationMethod.getMaxKeyLength() - 1: 0;
             String input = mTypedWord.subSequence(startPos, mTypedWord.length()).toString();
             String replacement = mTransliterationMethod.transliterate(input, context, false);
 
@@ -235,9 +236,14 @@ public final class WordComposer {
             replacement = replacement.substring(divIndex);
 
             //mTypedWordCache = mTypedWord.replace(input, replacement);
-            Log.d("IndicKeyboard", mTypedWordCache + ", out: " + mTypedWordCache + ", first: " + replacement);
+            Log.d("IndicKeyboard", "out: " + mTypedWordCache + ", first: " + replacement);
             Log.d("IndicKeyboard", "--------");
-            mCombinerChain.replace(startPos + divIndex, startPos + divIndex + replacement.length() + 2, replacement);
+            mCombinerChain.replace(startPos + divIndex, mTypedWord.length(), replacement);
+
+            context += current;
+            if(context.length() > mTransliterationMethod.getContextLength()) {
+                context = context.substring(context.length() - mTransliterationMethod.getContextLength());
+            }
         }
     }
 
