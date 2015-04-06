@@ -882,7 +882,7 @@ public final class InputLogic {
             if (swapWeakSpace && trySwapSwapperAndSpace(event, inputTransaction)) {
                 mSpaceState = SpaceState.WEAK;
             } else {
-                sendKeyCodePoint(settingsValues, codePoint);
+                sendKeyCodePoint(settingsValues, codePoint, true);
             }
         }
         inputTransaction.setRequiresUpdateSuggestions();
@@ -968,7 +968,7 @@ public final class InputLogic {
             }
 
             if (!shouldAvoidSendingCode) {
-                sendKeyCodePoint(settingsValues, codePoint);
+                sendKeyCodePoint(settingsValues, codePoint, false);
             }
         } else {
             if ((SpaceState.PHANTOM == inputTransaction.mSpaceState
@@ -989,7 +989,7 @@ public final class InputLogic {
                 mSpaceState = SpaceState.PHANTOM;
             }
 
-            sendKeyCodePoint(settingsValues, codePoint);
+            sendKeyCodePoint(settingsValues, codePoint, false);
 
             // Set punctuation right away. onUpdateSelection will fire but tests whether it is
             // already displayed or not, so it's okay.
@@ -2009,7 +2009,7 @@ public final class InputLogic {
      * @param codePoint the code point to send.
      */
     // TODO: replace these two parameters with an InputTransaction
-    private void sendKeyCodePoint(final SettingsValues settingsValues, final int codePoint) {
+    private void sendKeyCodePoint(final SettingsValues settingsValues, final int codePoint, boolean transliteration) {
         Log.d("IndicKeyboard", "sendKeyCodePoint: " + Integer.toString(codePoint) + "/" + Integer.toString(Constants.CODE_ENTER));
         // TODO: Remove this special handling of digit letters.
         // For backward compatibility. See {@link InputMethodService#sendKeyChar(char)}.
@@ -2025,7 +2025,7 @@ public final class InputLogic {
             // reasons (there are race conditions with commits) but some applications are
             // relying on this behavior so we continue to support it for older apps.
             sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER);
-        } else if (Constants.CODE_ENTER != codePoint && Constants.CODE_SPACE != codePoint) {
+        } else if (transliteration) {
             Log.d("IndicKeyboard", "sendKeyCodePoint: " + StringUtils.newSingleCodePointString(codePoint));
             mConnection.applyTransliteration(StringUtils.newSingleCodePointString(codePoint), 1);
         } else {
@@ -2045,7 +2045,7 @@ public final class InputLogic {
         if (settingsValues.shouldInsertSpacesAutomatically()
                 && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
                 && !mConnection.textBeforeCursorLooksLikeURL()) {
-            sendKeyCodePoint(settingsValues, Constants.CODE_SPACE);
+            sendKeyCodePoint(settingsValues, Constants.CODE_SPACE, false);
         }
     }
 
