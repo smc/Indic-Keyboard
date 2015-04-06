@@ -277,11 +277,12 @@ public final class RichInputConnection {
 
             Log.d("IndicKeyboard", "input: " + input + ", Replacement: " + replacement);
 
+            Log.d("IndicKeyboard", "--------: input: " + Integer.toString(input.length()) +  ", replacement: " + Integer.toString(replacement.length()));
+            deleteSurroundingText(input.length() - replacement.length(), 0);
+
             int divIndex = firstDivergence(input, replacement);
             replacement = replacement.substring(divIndex);
-
-            Log.d("IndicKeyboard", "--------: " + Integer.toString(replacement.length()));
-            deleteSurroundingText(replacement.length(), 0);
+            Log.d("IndicKeyboard", "divIndex " +  Integer.toString(divIndex));
 
             //mCommittedTextBeforeComposingText.replace(startPos + divIndex, startPos + divIndex + replacement.length() + 2, replacement);
 
