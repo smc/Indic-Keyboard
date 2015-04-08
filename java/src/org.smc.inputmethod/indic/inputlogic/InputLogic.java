@@ -117,7 +117,7 @@ public final class InputLogic {
     private boolean mIsAutoCorrectionIndicatorOn;
     private long mDoubleSpacePeriodCountdownStart;
 
-    private boolean transliterationFlag;
+    private boolean isIndic;
     /**
      * Create a new instance of the input logic.
      * @param latinIME the instance of the parent LatinIME. We should remove this when we can.
@@ -1711,7 +1711,7 @@ public final class InputLogic {
      * @return a caps mode from TextUtils.CAP_MODE_* or Constants.TextUtils.CAP_MODE_OFF.
      */
     public int getCurrentAutoCapsState(final SettingsValues settingsValues) {
-        if (!settingsValues.mAutoCap) return Constants.TextUtils.CAP_MODE_OFF;
+        if (!settingsValues.mAutoCap || isIndic) return Constants.TextUtils.CAP_MODE_OFF;
 
         final EditorInfo ei = getCurrentInputEditorInfo();
         if (ei == null) return Constants.TextUtils.CAP_MODE_OFF;
@@ -2307,13 +2307,16 @@ public final class InputLogic {
                 true /* ignoreCase */);
     }
 
+    public void setIndic(boolean flag) {
+        isIndic = flag;
+    }
+
     public void enableTransliteration(String transliterationMethod) {
         InputMethod im;
         try {
             im = InputMethod.fromName(transliterationMethod);
             mWordComposer.setTransliterationMethod(im);
             mConnection.setTransliterationMethod(im);
-            transliterationFlag = true;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);

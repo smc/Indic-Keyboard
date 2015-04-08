@@ -577,6 +577,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private boolean checkForTransliteration() {
+        Locale locale = mSubtypeSwitcher.getCurrentSubtypeLocale();
+
+        if (!locale.getLanguage().equals("en")) {
+            mInputLogic.setIndic(true);
+        } else {
+            mInputLogic.setIndic(false);
+        }
+
         InputMethodSubtype currentSubtype = mSubtypeSwitcher.getCurrentSubtype();
         if(currentSubtype.containsExtraValueKey(Constants.Subtype.ExtraValue.TRANSLITERATION_METHOD)) {
             try {
