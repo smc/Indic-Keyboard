@@ -110,7 +110,8 @@ public final class InputLogic {
     // Note: This does not have a composing span, so it must be handled separately.
     private String mWordBeingCorrectedByCursor = null;
 
-    private boolean transliterationFlag;
+    private boolean isIndic;
+    private boolean isTransliteration;
 
     /**
      * Create a new instance of the input logic.
@@ -882,7 +883,7 @@ public final class InputLogic {
             if (swapWeakSpace && trySwapSwapperAndSpace(event, inputTransaction)) {
                 mSpaceState = SpaceState.WEAK;
             } else {
-                sendKeyCodePoint(settingsValues, codePoint, true);
+                sendKeyCodePoint(settingsValues, codePoint, isTransliteration);
             }
         }
         inputTransaction.setRequiresUpdateSuggestions();
@@ -2025,7 +2026,7 @@ public final class InputLogic {
             // reasons (there are race conditions with commits) but some applications are
             // relying on this behavior so we continue to support it for older apps.
             sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER);
-        } else if (transliteration) {
+        } else if (transliteration && isIndic) {
             Log.d("IndicKeyboard", "sendKeyCodePoint: " + StringUtils.newSingleCodePointString(codePoint));
             mConnection.applyTransliteration(StringUtils.newSingleCodePointString(codePoint), 1);
         } else {
@@ -2381,10 +2382,16 @@ public final class InputLogic {
             im = InputMethod.fromName(transliterationMethod);
             mWordComposer.setTransliterationMethod(im);
             mConnection.setTransliterationMethod(im);
-            transliterationFlag = true;
+            isTransliteration = true;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    public void disableTransliteration() {
+        mWordComposer.setTransliterationMethod(null);
+        mConnection.setTransliterationMethod(null);
+        isTransliteration = false;
     }
 }

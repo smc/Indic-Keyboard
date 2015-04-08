@@ -612,6 +612,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 throw new RuntimeException(e);
             }
         }
+        mInputLogic.disableTransliteration();
         Log.d("IndicKeyboard", "-------------transliteration disabled----------------");
         return false;
     }
