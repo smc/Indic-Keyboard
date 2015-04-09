@@ -601,7 +601,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private boolean checkForTransliteration() {
-        Locale locale = mSubtypeSwitcher.getCurrentSubtypeLocale();
+        Locale locale = mRichImm.getCurrentSubtypeLocale();
 
         if (!locale.getLanguage().equals("en")) {
             mInputLogic.setIndic(true);
@@ -610,10 +610,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         InputMethodSubtype currentSubtype = mRichImm.getCurrentSubtype().getRawSubtype();
-        if(currentSubtype.containsExtraValueKey(Constants.Subtype.ExtraValue.TRANSLITERATION_METHOD)) {
+        if(currentSubtype.containsExtraValueKey(TRANSLITERATION_METHOD)) {
             try {
                 String transliterationName = currentSubtype.getExtraValueOf(TRANSLITERATION_METHOD);
-                mInputLogic.enableTransliteration(transliterationName);
+                mInputLogic.enableTransliteration(transliterationName, getApplicationContext());
                 Log.d("IndicKeyboard", "-------------transliteration enabled-----------");
                 return true;
             } catch (Exception e) {
