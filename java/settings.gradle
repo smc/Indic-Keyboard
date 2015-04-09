@@ -1,2 +1,2 @@
-// TODO: not working because xml files are not packed on build
-//include 'morelangs'
+include ':morelangs'
+project(':morelangs').projectDir = new File(settingsDir, '../morelangs')
