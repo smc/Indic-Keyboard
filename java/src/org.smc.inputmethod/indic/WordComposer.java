@@ -18,7 +18,7 @@ package org.smc.inputmethod.indic;
 
 import com.android.inputmethod.latin.PrevWordsInfo;
 
-import org.wikimedia.morelangs.InputMethod;
+import org.smc.ime.InputMethod;
 
 import java.util.ArrayList;
 import java.util.Collections;

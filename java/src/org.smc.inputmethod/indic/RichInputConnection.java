@@ -46,7 +46,7 @@ import com.android.inputmethod.latin.utils.SpannableStringUtils;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.TextRange;
 
-import org.wikimedia.morelangs.InputMethod;
+import org.smc.ime.InputMethod;
 /**
  * Enrichment class for InputConnection to simplify interaction and add functionality.
  *

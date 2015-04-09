@@ -70,7 +70,7 @@ import com.android.inputmethod.latin.utils.RecapitalizeStatus;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.TextRange;
 
-import org.wikimedia.morelangs.InputMethod;
+import org.smc.ime.InputMethod;
 /**
  * This class manages the input logic.
  */
