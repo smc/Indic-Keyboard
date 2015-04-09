@@ -87,7 +87,7 @@
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
                 latin:keySpec="!"
-                latin:additionalMoreKeys="!text/morekeys_symbols_exclamation"
+                latin:additionalMoreKeys="!text/morekeys_exclamation"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
                 latin:keySpec="\@"
@@ -97,7 +97,7 @@
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
                 latin:keySpec="&#x20b9;"
-                latin:additionalMoreKeys="!text/more_keys_for_currency_dollar"
+                latin:additionalMoreKeys="!text/morekeys_currency_generic"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
                 latin:keySpec="%"
@@ -111,7 +111,7 @@
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
                 latin:keySpec="*"
-                latin:additionalMoreKeys="!text/more_keys_for_star"
+                latin:additionalMoreKeys="!text/morekeys_star"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
                 latin:keySpec="("
@@ -125,7 +125,7 @@
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
                 latin:keySpec="&#x0CC3;"
-                latin:additionalMoreKeys="!text/more_keys_for_plus"
+                latin:additionalMoreKeys="!text/morekeys_plus"
                 latin:moreKeys="+, &#x00B1;,&#x00D7;,&#x00F7;,&#x221A;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </default>
