@@ -66,7 +66,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 
-import org.wikimedia.morelangs.InputMethod;
+import org.smc.ime.InputMethod;
 /**
  * This class manages the input logic.
  */

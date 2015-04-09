@@ -51,7 +51,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.wikimedia.morelangs.InputMethod;
+import org.smc.ime.InputMethod;
 /**
  * Enrichment class for InputConnection to simplify interaction and add functionality.
  *
