@@ -1,2 +1,2 @@
-include ':morelangs'
-project(':morelangs').projectDir = new File(settingsDir, '../morelangs')
+include ':ime-smc'
+project(':ime-smc').projectDir = new File(settingsDir, '../ime-smc')

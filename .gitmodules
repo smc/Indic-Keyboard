@@ -1,9 +1,9 @@
-[submodule "morelangs"]
-	path = morelangs
-	url = git@github.com:androidtweak/java-morelangs.git
 [submodule "tools-indic"]
 	path = tools-indic
 	url = git@github.com:androidtweak/Indic-Keyboard-tools.git
 [submodule "dictionaries-indic"]
 	path = dictionaries-indic
 	url = git@github.com:androidtweak/dictionaries.git
+[submodule "ime-smc"]
+	path = ime-smc
+	url = git@gitlab.com:smc/ime-smc.git
