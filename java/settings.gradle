@@ -1,2 +1,2 @@
-include ':ime-smc'
-project(':ime-smc').projectDir = new File(settingsDir, '../ime-smc')
+include ':ime'
+project(':ime').projectDir = new File(settingsDir, '../ime')
