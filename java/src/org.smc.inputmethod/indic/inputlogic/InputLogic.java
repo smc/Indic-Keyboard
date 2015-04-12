@@ -16,6 +16,7 @@
 
 package org.smc.inputmethod.indic.inputlogic;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.inputmethodservice.InputMethodService;
 import android.os.SystemClock;
@@ -69,7 +70,7 @@ import com.android.inputmethod.latin.utils.RecapitalizeStatus;
 import com.android.inputmethod.latin.utils.StringUtils;
 import com.android.inputmethod.latin.utils.TextRange;
 
-import org.wikimedia.morelangs.InputMethod;
+import org.smc.ime.InputMethod;
 /**
  * This class manages the input logic.
  */
@@ -2312,10 +2313,10 @@ public final class InputLogic {
         isIndic = flag;
     }
 
-    public void enableTransliteration(String transliterationMethod) {
+    public void enableTransliteration(String transliterationMethod, Context context) {
         InputMethod im;
         try {
-            im = InputMethod.fromName(transliterationMethod);
+            im = InputMethod.fromName(transliterationMethod, context);
             mWordComposer.setTransliterationMethod(im);
             mConnection.setTransliterationMethod(im);
             isTransliteration = true;

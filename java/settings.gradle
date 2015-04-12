@@ -1,2 +1,2 @@
-// TODO: not working because xml files are not packed on build
-//include 'morelangs'
+include ':ime-smc'
+project(':ime-smc').projectDir = new File(settingsDir, '../ime-smc')
