@@ -163,6 +163,11 @@
             android:imeSubtypeLocale="ml"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=ml-transliteration" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_ml_swanalekha"
+            android:imeSubtypeLocale="ml"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=ml-swanalekha" />
 
     <!-- Marathi -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
