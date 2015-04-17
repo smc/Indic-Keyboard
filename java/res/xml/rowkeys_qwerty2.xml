@@ -21,9 +21,23 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res-auto"
 >
-    <Key
-        latin:keySpec="a"
-        latin:moreKeys="!text/morekeys_a" />
+    <switch>
+        <case
+            latin:languageCode="ml"
+            latin:keyboardLayoutSet="qwerty">
+            <Key
+                latin:keySpec="a"
+                latin:keyHintLabel="~"
+                latin:additionalMoreKeys="~"
+                latin:moreKeys="!text/morekeys_a" />
+        </case>
+        <default>
+            <Key
+                latin:keySpec="a"
+                latin:moreKeys="!text/morekeys_a" />
+        </default>
+    </switch>
+
     <Key
         latin:keySpec="s"
         latin:moreKeys="!text/morekeys_s" />
