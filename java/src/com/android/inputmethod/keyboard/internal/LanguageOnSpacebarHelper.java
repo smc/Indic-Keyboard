@@ -45,6 +45,8 @@ public final class LanguageOnSpacebarHelper {
         final String keyboardLanguage = SubtypeLocaleUtils.getSubtypeLocale(subtype).getLanguage();
         final String keyboardLayout = SubtypeLocaleUtils.getKeyboardLayoutSetName(subtype);
         int sameLanguageAndLayoutCount = 0;
+        /*
+         * IndicKeyboard doesn't need country code, atleast for now.
         for (final InputMethodSubtype ims : mEnabledSubtypes) {
             final String language = SubtypeLocaleUtils.getSubtypeLocale(ims).getLanguage();
             if (keyboardLanguage.equals(language) && keyboardLayout.equals(
@@ -52,6 +54,7 @@ public final class LanguageOnSpacebarHelper {
                 sameLanguageAndLayoutCount++;
             }
         }
+        */
         // Display full locale name only when there are multiple subtypes that have the same
         // locale and keyboard layout. Otherwise displaying language name is enough.
         return sameLanguageAndLayoutCount > 1 ? FORMAT_TYPE_FULL_LOCALE
