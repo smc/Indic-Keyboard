@@ -70,11 +70,15 @@ public final class CorrectionSettingsFragment extends SubScreenFragment
         final Context context = getActivity();
         final PackageManager pm = context.getPackageManager();
 
+        /*
+         * IndicKeyboard: We are not yet supporting dictionary download.
         final Preference dictionaryLink = findPreference(Settings.PREF_CONFIGURE_DICTIONARIES_KEY);
         final Intent intent = dictionaryLink.getIntent();
         intent.setClassName(context.getPackageName(), DictionarySettingsActivity.class.getName());
         final int number = pm.queryIntentActivities(intent, 0).size();
         if (0 >= number) {
+        */
+        if (true) {
             removePreference(Settings.PREF_CONFIGURE_DICTIONARIES_KEY);
         }
 
