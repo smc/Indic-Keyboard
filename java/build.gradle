@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.android.support:support-v4:22.1.0'
     compile 'com.google.code.findbugs:jsr305:3.0.0'
     compile fileTree(dir: 'libs', include: '*.jar')
     compile project(':ime')
@@ -23,11 +23,11 @@ dependencies {
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "21.1.2"
+    buildToolsVersion "22.0.1"
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 21
+        targetSdkVersion 22
     }
     sourceSets {
         main {
