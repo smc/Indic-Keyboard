@@ -31,7 +31,7 @@
     <!-- Assamese -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_as_inscript"
-            android:imeSubtypeLocale="as"
+            android:imeSubtypeLocale="as_IN"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=assamese_inscript,EmojiCapable" />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
