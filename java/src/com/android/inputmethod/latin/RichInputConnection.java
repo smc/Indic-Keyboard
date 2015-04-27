@@ -737,12 +737,12 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     private static boolean isPartOfCompositionForScript(final int codePoint,
-            final SpacingAndPunctuations spacingAndPunctuations, final int scriptId) {
+            final SpacingAndPunctuations spacingAndPunctuations, final int scriptId, final boolean transliteration) {
         // We always consider word connectors part of compositions.
         return spacingAndPunctuations.isWordConnector(codePoint)
                 // Otherwise, it's part of composition if it's part of script and not a separator.
                 || (!spacingAndPunctuations.isWordSeparator(codePoint)
-                        && ScriptUtils.isLetterPartOfScript(codePoint, scriptId));
+                        && (transliteration || ScriptUtils.isLetterPartOfScript(codePoint, scriptId)));
     }
 
     /**
@@ -753,7 +753,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      * @return a range containing the text surrounding the cursor
      */
     public TextRange getWordRangeAtCursor(final SpacingAndPunctuations spacingAndPunctuations,
-            final int scriptId) {
+            final int scriptId, final boolean transliteration) {
         mIC = mParent.getCurrentInputConnection();
         if (!isConnected()) {
             return null;
@@ -776,7 +776,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         int startIndexInBefore = before.length();
         while (startIndexInBefore > 0) {
             final int codePoint = Character.codePointBefore(before, startIndexInBefore);
-            if (!isPartOfCompositionForScript(codePoint, spacingAndPunctuations, scriptId)) {
+            if (!isPartOfCompositionForScript(codePoint, spacingAndPunctuations, scriptId, transliteration)) {
                 break;
             }
             --startIndexInBefore;
@@ -789,7 +789,7 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         int endIndexInAfter = -1;
         while (++endIndexInAfter < after.length()) {
             final int codePoint = Character.codePointAt(after, endIndexInAfter);
-            if (!isPartOfCompositionForScript(codePoint, spacingAndPunctuations, scriptId)) {
+            if (!isPartOfCompositionForScript(codePoint, spacingAndPunctuations, scriptId, transliteration)) {
                 break;
             }
             if (Character.isSupplementaryCodePoint(codePoint)) {
