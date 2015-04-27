@@ -590,7 +590,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             try {
                 String transliterationName = currentSubtype.getExtraValueOf(Constants.Subtype.ExtraValue.TRANSLITERATION_METHOD);
                 mInputLogic.enableTransliteration(transliterationName, getApplicationContext());
-                Log.d("IndicKeyboard", "-------------transliteration enabled-----------");
                 return true;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -598,7 +597,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
         mInputLogic.disableTransliteration();
-        Log.d("IndicKeyboard", "-------------transliteration disabled----------------");
         return false;
     }
 

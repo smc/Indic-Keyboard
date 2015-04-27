@@ -268,29 +268,15 @@ public final class RichInputConnection {
     public void applyTransliteration(final CharSequence text, final int newCursorPosition) {
         String replacement = "";
 
-        /* if we've a transliteration method set, use that. Else just append the code and get on with life */
         if(mTransliterationMethod != null && text.length() > 0 && !TextUtils.isEmpty(text)) {
-            Log.d("IndicKeyboard", "Text: " + mCommittedTextBeforeComposingText.toString());
-            Log.d("IndicKeyboard", "transliteration...: " + text);
             int startPos = mCommittedTextBeforeComposingText.length() > mTransliterationMethod.getMaxKeyLength() ? mCommittedTextBeforeComposingText.length() - mTransliterationMethod.getMaxKeyLength() : 0;
             String input = mCommittedTextBeforeComposingText.subSequence(startPos, mCommittedTextBeforeComposingText.length()).toString() + text;
             replacement = mTransliterationMethod.transliterate(input, context, false);
 
-            Log.d("IndicKeyboard", "input: " + input + ", Replacement: " + replacement);
-
-            Log.d("IndicKeyboard", "--------: input: " + Integer.toString(input.length()) +  ", replacement: " + Integer.toString(replacement.length()));
-            //if (input.length() > replacement.length()) {
-
-            //}
 
             int divIndex = firstDivergence(input, replacement);
             deleteSurroundingText(input.length() - 1 - divIndex, 0);
             replacement = replacement.substring(divIndex);
-            Log.d("IndicKeyboard", "delete " +  Integer.toString(input.length() - 1 - divIndex));
-
-            //mCommittedTextBeforeComposingText.replace(startPos + divIndex, startPos + divIndex + replacement.length() + 2, replacement);
-
-            //Log.d("IndicKeyboard", "--------" + mCommittedTextBeforeComposingText.toString());
 
             context += text;
             if(context.length() > mTransliterationMethod.getContextLength()) {

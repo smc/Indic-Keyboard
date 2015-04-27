@@ -219,25 +219,15 @@ public final class WordComposer {
 
         String mTypedWord = mTypedWordCache.toString();
 
-        Log.d("IndicKeyboard", "applyProcessedEvent: " + primaryCode);
-
-        /* if we've a transliteration method set, use that. Else just append the code and get on with life */
         if(mTransliterationMethod != null && Constants.CODE_DELETE != event.mKeyCode) {
-            Log.d("IndicKeyboard", "transliteration...: " + mTypedWord);
             String current = new String(Character.toChars(primaryCode));
-            Log.d("IndicKeyboard", "typed length: " + Integer.toString(mTypedWord.length()) + ", maxkeyLength: " + Integer.toString(mTransliterationMethod.getMaxKeyLength()));
             int startPos = mTypedWord.length() - 1 > mTransliterationMethod.getMaxKeyLength() ? mTypedWord.length() - mTransliterationMethod.getMaxKeyLength() - 1: 0;
             String input = mTypedWord.subSequence(startPos, mTypedWord.length()).toString();
             String replacement = mTransliterationMethod.transliterate(input, context, false);
 
-            Log.d("IndicKeyboard", "input: " + input + ", Replacement: " + replacement);
-
             int divIndex = firstDivergence(input, replacement);
             replacement = replacement.substring(divIndex);
 
-            //mTypedWordCache = mTypedWord.replace(input, replacement);
-            Log.d("IndicKeyboard", "out: " + mTypedWordCache + ", first: " + replacement);
-            Log.d("IndicKeyboard", "--------");
             mCombinerChain.replace(startPos + divIndex, mTypedWord.length(), replacement);
 
             context += current;
@@ -349,7 +339,6 @@ public final class WordComposer {
     }
 
     public void setBatchInputWord(final String word) {
-        Log.d("IndicKeyboard", "WordComposer: setBatchInputWord");
         reset();
         mIsBatchMode = true;
         final int length = word.length();
@@ -370,7 +359,6 @@ public final class WordComposer {
      * @param coordinates the x, y coordinates of the key in the CoordinateUtils format
      */
     public void setComposingWord(final int[] codePoints, final int[] coordinates) {
-        Log.d("IndicKeyboard", "WordComposer: setComposingWord");
         reset();
         final int length = codePoints.length;
         for (int i = 0; i < length; ++i) {
@@ -501,7 +489,6 @@ public final class WordComposer {
     // committedWord should contain suggestion spans if applicable.
     public LastComposedWord commitWord(final int type, final CharSequence committedWord,
             final String separatorString, final PrevWordsInfo prevWordsInfo) {
-        Log.d("IndicKeyboard", "=========CommitWord:" + committedWord + ", " + mTypedWordCache.toString());
         // Note: currently, we come here whenever we commit a word. If it's a MANUAL_PICK
         // or a DECIDED_WORD we may cancel the commit later; otherwise, we should deactivate
         // the last composed word to ensure this does not happen.
