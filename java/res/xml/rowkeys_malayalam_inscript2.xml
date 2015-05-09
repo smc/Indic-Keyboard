@@ -104,14 +104,11 @@
                 latin:moreKeys="["
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="&#x200d;"
-                latin:moreKeys="]"
-                latin:keyHintLabel="ZWJ" />
+                latin:keySpec="!icon/zwj_key|&#x200D;"
+                latin:moreKeys="]" />
             <Key
-                latin:keySpec="&#x200c;"
-                latin:moreKeys="\\"
-                latin:keyHintLabel="ZWNJ"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+                latin:keySpec="!icon/zwnj_key|&#x200C;"
+                latin:moreKeys="\\" />
          </default>
     </switch>
 </merge>

@@ -114,13 +114,13 @@
                 latin:moreKeys="*"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="("
+                latin:keySpec="!icon/zwj_key|&#x200D;"
+                latin:moreKeys="("
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!---\) ‌ ZERO WIDTH NON-JOINER-->
             <Key
-                latin:keySpec="&#x0200C;"
+                latin:keySpec="!icon/zwnj_key|&#x200C;"
                 latin:moreKeys=")"
-                latin:keyHintLabel="ZWJ"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!---_ ஃ TAMIL SIGN VISARGA-->
             <Key

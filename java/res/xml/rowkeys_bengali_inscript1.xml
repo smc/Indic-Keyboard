@@ -132,16 +132,14 @@
 
             <!--\( ‍ ZERO WIDTH JOINER-->
             <Key
-                latin:keySpec="&#x0200D;"
+                latin:keySpec="!icon/zwj_key|&#x200D;"
                 latin:moreKeys="("
-                latin:keyHintLabel="zwj"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--\) ‌ ZERO WIDTH NON-JOINER-->
             <Key
-                latin:keySpec="&#x0200C;"
+                latin:keySpec="!icon/zwnj_key|&#x200C;"
                 latin:moreKeys=")"
-                latin:keyHintLabel="zwnj"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--_ ঃ BENGALI SIGN VISARGA-->
