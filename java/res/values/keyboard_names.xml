@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="keyboard_name_ar">العَرَبِيةُ‎‎</string>
     <string name="keyboard_name_as_inscript">অসমীয়া - Inscript</string>
     <string name="keyboard_name_as_transliteration">অসমীয়া - প্ৰতিৰূপান্তৰণ</string>
     <string name="keyboard_name_bn">বাংলা</string>
