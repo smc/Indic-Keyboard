@@ -55,11 +55,8 @@ android {
     }
     buildTypes {
         release {
-            /*runProguard true*/
+            /*minifyEnabled true*/
             /*proguardFile getDefaultProguardFile('proguard-android.txt')*/
-
-            /*minifyEnabled false*/
-            /*proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'*/
             signingConfig signingConfigs.release
         }
     }
