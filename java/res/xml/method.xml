@@ -277,7 +277,7 @@
             android:label="@string/keyboard_name_sat_inscript"
             android:imeSubtypeLocale="sat_IN"
             android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=sat_inscript,EmojiCapable" />
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=santali_inscript,EmojiCapable" />
 
     <!-- Sinhalese -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
