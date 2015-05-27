@@ -227,6 +227,11 @@
             android:imeSubtypeLocale="or_IN"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=or-transliteration" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_or_lekhani"
+            android:imeSubtypeLocale="or_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=or-lekhani" />
 
     <!-- Punjabi -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
