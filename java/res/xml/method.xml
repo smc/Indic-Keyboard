@@ -151,6 +151,13 @@
             <!--android:imeSubtypeMode="keyboard"-->
             <!--android:imeSubtypeExtraValue="KeyboardLayoutSet=kashmiri_inscript,EmojiCapable" />-->
 
+    <!-- Maithili -->
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_mai_inscript"
+            android:imeSubtypeLocale="mai_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=maithili_inscript,EmojiCapable" />
+
     <!-- Malayalam -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_ml_lalitha"
