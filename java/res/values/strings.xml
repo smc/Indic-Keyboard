@@ -331,9 +331,9 @@ mobile devices. [CHAR LIMIT=25] -->
     <string name="button_default">Default</string>
 
     <!-- Title of the setup wizard welcome screen. [CHAR LIMT=40] -->
-    <string name="setup_welcome_title">"नमस्ते வணக்கம் നമസ്കാരം నమస్కారం সাগতাম"</string>
+    <string name="setup_welcome_title">"Welcome to <xliff:g id="application_name">%s</xliff:g>"</string>
     <!-- Additional title of the setup wizard welcome screen, just below the setup_welcome_title. [CHAR_LIMIT=64] -->
-    <string name="setup_welcome_additional_description">"Welcome to <xliff:g id="application_name">%s</xliff:g>"</string>
+    <string name="setup_welcome_additional_description">"नमस्ते\nவணக்கம் \nനമസ്കാരം \nನಮಸ್ಕಾರ \nనమస్కారం \nনমস্কার \nਸਤਿ ਸ੍ਰੀ ਅਕਾਲ \nનમસ્તે"</string>
     <!-- The label of the button that starts the setup wizard. [CHAR_LIMIT=64] -->
     <string name="setup_start_action">Get started</string>
     <!-- The label of the button that navigates the user to the next step of the setup wizard. [CHAR_LIMIT=64] -->
@@ -361,11 +361,14 @@ mobile devices. [CHAR LIMIT=25] -->
     <!-- Ordinal number of the 3rd step in the setup wizard. [CHAR LIMIT=5] -->
     <string name="setup_step3_bullet" translatable="false">3</string>
     <!-- Title of the 3rd step in the setup wizard. [CHAR LIMIT=64] -->
-    <string name="setup_step3_title">"Congratulations, you're all set!"</string>
-    <!-- Detailed instruction of the 3rd step in the setup wizard. [CHAR LIMIT=120] -->
-    <string name="setup_step3_instruction">Now you can type in all your favorite apps with <xliff:g id="APPLICATION_NAME" example="Android Keyboard">%s</xliff:g>.</string>
+    <string name="setup_step3_title">"Select languages"</string>
+    <string name="setup_step3_instruction">Select the languages and layouts you want to use.</string>
+    <string name="setup_step3_action">Configure languages</string>
     <!-- The label of the button that triggers the screen for configuaring additional languages of the keyboard. [CHAR_LIMIT=64] -->
-    <string name="setup_step3_action">Configure additional languages</string>
+    <string name="setup_step4_bullet" translatable="false">4</string>
+    <string name="setup_step4_title">"Congratulations, you're all set!"</string>
+    <!-- Detailed instruction of the 3rd step in the setup wizard. [CHAR LIMIT=120] -->
+    <string name="setup_step4_instruction">Now you can type in all your favorite apps with <xliff:g id="APPLICATION_NAME" example="Android Keyboard">%s</xliff:g>.</string>
     <!-- The label of the button that finishes the setup wizard. [CHAR_LIMIT=64] -->
     <string name="setup_finish_action">Finished</string>
     <!-- Option to show setup wizard icon. [CHAR LIMIT=30]-->
