@@ -142,13 +142,13 @@
     <!-- Kashmiri / Kashur -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_ks_transliteration"
-            android:imeSubtypeLocale="ks"
+            android:imeSubtypeLocale="ks_IN"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=ks-Kbd" />
 
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_ks_inscript"
-            android:imeSubtypeLocale="ks"
+            android:imeSubtypeLocale="ks_IN"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=kashmiri_inscript,EmojiCapable" />
 
@@ -271,6 +271,13 @@
             android:imeSubtypeLocale="sa_IN"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=sa-transliteration" />
+
+    <!-- Santali -->
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_sat_inscript"
+            android:imeSubtypeLocale="sat_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=sat_inscript,EmojiCapable" />
 
     <!-- Sinhalese -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
