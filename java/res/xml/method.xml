@@ -140,16 +140,17 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=kn-transliteration" />
 
     <!-- Kashmiri / Kashur -->
-    <!--<subtype android:icon="@drawable/ic_ime_switcher_dark"-->
-            <!--android:label="@string/keyboard_name_ks_transliteration"-->
-            <!--android:imeSubtypeLocale="ks"-->
-            <!--android:imeSubtypeMode="keyboard"-->
-            <!--android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=ks-kbd" />-->
-    <!--<subtype android:icon="@drawable/ic_ime_switcher_dark"-->
-            <!--android:label="@string/keyboard_name_ks_inscript"-->
-            <!--android:imeSubtypeLocale="ks"-->
-            <!--android:imeSubtypeMode="keyboard"-->
-            <!--android:imeSubtypeExtraValue="KeyboardLayoutSet=kashmiri_inscript,EmojiCapable" />-->
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_ks_transliteration"
+            android:imeSubtypeLocale="ks"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=ks-Kbd" />
+
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_ks_inscript"
+            android:imeSubtypeLocale="ks"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=kashmiri_inscript,EmojiCapable" />
 
     <!-- Maithili -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
