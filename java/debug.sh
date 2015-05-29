@@ -1,4 +1,4 @@
 #!/bin/bash
 rm build/outputs/apk/IndicKeyboard-debug.apk
-gradle assembleDebug
+gradle --offline assembleDebug
 adb install -r build/outputs/apk/IndicKeyboard-debug.apk
