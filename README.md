@@ -1,44 +1,79 @@
 ## Indic Keyboard
-AOSP keyboard ported to support more languges.
 
 ![icon-image](https://cloud.githubusercontent.com/assets/321335/7845586/792e62a8-04d5-11e5-84bb-2425c04c5253.png)
 
-Indic keyboard is a free and open source Indian language input keyboard application for Android mobile devices. At present supporting about 16+ Indic languages, this application has multiple input methods for each language - direct input (characters mapped to keys), inscript and transliteration. Though support for Indian languages was already available in some phones, Android officially started support with Jelly bean (4.1) version. Device need to haave font and rendering support for the keyboard to work.
+Indic Keyboard is a versatile keyboard for Android users who wish to use Indic and Indian languages to type messages, compose emails and generally prefer to use them in addition to English on their phone. You can use this application to type anywhere in your phone that you would normally type in English. It currently supports 23 languages and 54 layouts.
 
-This keyboard requires Android 4.1+.
+## Are there pre-built binaries available ?
 
-## Requirements
+Yes, You can [get it from Google Play.](https://play.google.com/store/apps/details?id=org.smc.inputmethod.indic)
 
-* Android 4.1 and above.
+## Will my phone support it ?
 
-## Supported Languages & Layouts
-* Assamese: Inscript, Transliteration
-* Arabic
-* Bengali: Probhat, Avro, Inscript, Compact
-* Burmese/Myanmar: xkb
-* English
-* Gujarati: Phonetic, Inscript, Transliteration
-* Hindi: Phonetic, Inscript, Transliteration
-* Kannada:  Phonetic, Inscript, Transliteration, Compact, Anysoft
-* Kashmiri/Kashur: Inscript, Transliteration
-* Maithili: Inscript
-* Malayalam: Phonetic, Inscript, Mozhi, Swanalekha
-* Marathi: Transliteration
-* Manipuri: Inscript
-* Mon
-* Nepali: Phonetic, Traditional, Transliteration, Inscript
-* Oriya/Odia: Inscript, Transliteration, Lekhani
-* Punjabi: Phonetic, Inscript, Transliteration
-* Sanskrit: Transliteration
-* Santali: Inscript
-* Sinhala: Transliteration
-* Tamil: Tamil-99, Inscript, Phonetic, Compact, Transliteration
-* Telugu: Phonetic, Inscript, Transliteration, KaChaTaThaPa, Compact
-* Urdu: Transliteration
+Indic keyboard supports Android version 4.1 and above (Jellybean, Kitkat and Lollipop). If you can see your language in its native script below you should be able to install and use it. 
+
+Some phones may not support all the languages listed since the phone's maker shipped fonts only for some of these languages. Even then, rendering for some of the languages is not perfect on Android
+
+## What languages (and layouts) are supported ?
+
+- Assamese Keyboard (অসমীয়া) - Inscript, Transliteration
+- Arabic Keyboard (العَرَبِيةُ‎‎)
+- Bengali Keyboard (বাংলা)- (Probhat, Avro, Inscript, Compact
+- Burmese Keyboard (ဗမာ) xkb
+- English
+- Gujarati Keyboard (ગુજરાતી) - Phonetic, Inscript, Transliteration
+- Hindi Keyboard (हिन्दी)- Inscript, Transliteration
+- Kannada Keyboard (ಕನ್ನಡ) - Phonetic, Inscript, Transliteration (Baraha), Compact, Anysoft)
+- Kashmiri Keyboard (کأشُر) - Inscript, Transliteration
+- Malayalam Keyboard (മലയാളം) - Phonetic, Inscript, Transliteration (Mozhi), Swanalekha(beta)
+- Manipuri Keyboard / Methei Keyboard (মৈতৈলোন্) - Inscript
+- Maithili Keyboard (मैथिली)  - Inscript
+- Marathi Keyboard (मराठी) - Transliteration
+- Mon Keyboard (ဘာသာ မန်;)
+- Nepali Keyboard (नेपाली)  Phonetic, Traditional, Transliteration, Inscript
+- Oriya Keyboard (ଓଡ଼ିଆ) - Inscript, Transliteration, Lekhani
+- Punjabi Keyboard (ਪੰਜਾਬੀ) Phonetic, Inscript, Transliteration
+- Sanskrit Keyboard (संस्कृत) Transliteration
+- Santali Keyboard (Devanagari script)-(संताली) Inscript
+- Sinhala Keyboard / Sinhalese (සිංහල) Transliteration
+- Tamil Keyboard (தமிழ்) - Tamil-99, Inscript, Phonetic, Compact, Transliteration
+- Telugu Keyboard (తెలుగు) - Phonetic, Inscript, Transliteration, KaChaTaThaPa, Compact
+- Urdu Keyboard (اردو) - Transliteration
 
 ## License 
 
 Apache License, Version 2.0
+
+## How do I enable it ?
+
+Indic keyboard has a wizard that will walk you through the process of setting it up so that you can use it comfortably.
+
+## I was using the older version, what happened to my settings ?
+
+Since the code base was updated, you'd have to configure your preferred language again. 
+- Click on Settings -> Language & Input 
+- Tap on "Set up input methods".
+- Tap on the gear icon next to Indic Keyboard.
+- Tap on "Languages", uncheck "User system language" and choose your language and layout from the list. 
+
+
+## Why is there a warning about "collecting data"?
+
+This warning message is a part of the Android operating system. It will appears whenever you try to enable a third party keyboard. We don't collect any data.
+
+## What is a keyboard layout ?
+
+Indic keyboard provides multiple "keyboard layouts". This means that you will have different  ways to type in your native language.
+
+**Transliteration** allows you to type out words using English characters, but will automatically transform the words to your native language. For example, if you type "namaste" in English while using Devanagari transliteration keyboard, it will transform it to नमस्ते correctly.
+
+**Inscript layout** is the standardized keyboard that Government of India came up with to cater for the majority of the languages in India. We support the full specification, and if you are already familiar with Inscript on your Desktop, it will work on the phone too.
+
+**Phonetic keyboard** is similar to Transliteration scheme - you can type what the words sound like using English characters and it will be automatically transformed into your language.
+
+**Compact Keyboard** allows to type Indian languages without the shift key. You can long press on the letters to get more options.
+
+Other layouts are specific to the languages - do try them out.
 
 ## HOWTO Build
 1. Install gradle, Android Support Repository, SDK and other usual android stuffs.
@@ -46,12 +81,26 @@ Apache License, Version 2.0
 4. `cd java`
 5. Use `gradle assembleDebug` to build the package.
 
-## Credits
-This project is originally initiated by Jishnu Mohan in 2012 as part of his `androidtweak.in` project.
+## Supporters
 
-1.0 version was supported by DIT R & D Project undertaken by ICFOSS, Govt. of Kerala. Anivar Aravind co-ordinated the project for ICFOSS and Hiran Venugopalan designed the icon.
+Government of India's Department of IT R & D project undertaken by ICFOSS funded the implementation of Mobile Compact Layout and Lollipop AOSP support. Another small aid from <a href=http://icfoss.in>ICFOSS</a> via Kerala Govt Sources enabled  addition of Swanalekha Layout (beta) and maintenance and updates on existing Malayalam Layouts.
 
-This project uses code from jquery.ime project of Wikimedia and some of the layouts are ported from there.
+Kannada Anysoft keyboard layout was funded via [Bounty Source](https://www.bountysource.com/issues/3406116-anysoft-like-kannada-inscript-keyboard-15) by Thejesh GN
+
+## Contributors
+
+Jishnu Mohan contributed most of the features and updates.
+
+Anoop P Contributed Swanalekha Layout(beta) and converted [java-morelangs  module](https://github.com/androidtweak/java-morelangs) to an [Android library](https://gitlab.com/smc/android-ime).
+
+Sridhar Contributed Kannada Anysoft Keyboard layout.
+
+Hiran Venugopalan contributed Graphic Assets for the project and helped with re-branding 2.0 version.
+
+Anivar Aravind helped with project management.
+
+Indic Project community members (Akshay, Balasankar, Ashik, Santhosh ) contributed documentation.
+
+Many keyboard layouts were adapted from the [jquery.ime](https://github.com/wikimedia/jquery.ime) project of Wikimedia Foundation. They were contributed by volunteers.
 
 ## TODO
-
