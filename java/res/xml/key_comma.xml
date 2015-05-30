@@ -36,7 +36,7 @@
             latin:keyboardLayoutSet="qwerty">
             <Key
                 latin:keySpec="~"
-                latin:moreKeys="!text/keyspec_comma" />
+                latin:keyStyle="settingsMoreKeysStyle" />
         </case>
         <case
             latin:mode="url"
