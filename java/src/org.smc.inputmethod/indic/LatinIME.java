@@ -32,6 +32,7 @@ import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 //import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Debug;
 import android.os.IBinder;
 import android.os.Message;
@@ -806,8 +807,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 || mExtractEditText == null) {
             return;
         }
-        final CursorAnchorInfo info = CursorAnchorInfoUtils.getCursorAnchorInfo(mExtractEditText);
-        mInputLogic.onUpdateCursorAnchorInfo(CursorAnchorInfoCompatWrapper.fromObject(info));
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            final CursorAnchorInfo info = CursorAnchorInfoUtils.getCursorAnchorInfo(mExtractEditText);
+            mInputLogic.onUpdateCursorAnchorInfo(CursorAnchorInfoCompatWrapper.fromObject(info));
+        }
     }
 
     @Override
