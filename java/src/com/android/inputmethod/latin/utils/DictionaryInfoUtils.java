@@ -36,7 +36,6 @@ import java.util.concurrent.TimeUnit;
 import org.smc.inputmethod.indic.AssetFileAddress;
 import org.smc.inputmethod.indic.BinaryDictionaryGetter;
 import org.smc.inputmethod.indic.Constants;
-import org.smc.inputmethod.indic.R;
 import org.smc.inputmethod.indic.settings.SpacingAndPunctuations;
 
 /**
@@ -44,7 +43,6 @@ import org.smc.inputmethod.indic.settings.SpacingAndPunctuations;
  */
 public class DictionaryInfoUtils {
     private static final String TAG = DictionaryInfoUtils.class.getSimpleName();
-    private static final String RESOURCE_PACKAGE_NAME = R.class.getPackage().getName();
     private static final String DEFAULT_MAIN_DICT = "main";
     private static final String MAIN_DICT_PREFIX = "main_";
     // 6 digits - unicode is limited to 21 bits
@@ -231,24 +229,26 @@ public class DictionaryInfoUtils {
     /**
      * Helper method to return a dictionary res id for a locale, or 0 if none.
      * @param locale dictionary locale
+     * @param packageName
      * @return main dictionary resource id
      */
     public static int getMainDictionaryResourceIdIfAvailableForLocale(final Resources res,
-            final Locale locale) {
+                                                                      final Locale locale,
+                                                                      final String packageName) {
         int resId;
         // Try to find main_language_country dictionary.
         if (!locale.getCountry().isEmpty()) {
             final String dictLanguageCountry =
                     MAIN_DICT_PREFIX + locale.toString().toLowerCase(Locale.ROOT);
             if ((resId = res.getIdentifier(
-                    dictLanguageCountry, "raw", RESOURCE_PACKAGE_NAME)) != 0) {
+                    dictLanguageCountry, "raw", packageName)) != 0) {
                 return resId;
             }
         }
 
         // Try to find main_language dictionary.
         final String dictLanguage = MAIN_DICT_PREFIX + locale.getLanguage();
-        if ((resId = res.getIdentifier(dictLanguage, "raw", RESOURCE_PACKAGE_NAME)) != 0) {
+        if ((resId = res.getIdentifier(dictLanguage, "raw", packageName)) != 0) {
             return resId;
         }
 
@@ -261,10 +261,10 @@ public class DictionaryInfoUtils {
      * @param locale dictionary locale
      * @return main dictionary resource id
      */
-    public static int getMainDictionaryResourceId(final Resources res, final Locale locale) {
-        int resourceId = getMainDictionaryResourceIdIfAvailableForLocale(res, locale);
+    public static int getMainDictionaryResourceId(final Resources res, final Locale locale, final String packageName) {
+        int resourceId = getMainDictionaryResourceIdIfAvailableForLocale(res, locale, packageName);
         if (0 != resourceId) return resourceId;
-        return res.getIdentifier(DEFAULT_MAIN_DICT, "raw", RESOURCE_PACKAGE_NAME);
+        return res.getIdentifier(DEFAULT_MAIN_DICT, "raw", packageName);
     }
 
     /**
@@ -368,7 +368,7 @@ public class DictionaryInfoUtils {
             final Locale locale = LocaleUtils.constructLocaleFromString(localeString);
             final int resourceId =
                     DictionaryInfoUtils.getMainDictionaryResourceIdIfAvailableForLocale(
-                            context.getResources(), locale);
+                            context.getResources(), locale, context.getPackageName());
             if (0 == resourceId) continue;
             final AssetFileAddress fileAddress =
                     BinaryDictionaryGetter.loadFallbackResource(context, resourceId);

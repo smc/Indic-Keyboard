@@ -150,7 +150,7 @@ public final class DictionaryFactory {
         AssetFileDescriptor afd = null;
         try {
             final int resId = DictionaryInfoUtils.getMainDictionaryResourceIdIfAvailableForLocale(
-                    context.getResources(), locale);
+                    context.getResources(), locale, context.getPackageName());
             if (0 == resId) return null;
             afd = context.getResources().openRawResourceFd(resId);
             if (afd == null) {
@@ -209,6 +209,6 @@ public final class DictionaryFactory {
     public static boolean isDictionaryAvailable(Context context, Locale locale) {
         final Resources res = context.getResources();
         return 0 != DictionaryInfoUtils.getMainDictionaryResourceIdIfAvailableForLocale(
-                res, locale);
+                res, locale, context.getPackageName());
     }
 }
