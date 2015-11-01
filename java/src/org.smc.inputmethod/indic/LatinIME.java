@@ -1354,10 +1354,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // TODO: Revise the language switch key behavior to make it much smarter and more reasonable.
     public void switchToNextSubtype() {
         final IBinder token = getWindow().getWindow().getAttributes().token;
-        if (shouldSwitchToOtherInputMethods()) {
-            mRichImm.switchToNextInputMethod(token, false /* onlyCurrentIme */);
-            return;
-        }
+        // Temporary fix for samsung devices. They are always returning true.
+        //if (shouldSwitchToOtherInputMethods()) {
+        //    mRichImm.switchToNextInputMethod(token, false /* onlyCurrentIme */);
+        //    return;
+        //}
         mSubtypeState.switchSubtype(token, mRichImm);
     }
 
