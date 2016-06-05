@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Author: Jishnu Mohan <jishnu7@gmail.com>
+** Author: Arushi Dogra <arushidogra1995@gmail.com>
 ** Copyright © 2015 Jishnu Mohan, Swathanthra Malayalam Computing (SMC)
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +31,7 @@
     </Row>
     <Row latin:keyWidth="7.692%p" >
         <include
-            latin:keyboardLayout="@xml/@xml/rowkeys_santali_olchiki3"
+            latin:keyboardLayout="@xml/rowkeys_santali_olchiki3"
             latin:keyXPos="3.846%p" />
         <Key
             latin:keyStyle="deleteKeyStyle"
@@ -43,7 +43,7 @@
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="11.538%p"
             latin:visualInsetsRight="1%p" />
-        <include latin:keyboardLayout="@xml/@xml/rowkeys_santali_olchiki4" />
+        <include latin:keyboardLayout="@xml/rowkeys_santali_olchiki4" />
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="fillRight"
