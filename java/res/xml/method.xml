@@ -286,7 +286,12 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=santali_inscript,EmojiCapable" />
     
-
+   <!-- Soni Phonetic -->
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_soni_phonetic"
+            android:imeSubtypeLocale="soni_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=soni-phonetic" />
     <!-- Sinhalese -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_si_singlish"
