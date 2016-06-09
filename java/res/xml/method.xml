@@ -284,7 +284,7 @@
     <!-- Santali Olchiki -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_santali_olchiki"
-            android:imeSubtypeLocale="sat_olchiki_IN"
+            android:imeSubtypeLocale="sat_IN"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=santali_olchiki,EmojiCapable" />
     
