@@ -21,14 +21,28 @@
 */
 -->
 
+<?xml version="1.0" encoding="utf-8"?>
+
 <KeyboardLayoutSet
     xmlns:latin="http://schemas.android.com/apk/res-auto">
-    <Feature
-        latin:supportedScript="santali_olchiki" />
     <Element
         latin:elementName="alphabet"
         latin:elementKeyboard="@xml/kbd_santali_olchiki"
         latin:enableProximityCharsCorrection="true" />
+    <Element
+        latin:elementName="alphabetAutomaticShifted"
+        latin:elementKeyboard="@xml/kbd_santali_olchiki"
+        latin:enableProximityCharsCorrection="true" />
+    
+    <Element
+        latin:elementName="alphabetManualShifted"
+        latin:elementKeyboard="@xml/kbd_santali_olchiki" />
+    <Element
+        latin:elementName="alphabetShiftLocked"
+        latin:elementKeyboard="@xml/kbd_santali_olchiki" />
+    <Element
+        latin:elementName="alphabetShiftLockShifted"
+        latin:elementKeyboard="@xml/kbd_santali_olchiki" />
     <Element
         latin:elementName="symbols"
         latin:elementKeyboard="@xml/kbd_symbols" />
