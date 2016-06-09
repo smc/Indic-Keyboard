@@ -272,14 +272,8 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=sa-transliteration" />
 
-    <!-- Santali -->
-    <subtype android:icon="@drawable/ic_ime_switcher_dark"
-            android:label="@string/keyboard_name_santali_olchki"
-            android:imeSubtypeLocale="sat_olchiki_IN"
-            android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=santali_olchiki_layout,EmojiCapable" />
 
-    <!---Santali Olchiki--->
+    <!---Santali --->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_sat_inscript"
             android:imeSubtypeLocale="sat_IN"
@@ -287,6 +281,14 @@
             android:imeSubtypeExtraValue="KeyboardLayoutSet=santali_inscript,EmojiCapable" />
     
 
+    <!-- Santali Olchiki -->
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_santali_olchiki"
+            android:imeSubtypeLocale="sat_olchiki_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=santali_olchiki,EmojiCapable" />
+    
+    
     <!-- Sinhalese -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_si_singlish"
