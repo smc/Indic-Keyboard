@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /*
@@ -23,52 +22,77 @@
 -->
 
 <merge xmlns:latin="http://schemas.android.com/apk/res-auto">
-
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+            >
     <Key
         latin:keySpec="&#x1C67;"
-         />
-    
+	latin:keyLabelFlags="fontNormal"/>  
     <Key
         latin:keySpec="&#x1C63;"
-       />
-  
+	latin:keyLabelFlags="fontNormal"/>
     <Key
         latin:keySpec="&#x1C6E;"
-   />
-    
+	latin:keyLabelFlags="fontNormal"/>
     <Key
         latin:keySpec="&#x1C68;"
-        />
-  
+	latin:keyLabelFlags="fontNormal"/>
     <Key
         latin:keySpec="&#x1C74;"
-        latin:additionalMoreKeys="&#x1C5B;" 
-         />
-  
+	latin:keyLabelFlags="fontNormal"/>
     <Key
         latin:keySpec="&#x1C6D;"
-         />
-
+	latin:keyLabelFlags="fontNormal"/>
     <Key
         latin:keySpec="&#x1C69;"
-       />
-
+	latin:keyLabelFlags="fontNormal"/>
     <Key
         latin:keySpec="&#x1C64;"
-         />
-   
+	latin:keyLabelFlags="fontNormal"/>
     <Key
         latin:keySpec="&#x1C5A;"
-        latin:additionalMoreKeys="&#x1C73;" />
-    
+	latin:keyLabelFlags="fontNormal" />
     <Key
         latin:keySpec="&#x1C6F;"
-       />
+	latin:keyLabelFlags="fontNormal"/>
+    </case>
     
+    <default>
+    <Key
+        latin:keySpec="&#x1C75;"
+	latin:keyLabelFlags="fontNormal"/>
+    <Key
+        latin:keySpec="&#x1C71;"
+	latin:keyLabelFlags="fontNormal"/>
+    <Key
+        latin:keySpec="&#x1C62;"
+	latin:keyLabelFlags="fontNormal"/>
+    <Key 
+        latin:keySpec="&#x1C5B;"
+	latin:keyLabelFlags="fontNormal"/>
+    <Key 
+        latin:keySpec="&#x1C73;"
+	latin:keyLabelFlags="fontNormal"/>
+    <Key
+        latin:keySpec="&#x1C78;"
+	latin:keyLabelFlags="fontNormal"/>
+    <Key
+        latin:keySpec="&#x1C6C;"
+	latin:keyLabelFlags="fontNormal"/>
     <Key
         latin:keySpec="["
-        latin:moreKeys="{" />
+        latin:moreKeys="{"
+	latin:keyLabelFlags="fontNormal" />
     <Key
         latin:keySpec="]"
-        latin:moreKeys="}" />
+        latin:moreKeys="}"
+	latin:keyLabelFlags="fontNormal" />
+    <Key
+        latin:keySpec="-"
+        latin:moreKeys="&#x1C7C;"
+	latin:keyLabelFlags="fontNormal" />
+    </default>
+    </switch>
+
 </merge>

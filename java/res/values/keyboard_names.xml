@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="keyboard_name_ar">العَرَبِيةُ‎‎</string>
-    <string name="keyboard_name_santali_olchki">Santali OlChiki‎‎</string>
     <string name="keyboard_name_as_inscript">অসমীয়া - Inscript</string>
     <string name="keyboard_name_as_transliteration">অসমীয়া - প্ৰতিৰূপান্তৰণ</string>
     <string name="keyboard_name_bn">বাংলা</string>
     <string name="keyboard_name_bn_avro">বাংলা - Avro</string>
     <string name="keyboard_name_bn_inscript">বাংলা - Inscript</string>
     <string name="keyboard_name_bn_probhat">বাংলা - Probhat</string>
-
     <string name="keyboard_name_en">English</string>
     <string name="keyboard_name_gu">ગુજરાતી</string>
     <string name="keyboard_name_gu_inscript">ગુજરાતી - Inscript</string>
@@ -45,6 +43,7 @@
     <string name="keyboard_name_pa_transliteration">ਪੰਜਾਬੀ - Transliteration</string>
     <string name="keyboard_name_sa_transliteration">संस्कृत - Transliteration</string>
     <string name="keyboard_name_sat_inscript">Santali</string>
+    <string name="keyboard_name_santali_olchiki">Santali Olchikis</string>
     <string name="keyboard_name_si_singlish">සිංහල - Singlish</string>
     <string name="keyboard_name_ta">தமிழ் </string>
     <string name="keyboard_name_ta_99">தமிழ் 99</string>

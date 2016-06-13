@@ -22,61 +22,89 @@
 -->
 
 <merge xmlns:latin="http://schemas.android.com/apk/res-auto">
-
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+            >
     <Key
         latin:keySpec="&#x1C51;"
-        latin:keyHintLabel="1"
-        latin:additionalMoreKeys="1,!" />
-    
+        latin:keyLabelFlags="fontNormal"
+        latin:additionalMoreKeys="!" />
     <Key
         latin:keySpec="&#x1C52;"
-        latin:keyHintLabel="2"
-        latin:additionalMoreKeys="2,@" />
-  
+        latin:keyLabelFlags="fontNormal"
+        latin:additionalMoreKeys="@" />
     <Key
         latin:keySpec="&#x1C53;"
-        latin:keyHintLabel="3"
-        latin:additionalMoreKeys="3,#" />
-    
+        latin:keyLabelFlags="fontNormal"
+        latin:additionalMoreKeys="#" />
     <Key
         latin:keySpec="&#x1C54;"
-        latin:keyHintLabel="4"
-        latin:additionalMoreKeys="4,$" />
-  
+	latin:keyLabelFlags="fontNormal"
+        latin:additionalMoreKeys="$" />
     <Key
         latin:keySpec="&#x1C55;"
-        latin:keyHintLabel="5"
-        latin:additionalMoreKeys="5,%" />
-  
+	latin:keyLabelFlags="fontNormal"
+        latin:additionalMoreKeys="%" />
     <Key
         latin:keySpec="&#x1C56;"
-        latin:keyHintLabel="6"
-        latin:additionalMoreKeys="6,^" />
-
+	latin:keyLabelFlags="fontNormal"
+        latin:additionalMoreKeys="^" />
     <Key
         latin:keySpec="&#x1C57;"
-        latin:keyHintLabel="7"
-        latin:additionalMoreKeys="7" />
-
+	latin:keyLabelFlags="fontNormal"
+        latin:additionalMoreKeys="&" />
     <Key
         latin:keySpec="&#x1C58;"
-        latin:keyHintLabel="8"
-        latin:additionalMoreKeys="8,*" />
-   
+	latin:keyLabelFlags="fontNormal"
+        latin:additionalMoreKeys="*" />
     <Key
         latin:keySpec="&#x1C59;"
-        latin:keyHintLabel="9"
-        latin:additionalMoreKeys="9,(" />
-    
+	latin:keyLabelFlags="fontNormal"
+        latin:additionalMoreKeys="(" />
     <Key
         latin:keySpec="&#x1C50;"
-        latin:keyHintLabel="0"
-        latin:additionalMoreKeys="0,)" />
+	latin:keyLabelFlags="fontNormal"
+        latin:additionalMoreKeys=")" />
+    <Key
+        latin:keySpec="&#x1C72;"
+	latin:keyLabelFlags="fontNormal" />
     
+
+    </case>
+    
+    <default>  
     <Key
-        latin:keySpec="-"
-        latin:moreKeys="&#x1C7C;" />
+        latin:keySpec="1"
+	latin:keyLabelFlags="fontNormal"/>
     <Key
-        latin:keySpec="+"
-        latin:moreKeys="=" />
+        latin:keySpec="2"
+	latin:keyLabelFlags="fontNormal"/>
+    <Key
+        latin:keySpec="3"
+	latin:keyLabelFlags="fontNormal"/>
+    <Key
+        latin:keySpec="4"
+	latin:keyLabelFlags="fontNormal"/>
+    <Key
+        latin:keySpec="5"
+	latin:keyLabelFlags="fontNormal"/>
+    <Key
+        latin:keySpec="6"
+	latin:keyLabelFlags="fontNormal"/>
+    <Key
+        latin:keySpec="7"
+	latin:keyLabelFlags="fontNormal"/>
+    <Key
+        latin:keySpec="8"
+	latin:keyLabelFlags="fontNormal"/>
+    <Key
+        latin:keySpec="9"
+	latin:keyLabelFlags="fontNormal"/>
+    <Key
+        latin:keySpec="0"
+	latin:keyLabelFlags="fontNormal"/>
+
+   </default>
+   </switch>
 </merge>
