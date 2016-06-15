@@ -56,8 +56,7 @@
 				latin:keyLabelFlags="fontNormal" /> 
 			<Key
 				latin:keySpec="&#x1C50;"
-				latin:keyLabelFlags="fontNormal"
-				latin:additionalMoreKeys=")" />
+				latin:keyLabelFlags="fontNormal" />
 
 
 		</case>
