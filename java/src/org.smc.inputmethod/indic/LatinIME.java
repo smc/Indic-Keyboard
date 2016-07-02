@@ -29,11 +29,17 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 //import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Debug;
+import android.os.Environment;
 import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
@@ -53,6 +59,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.CursorAnchorInfo;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodSubtype;
 import android.widget.TextView;
 
@@ -101,11 +108,36 @@ import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 
 import java.io.FileDescriptor;
+import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import com.android.inputmethod.keyboard.internal.KeySpecParser;
+
+import java.io.File;
+import java.io.IOException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
+
 
 /**
  * Input method implementation for Qwerty'ish keyboard.
@@ -125,6 +157,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private static final int DELAY_WAIT_FOR_DICTIONARY_LOAD = 2000; // 2s
 
     private static final int PERIOD_FOR_AUDIO_AND_HAPTIC_FEEDBACK_IN_KEY_REPEAT = 2;
+
+
 
     /**
      * The name of the scheme used by the Package Manager to warn of a new package installation,
@@ -159,7 +193,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private TextView mExtractEditText;
 
     private RichInputMethodManager mRichImm;
-    @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
+    final KeyboardSwitcher mKeyboardSwitcher;
     private final SubtypeSwitcher mSubtypeSwitcher;
     private final SubtypeState mSubtypeState = new SubtypeState();
 
@@ -221,7 +255,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         @Override
-        public void handleMessage(final Message msg) {
+        public void handleMessage(final Message msg) { 
             final LatinIME latinIme = getOwnerInstance();
             if (latinIme == null) {
                 return;
@@ -279,6 +313,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 Log.i(TAG, "Timeout waiting for dictionary load");
                 break;
             }
+         
         }
 
         public void postUpdateSuggestionStrip(final int inputStyle) {
@@ -287,6 +322,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         public void postReopenDictionaries() {
+            //System.out.println("Reopen");
             sendMessage(obtainMessage(MSG_REOPEN_DICTIONARIES));
         }
 
@@ -417,6 +453,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         public void onStartInput(final EditorInfo editorInfo, final boolean restarting) {
+            //System.out.println("1");
             if (hasMessages(MSG_PENDING_IMS_CALLBACK)) {
                 // Typically this is the second onStartInput after orientation changed.
                 mHasPendingStartInput = true;
@@ -435,6 +472,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         public void onStartInputView(final EditorInfo editorInfo, final boolean restarting) {
+            //System.out.println("2");
             if (hasMessages(MSG_PENDING_IMS_CALLBACK)
                     && KeyboardId.equivalentEditorInfoForKeyboard(editorInfo, mAppliedEditorInfo)) {
                 // Typically this is the second onStartInputView after orientation changed.
@@ -457,6 +495,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         public void onFinishInputView(final boolean finishingInput) {
+            //System.out.println("3");
             if (hasMessages(MSG_PENDING_IMS_CALLBACK)) {
                 // Typically this is the first onFinishInputView after orientation changed.
                 mHasPendingFinishInputView = true;
@@ -470,6 +509,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         public void onFinishInput() {
+            //System.out.println("4");
             if (hasMessages(MSG_PENDING_IMS_CALLBACK)) {
                 // Typically this is the first onFinishInput after orientation changed.
                 mHasPendingFinishInput = true;
@@ -573,16 +613,106 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         registerReceiver(mDictionaryDumpBroadcastReceiver, dictDumpFilter);
 
         DictionaryDecayBroadcastReciever.setUpIntervalAlarmForDictionaryDecaying(this);
+     
 
         StatsUtils.onCreate(mSettings.getCurrent());
+
+
+        final Map<String,String>   MapLocale = new HashMap<String,String>();
+        final Map<String,String>   Mapchar =  new HashMap<String,String>();
+        final InputMethodInfo myImi = mRichImm.getInputMethodInfoOfThisIme();
+        final int count = myImi.getSubtypeCount();
+        for (int i = 0; i < count; i++) {
+            final InputMethodSubtype subtype = myImi.getSubtypeAt(i);
+            final String layoutName = SubtypeLocaleUtils.getKeyboardLayoutSetName(subtype);
+      	    //System.out.println(subtype.getLocale());
+            MapLocale.put(subtype.getLocale(),"1");
+        }
+        //Default
+        Mapchar.put("DEFAULT","a");
+        // Assamese
+        Mapchar.put("as_IN","\\u09E7");
+        //Bengali
+        Mapchar.put("bn_IN","\\u09E7");
+        //English
+        Mapchar.put("en","a");
+        //Hindi
+        Mapchar.put("hi_IN","\\u0967");
+        //Kannada
+        Mapchar.put("kn_IN","\\u0CE7");
+        //Malayalam
+        Mapchar.put("ml_IN","\\u0D67");
+        //Burmese
+        Mapchar.put("my","\\u1042");
+        //Nepali
+        Mapchar.put("ne_NP","\\u0967");
+        //Marathi
+        Mapchar.put("mr_IN","\\u0967");
+        //Oriya
+        Mapchar.put("or_IN","\\u0B67");
+        //Punjabi
+        Mapchar.put("pa_IN","\\u0A67");
+        //Tamil
+        Mapchar.put("ta_IN","\\u0BE7");
+        //telugu
+        //zz
+        Mapchar.put("te_IN","\\u0C67");
+        Mapchar.put("zz","\\u00E0");
+        for (Map.Entry<String, String> entry : Mapchar.entrySet()) {
+            //System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
+
+            String text = entry.getValue();
+            String str=entry.getValue();
+            if(text.length()>2 ) {
+                if (text.substring(0, 2).compareTo("\\u") == 0) {
+                    char c = (char) Integer.parseInt(text.substring(2), 16);
+                    str = "";
+                    str = str + c;
+
+                }
+            }
+            text = str;
+            Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+            Bitmap bitmap = Bitmap.createBitmap(5, 5, conf); // this creates a MUTABLE bitmap
+            Bitmap orig = bitmap.copy(conf, false);
+            Canvas canvas = new Canvas(bitmap);
+            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paint.setColor(Color.rgb(0, 0, 0));
+            paint.setTextSize((int) (14));
+
+            // draw text to the Canvas center
+            Rect bounds = new Rect();
+            paint.getTextBounds(text, 0, text.length(), bounds);
+            int x = (bitmap.getWidth() - bounds.width()) / 2;
+            int y = (bitmap.getHeight() + bounds.height()) / 2;
+            canvas.drawText(text, x, y, paint);
+            boolean res = !orig.sameAs(bitmap);
+            orig.recycle();
+            bitmap.recycle();
+            if(res==false)
+	        {
+		  //      System.out.println(text);
+                //System.out.println(entry.getKey());
+                MapLocale.put(entry.getKey(),"0");
+	        }
+
+        }
+
+         	
+        for (Map.Entry<String, String> entry : MapLocale.entrySet()) {
+       
+	}
     }
 
     private boolean checkForTransliteration() {
         Locale locale = mSubtypeSwitcher.getCurrentSubtypeLocale();
-
+        //final List<InputMethodSubtype> all = mSubtypeSwitcher.getall();
         if (!locale.getLanguage().equals("en")) {
+            //System.out.println("1"+locale.getLanguage());
             mInputLogic.setIndic(true);
         } else {
+
+            //System.out.println("2"+locale.getLanguage());
             mInputLogic.setIndic(false);
         }
 
@@ -671,6 +801,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             subtypeLocale = getResources().getConfiguration().locale;
         } else {
             subtypeLocale = switcherSubtypeLocale;
+           // System.out.println("3"+subtypeLocale);
+            final List<InputMethodSubtype> enabledSubtypesOfThisIme =
+                    mRichImm.getMyEnabledInputMethodSubtypeList(true);
+           // System.out.println(mRichImm.getInputMethodIdOfThisIme());
+            
         }
         resetSuggestForLocale(subtypeLocale);
     }
@@ -910,8 +1045,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final boolean isDifferentTextField = !restarting || inputTypeChanged;
         if (isDifferentTextField) {
             mSubtypeSwitcher.updateParametersOnStartInputView();
+            //final List<InputMethodSubtype> enabledSubtypesOfThisIme =
+            //    mRichImm.getMyEnabledInputMethodSubtypeList(true);
+            //System.out.println("YOLO1");
+       	    //System.out.println(enabledSubtypesOfThisIme);
+       	    //System.out.println("YOLO2");
         }
-
+        
         // The EditorInfo might have a flag that affects fullscreen mode.
         // Note: This call should be done by InputMethodService?
         updateFullscreenMode();
@@ -1286,6 +1426,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return CoordinateUtils.newCoordinateArray(codePoints.length,
                     Constants.NOT_A_COORDINATE, Constants.NOT_A_COORDINATE);
         }
+        
         return keyboard.getCoordinates(codePoints);
     }
 
@@ -1549,6 +1690,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void getSuggestedWords(final int inputStyle, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
         final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
+        
         if (keyboard == null) {
             callback.onGetSuggestedWords(SuggestedWords.EMPTY);
             return;
@@ -1895,6 +2037,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final Keyboard keyboard = mKeyboardSwitcher.getKeyboard();
         final int keyboardMode = keyboard != null ? keyboard.mId.mMode : -1;
         p.println("  Keyboard mode = " + keyboardMode);
+
         final SettingsValues settingsValues = mSettings.getCurrent();
         p.println(settingsValues.dump());
         // TODO: Dump all settings values
