@@ -193,7 +193,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private TextView mExtractEditText;
 
     private RichInputMethodManager mRichImm;
-    final KeyboardSwitcher mKeyboardSwitcher;
+    @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
     private final SubtypeSwitcher mSubtypeSwitcher;
     private final SubtypeState mSubtypeState = new SubtypeState();
 

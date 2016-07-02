@@ -40,7 +40,7 @@
     <string name="keyboard_name_or_transliteration" locale = "or_IN">ଓଡ଼ିଆ - Transliteration</string>
     <string name="keyboard_name_or_lekhani" locale = "or_IN">ଓଡ଼ିଆ - Lekhani</string>
     <string name="keyboard_name_pa" locale = "pa_IN">ਪੰਜਾਬੀ</string>
-    <string name="keyboard_name_pa_inscript">ਪੰਜਾਬੀ - Inscript</string>
+    <string name="keyboard_name_pa_inscript" locale = "pa_IN">ਪੰਜਾਬੀ - Inscript</string>
     <string name="keyboard_name_pa_transliteration" locale = "pa_IN">ਪੰਜਾਬੀ - Transliteration</string>
     <string name="keyboard_name_sa_transliteration" locale = "sa_IN">संस्कृत - Transliteration</string>
     <string name="keyboard_name_sat_inscript" locale = "sat_IN">Santali</string>
