@@ -20,6 +20,9 @@ import static org.smc.inputmethod.indic.Constants.ImeOption.FORCE_ASCII;
 import static org.smc.inputmethod.indic.Constants.ImeOption.NO_MICROPHONE;
 import static org.smc.inputmethod.indic.Constants.ImeOption.NO_MICROPHONE_COMPAT;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -697,11 +700,26 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 	        }
 
         }
+	XmlPullParser xpp=getResources().getXml(R.xml.method);
+            try {
+                while (xpp.getEventType()!=XmlPullParser.END_DOCUMENT) {
+                    if (xpp.getEventType()==XmlPullParser.START_TAG) {
+                        if (xpp.getName().equals("subtype")) {
+                           // items.add(xpp.getAttributeValue(2));
+                            if(MapLocale.get(xpp.getAttributeValue(2))=="0")
+                            {
+                                //set the attribute 
+                            }
+                        }
+                    }
 
-         	
-        for (Map.Entry<String, String> entry : MapLocale.entrySet()) {
-       
-	}
+                    xpp.next();
+                }
+            } catch (XmlPullParserException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
     }
 
     private boolean checkForTransliteration() {
