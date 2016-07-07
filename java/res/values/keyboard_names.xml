@@ -1,60 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="keyboard_name_ar" locale = "ar">العَرَبِيةُ‎‎</string>
-    <string name="keyboard_name_as_inscript" locale = "as_IN">অসমীয়া - Inscript</string>
-    <string name="keyboard_name_as_transliteration" locale = "as_IN">অসমীয়া - প্ৰতিৰূপান্তৰণ</string>
-    <string name="keyboard_name_bn" locale = "bn_IN">বাংলা</string>
-    <string name="keyboard_name_bn_avro" locale = "bn_IN">বাংলা - Avro</string>
-    <string name="keyboard_name_bn_inscript" locale = "bn_IN">বাংলা - Inscript</string>
-    <string name="keyboard_name_bn_probhat" locale = "bn_IN">বাংলা - Probhat</string>
-    <string name="keyboard_name_en" locale = "gu_IN">English</string>
-    <string name="keyboard_name_gu" locale = "gu_IN">ગુજરાતી</string>
-    <string name="keyboard_name_gu_inscript" locale = "gu_IN">ગુજરાતી - Inscript</string>
-    <string name="keyboard_name_gu_transliteration" locale = "gu_IN">ગુજરાતી - Transliteration</string>
-    <string name="keyboard_name_hi" locale = "hi_IN">हिन्दी</string>
-    <string name="keyboard_name_hi_inscript" locale = "hi_IN">Devanagari - Inscript</string>
-    <string name="keyboard_name_hi_soni" locale = "hi_IN">हिन्दी - Soni</string>
-    <string name="keyboard_name_hi_transliteration" locale = "hi_IN">हिन्दी - लिप्यंतरण</string>
-    <string name="keyboard_name_kn" locale = "">ಕನ್ನಡ</string>
-    <string name="keyboard_name_kn_compact" locale = "kn_IN">ಕನ್ನಡ - Compact</string>
-    <string name="keyboard_name_kn_inscript" locale = "kn_IN">ಕನ್ನಡ - Inscript</string>
-    <string name="keyboard_name_kn_anysoft_inscript" locale = "kn_IN">ಕನ್ನಡ - Inscript Mobile</string>
-    <string name="keyboard_name_kn_transliteration" locale = "kn_IN">ಕನ್ನಡ - ಲಿಪ್ಯಂತರಣ</string>
-    <string name="keyboard_name_ks_inscript" locale = "ks_IN">کأشُر - Inscript</string>
-    <string name="keyboard_name_ks_transliteration" locale = "ks_IN">کأشُر - Transliteration</string>
-    <string name="keyboard_name_mai_inscript" locale = "mai_IN">मैथिली</string>
-    <string name="keyboard_name_ml_compact" locale = "ml_IN">മലയാളം - Compact</string>
-    <string name="keyboard_name_ml_inscript" locale = "ml_IN">മലയാളം - Inscript</string>
-    <string name="keyboard_name_ml_lalitha" locale = "ml_IN">മലയാളം</string>
-    <string name="keyboard_name_ml_transliteration" locale = "ml_IN">മലയാളം - ലിപ്യന്തരണം</string>
-    <string name="keyboard_name_ml_swanalekha" locale = "ml_IN">മലയാളം - സ്വനലേഖ</string>
-    <string name="keyboard_name_mni_inscript" locale = "mni_IN">মৈতৈলোন্</string>
-    <string name="keyboard_name_mnw" locale = "mnw">Mon</string>
-    <string name="keyboard_name_mr_transliteration" locale = "mr_IN">मराठी - अक्षरांतरण</string>
-    <string name="keyboard_name_my" locale = "my" >Burmese - ဗမာ</string>
-    <string name="keyboard_name_ne" locale = "ne" >नेपाली</string>
-    <string name="keyboard_name_ne_inscript" locale = "ne">नेपाली - Inscript</string>
-    <string name="keyboard_name_ne_traditional" locale = "ne">नेपाली - Traditional</string>
-    <string name="keyboard_name_ne_transliteration" locale = "ne">नेपाली - Transliteration</string>
-    <string name="keyboard_name_or_inscript" locale = "or_IN">ଓଡ଼ିଆ - Inscript</string>
-    <string name="keyboard_name_or_transliteration" locale = "or_IN">ଓଡ଼ିଆ - Transliteration</string>
-    <string name="keyboard_name_or_lekhani" locale = "or_IN">ଓଡ଼ିଆ - Lekhani</string>
-    <string name="keyboard_name_pa" locale = "pa_IN">ਪੰਜਾਬੀ</string>
-    <string name="keyboard_name_pa_inscript" locale = "pa_IN">ਪੰਜਾਬੀ - Inscript</string>
-    <string name="keyboard_name_pa_transliteration" locale = "pa_IN">ਪੰਜਾਬੀ - Transliteration</string>
-    <string name="keyboard_name_sa_transliteration" locale = "sa_IN">संस्कृत - Transliteration</string>
-    <string name="keyboard_name_sat_inscript" locale = "sat_IN">Santali</string>
-    <string name="keyboard_name_santali_olchiki" locale = "sat_olchiki_IN">Santali Olchiki‎‎</string>
-    <string name="keyboard_name_si_singlish" locale = "si">සිංහල - Singlish</string>
-    <string name="keyboard_name_ta" locale = "ta_IN">தமிழ் </string>
-    <string name="keyboard_name_ta_99" locale = "ta_IN">தமிழ் 99</string>
-    <string name="keyboard_name_ta_compact" locale = "ta_IN">தமிழ்  - Compact </string>
-    <string name="keyboard_name_ta_inscript" locale = "ta_IN">தமிழ்  - Inscript </string>
-    <string name="keyboard_name_ta_transliteration" locale = "ta_IN">தமிழ் - எழுத்துப்பெயர்ப்பு</string>
-    <string name="keyboard_name_te" locale = "sa_IN">తెలుగు </string>
-    <string name="keyboard_name_te_compact" locale = "te_IN">తెలుగు  - Compact </string>
-    <string name="keyboard_name_te_inscript" locale = "te_IN">తెలుగు  - Inscript </string>
-    <string name="keyboard_name_te_kachatathapa" locale = "te_IN">తెలుగు  - కచటతప </string>
-    <string name="keyboard_name_te_transliteration" locale = "te_IN">తెలుగు - లిప్యంతరీకరణ</string>
-    <string name="keyboard_name_ur_transliteration" locale = "ur_IN">اردو - Transliteration</string>
+    <string name="keyboard_name_ar">العَرَبِيةُ‎‎</string>
+    <string name="keyboard_name_as_inscript">অসমীয়া - Inscript</string>
+    <string name="keyboard_name_as_transliteration">অসমীয়া - প্ৰতিৰূপান্তৰণ</string>
+    <string name="keyboard_name_bn">বাংলা</string>
+    <string name="keyboard_name_bn_avro">বাংলা - Avro</string>
+    <string name="keyboard_name_bn_inscript">বাংলা - Inscript</string>
+    <string name="keyboard_name_bn_probhat">বাংলা - Probhat</string>
+    <string name="keyboard_name_en">English</string>
+    <string name="keyboard_name_gu">ગુજરાતી</string>
+    <string name="keyboard_name_gu_inscript">ગુજરાતી - Inscript</string>
+    <string name="keyboard_name_gu_transliteration">ગુજરાતી - Transliteration</string>
+    <string name="keyboard_name_hi">हिन्दी</string>
+    <string name="keyboard_name_hi_inscript">Devanagari - Inscript</string>
+    <string name="keyboard_name_hi_transliteration">हिन्दी - लिप्यंतरण</string>
+    <string name="keyboard_name_kn">ಕನ್ನಡ</string>
+    <string name="keyboard_name_kn_compact">ಕನ್ನಡ - Compact</string>
+    <string name="keyboard_name_kn_inscript">ಕನ್ನಡ - Inscript</string>
+    <string name="keyboard_name_kn_anysoft_inscript">ಕನ್ನಡ - Inscript Mobile</string>
+    <string name="keyboard_name_kn_transliteration">ಕನ್ನಡ - ಲಿಪ್ಯಂತರಣ</string>
+    <string name="keyboard_name_ks_inscript">کأشُر - Inscript</string>
+    <string name="keyboard_name_ks_transliteration">کأشُر - Transliteration</string>
+    <string name="keyboard_name_mai_inscript">मैथिली</string>
+    <string name="keyboard_name_ml_compact">മലയാളം - Compact</string>
+    <string name="keyboard_name_ml_inscript">മലയാളം - Inscript</string>
+    <string name="keyboard_name_ml_lalitha">മലയാളം</string>
+    <string name="keyboard_name_ml_transliteration">മലയാളം - ലിപ്യന്തരണം</string>
+    <string name="keyboard_name_ml_swanalekha">മലയാളം - സ്വനലേഖ</string>
+    <string name="keyboard_name_mni_inscript">মৈতৈলোন্</string>
+    <string name="keyboard_name_mnw">Mon</string>
+    <string name="keyboard_name_mr_transliteration">मराठी - अक्षरांतरण</string>
+    <string name="keyboard_name_my">Burmese - ဗမာ</string>
+    <string name="keyboard_name_ne">नेपाली</string>
+    <string name="keyboard_name_ne_inscript">नेपाली - Inscript</string>
+    <string name="keyboard_name_ne_traditional">नेपाली - Traditional</string>
+    <string name="keyboard_name_ne_transliteration">नेपाली - Transliteration</string>
+    <string name="keyboard_name_or_inscript">ଓଡ଼ିଆ - Inscript</string>
+    <string name="keyboard_name_or_transliteration">ଓଡ଼ିଆ - Transliteration</string>
+    <string name="keyboard_name_or_lekhani">ଓଡ଼ିଆ - Lekhani</string>
+    <string name="keyboard_name_pa">ਪੰਜਾਬੀ</string>
+    <string name="keyboard_name_pa_inscript">ਪੰਜਾਬੀ - Inscript</string>
+    <string name="keyboard_name_pa_transliteration">ਪੰਜਾਬੀ - Transliteration</string>
+    <string name="keyboard_name_sa_transliteration">संस्कृत - Transliteration</string>
+    <string name="keyboard_name_sat_inscript">Santali</string>
+    <string name="keyboard_name_santali_olchiki">Santali Olchiki</string>
+    <string name="keyboard_name_si_singlish">සිංහල - Singlish</string>
+    <string name="keyboard_name_ta">தமிழ் </string>
+    <string name="keyboard_name_ta_99">தமிழ் 99</string>
+    <string name="keyboard_name_ta_compact">தமிழ்  - Compact </string>
+    <string name="keyboard_name_ta_inscript">தமிழ்  - Inscript </string>
+    <string name="keyboard_name_ta_transliteration">தமிழ் - எழுத்துப்பெயர்ப்பு</string>
+    <string name="keyboard_name_te">తెలుగు </string>
+    <string name="keyboard_name_te_compact">తెలుగు  - Compact </string>
+    <string name="keyboard_name_te_inscript">తెలుగు  - Inscript </string>
+    <string name="keyboard_name_te_kachatathapa">తెలుగు  - కచటతప </string>
+    <string name="keyboard_name_te_transliteration">తెలుగు - లిప్యంతరీకరణ</string>
+    <string name="keyboard_name_ur_transliteration">اردو - Transliteration</string>
 </resources>
