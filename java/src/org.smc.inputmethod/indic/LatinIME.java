@@ -22,6 +22,8 @@ import static org.smc.inputmethod.indic.Constants.ImeOption.NO_MICROPHONE_COMPAT
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+import android.content.res.XmlResourceParser;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -65,7 +67,9 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodSubtype;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.smc.inputmethod.indic.R;
 import org.smc.inputmethod.accessibility.AccessibilityUtils;
 import org.smc.inputmethod.annotations.UsedForTesting;
 import org.smc.inputmethod.compat.CursorAnchorInfoCompatWrapper;
@@ -196,7 +200,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private TextView mExtractEditText;
 
     private RichInputMethodManager mRichImm;
-    @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
+    final KeyboardSwitcher mKeyboardSwitcher;
     private final SubtypeSwitcher mSubtypeSwitcher;
     private final SubtypeState mSubtypeState = new SubtypeState();
 
@@ -621,7 +625,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         StatsUtils.onCreate(mSettings.getCurrent());
 
 
-        final Map<String,String>   MapLocale = new HashMap<String,String>();
+//        final Map<String,String>   MapLocale = new HashMap<String,String>();
         final Map<String,String>   Mapchar =  new HashMap<String,String>();
         final InputMethodInfo myImi = mRichImm.getInputMethodInfoOfThisIme();
         final int count = myImi.getSubtypeCount();
@@ -629,7 +633,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final InputMethodSubtype subtype = myImi.getSubtypeAt(i);
             final String layoutName = SubtypeLocaleUtils.getKeyboardLayoutSetName(subtype);
       	    //System.out.println(subtype.getLocale());
-            MapLocale.put(subtype.getLocale(),"1");
+  //          MapLocale.put(subtype.getLocale(),"1");
         }
         //Default
         Mapchar.put("DEFAULT","a");
@@ -661,6 +665,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         //zz
         Mapchar.put("te_IN","\\u0C67");
         Mapchar.put("zz","\\u00E0");
+	    String warn = "Locales might not be supported by phone:\n";
         for (Map.Entry<String, String> entry : Mapchar.entrySet()) {
             //System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
 
@@ -693,14 +698,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             orig.recycle();
             bitmap.recycle();
             if(res==false)
-	        {
-		  //      System.out.println(text);
-                //System.out.println(entry.getKey());
-                MapLocale.put(entry.getKey(),"0");
-	        }
-
+            {
+		        warn = warn + entry.getKey() + "\n";
+            }
         }
-	XmlPullParser xpp=getResources().getXml(R.xml.method);
+        Context context = getApplicationContext();
+        CharSequence text = warn;
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
+
+           // ArrayList<String> items=new ArrayList<String>();
+           /* String warn = "Layouts are not supported by the keybar are not supported :\n" 
+            XmlPullParser xpp=getResources().getXml(R.xml.method);
             try {
                 while (xpp.getEventType()!=XmlPullParser.END_DOCUMENT) {
                     if (xpp.getEventType()==XmlPullParser.START_TAG) {
@@ -708,7 +719,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                            // items.add(xpp.getAttributeValue(2));
                             if(MapLocale.get(xpp.getAttributeValue(2))=="0")
                             {
-                                //set the attribute 
+                                //set the attribute
+				warn = warn + xpp.getAttributeValue(1) + "\n";
+
                             }
                         }
                     }
@@ -719,7 +732,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
+            //System.out.println(items);
+
+            //      System.out.println(text);
+            //System.out.println(entry.getKey());
+            //MapLocale.put(entry.getKey(),"0");
+
+         	
+
+
     }
 
     private boolean checkForTransliteration() {
