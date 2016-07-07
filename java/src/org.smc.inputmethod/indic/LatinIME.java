@@ -20,11 +20,6 @@ import static org.smc.inputmethod.indic.Constants.ImeOption.FORCE_ASCII;
 import static org.smc.inputmethod.indic.Constants.ImeOption.NO_MICROPHONE;
 import static org.smc.inputmethod.indic.Constants.ImeOption.NO_MICROPHONE_COMPAT;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-import android.content.res.XmlResourceParser;
-
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -115,7 +110,6 @@ import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 
 import java.io.FileDescriptor;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -124,26 +118,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import com.android.inputmethod.keyboard.internal.KeySpecParser;
-
-import java.io.File;
-import java.io.IOException;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 
 /**
@@ -329,7 +303,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         public void postReopenDictionaries() {
-            //System.out.println("Reopen");
             sendMessage(obtainMessage(MSG_REOPEN_DICTIONARIES));
         }
 
@@ -460,7 +433,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         public void onStartInput(final EditorInfo editorInfo, final boolean restarting) {
-            //System.out.println("1");
             if (hasMessages(MSG_PENDING_IMS_CALLBACK)) {
                 // Typically this is the second onStartInput after orientation changed.
                 mHasPendingStartInput = true;
@@ -479,7 +451,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         public void onStartInputView(final EditorInfo editorInfo, final boolean restarting) {
-            //System.out.println("2");
+
             if (hasMessages(MSG_PENDING_IMS_CALLBACK)
                     && KeyboardId.equivalentEditorInfoForKeyboard(editorInfo, mAppliedEditorInfo)) {
                 // Typically this is the second onStartInputView after orientation changed.
@@ -502,7 +474,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         public void onFinishInputView(final boolean finishingInput) {
-            //System.out.println("3");
+
             if (hasMessages(MSG_PENDING_IMS_CALLBACK)) {
                 // Typically this is the first onFinishInputView after orientation changed.
                 mHasPendingFinishInputView = true;
@@ -516,7 +488,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         public void onFinishInput() {
-            //System.out.println("4");
             if (hasMessages(MSG_PENDING_IMS_CALLBACK)) {
                 // Typically this is the first onFinishInput after orientation changed.
                 mHasPendingFinishInput = true;
@@ -620,20 +591,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         registerReceiver(mDictionaryDumpBroadcastReceiver, dictDumpFilter);
 
         DictionaryDecayBroadcastReciever.setUpIntervalAlarmForDictionaryDecaying(this);
-     
-
         StatsUtils.onCreate(mSettings.getCurrent());
 
-
-//        final Map<String,String>   MapLocale = new HashMap<String,String>();
         final Map<String,String>   Mapchar =  new HashMap<String,String>();
         final InputMethodInfo myImi = mRichImm.getInputMethodInfoOfThisIme();
         final int count = myImi.getSubtypeCount();
         for (int i = 0; i < count; i++) {
             final InputMethodSubtype subtype = myImi.getSubtypeAt(i);
             final String layoutName = SubtypeLocaleUtils.getKeyboardLayoutSetName(subtype);
-      	    //System.out.println(subtype.getLocale());
-  //          MapLocale.put(subtype.getLocale(),"1");
         }
         //Default
         Mapchar.put("DEFAULT","a");
@@ -667,8 +632,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         Mapchar.put("zz","\\u00E0");
 	    String warn = "Locales might not be supported by phone:\n";
         for (Map.Entry<String, String> entry : Mapchar.entrySet()) {
-            //System.out.println("Key : " + entry.getKey() + " Value : " + entry.getValue());
-
             String text = entry.getValue();
             String str=entry.getValue();
             if(text.length()>2 ) {
@@ -708,51 +671,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
-
-           // ArrayList<String> items=new ArrayList<String>();
-           /* String warn = "Layouts are not supported by the keybar are not supported :\n" 
-            XmlPullParser xpp=getResources().getXml(R.xml.method);
-            try {
-                while (xpp.getEventType()!=XmlPullParser.END_DOCUMENT) {
-                    if (xpp.getEventType()==XmlPullParser.START_TAG) {
-                        if (xpp.getName().equals("subtype")) {
-                           // items.add(xpp.getAttributeValue(2));
-                            if(MapLocale.get(xpp.getAttributeValue(2))=="0")
-                            {
-                                //set the attribute
-				warn = warn + xpp.getAttributeValue(1) + "\n";
-
-                            }
-                        }
-                    }
-
-                    xpp.next();
-                }
-            } catch (XmlPullParserException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
-            //System.out.println(items);
-
-            //      System.out.println(text);
-            //System.out.println(entry.getKey());
-            //MapLocale.put(entry.getKey(),"0");
-
-         	
-
-
     }
 
     private boolean checkForTransliteration() {
         Locale locale = mSubtypeSwitcher.getCurrentSubtypeLocale();
-        //final List<InputMethodSubtype> all = mSubtypeSwitcher.getall();
         if (!locale.getLanguage().equals("en")) {
-            //System.out.println("1"+locale.getLanguage());
             mInputLogic.setIndic(true);
         } else {
-
-            //System.out.println("2"+locale.getLanguage());
             mInputLogic.setIndic(false);
         }
 
@@ -841,11 +766,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             subtypeLocale = getResources().getConfiguration().locale;
         } else {
             subtypeLocale = switcherSubtypeLocale;
-           // System.out.println("3"+subtypeLocale);
             final List<InputMethodSubtype> enabledSubtypesOfThisIme =
                     mRichImm.getMyEnabledInputMethodSubtypeList(true);
-           // System.out.println(mRichImm.getInputMethodIdOfThisIme());
-            
+     
         }
         resetSuggestForLocale(subtypeLocale);
     }
@@ -1085,11 +1008,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final boolean isDifferentTextField = !restarting || inputTypeChanged;
         if (isDifferentTextField) {
             mSubtypeSwitcher.updateParametersOnStartInputView();
-            //final List<InputMethodSubtype> enabledSubtypesOfThisIme =
-            //    mRichImm.getMyEnabledInputMethodSubtypeList(true);
-            //System.out.println("YOLO1");
-       	    //System.out.println(enabledSubtypesOfThisIme);
-       	    //System.out.println("YOLO2");
         }
         
         // The EditorInfo might have a flag that affects fullscreen mode.
