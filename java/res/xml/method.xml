@@ -107,11 +107,6 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=hindi_inscript,EmojiCapable" />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
-            android:label="@string/keyboard_name_hi_soni"
-            android:imeSubtypeLocale="hi_IN"
-            android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=hi-soni" />
-    <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_hi_transliteration"
             android:imeSubtypeLocale="hi_IN"
             android:imeSubtypeMode="keyboard"
@@ -277,13 +272,23 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=sa-transliteration" />
 
-    <!-- Santali -->
+
+    <!---Santali --->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_sat_inscript"
             android:imeSubtypeLocale="sat_IN"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=santali_inscript,EmojiCapable" />
+    
 
+    <!-- Santali Olchiki -->
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_santali_olchiki"
+            android:imeSubtypeLocale="sat_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=santali_olchiki,EmojiCapable" />
+    
+    
     <!-- Sinhalese -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_si_singlish"
