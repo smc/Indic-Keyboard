@@ -2,10 +2,9 @@
 <!--
 /*
 **
-** Author: Jishnu Mohan <jishnu7@gmail.com>
+** Author: Arushi Dogra <arushidogra1995@gmail.com>
 ** Copyright ©
 **      2012-2013 Jishnu Mohan
-**      2013-2014 Jishnu Mohan, Swathanthra Malayalam Computing (SMC), International Centre for Free and Open Source Software (ICFOSS)
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -20,53 +19,51 @@
 ** limitations under the License.
 */
 -->
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+  <switch>
+    <case
+      latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+      >
+      <Key
+        latin:keySpec="&#x1C5F;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C65;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C70;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C5D;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C5C;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="!"
+        latin:keyLabelFlags="fontNormal"/>
+    </case>
 
-<merge
-    xmlns:latin="http://schemas.android.com/apk/res-auto"
->
-    <switch>
-        <default>
-            <Key
-                latin:keySpec="&#x1C5F;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="&#x1C65;"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
-            <Key
-                latin:keySpec="&#x1C70;"
-                latin:moreKeys="&#x1C6B;"
-                latin:keyHintLabel="&#x1C6B;"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
-            <Key
-                latin:keySpec="&#x1C5D;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="&#x1C5C;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="&#x1C66;"
-                latin:moreKeys="&#x1C77;"
-                latin:keyHintLabel="&#x1C77;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="&#x1C61;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="&#x1C60;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="&#x1C5E;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec=";"
-                latin:moreKeys="&#x1C7A;"
-                latin:keyHintLabel="&#x1C7A;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="'"
-                latin:moreKeys="&quot;"
-                latin:keyHintLabel="&quot;"
-                latin:keyLabelFlags="fontNormal" />
-         </default>
-    </switch>
+    <default>
+      <Key
+        latin:keySpec="&#x1C79;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C7D;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C6A;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C7A;"
+        latin:additionalMoreKeys=";"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C77;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec='|'
+        latin:keyLabelFlags="fontNormal"/>
+    </default>
+  </switch>
 </merge>

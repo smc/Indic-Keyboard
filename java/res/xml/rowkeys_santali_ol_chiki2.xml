@@ -2,10 +2,9 @@
 <!--
 /*
 **
-** Author: Jishnu Mohan <jishnu7@gmail.com>
+** Author: Arushi Dogra <arushidogra1995@gmail.com>
 ** Copyright ©
 **      2012-2013 Jishnu Mohan
-**      2013-2014 Jishnu Mohan, Swathanthra Malayalam Computing (SMC), International Centre for Free and Open Source Software (ICFOSS)
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -21,60 +20,69 @@
 */
 -->
 
-<merge
-    xmlns:latin="http://schemas.android.com/apk/res-auto"
->
-    <switch>
-        <default>
-            <Key
-                latin:keySpec="&#x1C67;"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
-            <Key
-                latin:keySpec="&#x1C63;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="&#x1C6E;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="&#x1C68;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="&#x1C74;"
-                latin:moreKeys="&#x1C5B;"
-                latin:keyHintLabel="&#x1C5B;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="&#x1C6D;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="&#x1C69;"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
-            <Key
-                latin:keySpec="&#x1C64;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="&#x1C5A;"
-                latin:moreKeys="&#x1C73;"
-                latin:keyHintLabel="&#x1C73;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="&#x1C6F;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="["
-                latin:moreKeys="{"
-                latin:keyHintLabel="{"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="]"
-                latin:moreKeys="}"
-                latin:keyHintLabel="}"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="&#x1C7E;"
-                latin:moreKeys="&#x1C7F;"
-                latin:keyHintLabel="&#x1C7F;"
-                latin:keyLabelFlags="fontNormal" />
-         </default>
-    </switch>
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+  <switch>
+    <case
+      latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+      >
+      <Key
+        latin:keySpec="&#x1C67;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C63;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C6E;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C68;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C74;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C6D;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C69;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="["
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="]"
+        latin:keyLabelFlags="fontNormal"/>
+    </case>
+
+    <default>
+      <Key
+        latin:keySpec="&#x1C75;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C71;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C62;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C5B;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C73;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C78;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C6C;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="{"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="}"
+        latin:keyLabelFlags="fontNormal"/>
+    </default>
+  </switch>
+
 </merge>

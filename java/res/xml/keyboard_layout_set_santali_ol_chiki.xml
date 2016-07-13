@@ -2,10 +2,9 @@
 <!--
 /*
 **
-** Author: Jishnu Mohan <jishnu7@gmail.com>
+** Author: Arushi Dogra <arushidogra1995@gmail.com>
 ** Copyright ©
 **      2012-2013 Jishnu Mohan
-**      2013-2014 Jishnu Mohan, Swathanthra Malayalam Computing (SMC), International Centre for Free and Open Source Software (ICFOSS)
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -20,13 +19,32 @@
 ** limitations under the License.
 */
 -->
-
 <KeyboardLayoutSet
     xmlns:latin="http://schemas.android.com/apk/res-auto">
     <Element
         latin:elementName="alphabet"
         latin:elementKeyboard="@xml/kbd_santali_ol_chiki"
         latin:enableProximityCharsCorrection="true" />
+    <Element
+        latin:elementName="alphabetAutomaticShifted"
+        latin:elementKeyboard="@xml/kbd_santali_ol_chiki"
+        latin:enableProximityCharsCorrection="true" />
+
+    <Element
+        latin:elementName="alphabetManualShifted"
+        latin:elementKeyboard="@xml/kbd_santali_ol_chiki" />
+    <Element
+        latin:elementName="alphabetShiftLocked"
+        latin:elementKeyboard="@xml/kbd_santali_ol_chiki" />
+    <Element
+        latin:elementName="alphabetShiftLockShifted"
+        latin:elementKeyboard="@xml/kbd_santali_ol_chiki" />
+    <Element
+        latin:elementName="symbols"
+        latin:elementKeyboard="@xml/kbd_symbols" />
+    <Element
+        latin:elementName="symbolsShifted"
+        latin:elementKeyboard="@xml/kbd_symbols_shift" />
     <Element
         latin:elementName="phone"
         latin:elementKeyboard="@xml/kbd_phone" />
