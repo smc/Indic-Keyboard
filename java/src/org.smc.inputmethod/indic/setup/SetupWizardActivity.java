@@ -33,6 +33,8 @@ import org.smc.inputmethod.compat.TextViewCompatUtils;
 import org.smc.inputmethod.compat.ViewCompatUtils;
 import org.smc.inputmethod.indic.R;
 import org.smc.inputmethod.indic.settings.SettingsActivity;
+import org.smc.inputmethod.indic.settings.ThemeSettingsFragment;
+
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 import com.android.inputmethod.latin.utils.UncachedInputMethodManagerUtils;
 
@@ -54,13 +56,15 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
     private int mStepNumber;
     private boolean mNeedsToAdjustStepNumberToSystemState;
     private boolean finishState;
+    private boolean finishStep3;
     private static final int STEP_WELCOME = 0;
     private static final int STEP_1 = 1;
     private static final int STEP_2 = 2;
-    private static final int STEP_3 = 3;
+    private static final int STEP_3 = 3;//theme
     private static final int STEP_4 = 4;
-    private static final int STEP_LAUNCHING_IME_SETTINGS = 5;
-    private static final int STEP_BACK_FROM_IME_SETTINGS = 6;
+    private static final int STEP_5 = 5;
+    private static final int STEP_LAUNCHING_IME_SETTINGS = 6;
+    private static final int STEP_BACK_FROM_IME_SETTINGS = 7;
 
     private SettingsPoolingHandler mHandler;
 
@@ -164,7 +168,6 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
             }
         });
         mSetupStepGroup.addStep(step2);
-
         final SetupStep step3 = new SetupStep(STEP_3, applicationName,
                 (TextView)findViewById(R.id.setup_step3_bullet), findViewById(R.id.setup_step3),
                 R.string.setup_step3_title, R.string.setup_step3_instruction,
@@ -173,23 +176,37 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         step3.setAction(new Runnable() {
             @Override
             public void run() {
-                invokeSubtypeEnablerOfThisIme();
+                invokechangetheme();
             }
         });
         mSetupStepGroup.addStep(step3);
-
+        
         final SetupStep step4 = new SetupStep(STEP_4, applicationName,
                 (TextView)findViewById(R.id.setup_step4_bullet), findViewById(R.id.setup_step4),
                 R.string.setup_step4_title, R.string.setup_step4_instruction,
-                0 /* finishedInstruction */, R.drawable.ic_setup_finish,
-                R.string.setup_finish_action);
+                0 /* finishedInstruction */, R.drawable.ic_setup_step4,
+                R.string.setup_step4_action);
         step4.setAction(new Runnable() {
+            @Override
+            public void run() {
+                invokeSubtypeEnablerOfThisIme();
+            }
+        });
+        mSetupStepGroup.addStep(step4);
+        
+        
+        final SetupStep step5 = new SetupStep(STEP_5, applicationName,
+                                              (TextView)findViewById(R.id.setup_step5_bullet), findViewById(R.id.setup_step5),
+                                              R.string.setup_step5_title, R.string.setup_step5_instruction,
+                                              0 /* finishedInstruction */, R.drawable.ic_setup_finish,
+                                              R.string.setup_finish_action);
+        step5.setAction(new Runnable() {
             @Override
             public void run() {
                 finish();
             }
         });
-        mSetupStepGroup.addStep(step4);
+        mSetupStepGroup.addStep(step5);
 
         mActionStart = findViewById(R.id.setup_start_label);
         mActionStart.setOnClickListener(this);
@@ -259,6 +276,14 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         mImm.showInputMethodPicker();
         mNeedsToAdjustStepNumberToSystemState = true;
     }
+    void invokechangetheme() {
+        // Invoke input method picker.
+        Intent intent = new Intent(this,SettingsActivity.class);
+        
+        startActivity(intent);
+        mNeedsToAdjustStepNumberToSystemState = true;
+        finishStep3=true;
+    }
 
     void invokeSubtypeEnablerOfThisIme() {
         final InputMethodInfo imi =
@@ -272,7 +297,7 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         intent.putExtra(Settings.EXTRA_INPUT_METHOD_ID, imi.getId());
         startActivity(intent);
         mNeedsToAdjustStepNumberToSystemState = true;
-        finishState = true;
+        finishState=true;
     }
 
     private int determineSetupStepNumberFromLauncher() {
@@ -280,7 +305,7 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         if (stepNumber == STEP_1) {
             return STEP_WELCOME;
         }
-        if (stepNumber == STEP_4) {
+        if (stepNumber == STEP_5) {
             return STEP_LAUNCHING_IME_SETTINGS;
         }
         return stepNumber;
@@ -288,6 +313,7 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
 
     private int determineSetupStepNumber() {
         mHandler.cancelPollingImeSettings();
+        System.out.println(mStepNumber);
         if (!UncachedInputMethodManagerUtils.isThisImeEnabled(this, mImm)) {
             return STEP_1;
         }
@@ -295,9 +321,13 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
             return STEP_2;
         }
         if (finishState) {
+            return STEP_5;
+        }
+        if(finishStep3){
             return STEP_4;
         }
         return STEP_3;
+        
     }
 
     @Override
@@ -313,7 +343,7 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
     }
 
     private static boolean isInSetupSteps(final int stepNumber) {
-        return stepNumber >= STEP_1 && stepNumber <= STEP_4;
+        return stepNumber >= STEP_1 && stepNumber <= STEP_5;
     }
 
     @Override
