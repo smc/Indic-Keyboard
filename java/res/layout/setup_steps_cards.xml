@@ -41,6 +41,11 @@
             android:id="@+id/setup_step4_bullet"
             style="@style/setupStepBulletStyle"
             android:text="@string/setup_step4_bullet" />
+        <TextView
+            android:id="@+id/setup_step5_bullet"
+            style="@style/setupStepBulletStyle"
+            android:text="@string/setup_step5_bullet" />
+
     </LinearLayout>
     <org.smc.inputmethod.indic.setup.SetupStepIndicatorView
         android:id="@+id/setup_step_indicator"
@@ -60,6 +65,9 @@
             layout="@layout/setup_step" />
         <include
             android:id="@+id/setup_step4"
+            layout="@layout/setup_step" />
+        <include
+            android:id="@+id/setup_step5"
             layout="@layout/setup_step" />
     </FrameLayout>
     <TextView
