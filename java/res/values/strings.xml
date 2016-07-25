@@ -358,17 +358,24 @@ mobile devices. [CHAR LIMIT=25] -->
     <string name="setup_step2_instruction">"Next, select \"<xliff:g id="APPLICATION_NAME" example="Android Keyboard">%s</xliff:g>\" as your active text-input method."</string>
     <!-- The label of the button that triggers the choose input method dialog in order to select the keyboard. [CHAR_LIMIT=64] -->
     <string name="setup_step2_action">Switch input methods</string>
+    
     <!-- Ordinal number of the 3rd step in the setup wizard. [CHAR LIMIT=5] -->
     <string name="setup_step3_bullet" translatable="false">3</string>
     <!-- Title of the 3rd step in the setup wizard. [CHAR LIMIT=64] -->
-    <string name="setup_step3_title">"Select languages"</string>
-    <string name="setup_step3_instruction">Select the languages and layouts you want to use.</string>
-    <string name="setup_step3_action">Configure languages</string>
-    <!-- The label of the button that triggers the screen for configuaring additional languages of the keyboard. [CHAR_LIMIT=64] -->
+    <string name="setup_step3_title">"Select Themes"</string>
+    <string name="setup_step3_instruction">Select the theme you want to use.</string>
+    <string name="setup_step3_action">Select Theme</string>
+    
     <string name="setup_step4_bullet" translatable="false">4</string>
-    <string name="setup_step4_title">"Congratulations, you're all set!"</string>
+    <string name="setup_step4_title">"Select languages"</string>
+    <string name="setup_step4_instruction">Select the languages and layouts you want to use.</string>
+    <string name="setup_step4_action">Configure languages</string>
+    <!-- The label of the button that triggers the screen for configuaring additional languages of the keyboard. [CHAR_LIMIT=64] -->
+
+    <string name="setup_step5_bullet" translatable="false">5</string>
+    <string name="setup_step5_title">"Congratulations, you're all set!"</string>
     <!-- Detailed instruction of the 3rd step in the setup wizard. [CHAR LIMIT=120] -->
-    <string name="setup_step4_instruction">Now you can type in all your favorite apps with <xliff:g id="APPLICATION_NAME" example="Android Keyboard">%s</xliff:g>.</string>
+    <string name="setup_step5_instruction">Now you can type in all your favorite apps with <xliff:g id="APPLICATION_NAME" example="Android Keyboard">%s</xliff:g>.</string>
     <!-- The label of the button that finishes the setup wizard. [CHAR_LIMIT=64] -->
     <string name="setup_finish_action">Finished</string>
     <!-- Option to show setup wizard icon. [CHAR LIMIT=30]-->
