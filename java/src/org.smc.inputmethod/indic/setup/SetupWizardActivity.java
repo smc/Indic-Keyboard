@@ -277,10 +277,9 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         mNeedsToAdjustStepNumberToSystemState = true;
     }
     void invokechangetheme() {
-        // Invoke input method picker.
         Intent intent = new Intent(this,SettingsActivity.class);
-        
         startActivity(intent);
+        //need to invoke a fragment of this activity 
         mNeedsToAdjustStepNumberToSystemState = true;
         finishStep3=true;
     }
