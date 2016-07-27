@@ -16,9 +16,11 @@
 
 package org.smc.inputmethod.indic.settings;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import org.smc.inputmethod.indic.R;
+import org.smc.inputmethod.indic.themes.ThemesActivity;
 
 
 /**
@@ -27,15 +29,12 @@ import org.smc.inputmethod.indic.R;
 public final class AppearanceSettingsFragment extends SubScreenFragment {
     @Override
     public void onCreate(final Bundle icicle) {
+        //super.onCreate(icicle);
+        //addPreferencesFromResource(R.xml.prefs_screen_appearance);
         super.onCreate(icicle);
-        addPreferencesFromResource(R.xml.prefs_screen_appearance);
-    }
+        final Intent intent = new Intent();
+        intent.setClass(getActivity(), ThemesActivity.class);
+        startActivity(intent);
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        CustomInputStyleSettingsFragment.updateCustomInputStylesSummary(
-                findPreference(Settings.PREF_CUSTOM_INPUT_STYLES));
-        ThemeSettingsFragment.updateKeyboardThemeSummary(findPreference(Settings.SCREEN_THEME));
     }
 }
