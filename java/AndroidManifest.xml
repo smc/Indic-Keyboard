@@ -85,7 +85,7 @@
             </intent-filter>
         </receiver>
         
-        <activity android:name=".themes.ThemesActivity"
+        <activity android:name=".settings.ThemesActivity"
             android:theme="@style/platformSettingsTheme"
             android:label="@string/english_ime_settings"
             android:uiOptions="splitActionBarWhenNarrow">
