@@ -626,10 +626,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         Mapchar.put("Punjabi","\\u0A67");
         //Tamil
         Mapchar.put("Tamil","\\u0BE7");
-        //telugu
-        //zz
+        //Telugu
         Mapchar.put("Telugu","\\u0C67");
-        Mapchar.put("zz","\\u00E0");
 	    String warn = "Languages might not be supported by phone:\n";
         for (Map.Entry<String, String> entry : Mapchar.entrySet()) {
             String text = entry.getValue();
