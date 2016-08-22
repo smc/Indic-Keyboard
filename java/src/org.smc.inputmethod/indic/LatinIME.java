@@ -603,34 +603,34 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         //Default
         Mapchar.put("DEFAULT","a");
         // Assamese
-        Mapchar.put("as_IN","\\u09E7");
+        Mapchar.put("Assamese","\\u09E7");
         //Bengali
-        Mapchar.put("bn_IN","\\u09E7");
+        Mapchar.put("Bengali","\\u09E7");
         //English
-        Mapchar.put("en","a");
+        Mapchar.put("English","a");
         //Hindi
-        Mapchar.put("hi_IN","\\u0967");
+        Mapchar.put("Hindi","\\u0967");
         //Kannada
-        Mapchar.put("kn_IN","\\u0CE7");
+        Mapchar.put("Kannada","\\u0CE7");
         //Malayalam
-        Mapchar.put("ml_IN","\\u0D67");
+        Mapchar.put("Malayalam","\\u0D67");
         //Burmese
-        Mapchar.put("my","\\u1042");
+        Mapchar.put("Burmese","\\u1042");
         //Nepali
-        Mapchar.put("ne_NP","\\u0967");
+        Mapchar.put("Nepali","\\u0967");
         //Marathi
-        Mapchar.put("mr_IN","\\u0967");
+        Mapchar.put("Marathi","\\u0967");
         //Oriya
-        Mapchar.put("or_IN","\\u0B67");
+        Mapchar.put("Oriya","\\u0B67");
         //Punjabi
-        Mapchar.put("pa_IN","\\u0A67");
+        Mapchar.put("Punjabi","\\u0A67");
         //Tamil
-        Mapchar.put("ta_IN","\\u0BE7");
+        Mapchar.put("Tamil","\\u0BE7");
         //telugu
         //zz
-        Mapchar.put("te_IN","\\u0C67");
+        Mapchar.put("Telugu","\\u0C67");
         Mapchar.put("zz","\\u00E0");
-	    String warn = "Locales might not be supported by phone:\n";
+	    String warn = "Languages might not be supported by phone:\n";
         for (Map.Entry<String, String> entry : Mapchar.entrySet()) {
             String text = entry.getValue();
             String str=entry.getValue();
