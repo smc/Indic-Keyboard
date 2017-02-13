@@ -27,8 +27,6 @@ build/
 gradle/
 .idea/
 .gradle/
-gradlew
-gradlew.bat
 *.swp
 java.iml
 *~
