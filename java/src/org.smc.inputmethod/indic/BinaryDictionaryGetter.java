@@ -292,7 +292,7 @@ final public class BinaryDictionaryGetter {
 
         if (!foundMainDict && dictPackSettings.isWordListActive(mainDictId)) {
             final int fallbackResId =
-                    DictionaryInfoUtils.getMainDictionaryResourceId(context.getResources(), locale);
+                    DictionaryInfoUtils.getMainDictionaryResourceId(context.getResources(), locale, context.getPackageName());
             final AssetFileAddress fallbackAsset = loadFallbackResource(context, fallbackResId);
             if (null != fallbackAsset) {
                 fileList.add(fallbackAsset);
