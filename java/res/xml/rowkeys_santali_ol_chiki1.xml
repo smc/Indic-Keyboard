@@ -59,7 +59,8 @@
             <Key
                 latin:keySpec="&#x1C56;"
                 latin:moreKeys="^,6"
-                latin:keyHintLabel="^"                latin:keyLabelFlags="fontNormal" />
+                latin:keyHintLabel="^"                
+                latin:keyLabelFlags="fontNormal" />
             <Key
                 latin:keySpec="&#x1C57;"
                 latin:moreKeys="&amp;,7"
