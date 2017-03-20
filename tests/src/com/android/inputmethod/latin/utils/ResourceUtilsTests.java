@@ -19,48 +19,15 @@ package com.android.inputmethod.latin.utils;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
-import com.android.inputmethod.latin.utils.ResourceUtils.DeviceOverridePatternSyntaxError;
-
 import java.util.HashMap;
 
 @SmallTest
 public class ResourceUtilsTests extends AndroidTestCase {
-    public void testFindDefaultConstant() {
-        final String[] nullArray = null;
-        final String[] emptyArray = {};
-        final String[] array = {
-                "HARDWARE=grouper,0.3",
-                "HARDWARE=mako,0.4",
-                ",defaultValue1",
-                "HARDWARE=manta,0.2",
-                ",defaultValue2",
-        };
-
-        try {
-            assertNull(ResourceUtils.findDefaultConstant(nullArray));
-            assertNull(ResourceUtils.findDefaultConstant(emptyArray));
-            assertEquals(ResourceUtils.findDefaultConstant(array), "defaultValue1");
-        } catch (final DeviceOverridePatternSyntaxError e) {
-            fail(e.getMessage());
-        }
-
-        final String[] errorArray = {
-            "HARDWARE=grouper,0.3",
-            "no_comma"
-        };
-        try {
-            final String defaultValue = ResourceUtils.findDefaultConstant(errorArray);
-            fail("exception should be thrown: defaultValue=" + defaultValue);
-        } catch (final DeviceOverridePatternSyntaxError e) {
-            assertEquals("Array element has no comma: no_comma", e.getMessage());
-        }
-    }
-
     public void testFindConstantForKeyValuePairsSimple() {
-        final HashMap<String,String> anyKeyValue = CollectionUtils.newHashMap();
+        final HashMap<String,String> anyKeyValue = new HashMap<>();
         anyKeyValue.put("anyKey", "anyValue");
         final HashMap<String,String> nullKeyValue = null;
-        final HashMap<String,String> emptyKeyValue = CollectionUtils.newHashMap();
+        final HashMap<String,String> emptyKeyValue = new HashMap<>();
 
         final String[] nullArray = null;
         assertNull(ResourceUtils.findConstantForKeyValuePairs(anyKeyValue, nullArray));
@@ -81,7 +48,7 @@ public class ResourceUtilsTests extends AndroidTestCase {
             "HARDWARE=mako,0.5",
         };
 
-        final HashMap<String,String> keyValues = CollectionUtils.newHashMap();
+        final HashMap<String,String> keyValues = new HashMap<>();
         keyValues.put(HARDWARE_KEY, "grouper");
         assertEquals("0.3", ResourceUtils.findConstantForKeyValuePairs(keyValues, array));
         keyValues.put(HARDWARE_KEY, "mako");
@@ -121,7 +88,7 @@ public class ResourceUtilsTests extends AndroidTestCase {
             "HARDWARE=mantaray:MODEL=Nexus 10:MANUFACTURER=samsung,0.2"
         };
 
-        final HashMap<String,String> keyValues = CollectionUtils.newHashMap();
+        final HashMap<String,String> keyValues = new HashMap<>();
         keyValues.put(HARDWARE_KEY, "grouper");
         keyValues.put(MODEL_KEY, "Nexus 7");
         keyValues.put(MANUFACTURER_KEY, "asus");
@@ -159,7 +126,7 @@ public class ResourceUtilsTests extends AndroidTestCase {
             "HARDWARE=manta.*:MODEL=Nexus 10:MANUFACTURER=samsung,0.2"
         };
 
-        final HashMap<String,String> keyValues = CollectionUtils.newHashMap();
+        final HashMap<String,String> keyValues = new HashMap<>();
         keyValues.put(HARDWARE_KEY, "grouper");
         keyValues.put(MODEL_KEY, "Nexus 7");
         keyValues.put(MANUFACTURER_KEY, "asus");

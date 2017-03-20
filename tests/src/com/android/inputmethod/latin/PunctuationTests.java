@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import android.provider.Settings.Secure;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.android.inputmethod.latin.R;
@@ -37,12 +38,12 @@ public class PunctuationTests extends InputTestsBase {
         try {
             mLatinIME.loadSettings();
             type(WORD_TO_TYPE);
-            sleep(DELAY_TO_WAIT_FOR_UNDERLINE);
+            sleep(DELAY_TO_WAIT_FOR_UNDERLINE_MILLIS);
             runMessages();
             assertTrue("type word then type space should display punctuation strip",
-                    mLatinIME.isShowingPunctuationList());
-            pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
-            pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
+                    mLatinIME.getSuggestedWordsForTest().isPunctuationSuggestions());
+            pickSuggestionManually(PUNCTUATION_FROM_STRIP);
+            pickSuggestionManually(PUNCTUATION_FROM_STRIP);
             assertEquals("type word then type space then punctuation from strip twice",
                     EXPECTED_RESULT, mEditText.getText().toString());
         } finally {
@@ -65,9 +66,9 @@ public class PunctuationTests extends InputTestsBase {
         final String PUNCTUATION_FROM_STRIP = "!";
         final String EXPECTED_RESULT = "this!! is";
         type(WORD1_TO_TYPE);
-        pickSuggestionManually(0, WORD1_TO_TYPE);
-        pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
-        pickSuggestionManually(0, PUNCTUATION_FROM_STRIP);
+        pickSuggestionManually(WORD1_TO_TYPE);
+        pickSuggestionManually(PUNCTUATION_FROM_STRIP);
+        pickSuggestionManually(PUNCTUATION_FROM_STRIP);
         type(WORD2_TO_TYPE);
         assertEquals("pick word then pick punctuation twice then type", EXPECTED_RESULT,
                 mEditText.getText().toString());
@@ -78,8 +79,8 @@ public class PunctuationTests extends InputTestsBase {
         final String WORD2_TO_PICK = "!is";
         final String EXPECTED_RESULT = "this!is";
         type(WORD1_TO_TYPE);
-        pickSuggestionManually(0, WORD1_TO_TYPE);
-        pickSuggestionManually(1, WORD2_TO_PICK);
+        pickSuggestionManually(WORD1_TO_TYPE);
+        pickSuggestionManually(WORD2_TO_PICK);
         assertEquals("manual pick then manual pick a word with punct at start", EXPECTED_RESULT,
                 mEditText.getText().toString());
     }
@@ -89,7 +90,7 @@ public class PunctuationTests extends InputTestsBase {
         final String PUNCTUATION = ":";
         final String EXPECTED_RESULT = "this:";
         type(WORD_TO_TYPE);
-        pickSuggestionManually(0, WORD_TO_TYPE);
+        pickSuggestionManually(WORD_TO_TYPE);
         type(PUNCTUATION);
         assertEquals("manually pick word then colon",
                 EXPECTED_RESULT, mEditText.getText().toString());
@@ -100,7 +101,7 @@ public class PunctuationTests extends InputTestsBase {
         final String PUNCTUATION = "(";
         final String EXPECTED_RESULT = "this (";
         type(WORD_TO_TYPE);
-        pickSuggestionManually(0, WORD_TO_TYPE);
+        pickSuggestionManually(WORD_TO_TYPE);
         type(PUNCTUATION);
         assertEquals("manually pick word then open paren",
                 EXPECTED_RESULT, mEditText.getText().toString());
@@ -111,7 +112,7 @@ public class PunctuationTests extends InputTestsBase {
         final String PUNCTUATION = ")";
         final String EXPECTED_RESULT = "this)";
         type(WORD_TO_TYPE);
-        pickSuggestionManually(0, WORD_TO_TYPE);
+        pickSuggestionManually(WORD_TO_TYPE);
         type(PUNCTUATION);
         assertEquals("manually pick word then close paren",
                 EXPECTED_RESULT, mEditText.getText().toString());
@@ -122,7 +123,7 @@ public class PunctuationTests extends InputTestsBase {
         final String SPECIAL_KEY = ":-)";
         final String EXPECTED_RESULT = "this :-)";
         type(WORD_TO_TYPE);
-        pickSuggestionManually(0, WORD_TO_TYPE);
+        pickSuggestionManually(WORD_TO_TYPE);
         mLatinIME.onTextInput(SPECIAL_KEY);
         assertEquals("manually pick word then press the smiley key",
                 EXPECTED_RESULT, mEditText.getText().toString());
@@ -133,7 +134,7 @@ public class PunctuationTests extends InputTestsBase {
         final String SPECIAL_KEY = ".com";
         final String EXPECTED_RESULT = "this.com";
         type(WORD_TO_TYPE);
-        pickSuggestionManually(0, WORD_TO_TYPE);
+        pickSuggestionManually(WORD_TO_TYPE);
         mLatinIME.onTextInput(SPECIAL_KEY);
         assertEquals("manually pick word then press the .com key",
                 EXPECTED_RESULT, mEditText.getText().toString());
@@ -153,7 +154,9 @@ public class PunctuationTests extends InputTestsBase {
         final String WORD_TO_TYPE = "you'f ";
         final String EXPECTED_RESULT = "you'd ";
         type(WORD_TO_TYPE);
-        assertEquals("auto-correction with single quote inside",
+        assertEquals("auto-correction with single quote inside. ID = "
+                + Secure.getString(getContext().getContentResolver(), Secure.ANDROID_ID)
+                + " ; Suggestions = " + mLatinIME.getSuggestedWordsForTest(),
                 EXPECTED_RESULT, mEditText.getText().toString());
     }
 
@@ -161,7 +164,37 @@ public class PunctuationTests extends InputTestsBase {
         final String WORD_TO_TYPE = "'tgis' ";
         final String EXPECTED_RESULT = "'this' ";
         type(WORD_TO_TYPE);
-        assertEquals("auto-correction with single quotes around",
+        assertEquals("auto-correction with single quotes around. ID = "
+                + Secure.getString(getContext().getContentResolver(), Secure.ANDROID_ID)
+                + " ; Suggestions = " + mLatinIME.getSuggestedWordsForTest(),
+                EXPECTED_RESULT, mEditText.getText().toString());
+    }
+
+    public void testAutoSpaceWithDoubleQuotes() {
+        final String STRING_TO_TYPE = "He said\"hello\"to me. I replied,\"hi\"."
+                + "Then, 5\"passed. He said\"bye\"and left.";
+        final String EXPECTED_RESULT = "He said \"hello\" to me. I replied, \"hi\". "
+                + "Then, 5\" passed. He said \"bye\" and left. \"";
+        // Split by double quote, so that we can type the double quotes individually.
+        for (final String partToType : STRING_TO_TYPE.split("\"")) {
+            // Split at word boundaries. This regexp means "anywhere that is preceded
+            // by a word character but not followed by a word character, OR that is not
+            // preceded by a word character but followed by a word character".
+            // We need to input word by word because auto-spaces are only active when
+            // manually picking or gesturing (which we can't simulate yet), but only words
+            // can be picked.
+            final String[] wordsToType = partToType.split("(?<=\\w)(?!\\w)|(?<!\\w)(?=\\w)");
+            for (final String wordToType : wordsToType) {
+                type(wordToType);
+                if (wordToType.matches("^\\w+$")) {
+                    // Only pick selection if that was a word, because if that was not a word,
+                    // then we don't have a composition.
+                    pickSuggestionManually(wordToType);
+                }
+            }
+            type("\"");
+        }
+        assertEquals("auto-space with double quotes",
                 EXPECTED_RESULT, mEditText.getText().toString());
     }
 }

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-LOCAL_PATH:= $(call my-dir)
+LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 # We only want this apk build for tests.
@@ -23,6 +23,8 @@ LOCAL_CERTIFICATE := shared
 LOCAL_AAPT_FLAGS += -0 .dict
 # Do not compress test data file
 LOCAL_AAPT_FLAGS += -0 .txt
+
+LOCAL_STATIC_JAVA_LIBRARIES := android-support-test mockito-target
 
 # Include all test java files.
 LOCAL_SRC_FILES := $(call all-java-files-under, src)

@@ -16,21 +16,16 @@
 
 package com.android.inputmethod.latin.personalization;
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
 import com.android.inputmethod.latin.ExpandableBinaryDictionary;
-import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Locale;
 import java.util.Random;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Unit tests for UserHistoryDictionary
@@ -38,202 +33,181 @@ import java.util.concurrent.TimeUnit;
 @LargeTest
 public class UserHistoryDictionaryTests extends AndroidTestCase {
     private static final String TAG = UserHistoryDictionaryTests.class.getSimpleName();
-    private SharedPreferences mPrefs;
+    private static final int WAIT_FOR_WRITING_FILE_IN_MILLISECONDS = 3000;
+    private static final String TEST_ACCOUNT = "account@example.com";
 
-    private static final String[] CHARACTERS = {
-        "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m",
-        "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"
-    };
+    private int mCurrentTime = 0;
 
-    private static final int MIN_USER_HISTORY_DICTIONARY_FILE_SIZE = 1000;
-    private static final int WAIT_TERMINATING_IN_MILLISECONDS = 100;
+    private static void printAllFiles(final File dir) {
+        Log.d(TAG, dir.getAbsolutePath());
+        for (final File file : dir.listFiles()) {
+            Log.d(TAG, "  " + file.getName());
+        }
+    }
+
+    private static void assertDictionaryExists(final UserHistoryDictionary dict,
+            final File dictFile) {
+        Log.d(TAG, "waiting for writing ...");
+        dict.waitAllTasksForTests();
+        if (!dictFile.exists()) {
+            try {
+                Log.d(TAG, dictFile + " is not existing. Wait "
+                        + WAIT_FOR_WRITING_FILE_IN_MILLISECONDS + " ms for writing.");
+                printAllFiles(dictFile.getParentFile());
+                Thread.sleep(WAIT_FOR_WRITING_FILE_IN_MILLISECONDS);
+            } catch (final InterruptedException e) {
+                Log.e(TAG, "Interrupted during waiting for writing the dict file.");
+            }
+        }
+        assertTrue("Following dictionary file doesn't exist: " + dictFile, dictFile.exists());
+    }
 
     @Override
-    public void setUp() {
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+    protected void setUp() throws Exception {
+        super.setUp();
+        resetCurrentTimeForTestMode();
+        UserHistoryDictionaryTestsHelper.removeAllTestDictFiles(
+                UserHistoryDictionaryTestsHelper.TEST_LOCALE_PREFIX, mContext);
     }
 
-    /**
-     * Generates a random word.
-     */
-    private String generateWord(final int value) {
-        final int lengthOfChars = CHARACTERS.length;
-        StringBuilder builder = new StringBuilder();
-        long lvalue = Math.abs((long)value);
-        while (lvalue > 0) {
-            builder.append(CHARACTERS[(int)(lvalue % lengthOfChars)]);
-            lvalue /= lengthOfChars;
-        }
-        return builder.toString();
+    @Override
+    protected void tearDown() throws Exception {
+        UserHistoryDictionaryTestsHelper.removeAllTestDictFiles(
+                UserHistoryDictionaryTestsHelper.TEST_LOCALE_PREFIX, mContext);
+        stopTestModeInNativeCode();
+        super.tearDown();
     }
 
-    private List<String> generateWords(final int number, final Random random) {
-        final Set<String> wordSet = CollectionUtils.newHashSet();
-        while (wordSet.size() < number) {
-            wordSet.add(generateWord(random.nextInt()));
-        }
-        return new ArrayList<String>(wordSet);
+    private void resetCurrentTimeForTestMode() {
+        mCurrentTime = 0;
+        setCurrentTimeForTestMode(mCurrentTime);
     }
 
-    private void addToDict(final UserHistoryDictionary dict, final List<String> words) {
-        String prevWord = null;
-        for (String word : words) {
-            dict.addToDictionary(prevWord, word, true);
-            prevWord = word;
-        }
+    private static int setCurrentTimeForTestMode(final int currentTime) {
+        return BinaryDictionaryUtils.setCurrentTimeForTest(currentTime);
     }
 
-    /**
-     * @param checkContents if true, checks whether written words are actually in the dictionary
-     * or not.
-     */
-    private void addAndWriteRandomWords(final String testFilenameSuffix, final int numberOfWords,
-            final Random random, final boolean checkContents) {
-        final List<String> words = generateWords(numberOfWords, random);
-        final UserHistoryDictionary dict =
-                PersonalizationHelper.getUserHistoryDictionary(getContext(),
-                        testFilenameSuffix /* locale */, mPrefs);
-        // Add random words to the user history dictionary.
-        addToDict(dict, words);
-        if (checkContents) {
-            try {
-                Thread.sleep(TimeUnit.MILLISECONDS.convert(5L, TimeUnit.SECONDS));
-            } catch (InterruptedException e) {
-            }
-            for (int i = 0; i < numberOfWords; ++i) {
-                final String word = words.get(i);
-                assertTrue(dict.isInDictionaryForTests(word));
-            }
-        }
-        // write to file.
-        dict.close();
+    private static int stopTestModeInNativeCode() {
+        return BinaryDictionaryUtils.setCurrentTimeForTest(-1);
     }
 
     /**
      * Clear all entries in the user history dictionary.
-     * @param testFilenameSuffix file name suffix used for testing.
+     * @param dict the user history dictionary.
      */
-    private void clearHistory(final String testFilenameSuffix) {
-        final UserHistoryDictionary dict =
-                PersonalizationHelper.getUserHistoryDictionary(getContext(),
-                        testFilenameSuffix /* locale */, mPrefs);
-        dict.clearAndFlushDictionary();
+    private static void clearHistory(final UserHistoryDictionary dict) {
+        dict.waitAllTasksForTests();
+        dict.clear();
         dict.close();
+        dict.waitAllTasksForTests();
     }
 
-    /**
-     * Shut down executer and wait until all operations of user history are done.
-     * @param testFilenameSuffix file name suffix used for testing.
-     */
-    private void waitForWriting(final String testFilenameSuffix) {
-        try {
-            final UserHistoryDictionary dict =
-                    PersonalizationHelper.getUserHistoryDictionary(getContext(),
-                            testFilenameSuffix, mPrefs);
-            dict.shutdownExecutorForTests();
-            while (!dict.isTerminatedForTests()) {
-                Thread.sleep(WAIT_TERMINATING_IN_MILLISECONDS);
-            }
-        } catch (InterruptedException e) {
-            Log.d(TAG, "InterruptedException: ", e);
-        }
-    }
-
-    public void testRandomWords() {
+    private void doTestRandomWords(final String testAccount) {
         Log.d(TAG, "This test can be used for profiling.");
         Log.d(TAG, "Usage: please set UserHistoryDictionary.PROFILE_SAVE_RESTORE to true.");
-        final String testFilenameSuffix = "testRandomWords" + System.currentTimeMillis();
-        final String fileName = UserHistoryDictionary.NAME + "." + testFilenameSuffix
-                + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
+        final Locale dummyLocale = UserHistoryDictionaryTestsHelper.getDummyLocale("random_words");
+        final String dictName = UserHistoryDictionary.getUserHistoryDictName(
+                UserHistoryDictionary.NAME, dummyLocale,
+                null /* dictFile */,
+                testAccount /* account */);
+        final File dictFile = ExpandableBinaryDictionary.getDictFile(
+                mContext, dictName, null /* dictFile */);
+        final UserHistoryDictionary dict = PersonalizationHelper.getUserHistoryDictionary(
+                getContext(), dummyLocale, testAccount);
+        clearHistory(dict);
 
         final int numberOfWords = 1000;
         final Random random = new Random(123456);
+        assertTrue(UserHistoryDictionaryTestsHelper.addAndWriteRandomWords(
+                dict, numberOfWords, random, true /* checksContents */, mCurrentTime));
+        assertDictionaryExists(dict, dictFile);
+    }
 
-        try {
-            clearHistory(testFilenameSuffix);
-            addAndWriteRandomWords(testFilenameSuffix, numberOfWords, random,
-                    true /* checksContents */);
-        } finally {
-            Log.d(TAG, "waiting for writing ...");
-            waitForWriting(testFilenameSuffix);
-            final File dictFile = new File(getContext().getFilesDir(), fileName);
-            if (dictFile != null) {
-                assertTrue(dictFile.exists());
-                assertTrue(dictFile.length() >= MIN_USER_HISTORY_DICTIONARY_FILE_SIZE);
-                dictFile.delete();
-            }
-        }
+    public void testRandomWords_NullAccount() {
+        doTestRandomWords(null /* testAccount */);
+    }
+
+    public void testRandomWords() {
+        doTestRandomWords(TEST_ACCOUNT);
     }
 
     public void testStressTestForSwitchingLanguagesAndAddingWords() {
+        doTestStressTestForSwitchingLanguagesAndAddingWords(TEST_ACCOUNT);
+    }
+
+    public void testStressTestForSwitchingLanguagesAndAddingWords_NullAccount() {
+        doTestStressTestForSwitchingLanguagesAndAddingWords(null /* testAccount */);
+    }
+
+    private void doTestStressTestForSwitchingLanguagesAndAddingWords(final String testAccount) {
         final int numberOfLanguages = 2;
         final int numberOfLanguageSwitching = 80;
         final int numberOfWordsInsertedForEachLanguageSwitch = 100;
 
         final File dictFiles[] = new File[numberOfLanguages];
-        final String testFilenameSuffixes[] = new String[numberOfLanguages];
+        final UserHistoryDictionary dicts[] = new UserHistoryDictionary[numberOfLanguages];
+
         try {
             final Random random = new Random(123456);
 
             // Create filename suffixes for this test.
             for (int i = 0; i < numberOfLanguages; i++) {
-                testFilenameSuffixes[i] = "testSwitchingLanguages" + i;
-                final String fileName = UserHistoryDictionary.NAME + "." +
-                        testFilenameSuffixes[i] + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
-                dictFiles[i] = new File(getContext().getFilesDir(), fileName);
-                clearHistory(testFilenameSuffixes[i]);
+                final Locale dummyLocale =
+                        UserHistoryDictionaryTestsHelper.getDummyLocale("switching_languages" + i);
+                final String dictName = UserHistoryDictionary.getUserHistoryDictName(
+                        UserHistoryDictionary.NAME, dummyLocale, null /* dictFile */,
+                        testAccount /* account */);
+                dictFiles[i] = ExpandableBinaryDictionary.getDictFile(
+                        mContext, dictName, null /* dictFile */);
+                dicts[i] = PersonalizationHelper.getUserHistoryDictionary(getContext(),
+                        dummyLocale, testAccount);
+                clearHistory(dicts[i]);
             }
 
             final long start = System.currentTimeMillis();
 
             for (int i = 0; i < numberOfLanguageSwitching; i++) {
                 final int index = i % numberOfLanguages;
-                // Switch languages to testFilenameSuffixes[index].
-                addAndWriteRandomWords(testFilenameSuffixes[index],
-                        numberOfWordsInsertedForEachLanguageSwitch, random,
-                        false /* checksContents */);
+                // Switch to dicts[index].
+                assertTrue(UserHistoryDictionaryTestsHelper.addAndWriteRandomWords(dicts[index],
+                        numberOfWordsInsertedForEachLanguageSwitch,
+                        random,
+                        false /* checksContents */,
+                        mCurrentTime));
             }
 
             final long end = System.currentTimeMillis();
             Log.d(TAG, "testStressTestForSwitchingLanguageAndAddingWords took "
                     + (end - start) + " ms");
         } finally {
-            Log.d(TAG, "waiting for writing ...");
             for (int i = 0; i < numberOfLanguages; i++) {
-                waitForWriting(testFilenameSuffixes[i]);
-            }
-            for (final File file : dictFiles) {
-                if (file != null) {
-                    assertTrue(file.exists());
-                    assertTrue(file.length() >= MIN_USER_HISTORY_DICTIONARY_FILE_SIZE);
-                    file.delete();
-                }
+                assertDictionaryExists(dicts[i], dictFiles[i]);
             }
         }
     }
 
     public void testAddManyWords() {
-        final String testFilenameSuffix = "testRandomWords" + System.currentTimeMillis();
-        final int numberOfWords =
-                ExpandableBinaryDictionary.ENABLE_BINARY_DICTIONARY_DYNAMIC_UPDATE ?
-                        10000 : 1000;
-        final Random random = new Random(123456);
-        clearHistory(testFilenameSuffix);
-        try {
-            addAndWriteRandomWords(testFilenameSuffix, numberOfWords, random,
-                    true /* checksContents */);
-        } finally {
-            Log.d(TAG, "waiting for writing ...");
-            waitForWriting(testFilenameSuffix);
-            final String fileName = UserHistoryDictionary.NAME + "." + testFilenameSuffix
-                    + ExpandableBinaryDictionary.DICT_FILE_EXTENSION;
-            final File dictFile = new File(getContext().getFilesDir(), fileName);
-            if (dictFile != null) {
-                assertTrue(dictFile.exists());
-                assertTrue(dictFile.length() >= MIN_USER_HISTORY_DICTIONARY_FILE_SIZE);
-                dictFile.delete();
-            }
-        }
+        doTestAddManyWords(TEST_ACCOUNT);
     }
 
+    public void testAddManyWords_NullAccount() {
+        doTestAddManyWords(null /* testAccount */);
+    }
+
+    private void doTestAddManyWords(final String testAccount) {
+        final Locale dummyLocale =
+                UserHistoryDictionaryTestsHelper.getDummyLocale("many_random_words");
+        final String dictName = UserHistoryDictionary.getUserHistoryDictName(
+                UserHistoryDictionary.NAME, dummyLocale, null /* dictFile */, testAccount);
+        final File dictFile = ExpandableBinaryDictionary.getDictFile(
+                mContext, dictName, null /* dictFile */);
+        final int numberOfWords = 10000;
+        final Random random = new Random(123456);
+        final UserHistoryDictionary dict = PersonalizationHelper.getUserHistoryDictionary(
+                getContext(), dummyLocale, testAccount);
+        clearHistory(dict);
+        assertTrue(UserHistoryDictionaryTestsHelper.addAndWriteRandomWords(dict,
+                numberOfWords, random, true /* checksContents */, mCurrentTime));
+        assertDictionaryExists(dict, dictFile);
+    }
 }

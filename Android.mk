@@ -12,5 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-subdirs := native java
+subdirs := common native java tests tools
 include $(call all-named-subdir-makefiles, $(subdirs))

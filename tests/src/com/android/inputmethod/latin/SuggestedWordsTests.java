@@ -16,70 +16,61 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-
 import android.test.AndroidTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
-import com.android.inputmethod.latin.utils.CollectionUtils;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Random;
 
 @SmallTest
 public class SuggestedWordsTests extends AndroidTestCase {
-    public void testGetSuggestedWordsExcludingTypedWord() {
-        final String TYPED_WORD = "typed";
-        final int TYPED_WORD_FREQ = 5;
-        final int NUMBER_OF_ADDED_SUGGESTIONS = 5;
-        final ArrayList<SuggestedWordInfo> list = CollectionUtils.newArrayList();
-        list.add(new SuggestedWordInfo(TYPED_WORD, TYPED_WORD_FREQ,
-                SuggestedWordInfo.KIND_TYPED, null /* sourceDict */,
-                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */));
-        for (int i = 0; i < NUMBER_OF_ADDED_SUGGESTIONS; ++i) {
-            list.add(new SuggestedWordInfo("" + i, 1, SuggestedWordInfo.KIND_CORRECTION,
-                    null /* sourceDict */,
-                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                    SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */));
-        }
 
-        final SuggestedWords words = new SuggestedWords(
-                list,
-                false /* typedWordValid */,
-                false /* willAutoCorrect */,
-                false /* isPunctuationSuggestions */,
-                false /* isObsoleteSuggestions */,
-                false /* isPrediction*/);
-        assertEquals(NUMBER_OF_ADDED_SUGGESTIONS + 1, words.size());
-        assertEquals("typed", words.getWord(0));
-        assertEquals(SuggestedWordInfo.KIND_TYPED, words.getInfo(0).mKind);
-        assertEquals("0", words.getWord(1));
-        assertEquals(SuggestedWordInfo.KIND_CORRECTION, words.getInfo(1).mKind);
-        assertEquals("4", words.getWord(5));
-        assertEquals(SuggestedWordInfo.KIND_CORRECTION, words.getInfo(5).mKind);
-
-        final SuggestedWords wordsWithoutTyped = words.getSuggestedWordsExcludingTypedWord();
-        assertEquals(words.size() - 1, wordsWithoutTyped.size());
-        assertEquals("0", wordsWithoutTyped.getWord(0));
-        assertEquals(SuggestedWordInfo.KIND_CORRECTION, wordsWithoutTyped.getInfo(0).mKind);
-    }
-
-    // Helper for testGetTransformedWordInfo
-    private SuggestedWordInfo createWordInfo(final String s) {
+    /**
+     * Helper method to create a dummy {@link SuggestedWordInfo} with specifying
+     * {@link SuggestedWordInfo#KIND_TYPED}.
+     *
+     * @param word the word to be used to create {@link SuggestedWordInfo}.
+     * @return a new instance of {@link SuggestedWordInfo}.
+     */
+    private static SuggestedWordInfo createTypedWordInfo(final String word) {
         // Use 100 as the frequency because the numerical value does not matter as
         // long as it's > 1 and < INT_MAX.
-        return new SuggestedWordInfo(s, 100,
-                SuggestedWordInfo.KIND_TYPED, null /* sourceDict */,
+        return new SuggestedWordInfo(word, "" /* prevWordsContext */, 100 /* score */,
+                SuggestedWordInfo.KIND_TYPED,
+                null /* sourceDict */,
                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                new Random().nextInt(1000000) /* autoCommitFirstWordConfidence */);
+                1 /* autoCommitFirstWordConfidence */);
+    }
+
+    /**
+     * Helper method to create a dummy {@link SuggestedWordInfo} with specifying
+     * {@link SuggestedWordInfo#KIND_CORRECTION}.
+     *
+     * @param word the word to be used to create {@link SuggestedWordInfo}.
+     * @return a new instance of {@link SuggestedWordInfo}.
+     */
+    private static SuggestedWordInfo createCorrectionWordInfo(final String word) {
+        return new SuggestedWordInfo(word, "" /* prevWordsContext */, 1 /* score */,
+                SuggestedWordInfo.KIND_CORRECTION,
+                null /* sourceDict */,
+                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
+    }
+
+    private static ArrayList<SuggestedWordInfo> createCorrectionWordInfos(final String... words) {
+        final ArrayList<SuggestedWordInfo> infos = new ArrayList<>();
+        for (final String word : words) {
+            infos.add(createCorrectionWordInfo(word));
+        }
+        return infos;
     }
 
     // Helper for testGetTransformedWordInfo
-    private SuggestedWordInfo transformWordInfo(final String info,
+    private static SuggestedWordInfo transformWordInfo(final String info,
             final int trailingSingleQuotesCount) {
-        final SuggestedWordInfo suggestedWordInfo = createWordInfo(info);
+        final SuggestedWordInfo suggestedWordInfo = createTypedWordInfo(info);
         final SuggestedWordInfo returnedWordInfo =
                 Suggest.getTransformedSuggestedWordInfo(suggestedWordInfo,
                 Locale.ENGLISH, false /* isAllUpperCase */, false /* isFirstCharCapitalized */,
@@ -87,6 +78,30 @@ public class SuggestedWordsTests extends AndroidTestCase {
         assertEquals(suggestedWordInfo.mAutoCommitFirstWordConfidence,
                 returnedWordInfo.mAutoCommitFirstWordConfidence);
         return returnedWordInfo;
+    }
+
+    public void testRemoveDupesNoDupes() {
+        final ArrayList<SuggestedWordInfo> infos = createCorrectionWordInfos("a", "c");
+        assertEquals(-1, SuggestedWordInfo.removeDups("b", infos));
+        assertEquals(2, infos.size());
+    }
+
+    public void testRemoveDupesTypedWordNotDupe() {
+        final ArrayList<SuggestedWordInfo> infos = createCorrectionWordInfos("a", "a", "c");
+        assertEquals(-1, SuggestedWordInfo.removeDups("b", infos));
+        assertEquals(2, infos.size());
+    }
+
+    public void testRemoveDupesTypedWordOnlyDupe() {
+        final ArrayList<SuggestedWordInfo> infos = createCorrectionWordInfos("a", "b", "c");
+        assertEquals(1, SuggestedWordInfo.removeDups("b", infos));
+        assertEquals(2, infos.size());
+    }
+
+    public void testRemoveDupesTypedWordNotOnlyDupe() {
+        final ArrayList<SuggestedWordInfo> infos = createCorrectionWordInfos("a", "b", "b", "c");
+        assertEquals(1, SuggestedWordInfo.removeDups("b", infos));
+        assertEquals(2, infos.size());
     }
 
     public void testGetTransformedSuggestedWordInfo() {
@@ -102,5 +117,56 @@ public class SuggestedWordsTests extends AndroidTestCase {
         assertEquals(result.mWord, "didn't");
         result = transformWordInfo("didn't", 3);
         assertEquals(result.mWord, "didn't''");
+    }
+
+    public void testGetTypedWordInfoOrNull() {
+        final String TYPED_WORD = "typed";
+        final SuggestedWordInfo TYPED_WORD_INFO = createTypedWordInfo(TYPED_WORD);
+        final int NUMBER_OF_ADDED_SUGGESTIONS = 5;
+        final ArrayList<SuggestedWordInfo> list = new ArrayList<>();
+        list.add(TYPED_WORD_INFO);
+        for (int i = 0; i < NUMBER_OF_ADDED_SUGGESTIONS; ++i) {
+            list.add(createCorrectionWordInfo(Integer.toString(i)));
+        }
+
+        // Make sure getTypedWordInfoOrNull() returns non-null object.
+        final SuggestedWords wordsWithTypedWord = new SuggestedWords(
+                list, null /* rawSuggestions */,
+                TYPED_WORD_INFO,
+                false /* typedWordValid */,
+                false /* willAutoCorrect */,
+                false /* isObsoleteSuggestions */,
+                SuggestedWords.INPUT_STYLE_NONE,
+                SuggestedWords.NOT_A_SEQUENCE_NUMBER);
+        final SuggestedWordInfo typedWord = wordsWithTypedWord.getTypedWordInfoOrNull();
+        assertNotNull(typedWord);
+        assertEquals(TYPED_WORD, typedWord.mWord);
+
+        // Make sure getTypedWordInfoOrNull() returns null when no typed word.
+        list.remove(0);
+        final SuggestedWords wordsWithoutTypedWord = new SuggestedWords(
+                list, null /* rawSuggestions */,
+                null /* typedWord */,
+                false /* typedWordValid */,
+                false /* willAutoCorrect */,
+                false /* isObsoleteSuggestions */,
+                SuggestedWords.INPUT_STYLE_NONE,
+                SuggestedWords.NOT_A_SEQUENCE_NUMBER);
+        assertNull(wordsWithoutTypedWord.getTypedWordInfoOrNull());
+
+        // Make sure getTypedWordInfoOrNull() returns null.
+        assertNull(SuggestedWords.getEmptyInstance().getTypedWordInfoOrNull());
+
+        final SuggestedWords emptySuggestedWords = new SuggestedWords(
+                new ArrayList<SuggestedWordInfo>(), null /* rawSuggestions */,
+                null /* typedWord */,
+                false /* typedWordValid */,
+                false /* willAutoCorrect */,
+                false /* isObsoleteSuggestions */,
+                SuggestedWords.INPUT_STYLE_NONE,
+                SuggestedWords.NOT_A_SEQUENCE_NUMBER);
+        assertNull(emptySuggestedWords.getTypedWordInfoOrNull());
+
+        assertNull(SuggestedWords.getEmptyInstance().getTypedWordInfoOrNull());
     }
 }
