@@ -7,3 +7,6 @@
 [submodule "ime"]
 	path = ime
 	url = https://gitlab.com/smc/android-ime.git
+[submodule "inputmethodcommon"]
+	path = inputmethodcommon
+	url = https://android.googlesource.com/platform/frameworks/opt/inputmethodcommon
