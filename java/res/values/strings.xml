@@ -38,10 +38,10 @@
 
     <!-- Settings screen title for preferences [CHAR LIMIT=33]-->
     <string name="settings_screen_preferences">Preferences</string>
+    <!-- Settings screen title for accounts and privacy preferences [CHAR LIMIT=33]-->
+    <string name="settings_screen_accounts">Accounts &amp; Privacy</string>
     <!-- Settings screen title for appearance & layouts preferences [CHAR LIMIT=33] -->
-    <string name="settings_screen_appearance">Appearance &amp; layouts</string>
-    <!-- Settings screen title for multilingual options [CHAR_LIMIT=33] -->
-    <string name="settings_screen_multilingual">Multilingual options</string>
+    <string name="settings_screen_appearance">Appearance &amp; Layouts</string>
     <!-- Settings screen title for gesture typing preferences [CHAR_LIMIT=33] -->
     <string name="settings_screen_gesture">Gesture Typing</string>
     <!-- Settings screen title for text correction options [CHAR_LIMIT=33] -->
@@ -50,6 +50,42 @@
     <string name="settings_screen_advanced">Advanced</string>
     <!-- Settings screen title for keyboard theme settings [CHAR LIMIT=33] -->
     <string name="settings_screen_theme">Theme</string>
+
+    <!--  Option for enabling or disabling the split keyboard layout. [CHAR LIMIT=65]-->
+    <string name="enable_split_keyboard">Enable split keyboard</string>
+
+    <!-- Option title for enabling cloud sync feature [CHAR LIMIT=33]-->
+    <string name="cloud_sync_title">Google Keyboard Sync</string>
+    <!-- Option summary when cloud sync feature is enabled  [CHAR LIMIT=65] -->
+    <string name="cloud_sync_summary">Sync is turned on</string>
+    <!-- Option summary when cloud sync feature is disabled  [CHAR LIMIT=65] -->
+    <string name="cloud_sync_summary_disabled">Sync your personal dictionary across devices</string>
+    <!-- Option title for starting the sync cycle now. [CHAR LIMIT=33]-->
+    <string name="sync_now_title">Sync now</string>
+    <!-- Option title for letting user delete synced google keyboard data from Google servers.  [CHAR LIMIT=35] -->
+    <string name="clear_sync_data_title">Delete cloud data</string>
+    <!-- Option summary for letting user delete synced google keyboard data from Google servers. [CHAR LIMIT=65] -->
+    <string name="clear_sync_data_summary">Deletes your synced data from Google</string>
+    <!-- Text for confirmation dialog box asking user to confirm deletion of cloud data. [CHAR LIMIT=65] -->
+    <string name="clear_sync_data_confirmation">Your synced data will be deleted from the cloud. Are you sure?</string>
+    <!-- Option to confirm deleting of user data from cloud [CHAR LIMIT=20] -->
+    <string name="clear_sync_data_ok">Delete</string>
+    <!-- Option to cancel the deletion of user data from cloud [CHAR LIMIT=20] -->
+    <string name="cloud_sync_cancel">Cancel</string>
+    <!-- Option to agree to terms and conditions for enabling cloud sync feature. -->
+    <string name="cloud_sync_opt_in_text">Your personal dictionary will be synced and backed up to
+        Google servers. The statistical information of word frequency may be collected to help
+        improve our products. The collection and usage of all the information will be compliant with
+        <a href="https://www.google.com/policies/privacy">Google\'s Privacy Policy</a>.
+    </string>
+    <!-- Text to tell the user to add a Google account to the device to enable the cloud sync feature. [CHAR LIMIT=65]-->
+    <string name="add_account_to_enable_sync">
+        Please add a Google account to this device to enable this feature
+    </string>
+    <!-- Text to tell the user that sync feature is disabled because they have Google Apps for Business account(s) on their device. [CHAR LIMIT=80]-->
+    <string name="cloud_sync_summary_disabled_work_profile">
+        Sync is not available for devices with Google Apps for Business accounts
+    </string>
 
     <!-- Option name for including other IMEs in the language switch list [CHAR LIMIT=30] -->
     <string name="include_other_imes_in_language_switch_list">Switch to other input methods</string>
@@ -148,7 +184,7 @@
     <!-- Preferences item for enabling speech input -->
     <string name="voice_input">Voice input key</string>
     <!-- The summary text to describe the reason why the "Voice input key" option is disabled. [CHAR LIMIT=100] -->
-    <string name="voice_input_disabled_summary">No voice input methods enabled. Check Language &amp; input settings.</string>
+    <string name="voice_input_disabled_summary">No voice input methods enabled. Check Languages&#160;&amp; input settings.</string>
 
     <!-- Title for configuring input method settings [CHAR LIMIT=35] -->
     <string name="configure_input_method">Configure input methods</string>
@@ -164,15 +200,32 @@
     <string name="select_language">Languages</string>
 
     <!-- Add to dictionary hint -->
-    <string name="hint_add_to_dictionary">Touch again to save</string>
+    <string name="hint_add_to_dictionary">Tap again to save</string>
     <!-- Add to dictionary hint -->
-    <string name="hint_add_to_dictionary_without_word">Touch here to save</string>
+    <string name="hint_add_to_dictionary_without_word">Tap here to save</string>
 
     <!-- Inform the user that a particular language has an available dictionary -->
     <string name="has_dictionary">Dictionary available</string>
 
     <!-- Title of the item to change the keyboard theme [CHAR LIMIT=20]-->
     <string name="keyboard_layout">Keyboard theme</string>
+
+    <!-- Title of the preference item for switching accounts [CHAR LIMIT=30] -->
+    <string name="switch_accounts">Switch accounts</string>
+    <!-- Summary of the preference item for switching accounts when no accounts
+         are selected [CHAR LIMIT=65] -->
+    <string name="no_accounts_selected">No accounts selected</string>
+    <!-- Summary of the preference item for switching accounts when an account
+         is selected [CHAR LIMIT=65] -->
+    <string name="account_selected">Currently using <xliff:g id="EMAIL_ADDRESS" example="someone@example.com">%1$s</xliff:g></string>
+    <!-- Positive text for selecting an account -->
+    <string name="account_select_ok">OK</string>
+    <!-- Negative text for selecting an account -->
+    <string name="account_select_cancel">Cancel</string>
+    <!-- Text for signing out of an account -->
+    <string name="account_select_sign_out">Sign out</string>
+    <!-- Title of the account picker dialog for selecting an account [CHAR LIMIT=40] -->
+    <string name="account_select_title">Select an account to use</string>
 
     <!-- Description for English (UK) keyboard subtype [CHAR LIMIT=25]
          (UK) should be an abbreviation of United Kingdom to fit in the CHAR LIMIT. -->
@@ -183,6 +236,11 @@
     <!-- Description for Spanish (US) keyboard subtype [CHAR LIMIT=25]
          (US) should be an abbreviation of United States to fit in the CHAR LIMIT. -->
     <string name="subtype_es_US">Spanish (US)</string>
+    <!-- Description for Hinglish (https://en.wikipedia.org/wiki/Hinglish) keyboard subtype [CHAR LIMIT=25] -->
+    <string name="subtype_hi_ZZ">Hinglish</string>
+    <!-- Description for Serbian (Latin) keyboard subtype [CHAR LIMIT=25]
+         (Latin) can be an abbreviation to fit in the CHAR LIMIT. -->
+    <string name="subtype_sr_ZZ">Serbian (Latin)</string>
     <!-- Description for English (UK) keyboard subtype with explicit keyboard layout [CHAR LIMIT=25]
          (UK) should be an abbreviation of United Kingdom to fit in the CHAR LIMIT.
          This should be identical to subtype_en_GB aside from the trailing (%s). -->
@@ -195,19 +253,18 @@
          (US) should be an abbreviation of United Statesn to fit in the CHAR LIMIT.
          This should be identical to subtype_es_US aside from the trailing (%s). -->
     <string name="subtype_with_layout_es_US">Spanish (US) (<xliff:g id="KEYBOARD_LAYOUT" example="QWERTY">%s</xliff:g>)</string>
+    <!-- Description for Hinglish (https://en.wikipedia.org/wiki/Hinglish) keyboard subtype with explicit keyboard layout [CHAR LIMIT=25]
+         This should be identical to subtype_hi_ZZ aside from the trailing (%s). -->
+    <string name="subtype_with_layout_hi_ZZ">Hinglish (<xliff:g id="KEYBOARD_LAYOUT" example="QWERTY">%s</xliff:g>)</string>
+    <!-- Description for Serbian (Latin) keyboard subtype with explicit keyboard layout [CHAR LIMIT=25]
+         This should be identical to subtype_sr_ZZ aside from the trailing (%s). -->
+    <string name="subtype_with_layout_sr_ZZ">Serbian (<xliff:g id="KEYBOARD_LAYOUT" example="QWERTY">%s</xliff:g>)</string>
     <!-- Description for "LANGUAGE_NAME" (Traditional) keyboard subtype [CHAR LIMIT=25]
          (Traditional) can be an abbreviation to fit in the CHAR LIMIT. -->
     <string name="subtype_generic_traditional"><xliff:g id="LANGUAGE_NAME" example="Nepali">%s</xliff:g> (Traditional)</string>
     <!-- Description for "LANGUAGE_NAME" (Compact) keyboard subtype [CHAR LIMIT=25]
-         (Compact) can be an abbreviation to fit in the CHAR LIMIT.
-         TODO: Remove translatable=false once we are settled down with the naming. -->
-    <string name="subtype_generic_compact" translatable="false"><xliff:g id="LANGUAGE_NAME" example="Hindi">%s</xliff:g> (Compact)</string>
-    <!-- Description for "LANGUAGE_NAME" (Cyrillic) keyboard subtype [CHAR LIMIT=25]
-         (Cyrillic) can be an abbreviation to fit in the CHAR LIMIT. -->
-    <string name="subtype_generic_cyrillic"><xliff:g id="LANGUAGE_NAME" example="Serbian">%s</xliff:g> (Cyrillic)</string>
-    <!-- Description for "LANGUAGE_NAME" (Latin) keyboard subtype [CHAR LIMIT=25]
-         (Latin) can be an abbreviation to fit in the CHAR LIMIT. -->
-    <string name="subtype_generic_latin"><xliff:g id="LANGUAGE_NAME" example="Serbian">%s</xliff:g> (Latin)</string>
+         (Compact) can be an abbreviation to fit in the CHAR LIMIT. -->
+    <string name="subtype_generic_compact"><xliff:g id="LANGUAGE_NAME" example="Hindi">%s</xliff:g> (Compact)</string>
     <!-- This string is displayed in a language list that allows to choose a language for
 suggestions in a software keyboard. This setting won't give suggestions in any particular
 language, hence "No language".
@@ -326,14 +383,20 @@ mobile devices. [CHAR LIMIT=25] -->
     <string name="prefs_keypress_vibration_duration_settings">Keypress vibration duration</string>
     <!-- Title of the settings for keypress sound volume [CHAR LIMIT=35] -->
     <string name="prefs_keypress_sound_volume_settings">Keypress sound volume</string>
+    <!-- Title of the settings for key long press delay [CHAR LIMIT=35] -->
+    <string name="prefs_key_longpress_timeout_settings">Key long press delay</string>
+    <!-- Title of the settings for enabling Emoji palette triggered by the Alt key on physical keyboards [CHAR LIMIT=35] -->
+    <string name="prefs_enable_emoji_alt_physical_key">Emoji for physical keyboard</string>
+    <!-- Description of the settings for enabling Emoji palette triggered by the Alt key on physical keyboards [CHAR LIMIT=64] -->
+    <string name="prefs_enable_emoji_alt_physical_key_summary">Physical Alt key shows the emoji palette</string>
 
     <!-- Title of the button to revert to the default value of the device in the settings dialog [CHAR LIMIT=15] -->
     <string name="button_default">Default</string>
 
     <!-- Title of the setup wizard welcome screen. [CHAR LIMT=40] -->
-    <string name="setup_welcome_title">"Welcome to <xliff:g id="application_name">%s</xliff:g>"</string>
+    <string name="setup_welcome_title">"Welcome to <xliff:g id="APPLICATION_NAME" example="Android Keyboard">%s</xliff:g>"</string>
     <!-- Additional title of the setup wizard welcome screen, just below the setup_welcome_title. [CHAR_LIMIT=64] -->
-    <string name="setup_welcome_additional_description">"नमस्ते\nவணக்கம் \nനമസ്കാരം \nನಮಸ್ಕಾರ \nనమస్కారం \nনমস্কার \nਸਤਿ ਸ੍ਰੀ ਅਕਾਲ \nનમસ્તે"</string>
+    <string name="setup_welcome_additional_description">with Gesture Typing</string>
     <!-- The label of the button that starts the setup wizard. [CHAR_LIMIT=64] -->
     <string name="setup_start_action">Get started</string>
     <!-- The label of the button that navigates the user to the next step of the setup wizard. [CHAR_LIMIT=64] -->
@@ -345,10 +408,10 @@ mobile devices. [CHAR LIMIT=25] -->
     <!-- Title of the 1st step in the setup wizard. [CHAR LIMIT=64] -->
     <string name="setup_step1_title">"Enable <xliff:g id="APPLICATION_NAME" example="Android Keyboard">%s</xliff:g>"</string>
     <!-- Detailed instruction of the 1st step in the setup wizard. [CHAR LIMIT=120] -->
-    <string name="setup_step1_instruction">"Please check \"<xliff:g id="APPLICATION_NAME" example="Android Keyboard">%s</xliff:g>\" in your Language &amp; input settings. This will authorize it to run on your device."</string>
+    <string name="setup_step1_instruction">"Please check \"<xliff:g id="APPLICATION_NAME" example="Android Keyboard">%s</xliff:g>\" in your Languages&#160;&amp; input settings. This will authorize it to run on your device."</string>
     <!-- Detailed instruction of the already finished 1st step in the setup wizard. [CHAR LIMIT=120] -->
-    <string name="setup_step1_finished_instruction">"<xliff:g id="APPLICATION_NAME" example="Android Keyboard">%s</xliff:g> is already enabled in your Language &amp; input settings, so this step is done. On to the next one!"</string>
-    <!-- The label of the button that triggers the Language & input settings in order to enable the keyboard. [CHAR_LIMIT=64] -->
+    <string name="setup_step1_finished_instruction">"<xliff:g id="APPLICATION_NAME" example="Android Keyboard">%s</xliff:g> is already enabled in your Languages&#160;&amp; input settings, so this step is done. On to the next one!"</string>
+    <!-- The label of the button that triggers the Languages & input settings in order to enable the keyboard. [CHAR_LIMIT=64] -->
     <string name="setup_step1_action">Enable in Settings</string>
     <!-- Ordinal number of the 2nd step in the setup wizard. [CHAR LIMIT=5] -->
     <string name="setup_step2_bullet" translatable="false">2</string>
@@ -361,14 +424,11 @@ mobile devices. [CHAR LIMIT=25] -->
     <!-- Ordinal number of the 3rd step in the setup wizard. [CHAR LIMIT=5] -->
     <string name="setup_step3_bullet" translatable="false">3</string>
     <!-- Title of the 3rd step in the setup wizard. [CHAR LIMIT=64] -->
-    <string name="setup_step3_title">"Select languages"</string>
-    <string name="setup_step3_instruction">Select the languages and layouts you want to use.</string>
-    <string name="setup_step3_action">Configure languages</string>
-    <!-- The label of the button that triggers the screen for configuaring additional languages of the keyboard. [CHAR_LIMIT=64] -->
-    <string name="setup_step4_bullet" translatable="false">4</string>
-    <string name="setup_step4_title">"Congratulations, you're all set!"</string>
+    <string name="setup_step3_title">"Congratulations, you're all set!"</string>
     <!-- Detailed instruction of the 3rd step in the setup wizard. [CHAR LIMIT=120] -->
-    <string name="setup_step4_instruction">Now you can type in all your favorite apps with <xliff:g id="APPLICATION_NAME" example="Android Keyboard">%s</xliff:g>.</string>
+    <string name="setup_step3_instruction">Now you can type in all your favorite apps with <xliff:g id="APPLICATION_NAME" example="Android Keyboard">%s</xliff:g>.</string>
+    <!-- The label of the button that triggers the screen for configuaring additional languages of the keyboard. [CHAR_LIMIT=64] -->
+    <string name="setup_step3_action">Configure additional languages</string>
     <!-- The label of the button that finishes the setup wizard. [CHAR_LIMIT=64] -->
     <string name="setup_finish_action">Finished</string>
     <!-- Option to show setup wizard icon. [CHAR LIMIT=30]-->
@@ -434,14 +494,14 @@ mobile devices. [CHAR LIMIT=25] -->
     <!-- Action to delete a dictionary file [CHAR_LIMIT=15] -->
     <string name="delete_dict">Delete</string>
 
-    <!-- Message in the popup informing the user a dictionary is available for their language, and asking for a decision to download over their mobile data plan or not. The reason we ask for this is, the data is large and may be downloaded over a paid-per-megabyte connection but a dictionary is also essential to type comfortably, so we ask the user. This only pops in selected cases, when there is no dictionary at all currently, and the only available network seems to be metered. The "Language & input" part should be set to the actual name of the option (message ID 5292716747264442359 in the translation console). [CHAR_LIMIT=700] -->
+    <!-- Message in the popup informing the user a dictionary is available for their language, and asking for a decision to download over their mobile data plan or not. The reason we ask for this is, the data is large and may be downloaded over a paid-per-megabyte connection but a dictionary is also essential to type comfortably, so we ask the user. This only pops in selected cases, when there is no dictionary at all currently, and the only available network seems to be metered. The "Languages & input" part should be set to the actual name of the option (message ID 5292716747264442359 in the translation console). [CHAR_LIMIT=700] -->
     <string name="should_download_over_metered_prompt">The selected language on your mobile device has an available dictionary.&lt;br/>
 We recommend &lt;b>downloading&lt;/b> the <xliff:g id="LANGUAGE_NAME" example="English">%1$s</xliff:g> dictionary to improve your typing experience.&lt;br/>
 &lt;br/>
 The download could take a minute or two over 3G. Charges may apply if you don\'t have an &lt;b>unlimited data plan&lt;/b>.&lt;br/>
 If you are not sure which data plan you have, we recommend finding a Wi-Fi connection to start the download automatically.&lt;br/>
 &lt;br/>
-Tip: You can download and remove dictionaries by going to &lt;b>Language &amp; input&lt;/b> in the &lt;b>Settings&lt;/b> menu of your mobile device.</string>
+Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&amp; input&lt;/b> in the &lt;b>Settings&lt;/b> menu of your mobile device.</string>
     <string name="download_over_metered">Download now (<xliff:g id="SIZE_IN_MEGABYTES" example="0.7">%1$.1f</xliff:g>MB)</string>
     <string name="do_not_download_over_metered">Download over Wi-Fi</string>
     <!-- The text of the "dictionary available" notification. -->
@@ -502,7 +562,7 @@ Tip: You can download and remove dictionaries by going to &lt;b>Language &amp; i
     <string name="user_dict_settings_context_menu_delete_title">Delete</string>
     <!-- User dictionary settings. The text to show when there are no user-defined words in the dictionary  [CHAR LIMIT=200] -->
     <!-- This resource is corresponding to msgid="8165273379942105271" -->
-    <string name="user_dict_settings_empty_text">You don\'t have any words in the user dictionary. Add a word by touching the Add (+) button.</string>
+    <string name="user_dict_settings_empty_text">You don\'t have any words in the user dictionary. To add a word, tap the Add (+) button.</string>
     <!-- User dictionary settings. The list item to choose to insert a word into the user dictionary for all languages -->
     <!-- This resource is corresponding to msgid="6742000040975959247" -->
     <string name="user_dict_settings_all_languages">For all languages</string>

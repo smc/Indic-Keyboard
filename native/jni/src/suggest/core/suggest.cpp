@@ -16,17 +16,20 @@
 
 #include "suggest/core/suggest.h"
 
+#include "dictionary/interface/dictionary_structure_with_buffer_policy.h"
+#include "dictionary/property/word_attributes.h"
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_priority_queue.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
 #include "suggest/core/dictionary/dictionary.h"
 #include "suggest/core/dictionary/digraph_utils.h"
 #include "suggest/core/layout/proximity_info.h"
-#include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 #include "suggest/core/policy/traversal.h"
 #include "suggest/core/policy/weighting.h"
 #include "suggest/core/result/suggestions_output_utils.h"
 #include "suggest/core/session/dic_traverse_session.h"
+#include "suggest/core/suggest_options.h"
+#include "utils/profiler.h"
 
 namespace latinime {
 
@@ -44,10 +47,10 @@ const int Suggest::MIN_CONTINUOUS_SUGGESTION_INPUT_SIZE = 2;
  */
 void Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
         int *inputXs, int *inputYs, int *times, int *pointerIds, int *inputCodePoints,
-        int inputSize, const float languageWeight,
+        int inputSize, const float weightOfLangModelVsSpatialModel,
         SuggestionResults *const outSuggestionResults) const {
-    PROF_OPEN;
-    PROF_START(0);
+    PROF_INIT;
+    PROF_TIMER_START(0);
     const float maxSpatialDistance = TRAVERSAL->getMaxSpatialDistance();
     DicTraverseSession *tSession = static_cast<DicTraverseSession *>(traverseSession);
     tSession->setupForGetSuggestions(pInfo, inputCodePoints, inputSize, inputXs, inputYs, times,
@@ -55,8 +58,8 @@ void Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
     // TODO: Add the way to evaluate cache
 
     initializeSearch(tSession);
-    PROF_END(0);
-    PROF_START(1);
+    PROF_TIMER_END(0);
+    PROF_TIMER_START(1);
 
     // keep expanding search dicNodes until all have terminated.
     while (tSession->getDicTraverseCache()->activeSize() > 0) {
@@ -64,12 +67,11 @@ void Suggest::getSuggestions(ProximityInfo *pInfo, void *traverseSession,
         tSession->getDicTraverseCache()->advanceActiveDicNodes();
         tSession->getDicTraverseCache()->advanceInputIndex(inputSize);
     }
-    PROF_END(1);
-    PROF_START(2);
+    PROF_TIMER_END(1);
+    PROF_TIMER_START(2);
     SuggestionsOutputUtils::outputSuggestions(
-            SCORING, tSession, languageWeight, outSuggestionResults);
-    PROF_END(2);
-    PROF_CLOSE;
+            SCORING, tSession, weightOfLangModelVsSpatialModel, outSuggestionResults);
+    PROF_TIMER_END(2);
 }
 
 /**
@@ -87,12 +89,13 @@ void Suggest::initializeSearch(DicTraverseSession *traverseSession) const {
         traverseSession->getDicTraverseCache()->continueSearch();
     } else {
         // Restart recognition at the root.
-        traverseSession->resetCache(TRAVERSAL->getMaxCacheSize(traverseSession->getInputSize()),
+        traverseSession->resetCache(TRAVERSAL->getMaxCacheSize(traverseSession->getInputSize(),
+                traverseSession->getSuggestOptions()->weightForLocale()),
                 TRAVERSAL->getTerminalCacheSize());
         // Create a new dic node here
         DicNode rootNode;
         DicNodeUtils::initAsRoot(traverseSession->getDictionaryStructurePolicy(),
-                traverseSession->getPrevWordsPtNodePos(), &rootNode);
+                traverseSession->getPrevWordIds(), &rootNode);
         traverseSession->getDicTraverseCache()->copyPushActive(&rootNode);
     }
 }
@@ -157,8 +160,7 @@ void Suggest::expandCurrentDicNodes(DicTraverseSession *traverseSession) const {
             // TODO: Remove. Do not prune node here.
             const bool allowsErrorCorrections = TRAVERSAL->allowsErrorCorrections(&dicNode);
             // Process for handling space substitution (e.g., hevis => he is)
-            if (allowsErrorCorrections
-                    && TRAVERSAL->isSpaceSubstitutionTerminal(traverseSession, &dicNode)) {
+            if (TRAVERSAL->isSpaceSubstitutionTerminal(traverseSession, &dicNode)) {
                 createNextWordDicNode(traverseSession, &dicNode, true /* spaceSubstitution */);
             }
 
@@ -281,7 +283,6 @@ void Suggest::processDicNodeAsAdditionalProximityChar(DicTraverseSession *traver
     // not treat the node as a terminal. There is no need to pass the bigram map in these cases.
     Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_ADDITIONAL_PROXIMITY,
             traverseSession, dicNode, childDicNode, 0 /* multiBigramMap */);
-    weightChildNode(traverseSession, childDicNode);
     processExpandedDicNode(traverseSession, childDicNode);
 }
 
@@ -289,7 +290,6 @@ void Suggest::processDicNodeAsSubstitution(DicTraverseSession *traverseSession,
         DicNode *dicNode, DicNode *childDicNode) const {
     Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_SUBSTITUTION, traverseSession,
             dicNode, childDicNode, 0 /* multiBigramMap */);
-    weightChildNode(traverseSession, childDicNode);
     processExpandedDicNode(traverseSession, childDicNode);
 }
 
@@ -400,7 +400,7 @@ void Suggest::weightChildNode(DicTraverseSession *traverseSession, DicNode *dicN
     if (dicNode->isCompletion(inputSize)) {
         Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_COMPLETION, traverseSession,
                 0 /* parentDicNode */, dicNode, 0 /* multiBigramMap */);
-    } else { // completion
+    } else {
         Weighting::addCostAndForwardInputIndex(WEIGHTING, CT_MATCH, traverseSession,
                 0 /* parentDicNode */, dicNode, 0 /* multiBigramMap */);
     }
@@ -412,7 +412,16 @@ void Suggest::weightChildNode(DicTraverseSession *traverseSession, DicNode *dicN
  */
 void Suggest::createNextWordDicNode(DicTraverseSession *traverseSession, DicNode *dicNode,
         const bool spaceSubstitution) const {
-    if (!TRAVERSAL->isGoodToTraverseNextWord(dicNode)) {
+    const WordAttributes wordAttributes =
+            traverseSession->getDictionaryStructurePolicy()->getWordAttributesInContext(
+                    dicNode->getPrevWordIds(), dicNode->getWordId(),
+                    traverseSession->getMultiBigramMap());
+    if (SuggestionsOutputUtils::shouldBlockWord(traverseSession->getSuggestOptions(),
+            dicNode, wordAttributes, false /* isLastWord */)) {
+        return;
+    }
+
+    if (!TRAVERSAL->isGoodToTraverseNextWord(dicNode, wordAttributes.getProbability())) {
         return;
     }
 

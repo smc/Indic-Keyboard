@@ -16,14 +16,18 @@
 
 package com.android.inputmethod.latin.makedict;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.BinaryDictionary;
+import com.android.inputmethod.latin.Dictionary;
+import com.android.inputmethod.latin.NgramContext;
+import com.android.inputmethod.latin.NgramContext.WordInfo;
+import com.android.inputmethod.latin.common.StringUtils;
+import com.android.inputmethod.latin.utils.CombinedFormatUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.smc.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.utils.CombinedFormatUtils;
-import com.android.inputmethod.latin.utils.StringUtils;
+import javax.annotation.Nullable;
 
 /**
  * Utility class for a word with a probability.
@@ -33,31 +37,35 @@ import com.android.inputmethod.latin.utils.StringUtils;
 public final class WordProperty implements Comparable<WordProperty> {
     public final String mWord;
     public final ProbabilityInfo mProbabilityInfo;
-    public final ArrayList<WeightedString> mShortcutTargets;
-    public final ArrayList<WeightedString> mBigrams;
+    public final ArrayList<NgramProperty> mNgrams;
     // TODO: Support mIsBeginningOfSentence.
     public final boolean mIsBeginningOfSentence;
     public final boolean mIsNotAWord;
-    public final boolean mIsBlacklistEntry;
-    public final boolean mHasShortcuts;
-    public final boolean mHasBigrams;
+    public final boolean mIsPossiblyOffensive;
+    public final boolean mHasNgrams;
 
     private int mHashCode = 0;
 
+    // TODO: Support n-gram.
     @UsedForTesting
     public WordProperty(final String word, final ProbabilityInfo probabilityInfo,
-            final ArrayList<WeightedString> shortcutTargets,
-            final ArrayList<WeightedString> bigrams,
-            final boolean isNotAWord, final boolean isBlacklistEntry) {
+            @Nullable final ArrayList<WeightedString> bigrams,
+            final boolean isNotAWord, final boolean isPossiblyOffensive) {
         mWord = word;
         mProbabilityInfo = probabilityInfo;
-        mShortcutTargets = shortcutTargets;
-        mBigrams = bigrams;
+        if (null == bigrams) {
+            mNgrams = null;
+        } else {
+            mNgrams = new ArrayList<>();
+            final NgramContext ngramContext = new NgramContext(new WordInfo(mWord));
+            for (final WeightedString bigramTarget : bigrams) {
+                mNgrams.add(new NgramProperty(bigramTarget, ngramContext));
+            }
+        }
         mIsBeginningOfSentence = false;
         mIsNotAWord = isNotAWord;
-        mIsBlacklistEntry = isBlacklistEntry;
-        mHasBigrams = bigrams != null && !bigrams.isEmpty();
-        mHasShortcuts = shortcutTargets != null && !shortcutTargets.isEmpty();
+        mIsPossiblyOffensive = isPossiblyOffensive;
+        mHasNgrams = bigrams != null && !bigrams.isEmpty();
     }
 
     private static ProbabilityInfo createProbabilityInfoFromArray(final int[] probabilityInfo) {
@@ -71,36 +79,54 @@ public final class WordProperty implements Comparable<WordProperty> {
     // Construct word property using information from native code.
     // This represents invalid word when the probability is BinaryDictionary.NOT_A_PROBABILITY.
     public WordProperty(final int[] codePoints, final boolean isNotAWord,
-            final boolean isBlacklisted, final boolean hasBigram, final boolean hasShortcuts,
+            final boolean isPossiblyOffensive, final boolean hasBigram,
             final boolean isBeginningOfSentence, final int[] probabilityInfo,
-            final ArrayList<int[]> bigramTargets, final ArrayList<int[]> bigramProbabilityInfo,
-            final ArrayList<int[]> shortcutTargets,
-            final ArrayList<Integer> shortcutProbabilities) {
+            final ArrayList<int[][]> ngramPrevWordsArray,
+            final ArrayList<boolean[]> ngramPrevWordIsBeginningOfSentenceArray,
+            final ArrayList<int[]> ngramTargets, final ArrayList<int[]> ngramProbabilityInfo) {
         mWord = StringUtils.getStringFromNullTerminatedCodePointArray(codePoints);
         mProbabilityInfo = createProbabilityInfoFromArray(probabilityInfo);
-        mShortcutTargets = new ArrayList<>();
-        mBigrams = new ArrayList<>();
+        final ArrayList<NgramProperty> ngrams = new ArrayList<>();
         mIsBeginningOfSentence = isBeginningOfSentence;
         mIsNotAWord = isNotAWord;
-        mIsBlacklistEntry = isBlacklisted;
-        mHasShortcuts = hasShortcuts;
-        mHasBigrams = hasBigram;
+        mIsPossiblyOffensive = isPossiblyOffensive;
+        mHasNgrams = hasBigram;
 
-        final int bigramTargetCount = bigramTargets.size();
-        for (int i = 0; i < bigramTargetCount; i++) {
-            final String bigramTargetString =
-                    StringUtils.getStringFromNullTerminatedCodePointArray(bigramTargets.get(i));
-            mBigrams.add(new WeightedString(bigramTargetString,
-                    createProbabilityInfoFromArray(bigramProbabilityInfo.get(i))));
+        final int relatedNgramCount = ngramTargets.size();
+        for (int i = 0; i < relatedNgramCount; i++) {
+            final String ngramTargetString =
+                    StringUtils.getStringFromNullTerminatedCodePointArray(ngramTargets.get(i));
+            final WeightedString ngramTarget = new WeightedString(ngramTargetString,
+                    createProbabilityInfoFromArray(ngramProbabilityInfo.get(i)));
+            final int[][] prevWords = ngramPrevWordsArray.get(i);
+            final boolean[] isBeginningOfSentenceArray =
+                    ngramPrevWordIsBeginningOfSentenceArray.get(i);
+            final WordInfo[] wordInfoArray = new WordInfo[prevWords.length];
+            for (int j = 0; j < prevWords.length; j++) {
+                wordInfoArray[j] = isBeginningOfSentenceArray[j]
+                        ? WordInfo.BEGINNING_OF_SENTENCE_WORD_INFO
+                        : new WordInfo(StringUtils.getStringFromNullTerminatedCodePointArray(
+                                prevWords[j]));
+            }
+            final NgramContext ngramContext = new NgramContext(wordInfoArray);
+            ngrams.add(new NgramProperty(ngramTarget, ngramContext));
         }
+        mNgrams = ngrams.isEmpty() ? null : ngrams;
+    }
 
-        final int shortcutTargetCount = shortcutTargets.size();
-        for (int i = 0; i < shortcutTargetCount; i++) {
-            final String shortcutTargetString =
-                    StringUtils.getStringFromNullTerminatedCodePointArray(shortcutTargets.get(i));
-            mShortcutTargets.add(
-                    new WeightedString(shortcutTargetString, shortcutProbabilities.get(i)));
+    // TODO: Remove
+    @UsedForTesting
+    public ArrayList<WeightedString> getBigrams() {
+        if (null == mNgrams) {
+            return null;
         }
+        final ArrayList<WeightedString> bigrams = new ArrayList<>();
+        for (final NgramProperty ngram : mNgrams) {
+            if (ngram.mNgramContext.getPrevWordCount() == 1) {
+                bigrams.add(ngram.mTargetWord);
+            }
+        }
+        return bigrams;
     }
 
     public int getProbability() {
@@ -111,10 +137,9 @@ public final class WordProperty implements Comparable<WordProperty> {
         return Arrays.hashCode(new Object[] {
                 word.mWord,
                 word.mProbabilityInfo,
-                word.mShortcutTargets.hashCode(),
-                word.mBigrams.hashCode(),
+                word.mNgrams,
                 word.mIsNotAWord,
-                word.mIsBlacklistEntry
+                word.mIsPossiblyOffensive
         });
     }
 
@@ -142,10 +167,18 @@ public final class WordProperty implements Comparable<WordProperty> {
         if (o == this) return true;
         if (!(o instanceof WordProperty)) return false;
         WordProperty w = (WordProperty)o;
-        return mProbabilityInfo.equals(w.mProbabilityInfo) && mWord.equals(w.mWord)
-                && mShortcutTargets.equals(w.mShortcutTargets) && mBigrams.equals(w.mBigrams)
-                && mIsNotAWord == w.mIsNotAWord && mIsBlacklistEntry == w.mIsBlacklistEntry
-                && mHasBigrams == w.mHasBigrams && mHasShortcuts && w.mHasBigrams;
+        return mProbabilityInfo.equals(w.mProbabilityInfo)
+                && mWord.equals(w.mWord) && equals(mNgrams, w.mNgrams)
+                && mIsNotAWord == w.mIsNotAWord && mIsPossiblyOffensive == w.mIsPossiblyOffensive
+                && mHasNgrams == w.mHasNgrams;
+    }
+
+    // TDOO: Have a utility method like java.util.Objects.equals.
+    private static <T> boolean equals(final ArrayList<T> a, final ArrayList<T> b) {
+        if (null == a) {
+            return null == b;
+        }
+        return a.equals(b);
     }
 
     @Override
@@ -158,7 +191,7 @@ public final class WordProperty implements Comparable<WordProperty> {
 
     @UsedForTesting
     public boolean isValid() {
-        return getProbability() != BinaryDictionary.NOT_A_PROBABILITY;
+        return getProbability() != Dictionary.NOT_A_PROBABILITY;
     }
 
     @Override

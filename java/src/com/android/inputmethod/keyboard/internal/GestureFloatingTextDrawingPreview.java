@@ -25,10 +25,11 @@ import android.graphics.RectF;
 import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.PointerTracker;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.common.CoordinateUtils;
 
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.SuggestedWords;
-import com.android.inputmethod.latin.utils.CoordinateUtils;
+import javax.annotation.Nonnull;
 
 /**
  * The class for single gesture preview text. The class for multiple gesture preview text will be
@@ -99,7 +100,7 @@ public class GestureFloatingTextDrawingPreview extends AbstractDrawingPreview {
     private final RectF mGesturePreviewRectangle = new RectF();
     private int mPreviewTextX;
     private int mPreviewTextY;
-    private SuggestedWords mSuggestedWords = SuggestedWords.EMPTY;
+    private SuggestedWords mSuggestedWords = SuggestedWords.getEmptyInstance();
     private final int[] mLastPointerCoords = CoordinateUtils.newInstance();
 
     public GestureFloatingTextDrawingPreview(final TypedArray mainKeyboardViewAttr) {
@@ -111,7 +112,11 @@ public class GestureFloatingTextDrawingPreview extends AbstractDrawingPreview {
         // Nothing to do here.
     }
 
-    public void setSuggetedWords(final SuggestedWords suggestedWords) {
+    public void dismissGestureFloatingPreviewText() {
+        setSuggetedWords(SuggestedWords.getEmptyInstance());
+    }
+
+    public void setSuggetedWords(@Nonnull final SuggestedWords suggestedWords) {
         if (!isPreviewEnabled()) {
             return;
         }

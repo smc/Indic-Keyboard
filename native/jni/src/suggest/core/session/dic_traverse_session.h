@@ -20,16 +20,17 @@
 #include <vector>
 
 #include "defines.h"
+#include "dictionary/utils/multi_bigram_map.h"
 #include "jni.h"
 #include "suggest/core/dicnode/dic_nodes_cache.h"
-#include "suggest/core/dictionary/multi_bigram_map.h"
 #include "suggest/core/layout/proximity_info_state.h"
+#include "utils/int_array_view.h"
 
 namespace latinime {
 
 class Dictionary;
 class DictionaryStructureWithBufferPolicy;
-class PrevWordsInfo;
+class NgramContext;
 class ProximityInfo;
 class SuggestOptions;
 
@@ -50,20 +51,17 @@ class DicTraverseSession {
     }
 
     AK_FORCE_INLINE DicTraverseSession(JNIEnv *env, jstring localeStr, bool usesLargeCache)
-            : mProximityInfo(nullptr), mDictionary(nullptr), mSuggestOptions(nullptr),
-              mDicNodesCache(usesLargeCache), mMultiBigramMap(), mInputSize(0), mMaxPointerCount(1),
-              mMultiWordCostMultiplier(1.0f) {
+            : mPrevWordIdCount(0), mProximityInfo(nullptr), mDictionary(nullptr),
+              mSuggestOptions(nullptr), mDicNodesCache(usesLargeCache), mMultiBigramMap(),
+              mInputSize(0), mMaxPointerCount(1), mMultiWordCostMultiplier(1.0f) {
         // NOTE: mProximityInfoStates is an array of instances.
         // No need to initialize it explicitly here.
-        for (size_t i = 0; i < NELEMS(mPrevWordsPtNodePos); ++i) {
-            mPrevWordsPtNodePos[i] = NOT_A_DICT_POS;
-        }
     }
 
     // Non virtual inline destructor -- never inherit this class
     AK_FORCE_INLINE ~DicTraverseSession() {}
 
-    void init(const Dictionary *dictionary, const PrevWordsInfo *const prevWordsInfo,
+    void init(const Dictionary *dictionary, const NgramContext *const ngramContext,
             const SuggestOptions *const suggestOptions);
     // TODO: Remove and merge into init
     void setupForGetSuggestions(const ProximityInfo *pInfo, const int *inputCodePoints,
@@ -79,7 +77,9 @@ class DicTraverseSession {
     //--------------------
     const ProximityInfo *getProximityInfo() const { return mProximityInfo; }
     const SuggestOptions *getSuggestOptions() const { return mSuggestOptions; }
-    const int *getPrevWordsPtNodePos() const { return mPrevWordsPtNodePos; }
+    const WordIdArrayView getPrevWordIds() const {
+        return WordIdArrayView::fromArray(mPrevWordIdArray).limit(mPrevWordIdCount);
+    }
     DicNodesCache *getDicTraverseCache() { return &mDicNodesCache; }
     MultiBigramMap *getMultiBigramMap() { return &mMultiBigramMap; }
     const ProximityInfoState *getProximityInfoState(int id) const {
@@ -166,7 +166,8 @@ class DicTraverseSession {
             const int *const inputYs, const int *const times, const int *const pointerIds,
             const int inputSize, const float maxSpatialDistance, const int maxPointerCount);
 
-    int mPrevWordsPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+    WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> mPrevWordIdArray;
+    size_t mPrevWordIdCount;
     const ProximityInfo *mProximityInfo;
     const Dictionary *mDictionary;
     const SuggestOptions *mSuggestOptions;

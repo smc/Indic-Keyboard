@@ -80,14 +80,13 @@
     <string name="double_quotes">!text/double_lqm_rqm</string>
     <string name="single_angle_quotes">!text/single_laqm_raqm</string>
     <string name="double_angle_quotes">!text/double_laqm_raqm</string>
-    <!-- $ - I'm making ₹ as default
-         U+00A2: "¢" CENT SIGN
+    <!-- U+00A2: "¢" CENT SIGN
          U+00A3: "£" POUND SIGN
          U+20AC: "€" EURO SIGN
          U+00A5: "¥" YEN SIGN
          U+20B1: "₱" PESO SIGN -->
-    <string name="morekeys_currency_dollar">$,&#x00A2;,&#x00A3;,&#x20AC;,&#x00A5;,&#x20B1;</string>
-    <string name="keylabel_for_currency">$</string>
+    <string name="morekeys_currency_dollar">&#x00A2;,&#x00A3;,&#x20AC;,&#x00A5;,&#x20B1;</string>
+    <string name="keyspec_currency">$</string>
     <string name="morekeys_currency_generic">$,&#x00A2;,&#x20AC;,&#x00A3;,&#x00A5;,&#x20B1;</string>
     <string name="morekeys_punctuation">"!autoColumnOrder!8,\\,,?,!,#,!text/keyspec_right_parenthesis,!text/keyspec_left_parenthesis,/,;,',@,:,-,\",+,\\%,&amp;"</string>
     <string name="morekeys_tablet_punctuation">"!autoColumnOrder!7,\\,,',#,!text/keyspec_right_parenthesis,!text/keyspec_left_parenthesis,/,;,@,:,-,\",+,\\%,&amp;"</string>
@@ -260,4 +259,12 @@
     <string name="morekeys_double_quote">!fixedColumnOrder!5,!text/double_quotes,!text/double_angle_quotes</string>
     <string name="morekeys_tablet_double_quote">!fixedColumnOrder!6,!text/double_quotes,!text/single_quotes,!text/double_angle_quotes,!text/single_angle_quotes</string>
     <string name="keyspec_emoji_action_key">!icon/emoji_action_key|!code/key_emoji</string>
+    <string name="label_go_key">!string/label_go_key</string>
+    <string name="label_send_key">!string/label_send_key</string>
+    <string name="label_next_key">!string/label_next_key</string>
+    <string name="label_done_key">!string/label_done_key</string>
+    <string name="label_search_key">!string/label_search_key</string>
+    <string name="label_previous_key">!string/label_previous_key</string>
+    <string name="label_pause_key">!string/label_pause_key</string>
+    <string name="label_wait_key">!string/label_wait_key</string>
 </resources>

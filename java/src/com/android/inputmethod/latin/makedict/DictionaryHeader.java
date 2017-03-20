@@ -19,13 +19,24 @@ package com.android.inputmethod.latin.makedict;
 import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.FormatSpec.FormatOptions;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Class representing dictionary header.
  */
 public final class DictionaryHeader {
     public final int mBodyOffset;
+    @Nonnull
     public final DictionaryOptions mDictionaryOptions;
+    @Nonnull
     public final FormatOptions mFormatOptions;
+    @Nonnull
+    public final String mLocaleString;
+    @Nonnull
+    public final String mVersionString;
+    @Nonnull
+    public final String mIdString;
 
     // Note that these are corresponding definitions in native code in latinime::HeaderPolicy
     // and latinime::HeaderReadWriteUtils.
@@ -38,49 +49,40 @@ public final class DictionaryHeader {
     public static final String DICTIONARY_DATE_KEY = "date";
     public static final String HAS_HISTORICAL_INFO_KEY = "HAS_HISTORICAL_INFO";
     public static final String USES_FORGETTING_CURVE_KEY = "USES_FORGETTING_CURVE";
-    public static final String FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP_KEY =
-            "FORGETTING_CURVE_OCCURRENCES_TO_LEVEL_UP";
     public static final String FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID_KEY =
             "FORGETTING_CURVE_PROBABILITY_VALUES_TABLE_ID";
-    public static final String FORGETTING_CURVE_DURATION_TO_LEVEL_DOWN_IN_SECONDS_KEY =
-            "FORGETTING_CURVE_DURATION_TO_LEVEL_DOWN_IN_SECONDS";
-    public static final String MAX_UNIGRAM_COUNT_KEY = "MAX_UNIGRAM_COUNT";
-    public static final String MAX_BIGRAM_COUNT_KEY = "MAX_BIGRAM_COUNT";
+    public static final String MAX_UNIGRAM_COUNT_KEY = "MAX_UNIGRAM_ENTRY_COUNT";
+    public static final String MAX_BIGRAM_COUNT_KEY = "MAX_BIGRAM_ENTRY_COUNT";
+    public static final String MAX_TRIGRAM_COUNT_KEY = "MAX_TRIGRAM_ENTRY_COUNT";
     public static final String ATTRIBUTE_VALUE_TRUE = "1";
+    public static final String CODE_POINT_TABLE_KEY = "codePointTable";
 
-    public DictionaryHeader(final int headerSize, final DictionaryOptions dictionaryOptions,
-            final FormatOptions formatOptions) throws UnsupportedFormatException {
+    public DictionaryHeader(final int headerSize,
+            @Nonnull final DictionaryOptions dictionaryOptions,
+            @Nonnull final FormatOptions formatOptions) throws UnsupportedFormatException {
         mDictionaryOptions = dictionaryOptions;
         mFormatOptions = formatOptions;
         mBodyOffset = formatOptions.mVersion < FormatSpec.VERSION4 ? headerSize : 0;
-        if (null == getLocaleString()) {
+        final String localeString = dictionaryOptions.mAttributes.get(DICTIONARY_LOCALE_KEY);
+        if (null == localeString) {
             throw new UnsupportedFormatException("Cannot create a FileHeader without a locale");
         }
-        if (null == getVersion()) {
+        final String versionString = dictionaryOptions.mAttributes.get(DICTIONARY_VERSION_KEY);
+        if (null == versionString) {
             throw new UnsupportedFormatException(
                     "Cannot create a FileHeader without a version");
         }
-        if (null == getId()) {
+        final String idString = dictionaryOptions.mAttributes.get(DICTIONARY_ID_KEY);
+        if (null == idString) {
             throw new UnsupportedFormatException("Cannot create a FileHeader without an ID");
         }
-    }
-
-    // Helper method to get the locale as a String
-    public String getLocaleString() {
-        return mDictionaryOptions.mAttributes.get(DICTIONARY_LOCALE_KEY);
-    }
-
-    // Helper method to get the version String
-    public String getVersion() {
-        return mDictionaryOptions.mAttributes.get(DICTIONARY_VERSION_KEY);
-    }
-
-    // Helper method to get the dictionary ID as a String
-    public String getId() {
-        return mDictionaryOptions.mAttributes.get(DICTIONARY_ID_KEY);
+        mLocaleString = localeString;
+        mVersionString = versionString;
+        mIdString = idString;
     }
 
     // Helper method to get the description
+    @Nullable
     public String getDescription() {
         // TODO: Right now each dictionary file comes with a description in its own language.
         // It will display as is no matter the device's locale. It should be internationalized.

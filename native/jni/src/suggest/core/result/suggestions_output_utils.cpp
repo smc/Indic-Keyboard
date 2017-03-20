@@ -19,9 +19,9 @@
 #include <algorithm>
 #include <vector>
 
+#include "dictionary/utils/binary_dictionary_shortcut_iterator.h"
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_utils.h"
-#include "suggest/core/dictionary/binary_dictionary_shortcut_iterator.h"
 #include "suggest/core/dictionary/error_type_utils.h"
 #include "suggest/core/policy/scoring.h"
 #include "suggest/core/result/suggestion_results.h"
@@ -34,7 +34,8 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
 
 /* static */ void SuggestionsOutputUtils::outputSuggestions(
         const Scoring *const scoringPolicy, DicTraverseSession *traverseSession,
-        const float languageWeight, SuggestionResults *const outSuggestionResults) {
+        const float weightOfLangModelVsSpatialModel,
+        SuggestionResults *const outSuggestionResults) {
 #if DEBUG_EVALUATE_MOST_PROBABLE_STRING
     const int terminalSize = 0;
 #else
@@ -44,12 +45,15 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
     for (int index = terminalSize - 1; index >= 0; --index) {
         traverseSession->getDicTraverseCache()->popTerminal(&terminals[index]);
     }
-    // Compute a language weight when an invalid language weight is passed.
-    // NOT_A_LANGUAGE_WEIGHT (-1) is assumed as an invalid language weight.
-    const float languageWeightToOutputSuggestions = (languageWeight < 0.0f) ?
-            scoringPolicy->getAdjustedLanguageWeight(
-                    traverseSession, terminals.data(), terminalSize) : languageWeight;
-    outSuggestionResults->setLanguageWeight(languageWeightToOutputSuggestions);
+    // Compute a weight of language model when an invalid weight is passed.
+    // NOT_A_WEIGHT_OF_LANG_MODEL_VS_SPATIAL_MODEL (-1) is taken as an invalid value.
+    const float weightOfLangModelVsSpatialModelToOutputSuggestions =
+            (weightOfLangModelVsSpatialModel < 0.0f)
+            ? scoringPolicy->getAdjustedWeightOfLangModelVsSpatialModel(traverseSession,
+                    terminals.data(), terminalSize)
+            : weightOfLangModelVsSpatialModel;
+    outSuggestionResults->setWeightOfLangModelVsSpatialModel(
+            weightOfLangModelVsSpatialModelToOutputSuggestions);
     // Force autocorrection for obvious long multi-word suggestions when the top suggestion is
     // a long multiple words suggestion.
     // TODO: Implement a smarter auto-commit method for handling multi-word suggestions.
@@ -65,16 +69,62 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
     // Output suggestion results here
     for (auto &terminalDicNode : terminals) {
         outputSuggestionsOfDicNode(scoringPolicy, traverseSession, &terminalDicNode,
-                languageWeightToOutputSuggestions, boostExactMatches, forceCommitMultiWords,
-                outputSecondWordFirstLetterInputIndex, outSuggestionResults);
+                weightOfLangModelVsSpatialModelToOutputSuggestions, boostExactMatches,
+                forceCommitMultiWords, outputSecondWordFirstLetterInputIndex, outSuggestionResults);
     }
-    scoringPolicy->getMostProbableString(traverseSession, languageWeightToOutputSuggestions,
-            outSuggestionResults);
+    scoringPolicy->getMostProbableString(traverseSession,
+            weightOfLangModelVsSpatialModelToOutputSuggestions, outSuggestionResults);
+}
+
+/* static */ bool SuggestionsOutputUtils::shouldBlockWord(
+        const SuggestOptions *const suggestOptions, const DicNode *const terminalDicNode,
+        const WordAttributes wordAttributes, const bool isLastWord) {
+    const bool currentWordExactMatch =
+            ErrorTypeUtils::isExactMatch(terminalDicNode->getContainedErrorTypes());
+    // When we have to block offensive words, non-exact matched offensive words should not be
+    // output.
+    const bool shouldBlockOffensiveWords = suggestOptions->blockOffensiveWords();
+
+    const bool isBlockedOffensiveWord = shouldBlockOffensiveWords &&
+            wordAttributes.isPossiblyOffensive();
+
+    // This function is called in two situations:
+    //
+    // 1) At the end of a search, in which case terminalDicNode will point to the last DicNode
+    //    of the search, and isLastWord will be true.
+    //                    "fuck"
+    //                        |
+    //                        \ terminalDicNode (isLastWord=true, currentWordExactMatch=true)
+    //    In this case, if the current word is an exact match, we will always let the word
+    //    through, even if the user is blocking offensive words (it's exactly what they typed!)
+    //
+    // 2) In the middle of the search, when we hit a terminal node, to decide whether or not
+    //    to start a new search at root, to try to match the rest of the input. In this case,
+    //    terminalDicNode will point to the terminal node we just hit, and isLastWord will be
+    //    false.
+    //                    "fuckvthis"
+    //                        |
+    //                        \ terminalDicNode (isLastWord=false, currentWordExactMatch=true)
+    //
+    // In this case, we should NOT allow the match through (correcting "fuckthis" to "fuck this"
+    // when offensive words are blocked would be a bad idea).
+    //
+    // In the case of a multi-word correction where the offensive word is typed last (eg.
+    // for the input "allfuck"), this function will be called with isLastWord==true, but
+    // currentWordExactMatch==false. So we are OK in this case as well.
+    //                    "allfuck"
+    //                           |
+    //                           \ terminalDicNode (isLastWord=true, currentWordExactMatch=false)
+    if (isLastWord && currentWordExactMatch) {
+        return false;
+    } else {
+        return isBlockedOffensiveWord;
+    }
 }
 
 /* static */ void SuggestionsOutputUtils::outputSuggestionsOfDicNode(
         const Scoring *const scoringPolicy, DicTraverseSession *traverseSession,
-        const DicNode *const terminalDicNode, const float languageWeight,
+        const DicNode *const terminalDicNode, const float weightOfLangModelVsSpatialModel,
         const bool boostExactMatches, const bool forceCommitMultiWords,
         const bool outputSecondWordFirstLetterInputIndex,
         SuggestionResults *const outSuggestionResults) {
@@ -83,34 +133,32 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
     }
     const float doubleLetterCost =
             scoringPolicy->getDoubleLetterDemotionDistanceCost(terminalDicNode);
-    const float compoundDistance = terminalDicNode->getCompoundDistance(languageWeight)
-            + doubleLetterCost;
-    const bool isPossiblyOffensiveWord =
-            traverseSession->getDictionaryStructurePolicy()->getProbability(
-                    terminalDicNode->getProbability(), NOT_A_PROBABILITY) <= 0;
+    const float compoundDistance =
+            terminalDicNode->getCompoundDistance(weightOfLangModelVsSpatialModel)
+                    + doubleLetterCost;
+    const WordAttributes wordAttributes = traverseSession->getDictionaryStructurePolicy()
+            ->getWordAttributesInContext(terminalDicNode->getPrevWordIds(),
+                    terminalDicNode->getWordId(), nullptr /* multiBigramMap */);
     const bool isExactMatch =
             ErrorTypeUtils::isExactMatch(terminalDicNode->getContainedErrorTypes());
     const bool isExactMatchWithIntentionalOmission =
             ErrorTypeUtils::isExactMatchWithIntentionalOmission(
                     terminalDicNode->getContainedErrorTypes());
-    const bool isFirstCharUppercase = terminalDicNode->isFirstCharUppercase();
-    // Heuristic: We exclude probability=0 first-char-uppercase words from exact match.
-    // (e.g. "AMD" and "and")
-    const bool isSafeExactMatch = isExactMatch
-            && !(isPossiblyOffensiveWord && isFirstCharUppercase);
+    // TODO: Decide whether the word should be auto-corrected or not here.
+    const bool isAppropriateForAutoCorrection = !ErrorTypeUtils::isMissingExplicitAccent(
+            terminalDicNode->getContainedErrorTypes());
     const int outputTypeFlags =
-            (isPossiblyOffensiveWord ? Dictionary::KIND_FLAG_POSSIBLY_OFFENSIVE : 0)
-            | ((isSafeExactMatch && boostExactMatches) ? Dictionary::KIND_FLAG_EXACT_MATCH : 0)
+            (wordAttributes.isPossiblyOffensive() ? Dictionary::KIND_FLAG_POSSIBLY_OFFENSIVE : 0)
+            | ((isExactMatch && boostExactMatches) ? Dictionary::KIND_FLAG_EXACT_MATCH : 0)
             | (isExactMatchWithIntentionalOmission ?
-                    Dictionary::KIND_FLAG_EXACT_MATCH_WITH_INTENTIONAL_OMISSION : 0);
-
+                    Dictionary::KIND_FLAG_EXACT_MATCH_WITH_INTENTIONAL_OMISSION : 0)
+            | (isAppropriateForAutoCorrection ?
+                    Dictionary::KIND_FLAG_APPROPRIATE_FOR_AUTOCORRECTION : 0);
     // Entries that are blacklisted or do not represent a word should not be output.
-    const bool isValidWord = !terminalDicNode->isBlacklistedOrNotAWord();
-    // When we have to block offensive words, non-exact matched offensive words should not be
-    // output.
-    const bool blockOffensiveWords = traverseSession->getSuggestOptions()->blockOffensiveWords();
-    const bool isBlockedOffensiveWord = blockOffensiveWords && isPossiblyOffensiveWord
-            && !isSafeExactMatch;
+    const bool isValidWord = !(wordAttributes.isBlacklisted() || wordAttributes.isNotAWord());
+
+    const bool shouldBlockThisWord = shouldBlockWord(traverseSession->getSuggestOptions(),
+            terminalDicNode, wordAttributes, true /* isLastWord */);
 
     // Increase output score of top typing suggestion to ensure autocorrection.
     // TODO: Better integration with java side autocorrection logic.
@@ -118,11 +166,11 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
             compoundDistance, traverseSession->getInputSize(),
             terminalDicNode->getContainedErrorTypes(),
             (forceCommitMultiWords && terminalDicNode->hasMultipleWords()),
-            boostExactMatches);
+            boostExactMatches, wordAttributes.getProbability() == 0);
 
     // Don't output invalid or blocked offensive words. However, we still need to submit their
     // shortcuts if any.
-    if (isValidWord && !isBlockedOffensiveWord) {
+    if (isValidWord && !shouldBlockThisWord) {
         int codePoints[MAX_WORD_LENGTH];
         terminalDicNode->outputResult(codePoints);
         const int indexToPartialCommit = outputSecondWordFirstLetterInputIndex ?
@@ -139,10 +187,9 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
     // Shortcut is not supported for multiple words suggestions.
     // TODO: Check shortcuts during traversal for multiple words suggestions.
     if (!terminalDicNode->hasMultipleWords()) {
-        BinaryDictionaryShortcutIterator shortcutIt(
-                traverseSession->getDictionaryStructurePolicy()->getShortcutsStructurePolicy(),
-                traverseSession->getDictionaryStructurePolicy()
-                        ->getShortcutPositionOfPtNode(terminalDicNode->getPtNodePos()));
+        BinaryDictionaryShortcutIterator shortcutIt =
+                traverseSession->getDictionaryStructurePolicy()->getShortcutIterator(
+                        terminalDicNode->getWordId());
         const bool sameAsTyped = scoringPolicy->sameAsTyped(traverseSession, terminalDicNode);
         outputShortcuts(&shortcutIt, finalScore, sameAsTyped, outSuggestionResults);
     }

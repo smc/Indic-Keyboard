@@ -21,17 +21,19 @@
 
 #include "defines.h"
 #include "jni.h"
-#include "suggest/core/dictionary/ngram_listener.h"
-#include "suggest/core/dictionary/property/word_property.h"
-#include "suggest/core/policy/dictionary_header_structure_policy.h"
-#include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
+#include "dictionary/interface/dictionary_header_structure_policy.h"
+#include "dictionary/interface/dictionary_structure_with_buffer_policy.h"
+#include "dictionary/interface/ngram_listener.h"
+#include "dictionary/property/historical_info.h"
+#include "dictionary/property/word_property.h"
 #include "suggest/core/suggest_interface.h"
+#include "utils/int_array_view.h"
 
 namespace latinime {
 
 class DictionaryStructureWithBufferPolicy;
 class DicTraverseSession;
-class PrevWordsInfo;
+class NgramContext;
 class ProximityInfo;
 class SuggestionResults;
 class SuggestOptions;
@@ -58,36 +60,40 @@ class Dictionary {
     static const int KIND_FLAG_POSSIBLY_OFFENSIVE = 0x80000000;
     static const int KIND_FLAG_EXACT_MATCH = 0x40000000;
     static const int KIND_FLAG_EXACT_MATCH_WITH_INTENTIONAL_OMISSION = 0x20000000;
+    static const int KIND_FLAG_APPROPRIATE_FOR_AUTOCORRECTION = 0x10000000;
 
     Dictionary(JNIEnv *env, DictionaryStructureWithBufferPolicy::StructurePolicyPtr
             dictionaryStructureWithBufferPolicy);
 
     void getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
             int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
-            int inputSize, const PrevWordsInfo *const prevWordsInfo,
-            const SuggestOptions *const suggestOptions, const float languageWeight,
+            int inputSize, const NgramContext *const ngramContext,
+            const SuggestOptions *const suggestOptions, const float weightOfLangModelVsSpatialModel,
             SuggestionResults *const outSuggestionResults) const;
 
-    void getPredictions(const PrevWordsInfo *const prevWordsInfo,
+    void getPredictions(const NgramContext *const ngramContext,
             SuggestionResults *const outSuggestionResults) const;
 
-    int getProbability(const int *word, int length) const;
+    int getProbability(const CodePointArrayView codePoints) const;
 
-    int getMaxProbabilityOfExactMatches(const int *word, int length) const;
+    int getMaxProbabilityOfExactMatches(const CodePointArrayView codePoints) const;
 
-    int getNgramProbability(const PrevWordsInfo *const prevWordsInfo,
-            const int *word, int length) const;
+    int getNgramProbability(const NgramContext *const ngramContext,
+            const CodePointArrayView codePoints) const;
 
-    bool addUnigramEntry(const int *const codePoints, const int codePointCount,
+    bool addUnigramEntry(const CodePointArrayView codePoints,
             const UnigramProperty *const unigramProperty);
 
-    bool removeUnigramEntry(const int *const codePoints, const int codePointCount);
+    bool removeUnigramEntry(const CodePointArrayView codePoints);
 
-    bool addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
-            const BigramProperty *const bigramProperty);
+    bool addNgramEntry(const NgramProperty *const ngramProperty);
 
-    bool removeNgramEntry(const PrevWordsInfo *const prevWordsInfo, const int *const word,
-            const int length);
+    bool removeNgramEntry(const NgramContext *const ngramContext,
+            const CodePointArrayView codePoints);
+
+    bool updateEntriesForWordWithNgramContext(const NgramContext *const ngramContext,
+            const CodePointArrayView codePoints, const bool isValidWord,
+            const HistoricalInfo historicalInfo);
 
     bool flush(const char *const filePath);
 
@@ -98,7 +104,7 @@ class Dictionary {
     void getProperty(const char *const query, const int queryLength, char *const outResult,
             const int maxResultLength);
 
-    const WordProperty getWordProperty(const int *const codePoints, const int codePointCount);
+    const WordProperty getWordProperty(const CodePointArrayView codePoints);
 
     // Method to iterate all words in the dictionary.
     // The returned token has to be used to get the next word. If token is 0, this method newly
@@ -117,15 +123,16 @@ class Dictionary {
 
     class NgramListenerForPrediction : public NgramListener {
      public:
-        NgramListenerForPrediction(const PrevWordsInfo *const prevWordsInfo,
-                SuggestionResults *const suggestionResults,
+        NgramListenerForPrediction(const NgramContext *const ngramContext,
+                const WordIdArrayView prevWordIds, SuggestionResults *const suggestionResults,
                 const DictionaryStructureWithBufferPolicy *const dictStructurePolicy);
-        virtual void onVisitEntry(const int ngramProbability, const int targetPtNodePos);
+        virtual void onVisitEntry(const int ngramProbability, const int targetWordId);
 
      private:
         DISALLOW_IMPLICIT_CONSTRUCTORS(NgramListenerForPrediction);
 
-        const PrevWordsInfo *const mPrevWordsInfo;
+        const NgramContext *const mNgramContext;
+        const WordIdArrayView mPrevWordIds;
         SuggestionResults *const mSuggestionResults;
         const DictionaryStructureWithBufferPolicy *const mDictStructurePolicy;
     };

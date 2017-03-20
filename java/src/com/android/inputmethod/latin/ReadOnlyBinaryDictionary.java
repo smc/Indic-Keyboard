@@ -16,16 +16,13 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.common.ComposedData;
+import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
 
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import org.smc.inputmethod.indic.Dictionary;
-import org.smc.inputmethod.indic.SuggestedWords.SuggestedWordInfo;
-import org.smc.inputmethod.indic.WordComposer;
-import org.smc.inputmethod.indic.settings.SettingsValuesForSuggestion;
 
 /**
  * This class provides binary dictionary reading operations with locking. An instance of this class
@@ -43,7 +40,7 @@ public final class ReadOnlyBinaryDictionary extends Dictionary {
 
     public ReadOnlyBinaryDictionary(final String filename, final long offset, final long length,
             final boolean useFullEditDistance, final Locale locale, final String dictType) {
-        super(dictType);
+        super(dictType, locale);
         mBinaryDictionary = new BinaryDictionary(filename, offset, length, useFullEditDistance,
                 locale, dictType, false /* isUpdatable */);
     }
@@ -53,14 +50,16 @@ public final class ReadOnlyBinaryDictionary extends Dictionary {
     }
 
     @Override
-    public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
+    public ArrayList<SuggestedWordInfo> getSuggestions(final ComposedData composedData,
+            final NgramContext ngramContext, final long proximityInfoHandle,
             final SettingsValuesForSuggestion settingsValuesForSuggestion,
-            final int sessionId, final float[] inOutLanguageWeight) {
+            final int sessionId, final float weightForLocale,
+            final float[] inOutWeightOfLangModelVsSpatialModel) {
         if (mLock.readLock().tryLock()) {
             try {
-                return mBinaryDictionary.getSuggestions(composer, prevWordsInfo, proximityInfo,
-                        settingsValuesForSuggestion, sessionId, inOutLanguageWeight);
+                return mBinaryDictionary.getSuggestions(composedData, ngramContext,
+                        proximityInfoHandle, settingsValuesForSuggestion, sessionId,
+                        weightForLocale, inOutWeightOfLangModelVsSpatialModel);
             } finally {
                 mLock.readLock().unlock();
             }

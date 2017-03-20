@@ -16,10 +16,9 @@
 
 #include "suggest/core/dicnode/dic_node_utils.h"
 
+#include "dictionary/interface/dictionary_structure_with_buffer_policy.h"
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/dicnode/dic_node_vector.h"
-#include "suggest/core/dictionary/multi_bigram_map.h"
-#include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
 
 namespace latinime {
 
@@ -29,8 +28,8 @@ namespace latinime {
 
 /* static */ void DicNodeUtils::initAsRoot(
         const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-        const int *const prevWordsPtNodePos, DicNode *const newRootDicNode) {
-    newRootDicNode->initAsRoot(dictionaryStructurePolicy->getRootPosition(), prevWordsPtNodePos);
+        const WordIdArrayView prevWordIds, DicNode *const newRootDicNode) {
+    newRootDicNode->initAsRoot(dictionaryStructurePolicy->getRootPosition(), prevWordIds);
 }
 
 /*static */ void DicNodeUtils::initAsRootWithPreviousWord(
@@ -73,25 +72,17 @@ namespace latinime {
     if (dicNode->hasMultipleWords() && !dicNode->isValidMultipleWordSuggestion()) {
         return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
     }
-    const int probability = getBigramNodeProbability(dictionaryStructurePolicy, dicNode,
-            multiBigramMap);
+    const WordAttributes wordAttributes = dictionaryStructurePolicy->getWordAttributesInContext(
+            dicNode->getPrevWordIds(), dicNode->getWordId(), multiBigramMap);
+    if (wordAttributes.getProbability() == NOT_A_PROBABILITY
+            || (dicNode->hasMultipleWords()
+                    && (wordAttributes.isBlacklisted() || wordAttributes.isNotAWord()))) {
+        return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
+    }
     // TODO: This equation to calculate the improbability looks unreasonable.  Investigate this.
-    const float cost = static_cast<float>(MAX_PROBABILITY - probability)
+    const float cost = static_cast<float>(MAX_PROBABILITY - wordAttributes.getProbability())
             / static_cast<float>(MAX_PROBABILITY);
     return cost;
-}
-
-/* static */ int DicNodeUtils::getBigramNodeProbability(
-        const DictionaryStructureWithBufferPolicy *const dictionaryStructurePolicy,
-        const DicNode *const dicNode, MultiBigramMap *const multiBigramMap) {
-    const int unigramProbability = dicNode->getProbability();
-    if (multiBigramMap) {
-        const int *const prevWordsPtNodePos = dicNode->getPrevWordsTerminalPtNodePos();
-        return multiBigramMap->getBigramProbability(dictionaryStructurePolicy,
-                prevWordsPtNodePos, dicNode->getPtNodePos(), unigramProbability);
-    }
-    return dictionaryStructurePolicy->getProbability(unigramProbability,
-            NOT_A_PROBABILITY);
 }
 
 } // namespace latinime

@@ -16,10 +16,10 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import android.text.TextUtils;
+import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.common.StringUtils;
 
-import org.smc.inputmethod.indic.Constants;
-import com.android.inputmethod.latin.utils.StringUtils;
+import android.text.TextUtils;
 
 /**
  * The string parser of codesArray specification for <GridRows />. The attribute codesArray is an

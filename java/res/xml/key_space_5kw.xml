@@ -22,35 +22,8 @@
     xmlns:latin="http://schemas.android.com/apk/res-auto"
 >
     <switch>
-        <!-- for transliteration -->
         <case
-            latin:languageCode="be|gu|hi|ml|or|ta|te"
-            latin:languageSwitchKeyEnabled="true"
-            latin:keyboardLayoutSet="qwerty" >
-            <Key
-                latin:keyStyle="languageSwitchKeyStyle" />
-            <Key
-                latin:keyStyle="spaceKeyStyle"
-                latin:keyWidth="30%p" />
-            <Key
-                latin:keyStyle="zwnjKeyStyle" />
-        </case>
-        <case
-            latin:languageCode="ml|hi|as|kn|te"
-            latin:languageSwitchKeyEnabled="false"
-            latin:keyboardLayoutSet="qwerty" >
-            <Key
-                latin:keyStyle="spaceKeyStyle"
-                latin:keyWidth="40%p" />
-            <Key
-                latin:keyStyle="zwnjKeyStyle" />
-        </case>
-        <!-- fa: Perisan
-             kn: Kannada
-             ne: Nepali
-             te: Telugu -->
-        <case
-            latin:languageCode="fa|kn|ne|te"
+            latin:keyboardLayoutSet="bengali_akkhor|farsi|kannada|nepali_romanized|nepali_traditional|telugu"
             latin:languageSwitchKeyEnabled="true"
         >
             <Key
@@ -62,7 +35,7 @@
                 latin:keyStyle="zwnjKeyStyle" />
         </case>
         <case
-            latin:languageCode="fa|kn|ne|te"
+            latin:keyboardLayoutSet="bengali_akkhor|farsi|kannada|nepali_romanized|nepali_traditional|telugu"
             latin:languageSwitchKeyEnabled="false"
         >
             <Key

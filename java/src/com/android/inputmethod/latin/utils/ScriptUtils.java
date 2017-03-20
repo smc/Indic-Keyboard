@@ -23,9 +23,10 @@ import java.util.TreeMap;
  * A class to help with handling different writing scripts.
  */
 public class ScriptUtils {
+
     // Used for hardware keyboards
     public static final int SCRIPT_UNKNOWN = -1;
-    // TODO: should we use ISO 15924 identifiers instead?
+
     public static final int SCRIPT_ARABIC = 0;
     public static final int SCRIPT_ARMENIAN = 1;
     public static final int SCRIPT_BENGALI = 2;
@@ -44,35 +45,31 @@ public class ScriptUtils {
     public static final int SCRIPT_TAMIL = 15;
     public static final int SCRIPT_TELUGU = 16;
     public static final int SCRIPT_THAI = 17;
-    public static final TreeMap<String, Integer> mSpellCheckerLanguageToScript;
+
+    private static final TreeMap<String, Integer> mLanguageCodeToScriptCode;
+
     static {
-        // List of the supported languages and their associated script. We won't check
-        // words written in another script than the selected script, because we know we
-        // don't have those in our dictionary so we will underline everything and we
-        // will never have any suggestions, so it makes no sense checking them, and this
-        // is done in {@link #shouldFilterOut}. Also, the script is used to choose which
-        // proximity to pass to the dictionary descent algorithm.
-        // IMPORTANT: this only contains languages - do not write countries in there.
-        // Only the language is searched from the map.
-        mSpellCheckerLanguageToScript = new TreeMap<>();
-        mSpellCheckerLanguageToScript.put("cs", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("da", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("de", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("el", SCRIPT_GREEK);
-        mSpellCheckerLanguageToScript.put("en", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("es", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("fi", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("fr", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("hr", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("it", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("lt", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("lv", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("nb", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("nl", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("pt", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("sl", SCRIPT_LATIN);
-        mSpellCheckerLanguageToScript.put("ru", SCRIPT_CYRILLIC);
+        mLanguageCodeToScriptCode = new TreeMap<>();
+        mLanguageCodeToScriptCode.put("", SCRIPT_LATIN); // default
+        mLanguageCodeToScriptCode.put("ar", SCRIPT_ARABIC);
+        mLanguageCodeToScriptCode.put("hy", SCRIPT_ARMENIAN);
+        mLanguageCodeToScriptCode.put("bn", SCRIPT_BENGALI);
+        mLanguageCodeToScriptCode.put("bg", SCRIPT_CYRILLIC);
+        mLanguageCodeToScriptCode.put("sr", SCRIPT_CYRILLIC);
+        mLanguageCodeToScriptCode.put("ru", SCRIPT_CYRILLIC);
+        mLanguageCodeToScriptCode.put("ka", SCRIPT_GEORGIAN);
+        mLanguageCodeToScriptCode.put("el", SCRIPT_GREEK);
+        mLanguageCodeToScriptCode.put("iw", SCRIPT_HEBREW);
+        mLanguageCodeToScriptCode.put("km", SCRIPT_KHMER);
+        mLanguageCodeToScriptCode.put("lo", SCRIPT_LAO);
+        mLanguageCodeToScriptCode.put("ml", SCRIPT_MALAYALAM);
+        mLanguageCodeToScriptCode.put("my", SCRIPT_MYANMAR);
+        mLanguageCodeToScriptCode.put("si", SCRIPT_SINHALA);
+        mLanguageCodeToScriptCode.put("ta", SCRIPT_TAMIL);
+        mLanguageCodeToScriptCode.put("te", SCRIPT_TELUGU);
+        mLanguageCodeToScriptCode.put("th", SCRIPT_THAI);
     }
+
     /*
      * Returns whether the code point is a letter that makes sense for the specified
      * locale for this spell checker.
@@ -181,11 +178,17 @@ public class ScriptUtils {
         }
     }
 
+    /**
+     * @param locale spell checker locale
+     * @return internal Latin IME script code that maps to a language code
+     * {@see http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes}
+     */
     public static int getScriptFromSpellCheckerLocale(final Locale locale) {
-        final Integer script = mSpellCheckerLanguageToScript.get(locale.getLanguage());
-        if (null == script) {
-            throw new RuntimeException("We have been called with an unsupported language: \""
-                    + locale.getLanguage() + "\". Framework bug?");
+        String language = locale.getLanguage();
+        Integer script = mLanguageCodeToScriptCode.get(language);
+        if (script == null) {
+            // Default to Latin.
+            script = mLanguageCodeToScriptCode.get("");
         }
         return script;
     }

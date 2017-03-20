@@ -16,11 +16,11 @@
 
 package com.android.inputmethod.latin.makedict;
 
+import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.latin.define.DecoderSpecificConstants;
+
 import java.util.Date;
 import java.util.HashMap;
-
-import org.smc.inputmethod.annotations.UsedForTesting;
-import org.smc.inputmethod.indic.Constants;
 
 /**
  * Dictionary File Format Specification.
@@ -36,9 +36,7 @@ public final class FormatSpec {
      * sion
      *
      * o |
-     * p | not used                                3 bits
-     * t | each unigram and bigram entry has a time stamp?
-     * i |                                         1 bit, 1 = yes, 0 = no : CONTAINS_TIMESTAMP_FLAG
+     * p | not used, 2 bytes.
      * o |
      * nflags
      *
@@ -48,7 +46,7 @@ public final class FormatSpec {
      * d |
      * ersize
      *
-     *   | attributes list
+     * attributes list
      *
      * attributes list is:
      * <key>   = | string of characters at the char format described below, with the terminator used
@@ -86,27 +84,16 @@ public final class FormatSpec {
      */
 
     /* Node (FusionDictionary.PtNode) layout is as follows:
-     *   | is moved ?             2 bits, 11 = no          : FLAG_IS_NOT_MOVED
-     *   |                          This must be the same as FLAG_CHILDREN_ADDRESS_TYPE_THREEBYTES
-     *   |                                01 = yes         : FLAG_IS_MOVED
-     * f |                      the new address is stored in the same place as the parent address
-     * l | is deleted?                    10 = yes         : FLAG_IS_DELETED
+     *   | CHILDREN_ADDRESS_TYPE  2 bits, 11          : FLAG_CHILDREN_ADDRESS_TYPE_THREEBYTES
+     *   |                                10          : FLAG_CHILDREN_ADDRESS_TYPE_TWOBYTES
+     * f |                                01          : FLAG_CHILDREN_ADDRESS_TYPE_ONEBYTE
+     * l |                                00          : FLAG_CHILDREN_ADDRESS_TYPE_NOADDRESS
      * a | has several chars ?         1 bit, 1 = yes, 0 = no   : FLAG_HAS_MULTIPLE_CHARS
      * g | has a terminal ?            1 bit, 1 = yes, 0 = no   : FLAG_IS_TERMINAL
      * s | has shortcut targets ?      1 bit, 1 = yes, 0 = no   : FLAG_HAS_SHORTCUT_TARGETS
      *   | has bigrams ?               1 bit, 1 = yes, 0 = no   : FLAG_HAS_BIGRAMS
      *   | is not a word ?             1 bit, 1 = yes, 0 = no   : FLAG_IS_NOT_A_WORD
-     *   | is blacklisted ?            1 bit, 1 = yes, 0 = no   : FLAG_IS_BLACKLISTED
-     *
-     * p |
-     * a | parent address, 3byte
-     * r | 1 byte = bbbbbbbb match
-     * e |   case 1xxxxxxx => -((0xxxxxxx << 16) + (next byte << 8) + next byte)
-     * n |   otherwise => (bbbbbbbb << 16) + (next byte << 8) + next byte
-     * t | This address is relative to the head of the PtNode.
-     * a | If the node doesn't have a parent, this field is set to 0.
-     * d |
-     * dress
+     *   | is possibly offensive ?     1 bit, 1 = yes, 0 = no   : FLAG_IS_POSSIBLY_OFFENSIVE
      *
      * c | IF FLAG_HAS_MULTIPLE_CHARS
      * h |   char, char, char, char    n * (1 or 3 bytes) : use PtNodeInfo for i/o helpers
@@ -121,15 +108,10 @@ public final class FormatSpec {
      * q |
      *
      * c |
-     * h | children address, 3 bytes
-     * i | 1 byte = bbbbbbbb match
-     * l |   case 1xxxxxxx => -((0xxxxxxx << 16) + (next byte << 8) + next byte)
-     * d |   otherwise => (bbbbbbbb<<16) + (next byte << 8) + next byte
-     * r | if this node doesn't have children, this field is set to 0.
-     * e |   (see BinaryDictEncoderUtils#writeVariableSignedAddress)
-     * n | This address is relative to the position of this field.
-     * a |
-     * ddress
+     * h | children address, CHILDREN_ADDRESS_TYPE bytes
+     * i | This address is relative to the position of this field.
+     * l |
+     * drenaddress
      *
      *   | IF FLAG_IS_TERMINAL && FLAG_HAS_SHORTCUT_TARGETS
      *   | shortcut string list
@@ -179,31 +161,30 @@ public final class FormatSpec {
 
     public static final int MAGIC_NUMBER = 0x9BC13AFE;
     static final int NOT_A_VERSION_NUMBER = -1;
-    static final int FIRST_VERSION_WITH_DYNAMIC_UPDATE = 3;
-    static final int FIRST_VERSION_WITH_TERMINAL_ID = 4;
 
     // These MUST have the same values as the relevant constants in format_utils.h.
-    // From version 4 on, we use version * 100 + revision as a version number. That allows
+    // From version 2.01 on, we use version * 100 + revision as a version number. That allows
     // us to change the format during development while having testing devices remove
     // older files with each upgrade, while still having a readable versioning scheme.
     // When we bump up the dictionary format version, we should update
     // ExpandableDictionary.needsToMigrateDictionary() and
     // ExpandableDictionary.matchesExpectedBinaryDictFormatVersionForThisType().
     public static final int VERSION2 = 2;
-    // Dictionary version used for testing.
-    public static final int VERSION4_ONLY_FOR_TESTING = 399;
-    public static final int VERSION401 = 401;
-    public static final int VERSION4 = 402;
-    public static final int VERSION4_DEV = 403;
-    static final int MINIMUM_SUPPORTED_VERSION = VERSION2;
-    static final int MAXIMUM_SUPPORTED_VERSION = VERSION4_DEV;
+    public static final int VERSION201 = 201;
+    public static final int VERSION202 = 202;
+    // format version for Fava Dictionaries.
+    public static final int VERSION_DELIGHT3 = 86736212;
+    public static final int VERSION402 = 402;
+    public static final int VERSION403 = 403;
+    public static final int VERSION4 = VERSION403;
+    public static final int MINIMUM_SUPPORTED_STATIC_VERSION = VERSION202;
+    public static final int MAXIMUM_SUPPORTED_STATIC_VERSION = VERSION_DELIGHT3;
+    static final int MINIMUM_SUPPORTED_DYNAMIC_VERSION = VERSION4;
+    static final int MAXIMUM_SUPPORTED_DYNAMIC_VERSION = VERSION403;
 
     // TODO: Make this value adaptative to content data, store it in the header, and
     // use it in the reading code.
-    static final int MAX_WORD_LENGTH = Constants.DICTIONARY_MAX_WORD_LENGTH;
-
-    static final int PARENT_ADDRESS_SIZE = 3;
-    static final int FORWARD_LINK_ADDRESS_SIZE = 3;
+    static final int MAX_WORD_LENGTH = DecoderSpecificConstants.DICTIONARY_MAX_WORD_LENGTH;
 
     // These flags are used only in the static dictionary.
     static final int MASK_CHILDREN_ADDRESS_TYPE = 0xC0;
@@ -218,14 +199,7 @@ public final class FormatSpec {
     static final int FLAG_HAS_SHORTCUT_TARGETS = 0x08;
     static final int FLAG_HAS_BIGRAMS = 0x04;
     static final int FLAG_IS_NOT_A_WORD = 0x02;
-    static final int FLAG_IS_BLACKLISTED = 0x01;
-
-    // These flags are used only in the dynamic dictionary.
-    static final int MASK_MOVE_AND_DELETE_FLAG = 0xC0;
-    static final int FIXED_BIT_OF_DYNAMIC_UPDATE_MOVE = 0x40;
-    static final int FLAG_IS_MOVED = 0x00 | FIXED_BIT_OF_DYNAMIC_UPDATE_MOVE;
-    static final int FLAG_IS_NOT_MOVED = 0x80 | FIXED_BIT_OF_DYNAMIC_UPDATE_MOVE;
-    static final int FLAG_IS_DELETED = 0x80;
+    static final int FLAG_IS_POSSIBLY_OFFENSIVE = 0x01;
 
     static final int FLAG_BIGRAM_SHORTCUT_ATTR_HAS_NEXT = 0x80;
     static final int FLAG_BIGRAM_ATTR_OFFSET_NEGATIVE = 0x40;
@@ -240,52 +214,12 @@ public final class FormatSpec {
     static final int PTNODE_TERMINATOR_SIZE = 1;
     static final int PTNODE_FLAGS_SIZE = 1;
     static final int PTNODE_FREQUENCY_SIZE = 1;
-    static final int PTNODE_TERMINAL_ID_SIZE = 4;
     static final int PTNODE_MAX_ADDRESS_SIZE = 3;
     static final int PTNODE_ATTRIBUTE_FLAGS_SIZE = 1;
     static final int PTNODE_ATTRIBUTE_MAX_ADDRESS_SIZE = 3;
     static final int PTNODE_SHORTCUT_LIST_SIZE_SIZE = 2;
 
-    // These values are used only by version 4 or later. They MUST match the definitions in
-    // ver4_dict_constants.cpp.
-    static final String TRIE_FILE_EXTENSION = ".trie";
-    public static final String HEADER_FILE_EXTENSION = ".header";
-    static final String FREQ_FILE_EXTENSION = ".freq";
-    // tat = Terminal Address Table
-    static final String TERMINAL_ADDRESS_TABLE_FILE_EXTENSION = ".tat";
-    static final String BIGRAM_FILE_EXTENSION = ".bigram";
-    static final String SHORTCUT_FILE_EXTENSION = ".shortcut";
-    static final String LOOKUP_TABLE_FILE_SUFFIX = "_lookup";
-    static final String CONTENT_TABLE_FILE_SUFFIX = "_index";
-    static final int FLAGS_IN_FREQ_FILE_SIZE = 1;
-    static final int FREQUENCY_AND_FLAGS_SIZE = 2;
-    static final int TERMINAL_ADDRESS_TABLE_ADDRESS_SIZE = 3;
-    static final int UNIGRAM_TIMESTAMP_SIZE = 4;
-    static final int UNIGRAM_COUNTER_SIZE = 1;
-    static final int UNIGRAM_LEVEL_SIZE = 1;
-
-    // With the English main dictionary as of October 2013, the size of bigram address table is
-    // is 345KB with the block size being 16.
-    // This is 54% of that of full address table.
-    static final int BIGRAM_ADDRESS_TABLE_BLOCK_SIZE = 16;
-    static final int BIGRAM_CONTENT_COUNT = 1;
-    static final int BIGRAM_FREQ_CONTENT_INDEX = 0;
-    static final String BIGRAM_FREQ_CONTENT_ID = "_freq";
-    static final int BIGRAM_TIMESTAMP_SIZE = 4;
-    static final int BIGRAM_COUNTER_SIZE = 1;
-    static final int BIGRAM_LEVEL_SIZE = 1;
-
-    static final int SHORTCUT_CONTENT_COUNT = 1;
-    static final int SHORTCUT_CONTENT_INDEX = 0;
-    // With the English main dictionary as of October 2013, the size of shortcut address table is
-    // 26KB with the block size being 64.
-    // This is only 4.4% of that of full address table.
-    static final int SHORTCUT_ADDRESS_TABLE_BLOCK_SIZE = 64;
-    static final String SHORTCUT_CONTENT_ID = "_shortcut";
-
     static final int NO_CHILDREN_ADDRESS = Integer.MIN_VALUE;
-    static final int NO_PARENT_ADDRESS = 0;
-    static final int NO_FORWARD_LINK_ADDRESS = 0;
     static final int INVALID_CHARACTER = -1;
 
     static final int MAX_PTNODES_FOR_ONE_BYTE_PTNODE_COUNT = 0x7F; // 127
@@ -302,14 +236,13 @@ public final class FormatSpec {
 
     // This option needs to be the same numeric value as the one in binary_format.h.
     static final int NOT_VALID_WORD = -99;
-    static final int SIGNED_CHILDREN_ADDRESS_SIZE = 3;
 
     static final int UINT8_MAX = 0xFF;
     static final int UINT16_MAX = 0xFFFF;
     static final int UINT24_MAX = 0xFFFFFF;
-    static final int SINT24_MAX = 0x7FFFFF;
     static final int MSB8 = 0x80;
-    static final int MSB24 = 0x800000;
+    static final int MINIMAL_ONE_BYTE_CHARACTER_VALUE = 0x20;
+    static final int MAXIMAL_ONE_BYTE_CHARACTER_VALUE = 0xFF;
 
     /**
      * Options about file format.

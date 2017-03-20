@@ -18,25 +18,27 @@ package com.android.inputmethod.latin.utils;
 
 import android.util.Log;
 
-import org.smc.inputmethod.indic.SuggestedWords.SuggestedWordInfo;
-import org.smc.inputmethod.indic.define.DebugFlags;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.define.DebugFlags;
 
 public final class AutoCorrectionUtils {
     private static final boolean DBG = DebugFlags.DEBUG_ENABLED;
     private static final String TAG = AutoCorrectionUtils.class.getSimpleName();
-    private static final int MINIMUM_SAFETY_NET_CHAR_LENGTH = 4;
 
     private AutoCorrectionUtils() {
         // Purely static class: can't instantiate.
     }
 
-    public static boolean suggestionExceedsAutoCorrectionThreshold(
-            final SuggestedWordInfo suggestion, final String consideredWord,
-            final float autoCorrectionThreshold) {
+    public static boolean suggestionExceedsThreshold(final SuggestedWordInfo suggestion,
+            final String consideredWord, final float threshold) {
         if (null != suggestion) {
             // Shortlist a whitelisted word
             if (suggestion.isKindOf(SuggestedWordInfo.KIND_WHITELIST)) {
                 return true;
+            }
+            // TODO: return suggestion.isAprapreateForAutoCorrection();
+            if (!suggestion.isAprapreateForAutoCorrection()) {
+                return false;
             }
             final int autoCorrectionSuggestionScore = suggestion.mScore;
             // TODO: when the normalized score of the first suggestion is nearly equals to
@@ -46,47 +48,15 @@ public final class AutoCorrectionUtils {
             if (DBG) {
                 Log.d(TAG, "Normalized " + consideredWord + "," + suggestion + ","
                         + autoCorrectionSuggestionScore + ", " + normalizedScore
-                        + "(" + autoCorrectionThreshold + ")");
+                        + "(" + threshold + ")");
             }
-            if (normalizedScore >= autoCorrectionThreshold) {
+            if (normalizedScore >= threshold) {
                 if (DBG) {
-                    Log.d(TAG, "Auto corrected by S-threshold.");
+                    Log.d(TAG, "Exceeds threshold.");
                 }
-                return !shouldBlockAutoCorrectionBySafetyNet(consideredWord, suggestion.mWord);
+                return true;
             }
         }
         return false;
-    }
-
-    // TODO: Resolve the inconsistencies between the native auto correction algorithms and
-    // this safety net
-    public static boolean shouldBlockAutoCorrectionBySafetyNet(final String typedWord,
-            final String suggestion) {
-        // Safety net for auto correction.
-        // Actually if we hit this safety net, it's a bug.
-        // If user selected aggressive auto correction mode, there is no need to use the safety
-        // net.
-        // If the length of typed word is less than MINIMUM_SAFETY_NET_CHAR_LENGTH,
-        // we should not use net because relatively edit distance can be big.
-        final int typedWordLength = typedWord.length();
-        if (typedWordLength < MINIMUM_SAFETY_NET_CHAR_LENGTH) {
-            return false;
-        }
-        final int maxEditDistanceOfNativeDictionary = (typedWordLength / 2) + 1;
-        final int distance = BinaryDictionaryUtils.editDistance(typedWord, suggestion);
-        if (DBG) {
-            Log.d(TAG, "Autocorrected edit distance = " + distance
-                    + ", " + maxEditDistanceOfNativeDictionary);
-        }
-        if (distance > maxEditDistanceOfNativeDictionary) {
-            if (DBG) {
-                Log.e(TAG, "Safety net: before = " + typedWord + ", after = " + suggestion);
-                Log.e(TAG, "(Error) The edit distance of this correction exceeds limit. "
-                        + "Turning off auto-correction.");
-            }
-            return true;
-        } else {
-            return false;
-        }
     }
 }

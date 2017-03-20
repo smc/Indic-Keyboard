@@ -17,17 +17,20 @@
 package com.android.inputmethod.keyboard.internal;
 
 import android.text.TextUtils;
+import android.util.SparseIntArray;
 
+import com.android.inputmethod.compat.CharacterCompat;
 import com.android.inputmethod.keyboard.Key;
+import com.android.inputmethod.latin.common.CollectionUtils;
+import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.common.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Locale;
 
-import org.smc.inputmethod.indic.Constants;
-import org.smc.inputmethod.indic.define.DebugFlags;
-import com.android.inputmethod.latin.utils.CollectionUtils;
-import com.android.inputmethod.latin.utils.StringUtils;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * The more key specification object. The more keys are an array of {@link MoreKeySpec}.
@@ -43,18 +46,22 @@ import com.android.inputmethod.latin.utils.StringUtils;
 // TODO: Should extend the key specification object.
 public final class MoreKeySpec {
     public final int mCode;
+    @Nullable
     public final String mLabel;
+    @Nullable
     public final String mOutputText;
     public final int mIconId;
 
-    public MoreKeySpec(final String moreKeySpec, boolean needsToUpperCase, final Locale locale) {
-        if (TextUtils.isEmpty(moreKeySpec)) {
+    public MoreKeySpec(@Nonnull final String moreKeySpec, boolean needsToUpperCase,
+            @Nonnull final Locale locale) {
+        if (moreKeySpec.isEmpty()) {
             throw new KeySpecParser.KeySpecParserError("Empty more key spec");
         }
-        mLabel = StringUtils.toUpperCaseOfStringForLocale(
-                KeySpecParser.getLabel(moreKeySpec), needsToUpperCase, locale);
-        final int code = StringUtils.toUpperCaseOfCodeForLocale(
-                KeySpecParser.getCode(moreKeySpec), needsToUpperCase, locale);
+        final String label = KeySpecParser.getLabel(moreKeySpec);
+        mLabel = needsToUpperCase ? StringUtils.toTitleCaseOfKeyLabel(label, locale) : label;
+        final int codeInSpec = KeySpecParser.getCode(moreKeySpec);
+        final int code = needsToUpperCase ? StringUtils.toTitleCaseOfKeyCode(codeInSpec, locale)
+                : codeInSpec;
         if (code == Constants.CODE_UNSPECIFIED) {
             // Some letter, for example German Eszett (U+00DF: "ß"), has multiple characters
             // upper case representation ("SS").
@@ -62,14 +69,16 @@ public final class MoreKeySpec {
             mOutputText = mLabel;
         } else {
             mCode = code;
-            mOutputText = StringUtils.toUpperCaseOfStringForLocale(
-                    KeySpecParser.getOutputText(moreKeySpec), needsToUpperCase, locale);
+            final String outputText = KeySpecParser.getOutputText(moreKeySpec);
+            mOutputText = needsToUpperCase
+                    ? StringUtils.toTitleCaseOfKeyLabel(outputText, locale) : outputText;
         }
         mIconId = KeySpecParser.getIconId(moreKeySpec);
     }
 
+    @Nonnull
     public Key buildKey(final int x, final int y, final int labelFlags,
-            final KeyboardParams params) {
+            @Nonnull final KeyboardParams params) {
         return new Key(mLabel, mIconId, mCode, mOutputText, null /* hintLabel */, labelFlags,
                 Key.BACKGROUND_TYPE_NORMAL, x, y, params.mDefaultKeyWidth, params.mDefaultRowHeight,
                 params.mHorizontalGap, params.mVerticalGap);
@@ -80,14 +89,18 @@ public final class MoreKeySpec {
         int hashCode = 1;
         hashCode = 31 + mCode;
         hashCode = hashCode * 31 + mIconId;
-        hashCode = hashCode * 31 + (mLabel == null ? 0 : mLabel.hashCode());
-        hashCode = hashCode * 31 + (mOutputText == null ? 0 : mOutputText.hashCode());
+        final String label = mLabel;
+        hashCode = hashCode * 31 + (label == null ? 0 : label.hashCode());
+        final String outputText = mOutputText;
+        hashCode = hashCode * 31 + (outputText == null ? 0 : outputText.hashCode());
         return hashCode;
     }
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
+        if (this == o) {
+            return true;
+        }
         if (o instanceof MoreKeySpec) {
             final MoreKeySpec other = (MoreKeySpec)o;
             return mCode == other.mCode
@@ -106,12 +119,56 @@ public final class MoreKeySpec {
                 : Constants.printableCode(mCode));
         if (StringUtils.codePointCount(label) == 1 && label.codePointAt(0) == mCode) {
             return output;
-        } else {
-            return label + "|" + output;
+        }
+        return label + "|" + output;
+    }
+
+    public static class LettersOnBaseLayout {
+        private final SparseIntArray mCodes = new SparseIntArray();
+        private final HashSet<String> mTexts = new HashSet<>();
+
+        public void addLetter(@Nonnull final Key key) {
+            final int code = key.getCode();
+            if (CharacterCompat.isAlphabetic(code)) {
+                mCodes.put(code, 0);
+            } else if (code == Constants.CODE_OUTPUT_TEXT) {
+                mTexts.add(key.getOutputText());
+            }
+        }
+
+        public boolean contains(@Nonnull final MoreKeySpec moreKey) {
+            final int code = moreKey.mCode;
+            if (CharacterCompat.isAlphabetic(code) && mCodes.indexOfKey(code) >= 0) {
+                return true;
+            } else if (code == Constants.CODE_OUTPUT_TEXT && mTexts.contains(moreKey.mOutputText)) {
+                return true;
+            }
+            return false;
         }
     }
 
-    private static final boolean DEBUG = DebugFlags.DEBUG_ENABLED;
+    @Nullable
+    public static MoreKeySpec[] removeRedundantMoreKeys(@Nullable final MoreKeySpec[] moreKeys,
+            @Nonnull final LettersOnBaseLayout lettersOnBaseLayout) {
+        if (moreKeys == null) {
+            return null;
+        }
+        final ArrayList<MoreKeySpec> filteredMoreKeys = new ArrayList<>();
+        for (final MoreKeySpec moreKey : moreKeys) {
+            if (!lettersOnBaseLayout.contains(moreKey)) {
+                filteredMoreKeys.add(moreKey);
+            }
+        }
+        final int size = filteredMoreKeys.size();
+        if (size == moreKeys.length) {
+            return moreKeys;
+        }
+        if (size == 0) {
+            return null;
+        }
+        return filteredMoreKeys.toArray(new MoreKeySpec[size]);
+    }
+
     // Constants for parsing.
     private static final char COMMA = Constants.CODE_COMMA;
     private static final char BACKSLASH = Constants.CODE_BACKSLASH;
@@ -129,7 +186,8 @@ public final class MoreKeySpec {
      * @return an array of key specification text. Null if the specified <code>text</code> is empty
      * or has no key specifications.
      */
-    public static String[] splitKeySpecs(final String text) {
+    @Nullable
+    public static String[] splitKeySpecs(@Nullable final String text) {
         if (TextUtils.isEmpty(text)) {
             return null;
         }
@@ -171,9 +229,11 @@ public final class MoreKeySpec {
         return list.toArray(new String[list.size()]);
     }
 
+    @Nonnull
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
 
-    private static String[] filterOutEmptyString(final String[] array) {
+    @Nonnull
+    private static String[] filterOutEmptyString(@Nullable final String[] array) {
         if (array == null) {
             return EMPTY_STRING_ARRAY;
         }
@@ -194,8 +254,8 @@ public final class MoreKeySpec {
         return out.toArray(new String[out.size()]);
     }
 
-    public static String[] insertAdditionalMoreKeys(final String[] moreKeySpecs,
-            final String[] additionalMoreKeySpecs) {
+    public static String[] insertAdditionalMoreKeys(@Nullable final String[] moreKeySpecs,
+            @Nullable final String[] additionalMoreKeySpecs) {
         final String[] moreKeys = filterOutEmptyString(moreKeySpecs);
         final String[] additionalMoreKeys = filterOutEmptyString(additionalMoreKeySpecs);
         final int moreKeysCount = moreKeys.length;
@@ -229,11 +289,6 @@ public final class MoreKeySpec {
         if (additionalCount > 0 && additionalIndex == 0) {
             // No '%' marker is found in more keys.
             // Insert all additional more keys to the head of more keys.
-            if (DEBUG && out != null) {
-                throw new RuntimeException("Internal logic error:"
-                        + " moreKeys=" + Arrays.toString(moreKeys)
-                        + " additionalMoreKeys=" + Arrays.toString(additionalMoreKeys));
-            }
             out = CollectionUtils.arrayAsList(additionalMoreKeys, additionalIndex, additionalCount);
             for (int i = 0; i < moreKeysCount; i++) {
                 out.add(moreKeys[i]);
@@ -241,11 +296,6 @@ public final class MoreKeySpec {
         } else if (additionalIndex < additionalCount) {
             // The number of '%' markers are less than additional more keys.
             // Append remained additional more keys to the tail of more keys.
-            if (DEBUG && out != null) {
-                throw new RuntimeException("Internal logic error:"
-                        + " moreKeys=" + Arrays.toString(moreKeys)
-                        + " additionalMoreKeys=" + Arrays.toString(additionalMoreKeys));
-            }
             out = CollectionUtils.arrayAsList(moreKeys, 0, moreKeysCount);
             for (int i = additionalIndex; i < additionalCount; i++) {
                 out.add(additionalMoreKeys[additionalIndex]);
@@ -260,7 +310,7 @@ public final class MoreKeySpec {
         }
     }
 
-    public static int getIntValue(final String[] moreKeys, final String key,
+    public static int getIntValue(@Nullable final String[] moreKeys, final String key,
             final int defaultValue) {
         if (moreKeys == null) {
             return defaultValue;
@@ -287,7 +337,7 @@ public final class MoreKeySpec {
         return value;
     }
 
-    public static boolean getBooleanValue(final String[] moreKeys, final String key) {
+    public static boolean getBooleanValue(@Nullable final String[] moreKeys, final String key) {
         if (moreKeys == null) {
             return false;
         }

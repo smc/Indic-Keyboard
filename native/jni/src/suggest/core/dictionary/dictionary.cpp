@@ -19,15 +19,16 @@
 #include "suggest/core/dictionary/dictionary.h"
 
 #include "defines.h"
+#include "dictionary/interface/dictionary_header_structure_policy.h"
+#include "dictionary/property/ngram_context.h"
 #include "suggest/core/dictionary/dictionary_utils.h"
-#include "suggest/core/policy/dictionary_header_structure_policy.h"
 #include "suggest/core/result/suggestion_results.h"
 #include "suggest/core/session/dic_traverse_session.h"
-#include "suggest/core/session/prev_words_info.h"
 #include "suggest/core/suggest.h"
 #include "suggest/core/suggest_options.h"
 #include "suggest/policyimpl/gesture/gesture_suggest_policy_factory.h"
 #include "suggest/policyimpl/typing/typing_suggest_policy_factory.h"
+#include "utils/int_array_view.h"
 #include "utils/log_utils.h"
 #include "utils/time_keeper.h"
 
@@ -45,88 +46,87 @@ Dictionary::Dictionary(JNIEnv *env, DictionaryStructureWithBufferPolicy::Structu
 
 void Dictionary::getSuggestions(ProximityInfo *proximityInfo, DicTraverseSession *traverseSession,
         int *xcoordinates, int *ycoordinates, int *times, int *pointerIds, int *inputCodePoints,
-        int inputSize, const PrevWordsInfo *const prevWordsInfo,
-        const SuggestOptions *const suggestOptions, const float languageWeight,
+        int inputSize, const NgramContext *const ngramContext,
+        const SuggestOptions *const suggestOptions, const float weightOfLangModelVsSpatialModel,
         SuggestionResults *const outSuggestionResults) const {
     TimeKeeper::setCurrentTime();
-    traverseSession->init(this, prevWordsInfo, suggestOptions);
+    traverseSession->init(this, ngramContext, suggestOptions);
     const auto &suggest = suggestOptions->isGesture() ? mGestureSuggest : mTypingSuggest;
     suggest->getSuggestions(proximityInfo, traverseSession, xcoordinates,
             ycoordinates, times, pointerIds, inputCodePoints, inputSize,
-            languageWeight, outSuggestionResults);
-    if (DEBUG_DICT) {
-        outSuggestionResults->dumpSuggestions();
-    }
+            weightOfLangModelVsSpatialModel, outSuggestionResults);
 }
 
 Dictionary::NgramListenerForPrediction::NgramListenerForPrediction(
-        const PrevWordsInfo *const prevWordsInfo, SuggestionResults *const suggestionResults,
+        const NgramContext *const ngramContext, const WordIdArrayView prevWordIds,
+        SuggestionResults *const suggestionResults,
         const DictionaryStructureWithBufferPolicy *const dictStructurePolicy)
-    : mPrevWordsInfo(prevWordsInfo), mSuggestionResults(suggestionResults),
-      mDictStructurePolicy(dictStructurePolicy) {}
+    : mNgramContext(ngramContext), mPrevWordIds(prevWordIds),
+      mSuggestionResults(suggestionResults), mDictStructurePolicy(dictStructurePolicy) {}
 
 void Dictionary::NgramListenerForPrediction::onVisitEntry(const int ngramProbability,
-        const int targetPtNodePos) {
-    if (targetPtNodePos == NOT_A_DICT_POS) {
+        const int targetWordId) {
+    if (targetWordId == NOT_A_WORD_ID) {
         return;
     }
-    if (mPrevWordsInfo->isNthPrevWordBeginningOfSentence(1 /* n */)
+    if (mNgramContext->isNthPrevWordBeginningOfSentence(1 /* n */)
             && ngramProbability == NOT_A_PROBABILITY) {
         return;
     }
     int targetWordCodePoints[MAX_WORD_LENGTH];
-    int unigramProbability = 0;
-    const int codePointCount = mDictStructurePolicy->
-            getCodePointsAndProbabilityAndReturnCodePointCount(targetPtNodePos,
-                    MAX_WORD_LENGTH, targetWordCodePoints, &unigramProbability);
+    const int codePointCount = mDictStructurePolicy->getCodePointsAndReturnCodePointCount(
+            targetWordId, MAX_WORD_LENGTH, targetWordCodePoints);
     if (codePointCount <= 0) {
         return;
     }
-    const int probability = mDictStructurePolicy->getProbability(
-            unigramProbability, ngramProbability);
-    mSuggestionResults->addPrediction(targetWordCodePoints, codePointCount, probability);
+    const WordAttributes wordAttributes = mDictStructurePolicy->getWordAttributesInContext(
+            mPrevWordIds, targetWordId, nullptr /* multiBigramMap */);
+    if (wordAttributes.getProbability() == NOT_A_PROBABILITY) {
+        return;
+    }
+    mSuggestionResults->addPrediction(targetWordCodePoints, codePointCount,
+            wordAttributes.getProbability());
 }
 
-void Dictionary::getPredictions(const PrevWordsInfo *const prevWordsInfo,
+void Dictionary::getPredictions(const NgramContext *const ngramContext,
         SuggestionResults *const outSuggestionResults) const {
     TimeKeeper::setCurrentTime();
-    NgramListenerForPrediction listener(prevWordsInfo, outSuggestionResults,
-            mDictionaryStructureWithBufferPolicy.get());
-    int prevWordsPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
-    prevWordsInfo->getPrevWordsTerminalPtNodePos(
-            mDictionaryStructureWithBufferPolicy.get(), prevWordsPtNodePos,
+    WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordIdArray;
+    const WordIdArrayView prevWordIds = ngramContext->getPrevWordIds(
+            mDictionaryStructureWithBufferPolicy.get(), &prevWordIdArray,
             true /* tryLowerCaseSearch */);
-    mDictionaryStructureWithBufferPolicy->iterateNgramEntries(prevWordsPtNodePos, &listener);
+    NgramListenerForPrediction listener(ngramContext, prevWordIds, outSuggestionResults,
+            mDictionaryStructureWithBufferPolicy.get());
+    mDictionaryStructureWithBufferPolicy->iterateNgramEntries(prevWordIds, &listener);
 }
 
-int Dictionary::getProbability(const int *word, int length) const {
-    return getNgramProbability(nullptr /* prevWordsInfo */, word, length);
+int Dictionary::getProbability(const CodePointArrayView codePoints) const {
+    return getNgramProbability(nullptr /* ngramContext */, codePoints);
 }
 
-int Dictionary::getMaxProbabilityOfExactMatches(const int *word, int length) const {
+int Dictionary::getMaxProbabilityOfExactMatches(const CodePointArrayView codePoints) const {
     TimeKeeper::setCurrentTime();
     return DictionaryUtils::getMaxProbabilityOfExactMatches(
-            mDictionaryStructureWithBufferPolicy.get(), word, length);
+            mDictionaryStructureWithBufferPolicy.get(), codePoints);
 }
 
-int Dictionary::getNgramProbability(const PrevWordsInfo *const prevWordsInfo, const int *word,
-        int length) const {
+int Dictionary::getNgramProbability(const NgramContext *const ngramContext,
+        const CodePointArrayView codePoints) const {
     TimeKeeper::setCurrentTime();
-    int nextWordPos = mDictionaryStructureWithBufferPolicy->getTerminalPtNodePositionOfWord(word,
-            length, false /* forceLowerCaseSearch */);
-    if (NOT_A_DICT_POS == nextWordPos) return NOT_A_PROBABILITY;
-    if (!prevWordsInfo) {
-        return getDictionaryStructurePolicy()->getProbabilityOfPtNode(
-                nullptr /* prevWordsPtNodePos */, nextWordPos);
+    const int wordId = mDictionaryStructureWithBufferPolicy->getWordId(codePoints,
+            false /* forceLowerCaseSearch */);
+    if (wordId == NOT_A_WORD_ID) return NOT_A_PROBABILITY;
+    if (!ngramContext) {
+        return getDictionaryStructurePolicy()->getProbabilityOfWord(WordIdArrayView(), wordId);
     }
-    int prevWordsPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
-    prevWordsInfo->getPrevWordsTerminalPtNodePos(
-            mDictionaryStructureWithBufferPolicy.get(), prevWordsPtNodePos,
+    WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> prevWordIdArray;
+    const WordIdArrayView prevWordIds = ngramContext->getPrevWordIds(
+            mDictionaryStructureWithBufferPolicy.get(), &prevWordIdArray,
             true /* tryLowerCaseSearch */);
-    return getDictionaryStructurePolicy()->getProbabilityOfPtNode(prevWordsPtNodePos, nextWordPos);
+    return getDictionaryStructurePolicy()->getProbabilityOfWord(prevWordIds, wordId);
 }
 
-bool Dictionary::addUnigramEntry(const int *const word, const int length,
+bool Dictionary::addUnigramEntry(const CodePointArrayView codePoints,
         const UnigramProperty *const unigramProperty) {
     if (unigramProperty->representsBeginningOfSentence()
             && !mDictionaryStructureWithBufferPolicy->getHeaderStructurePolicy()
@@ -135,24 +135,31 @@ bool Dictionary::addUnigramEntry(const int *const word, const int length,
         return false;
     }
     TimeKeeper::setCurrentTime();
-    return mDictionaryStructureWithBufferPolicy->addUnigramEntry(word, length, unigramProperty);
+    return mDictionaryStructureWithBufferPolicy->addUnigramEntry(codePoints, unigramProperty);
 }
 
-bool Dictionary::removeUnigramEntry(const int *const codePoints, const int codePointCount) {
+bool Dictionary::removeUnigramEntry(const CodePointArrayView codePoints) {
     TimeKeeper::setCurrentTime();
-    return mDictionaryStructureWithBufferPolicy->removeUnigramEntry(codePoints, codePointCount);
+    return mDictionaryStructureWithBufferPolicy->removeUnigramEntry(codePoints);
 }
 
-bool Dictionary::addNgramEntry(const PrevWordsInfo *const prevWordsInfo,
-        const BigramProperty *const bigramProperty) {
+bool Dictionary::addNgramEntry(const NgramProperty *const ngramProperty) {
     TimeKeeper::setCurrentTime();
-    return mDictionaryStructureWithBufferPolicy->addNgramEntry(prevWordsInfo, bigramProperty);
+    return mDictionaryStructureWithBufferPolicy->addNgramEntry(ngramProperty);
 }
 
-bool Dictionary::removeNgramEntry(const PrevWordsInfo *const prevWordsInfo,
-        const int *const word, const int length) {
+bool Dictionary::removeNgramEntry(const NgramContext *const ngramContext,
+        const CodePointArrayView codePoints) {
     TimeKeeper::setCurrentTime();
-    return mDictionaryStructureWithBufferPolicy->removeNgramEntry(prevWordsInfo, word, length);
+    return mDictionaryStructureWithBufferPolicy->removeNgramEntry(ngramContext, codePoints);
+}
+
+bool Dictionary::updateEntriesForWordWithNgramContext(const NgramContext *const ngramContext,
+        const CodePointArrayView codePoints, const bool isValidWord,
+        const HistoricalInfo historicalInfo) {
+    TimeKeeper::setCurrentTime();
+    return mDictionaryStructureWithBufferPolicy->updateEntriesForWordWithNgramContext(ngramContext,
+            codePoints, isValidWord, historicalInfo);
 }
 
 bool Dictionary::flush(const char *const filePath) {
@@ -177,11 +184,9 @@ void Dictionary::getProperty(const char *const query, const int queryLength, cha
             maxResultLength);
 }
 
-const WordProperty Dictionary::getWordProperty(const int *const codePoints,
-        const int codePointCount) {
+const WordProperty Dictionary::getWordProperty(const CodePointArrayView codePoints) {
     TimeKeeper::setCurrentTime();
-    return mDictionaryStructureWithBufferPolicy->getWordProperty(
-            codePoints, codePointCount);
+    return mDictionaryStructureWithBufferPolicy->getWordProperty(codePoints);
 }
 
 int Dictionary::getNextWordAndNextToken(const int token, int *const outCodePoints,

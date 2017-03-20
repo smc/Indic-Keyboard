@@ -16,26 +16,25 @@
 
 package com.android.inputmethod.latin.utils;
 
-import org.smc.inputmethod.dictionarypack.DictionarySettingsFragment;
+import com.android.inputmethod.dictionarypack.DictionarySettingsFragment;
+import com.android.inputmethod.latin.about.AboutPreferences;
+import com.android.inputmethod.latin.settings.AccountsSettingsFragment;
+import com.android.inputmethod.latin.settings.AdvancedSettingsFragment;
+import com.android.inputmethod.latin.settings.AppearanceSettingsFragment;
+import com.android.inputmethod.latin.settings.CorrectionSettingsFragment;
+import com.android.inputmethod.latin.settings.CustomInputStyleSettingsFragment;
+import com.android.inputmethod.latin.settings.DebugSettingsFragment;
+import com.android.inputmethod.latin.settings.GestureSettingsFragment;
+import com.android.inputmethod.latin.settings.PreferencesSettingsFragment;
+import com.android.inputmethod.latin.settings.SettingsFragment;
+import com.android.inputmethod.latin.settings.ThemeSettingsFragment;
+import com.android.inputmethod.latin.spellcheck.SpellCheckerSettingsFragment;
+import com.android.inputmethod.latin.userdictionary.UserDictionaryAddWordFragment;
+import com.android.inputmethod.latin.userdictionary.UserDictionaryList;
+import com.android.inputmethod.latin.userdictionary.UserDictionaryLocalePicker;
+import com.android.inputmethod.latin.userdictionary.UserDictionarySettings;
 
 import java.util.HashSet;
-
-import org.smc.inputmethod.indic.about.AboutPreferences;
-import org.smc.inputmethod.indic.settings.AdvancedSettingsFragment;
-import org.smc.inputmethod.indic.settings.AppearanceSettingsFragment;
-import org.smc.inputmethod.indic.settings.CorrectionSettingsFragment;
-import org.smc.inputmethod.indic.settings.CustomInputStyleSettingsFragment;
-import org.smc.inputmethod.indic.settings.DebugSettingsFragment;
-import org.smc.inputmethod.indic.settings.GestureSettingsFragment;
-import org.smc.inputmethod.indic.settings.MultiLingualSettingsFragment;
-import org.smc.inputmethod.indic.settings.PreferencesSettingsFragment;
-import org.smc.inputmethod.indic.settings.SettingsFragment;
-import org.smc.inputmethod.indic.settings.ThemeSettingsFragment;
-import org.smc.inputmethod.indic.spellcheck.SpellCheckerSettingsFragment;
-import org.smc.inputmethod.indic.userdictionary.UserDictionaryAddWordFragment;
-import org.smc.inputmethod.indic.userdictionary.UserDictionaryList;
-import org.smc.inputmethod.indic.userdictionary.UserDictionaryLocalePicker;
-import org.smc.inputmethod.indic.userdictionary.UserDictionarySettings;
 
 public class FragmentUtils {
     private static final HashSet<String> sLatinImeFragments = new HashSet<>();
@@ -43,9 +42,9 @@ public class FragmentUtils {
         sLatinImeFragments.add(DictionarySettingsFragment.class.getName());
         sLatinImeFragments.add(AboutPreferences.class.getName());
         sLatinImeFragments.add(PreferencesSettingsFragment.class.getName());
+        sLatinImeFragments.add(AccountsSettingsFragment.class.getName());
         sLatinImeFragments.add(AppearanceSettingsFragment.class.getName());
         sLatinImeFragments.add(ThemeSettingsFragment.class.getName());
-        sLatinImeFragments.add(MultiLingualSettingsFragment.class.getName());
         sLatinImeFragments.add(CustomInputStyleSettingsFragment.class.getName());
         sLatinImeFragments.add(GestureSettingsFragment.class.getName());
         sLatinImeFragments.add(CorrectionSettingsFragment.class.getName());

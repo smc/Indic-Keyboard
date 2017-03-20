@@ -18,6 +18,7 @@
 #define LATINIME_SUGGESTIONS_OUTPUT_UTILS
 
 #include "defines.h"
+#include "dictionary/property/word_attributes.h"
 
 namespace latinime {
 
@@ -25,15 +26,23 @@ class BinaryDictionaryShortcutIterator;
 class DicNode;
 class DicTraverseSession;
 class Scoring;
+class SuggestOptions;
 class SuggestionResults;
 
 class SuggestionsOutputUtils {
  public:
     /**
+     * Returns true if we should block the incoming word, in the context of the user's
+     * preferences to include or not include possibly offensive words
+     */
+    static bool shouldBlockWord(const SuggestOptions *const suggestOptions,
+            const DicNode *const terminalDicNode, const WordAttributes wordAttributes,
+            const bool isLastWord);
+    /**
      * Outputs the final list of suggestions (i.e., terminal nodes).
      */
     static void outputSuggestions(const Scoring *const scoringPolicy,
-            DicTraverseSession *traverseSession, const float languageWeight,
+            DicTraverseSession *traverseSession, const float weightOfLangModelVsSpatialModel,
             SuggestionResults *const outSuggestionResults);
 
  private:
@@ -44,7 +53,7 @@ class SuggestionsOutputUtils {
 
     static void outputSuggestionsOfDicNode(const Scoring *const scoringPolicy,
             DicTraverseSession *traverseSession, const DicNode *const terminalDicNode,
-            const float languageWeight, const bool boostExactMatches,
+            const float weightOfLangModelVsSpatialModel, const bool boostExactMatches,
             const bool forceCommitMultiWords, const bool outputSecondWordFirstLetterInputIndex,
             SuggestionResults *const outSuggestionResults);
     static void outputShortcuts(BinaryDictionaryShortcutIterator *const shortcutIt,

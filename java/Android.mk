@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-LOCAL_PATH:= $(call my-dir)
+LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE_TAGS := optional
@@ -25,7 +25,8 @@ LOCAL_CERTIFICATE := shared
 
 LOCAL_JNI_SHARED_LIBRARIES := libjni_latinime
 
-LOCAL_STATIC_JAVA_LIBRARIES := android-common inputmethod-common android-support-v4 jsr305
+LOCAL_STATIC_JAVA_LIBRARIES := \
+        android-common inputmethod-common android-support-v4 jsr305 latinime-common
 
 # Do not compress dictionary files to mmap dict data runtime
 LOCAL_AAPT_FLAGS := -0 .dict

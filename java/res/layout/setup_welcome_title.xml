@@ -21,7 +21,6 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
     <TextView
         android:id="@+id/setup_welcome_title"
-        android:text="@string/setup_welcome_title"
         style="@style/setupTitleStyle" />
     <TextView
         android:id="@+id/setup_welcome_description"

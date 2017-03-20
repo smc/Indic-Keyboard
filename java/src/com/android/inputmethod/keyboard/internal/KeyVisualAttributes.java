@@ -20,10 +20,14 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.util.SparseIntArray;
 
-import org.smc.inputmethod.indic.R;
+import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public final class KeyVisualAttributes {
+    @Nullable
     public final Typeface mTypeface;
 
     public final float mLetterRatio;
@@ -81,7 +85,8 @@ public final class KeyVisualAttributes {
         }
     }
 
-    public static KeyVisualAttributes newInstance(final TypedArray keyAttr) {
+    @Nullable
+    public static KeyVisualAttributes newInstance(@Nonnull final TypedArray keyAttr) {
         final int indexCount = keyAttr.getIndexCount();
         for (int i = 0; i < indexCount; i++) {
             final int attrId = keyAttr.getIndex(i);
@@ -93,7 +98,7 @@ public final class KeyVisualAttributes {
         return null;
     }
 
-    private KeyVisualAttributes(final TypedArray keyAttr) {
+    private KeyVisualAttributes(@Nonnull final TypedArray keyAttr) {
         if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyTypeface)) {
             mTypeface = Typeface.defaultFromStyle(
                     keyAttr.getInt(R.styleable.Keyboard_Key_keyTypeface, Typeface.NORMAL));

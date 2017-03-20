@@ -25,7 +25,6 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
-import android.graphics.Region;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
@@ -35,12 +34,14 @@ import android.view.View;
 
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.keyboard.internal.KeyVisualAttributes;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.utils.TypefaceUtils;
 
 import java.util.HashSet;
 
-import org.smc.inputmethod.indic.Constants;
-import org.smc.inputmethod.indic.R;
-import com.android.inputmethod.latin.utils.TypefaceUtils;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * A view that renders a virtual {@link Keyboard}.
@@ -99,24 +100,28 @@ public class KeyboardView extends View {
     private static final float MAX_LABEL_RATIO = 0.90f;
 
     // Main keyboard
+    // TODO: Consider having a dummy keyboard object to make this @Nonnull
+    @Nullable
     private Keyboard mKeyboard;
-    protected final KeyDrawParams mKeyDrawParams = new KeyDrawParams();
+    @Nonnull
+    private final KeyDrawParams mKeyDrawParams = new KeyDrawParams();
 
     // Drawing
     /** True if all keys should be drawn */
     private boolean mInvalidateAllKeys;
     /** The keys that should be drawn */
     private final HashSet<Key> mInvalidatedKeys = new HashSet<>();
-    /** The working rectangle variable */
-    private final Rect mWorkingRect = new Rect();
+    /** The working rectangle for clipping */
+    private final Rect mClipRect = new Rect();
     /** The keyboard bitmap buffer for faster updates */
-    /** The clip region to draw keys */
-    private final Region mClipRegion = new Region();
     private Bitmap mOffscreenBuffer;
     /** The canvas for the above mutable keyboard bitmap */
+    @Nonnull
     private final Canvas mOffscreenCanvas = new Canvas();
+    @Nonnull
     private final Paint mPaint = new Paint();
     private final Paint.FontMetrics mFontMetrics = new Paint.FontMetrics();
+
     public KeyboardView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.keyboardViewStyle);
     }
@@ -160,11 +165,12 @@ public class KeyboardView extends View {
         mPaint.setAntiAlias(true);
     }
 
+    @Nullable
     public KeyVisualAttributes getKeyVisualAttribute() {
         return mKeyVisualAttributes;
     }
 
-    private static void blendAlpha(final Paint paint, final int alpha) {
+    private static void blendAlpha(@Nonnull final Paint paint, final int alpha) {
         final int color = paint.getColor();
         paint.setARGB((paint.getAlpha() * alpha) / Constants.Color.ALPHA_OPAQUE,
                 Color.red(color), Color.green(color), Color.blue(color));
@@ -183,7 +189,7 @@ public class KeyboardView extends View {
      * @see #getKeyboard()
      * @param keyboard the keyboard to display in this view
      */
-    public void setKeyboard(final Keyboard keyboard) {
+    public void setKeyboard(@Nonnull final Keyboard keyboard) {
         mKeyboard = keyboard;
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mKeyDrawParams.updateParams(keyHeight, mKeyVisualAttributes);
@@ -197,6 +203,7 @@ public class KeyboardView extends View {
      * @return the currently attached keyboard
      * @see #setKeyboard(Keyboard)
      */
+    @Nullable
     public Keyboard getKeyboard() {
         return mKeyboard;
     }
@@ -205,19 +212,25 @@ public class KeyboardView extends View {
         return mVerticalCorrection;
     }
 
+    @Nonnull
+    protected KeyDrawParams getKeyDrawParams() {
+        return mKeyDrawParams;
+    }
+
     protected void updateKeyDrawParams(final int keyHeight) {
         mKeyDrawParams.updateParams(keyHeight, mKeyVisualAttributes);
     }
 
     @Override
     protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
-        if (mKeyboard == null) {
+        final Keyboard keyboard = getKeyboard();
+        if (keyboard == null) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             return;
         }
         // The main keyboard expands to the entire this {@link KeyboardView}.
-        final int width = mKeyboard.mOccupiedWidth + getPaddingLeft() + getPaddingRight();
-        final int height = mKeyboard.mOccupiedHeight + getPaddingTop() + getPaddingBottom();
+        final int width = keyboard.mOccupiedWidth + getPaddingLeft() + getPaddingRight();
+        final int height = keyboard.mOccupiedHeight + getPaddingTop() + getPaddingBottom();
         setMeasuredDimension(width, height);
     }
 
@@ -265,52 +278,45 @@ public class KeyboardView extends View {
         }
     }
 
-    private void onDrawKeyboard(final Canvas canvas) {
-        if (mKeyboard == null) return;
+    private void onDrawKeyboard(@Nonnull final Canvas canvas) {
+        final Keyboard keyboard = getKeyboard();
+        if (keyboard == null) {
+            return;
+        }
 
-        final int width = getWidth();
-        final int height = getHeight();
         final Paint paint = mPaint;
-
+        final Drawable background = getBackground();
         // Calculate clip region and set.
         final boolean drawAllKeys = mInvalidateAllKeys || mInvalidatedKeys.isEmpty();
         final boolean isHardwareAccelerated = canvas.isHardwareAccelerated();
         // TODO: Confirm if it's really required to draw all keys when hardware acceleration is on.
         if (drawAllKeys || isHardwareAccelerated) {
-            mClipRegion.set(0, 0, width, height);
-        } else {
-            mClipRegion.setEmpty();
-            for (final Key key : mInvalidatedKeys) {
-                if (mKeyboard.hasKey(key)) {
-                    final int x = key.getX() + getPaddingLeft();
-                    final int y = key.getY() + getPaddingTop();
-                    mWorkingRect.set(x, y, x + key.getWidth(), y + key.getHeight());
-                    mClipRegion.union(mWorkingRect);
-                }
-            }
-        }
-        if (!isHardwareAccelerated) {
-            canvas.clipRegion(mClipRegion, Region.Op.REPLACE);
-            // Draw keyboard background.
-            canvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
-            final Drawable background = getBackground();
-            if (background != null) {
+            if (!isHardwareAccelerated && background != null) {
+                // Need to draw keyboard background on {@link #mOffscreenBuffer}.
+                canvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
                 background.draw(canvas);
             }
-        }
-
-        // TODO: Confirm if it's really required to draw all keys when hardware acceleration is on.
-        if (drawAllKeys || isHardwareAccelerated) {
             // Draw all keys.
-            for (final Key key : mKeyboard.getSortedKeys()) {
+            for (final Key key : keyboard.getSortedKeys()) {
                 onDrawKey(key, canvas, paint);
             }
         } else {
-            // Draw invalidated keys.
             for (final Key key : mInvalidatedKeys) {
-                if (mKeyboard.hasKey(key)) {
-                    onDrawKey(key, canvas, paint);
+                if (!keyboard.hasKey(key)) {
+                    continue;
                 }
+                if (background != null) {
+                    // Need to redraw key's background on {@link #mOffscreenBuffer}.
+                    final int x = key.getX() + getPaddingLeft();
+                    final int y = key.getY() + getPaddingTop();
+                    mClipRect.set(x, y, x + key.getWidth(), y + key.getHeight());
+                    canvas.save();
+                    canvas.clipRect(mClipRect);
+                    canvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
+                    background.draw(canvas);
+                    canvas.restore();
+                }
+                onDrawKey(key, canvas, paint);
             }
         }
 
@@ -318,20 +324,22 @@ public class KeyboardView extends View {
         mInvalidateAllKeys = false;
     }
 
-    private void onDrawKey(final Key key, final Canvas canvas, final Paint paint) {
+    private void onDrawKey(@Nonnull final Key key, @Nonnull final Canvas canvas,
+            @Nonnull final Paint paint) {
         final int keyDrawX = key.getDrawX() + getPaddingLeft();
         final int keyDrawY = key.getY() + getPaddingTop();
         canvas.translate(keyDrawX, keyDrawY);
 
-        final int keyHeight = mKeyboard.mMostCommonKeyHeight - mKeyboard.mVerticalGap;
         final KeyVisualAttributes attr = key.getVisualAttributes();
-        final KeyDrawParams params = mKeyDrawParams.mayCloneAndUpdateParams(keyHeight, attr);
+        final KeyDrawParams params = mKeyDrawParams.mayCloneAndUpdateParams(key.getHeight(), attr);
         params.mAnimAlpha = Constants.Color.ALPHA_OPAQUE;
 
         if (!key.isSpacer()) {
             final Drawable background = key.selectBackgroundDrawable(
                     mKeyBackground, mFunctionalKeyBackground, mSpacebarBackground);
-            onDrawKeyBackground(key, canvas, background);
+            if (background != null) {
+                onDrawKeyBackground(key, canvas, background);
+            }
         }
         onDrawKeyTopVisuals(key, canvas, paint, params);
 
@@ -339,8 +347,8 @@ public class KeyboardView extends View {
     }
 
     // Draw key background.
-    protected void onDrawKeyBackground(final Key key, final Canvas canvas,
-            final Drawable background) {
+    protected void onDrawKeyBackground(@Nonnull final Key key, @Nonnull final Canvas canvas,
+            @Nonnull final Drawable background) {
         final int keyWidth = key.getDrawWidth();
         final int keyHeight = key.getHeight();
         final int bgWidth, bgHeight, bgX, bgY;
@@ -372,15 +380,17 @@ public class KeyboardView extends View {
     }
 
     // Draw key top visuals.
-    protected void onDrawKeyTopVisuals(final Key key, final Canvas canvas, final Paint paint,
-            final KeyDrawParams params) {
+    protected void onDrawKeyTopVisuals(@Nonnull final Key key, @Nonnull final Canvas canvas,
+            @Nonnull final Paint paint, @Nonnull final KeyDrawParams params) {
         final int keyWidth = key.getDrawWidth();
         final int keyHeight = key.getHeight();
         final float centerX = keyWidth * 0.5f;
         final float centerY = keyHeight * 0.5f;
 
         // Draw key label.
-        final Drawable icon = key.getIcon(mKeyboard.mIconsSet, params.mAnimAlpha);
+        final Keyboard keyboard = getKeyboard();
+        final Drawable icon = (keyboard == null) ? null
+                : key.getIcon(keyboard.mIconsSet, params.mAnimAlpha);
         float labelX = centerX;
         float labelBaseline = centerY;
         final String label = key.getLabel();
@@ -499,8 +509,8 @@ public class KeyboardView extends View {
     }
 
     // Draw popup hint "..." at the bottom right corner of the key.
-    protected void drawKeyPopupHint(final Key key, final Canvas canvas, final Paint paint,
-            final KeyDrawParams params) {
+    protected void drawKeyPopupHint(@Nonnull final Key key, @Nonnull final Canvas canvas,
+            @Nonnull final Paint paint, @Nonnull final KeyDrawParams params) {
         if (TextUtils.isEmpty(mKeyPopupHintLetter)) {
             return;
         }
@@ -517,15 +527,15 @@ public class KeyboardView extends View {
         canvas.drawText(mKeyPopupHintLetter, hintX, hintY, paint);
     }
 
-    protected static void drawIcon(final Canvas canvas, final Drawable icon, final int x,
-            final int y, final int width, final int height) {
+    protected static void drawIcon(@Nonnull final Canvas canvas,@Nonnull final Drawable icon,
+            final int x, final int y, final int width, final int height) {
         canvas.translate(x, y);
         icon.setBounds(0, 0, width, height);
         icon.draw(canvas);
         canvas.translate(-x, -y);
     }
 
-    public Paint newLabelPaint(final Key key) {
+    public Paint newLabelPaint(@Nullable final Key key) {
         final Paint paint = new Paint();
         paint.setAntiAlias(true);
         if (key == null) {
@@ -558,9 +568,10 @@ public class KeyboardView extends View {
      * @param key key in the attached {@link Keyboard}.
      * @see #invalidateAllKeys
      */
-    public void invalidateKey(final Key key) {
-        if (mInvalidateAllKeys) return;
-        if (key == null) return;
+    public void invalidateKey(@Nullable final Key key) {
+        if (mInvalidateAllKeys || key == null) {
+            return;
+        }
         mInvalidatedKeys.add(key);
         final int x = key.getX() + getPaddingLeft();
         final int y = key.getY() + getPaddingTop();

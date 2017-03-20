@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.smc.inputmethod.indic.about;
+package com.android.inputmethod.latin.about;
 
 import android.app.Fragment;
 

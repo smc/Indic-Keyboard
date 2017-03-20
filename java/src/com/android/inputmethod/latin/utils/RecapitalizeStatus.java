@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin.utils;
 
+import com.android.inputmethod.latin.common.StringUtils;
+
 import java.util.Locale;
 
 /**
@@ -46,6 +48,17 @@ public class RecapitalizeStatus {
             return CAPS_MODE_FIRST_WORD_UPPER;
         } else {
             return CAPS_MODE_ORIGINAL_MIXED_CASE;
+        }
+    }
+
+    public static String modeToString(final int recapitalizeMode) {
+        switch (recapitalizeMode) {
+        case NOT_A_RECAPITALIZE_MODE: return "undefined";
+        case CAPS_MODE_ORIGINAL_MIXED_CASE: return "mixedCase";
+        case CAPS_MODE_ALL_LOWER: return "allLower";
+        case CAPS_MODE_FIRST_WORD_UPPER: return "firstWordUpper";
+        case CAPS_MODE_ALL_UPPER: return "allUpper";
+        default: return "unknown<" + recapitalizeMode + ">";
         }
     }
 

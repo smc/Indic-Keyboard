@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.smc.inputmethod.indic.personalization;
+package com.android.inputmethod.latin.personalization;
 
+@SuppressWarnings("unused")
 public class PersonalizationHelper {
     public static void currentTimeChangedForTesting(final int currentTimestamp) {
     }

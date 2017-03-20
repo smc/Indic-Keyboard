@@ -35,7 +35,6 @@ LATINIME_LOCAL_DIR := ../..
 LATINIME_BASE_SRC_DIR := $(LATINIME_LOCAL_DIR)/java/src/com/android/inputmethod
 LATINIME_BASE_OVERRIDABLE_SRC_DIR := \
         $(LATINIME_LOCAL_DIR)/java-overridable/src/com/android/inputmethod
-LATINIME_ANNOTATIONS_SRC_DIR := $(LATINIME_BASE_SRC_DIR)/annotations
 MAKEDICT_CORE_SRC_DIR := $(LATINIME_BASE_SRC_DIR)/latin/makedict
 LATINIME_TESTS_SRC_DIR := $(LATINIME_LOCAL_DIR)/tests/src/com/android/inputmethod/latin
 
@@ -43,26 +42,15 @@ LATINIME_TESTS_SRC_DIR := $(LATINIME_LOCAL_DIR)/tests/src/com/android/inputmetho
 # a significant part of the dependencies are mocked in the compat/ directory, with empty or
 # nearly-empty implementations, for parts that we don't use in Dicttool.
 LATINIME_SRC_FILES_FOR_DICTTOOL := \
-        event/Combiner.java \
-        event/Event.java \
         latin/BinaryDictionary.java \
         latin/DicTraverseSession.java \
         latin/Dictionary.java \
-        latin/InputPointers.java \
-        latin/LastComposedWord.java \
-        latin/PrevWordsInfo.java \
+        latin/NgramContext.java \
         latin/SuggestedWords.java \
-        latin/WordComposer.java \
-        latin/settings/NativeSuggestOptions.java \
         latin/settings/SettingsValuesForSuggestion.java \
         latin/utils/BinaryDictionaryUtils.java \
         latin/utils/CombinedFormatUtils.java \
-        latin/utils/CoordinateUtils.java \
-        latin/utils/FileUtils.java \
-        latin/utils/JniUtils.java \
-        latin/utils/LocaleUtils.java \
-        latin/utils/ResizableIntArray.java \
-        latin/utils/StringUtils.java
+        latin/utils/JniUtils.java
 
 LATINIME_OVERRIDABLE_SRC_FILES_FOR_DICTTOOL := \
         latin/define/DebugFlags.java
@@ -82,18 +70,15 @@ DICTTOOL_COMPAT_TESTS_DIR := compat
 
 LOCAL_MAIN_SRC_FILES := $(call all-java-files-under, $(MAKEDICT_CORE_SRC_DIR))
 LOCAL_TOOL_SRC_FILES := $(call all-java-files-under, src)
-LOCAL_ANNOTATIONS_SRC_FILES := $(call all-java-files-under, $(LATINIME_ANNOTATIONS_SRC_DIR))
 
 LOCAL_SRC_FILES := $(LOCAL_TOOL_SRC_FILES) \
         $(filter-out $(addprefix %/, $(notdir $(LOCAL_TOOL_SRC_FILES))), $(LOCAL_MAIN_SRC_FILES)) \
-        $(call all-java-files-under, $(DICTTOOL_COMPAT_TESTS_DIR)) \
-        $(LOCAL_ANNOTATIONS_SRC_FILES) $(USED_TARGETED_SRC_FILES) \
-        $(LATINIME_BASE_SRC_DIR)/latin/Constants.java \
-        $(call all-java-files-under, tests) \
-        $(call all-java-files-under, $(DICTTOOL_ONDEVICE_TESTS_DIR))
+        $(USED_TARGETED_SRC_FILES) \
+        $(call all-java-files-under, \
+                tests $(DICTTOOL_COMPAT_TESTS_DIR) $(DICTTOOL_ONDEVICE_TESTS_DIR))
 
 LOCAL_JAVA_LIBRARIES := junit
-LOCAL_STATIC_JAVA_LIBRARIES := jsr305lib
+LOCAL_STATIC_JAVA_LIBRARIES := jsr305lib latinime-common-host
 LOCAL_REQUIRED_MODULES := $(LATINIME_HOST_NATIVE_LIBNAME)
 LOCAL_JAR_MANIFEST := etc/manifest.txt
 LOCAL_MODULE := dicttool_aosp

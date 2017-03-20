@@ -22,7 +22,7 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.util.LruCache;
 
-import org.smc.inputmethod.compat.AppWorkaroundsUtils;
+import com.android.inputmethod.compat.AppWorkaroundsUtils;
 
 public final class TargetPackageInfoGetterTask extends
         AsyncTask<String, Void, PackageInfo> {

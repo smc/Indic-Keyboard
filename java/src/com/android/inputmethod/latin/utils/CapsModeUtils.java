@@ -19,11 +19,13 @@ package com.android.inputmethod.latin.utils;
 import android.text.InputType;
 import android.text.TextUtils;
 
-import java.util.Locale;
+import com.android.inputmethod.latin.WordComposer;
+import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.common.StringUtils;
+import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
 
-import org.smc.inputmethod.indic.Constants;
-import org.smc.inputmethod.indic.WordComposer;
-import org.smc.inputmethod.indic.settings.SpacingAndPunctuations;
+import java.util.ArrayList;
+import java.util.Locale;
 
 public final class CapsModeUtils {
     private CapsModeUtils() {
@@ -213,12 +215,22 @@ public final class CapsModeUtils {
         char c = cs.charAt(--j);
 
         // We found the next interesting chunk of text ; next we need to determine if it's the
-        // end of a sentence. If we have a question mark or an exclamation mark, it's the end of
-        // a sentence. If it's neither, the only remaining case is the period so we get the opposite
-        // case out of the way.
-        if (c == Constants.CODE_QUESTION_MARK || c == Constants.CODE_EXCLAMATION_MARK) {
-            return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_SENTENCES) & reqModes;
+        // end of a sentence. If we have a sentence terminator (typically a question mark or an
+        // exclamation mark), then it's the end of a sentence; however, we treat the abbreviation
+        // marker specially because usually is the same char as the sentence separator (the
+        // period in most languages) and in this case we need to apply a heuristic to determine
+        // in which of these senses it's used.
+        if (spacingAndPunctuations.isSentenceTerminator(c)
+                && !spacingAndPunctuations.isAbbreviationMarker(c)) {
+            return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS
+                    | TextUtils.CAP_MODE_SENTENCES) & reqModes;
         }
+        // If we reach here, we know we have whitespace before the cursor and before that there
+        // is something that either does not terminate the sentence, or a symbol preceded by the
+        // start of the text, or it's the sentence separator AND it happens to be the same code
+        // point as the abbreviation marker.
+        // If it's a symbol or something that does not terminate the sentence, then we need to
+        // return caps for MODE_CHARACTERS and MODE_WORDS, but not for MODE_SENTENCES.
         if (!spacingAndPunctuations.isSentenceSeparator(c) || j <= 0) {
             return (TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS) & reqModes;
         }
@@ -314,5 +326,32 @@ public final class CapsModeUtils {
         }
         // Here we arrived at the start of the line. This should behave exactly like whitespace.
         return (START == state || LETTER == state) ? noCaps : caps;
+    }
+
+    /**
+     * Convert capitalize mode flags into human readable text.
+     *
+     * @param capsFlags The modes flags to be converted. It may be any combination of
+     * {@link TextUtils#CAP_MODE_CHARACTERS}, {@link TextUtils#CAP_MODE_WORDS}, and
+     * {@link TextUtils#CAP_MODE_SENTENCES}.
+     * @return the text that describe the <code>capsMode</code>.
+     */
+    public static String flagsToString(final int capsFlags) {
+        final int capsFlagsMask = TextUtils.CAP_MODE_CHARACTERS | TextUtils.CAP_MODE_WORDS
+                | TextUtils.CAP_MODE_SENTENCES;
+        if ((capsFlags & ~capsFlagsMask) != 0) {
+            return "unknown<0x" + Integer.toHexString(capsFlags) + ">";
+        }
+        final ArrayList<String> builder = new ArrayList<>();
+        if ((capsFlags & android.text.TextUtils.CAP_MODE_CHARACTERS) != 0) {
+            builder.add("characters");
+        }
+        if ((capsFlags & android.text.TextUtils.CAP_MODE_WORDS) != 0) {
+            builder.add("words");
+        }
+        if ((capsFlags & android.text.TextUtils.CAP_MODE_SENTENCES) != 0) {
+            builder.add("sentences");
+        }
+        return builder.isEmpty() ? "none" : TextUtils.join("|", builder);
     }
 }

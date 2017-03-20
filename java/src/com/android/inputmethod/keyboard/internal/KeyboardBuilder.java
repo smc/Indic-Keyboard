@@ -27,25 +27,26 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.util.Xml;
 
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardTheme;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.common.StringUtils;
+import com.android.inputmethod.latin.utils.ResourceUtils;
+import com.android.inputmethod.latin.utils.XmlParseUtils;
+import com.android.inputmethod.latin.utils.XmlParseUtils.ParseException;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Locale;
 
-import org.smc.inputmethod.annotations.UsedForTesting;
-import org.smc.inputmethod.indic.Constants;
-import org.smc.inputmethod.indic.R;
-import com.android.inputmethod.latin.utils.ResourceUtils;
-import com.android.inputmethod.latin.utils.StringUtils;
-import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
-import com.android.inputmethod.latin.utils.XmlParseUtils;
-import com.android.inputmethod.latin.utils.XmlParseUtils.ParseException;
+import javax.annotation.Nonnull;
 
 /**
  * Keyboard Building helper.
@@ -138,6 +139,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     private static final int DEFAULT_KEYBOARD_COLUMNS = 10;
     private static final int DEFAULT_KEYBOARD_ROWS = 4;
 
+    @Nonnull
     protected final KP mParams;
     protected final Context mContext;
     protected final Resources mResources;
@@ -148,7 +150,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     private boolean mTopEdge;
     private Key mRightEdgeKey = null;
 
-    public KeyboardBuilder(final Context context, final KP params) {
+    public KeyboardBuilder(final Context context, @Nonnull final KP params) {
         mContext = context;
         final Resources res = context.getResources();
         mResources = res;
@@ -159,8 +161,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         params.GRID_HEIGHT = res.getInteger(R.integer.config_keyboard_grid_height);
     }
 
-    public void setAutoGenerate(final KeysCache keysCache) {
-        mParams.mKeysCache = keysCache;
+    public void setAllowRedundantMoreKes(final boolean enabled) {
+        mParams.mAllowRedundantMoreKeys = enabled;
     }
 
     public KeyboardBuilder<KP> load(final int xmlId, final KeyboardId id) {
@@ -189,6 +191,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         mParams.mProximityCharsCorrectionEnabled = enabled;
     }
 
+    @Nonnull
     public Keyboard build() {
         return new Keyboard(mParams);
     }
@@ -278,7 +281,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
             params.mThemeId = keyboardAttr.getInt(R.styleable.Keyboard_themeId, 0);
             params.mIconsSet.loadIcons(keyboardAttr);
-            params.mTextsSet.setLocale(params.mId.mLocale, mContext);
+            params.mTextsSet.setLocale(params.mId.getLocale(), mContext);
 
             final int resourceId = keyboardAttr.getResourceId(
                     R.styleable.Keyboard_touchPositionCorrectionData, 0);
@@ -641,7 +644,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         try {
             final boolean keyboardLayoutSetMatched = matchString(caseAttr,
                     R.styleable.Keyboard_Case_keyboardLayoutSet,
-                    SubtypeLocaleUtils.getKeyboardLayoutSetName(id.mSubtype));
+                    id.mSubtype.getKeyboardLayoutSetName());
             final boolean keyboardLayoutSetElementMatched = matchTypedValue(caseAttr,
                     R.styleable.Keyboard_Case_keyboardLayoutSetElement, id.mElementId,
                     KeyboardId.elementIdToName(id.mElementId));
@@ -669,21 +672,22 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     R.styleable.Keyboard_Case_imeAction, id.imeAction());
             final boolean isIconDefinedMatched = isIconDefined(caseAttr,
                     R.styleable.Keyboard_Case_isIconDefined, mParams.mIconsSet);
-            final boolean localeCodeMatched = matchString(caseAttr,
-                    R.styleable.Keyboard_Case_localeCode, id.mLocale.toString());
-            final boolean languageCodeMatched = matchString(caseAttr,
-                    R.styleable.Keyboard_Case_languageCode, id.mLocale.getLanguage());
-            final boolean countryCodeMatched = matchString(caseAttr,
-                    R.styleable.Keyboard_Case_countryCode, id.mLocale.getCountry());
+            final Locale locale = id.getLocale();
+            final boolean localeCodeMatched = matchLocaleCodes(caseAttr, locale);
+            final boolean languageCodeMatched = matchLanguageCodes(caseAttr, locale);
+            final boolean countryCodeMatched = matchCountryCodes(caseAttr, locale);
+            final boolean splitLayoutMatched = matchBoolean(caseAttr,
+                    R.styleable.Keyboard_Case_isSplitLayout, id.mIsSplitLayout);
             final boolean selected = keyboardLayoutSetMatched && keyboardLayoutSetElementMatched
                     && keyboardThemeMacthed && modeMatched && navigateNextMatched
                     && navigatePreviousMatched && passwordInputMatched && clobberSettingsKeyMatched
                     && hasShortcutKeyMatched  && languageSwitchKeyEnabledMatched
                     && isMultiLineMatched && imeActionMatched && isIconDefinedMatched
-                    && localeCodeMatched && languageCodeMatched && countryCodeMatched;
+                    && localeCodeMatched && languageCodeMatched && countryCodeMatched
+                    && splitLayoutMatched;
 
             if (DEBUG) {
-                startTag("<%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s>%s", TAG_CASE,
+                startTag("<%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s%s>%s", TAG_CASE,
                         textAttr(caseAttr.getString(
                                 R.styleable.Keyboard_Case_keyboardLayoutSet), "keyboardLayoutSet"),
                         textAttr(caseAttr.getString(
@@ -708,6 +712,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                                 "languageSwitchKeyEnabled"),
                         booleanAttr(caseAttr, R.styleable.Keyboard_Case_isMultiLine,
                                 "isMultiLine"),
+                        booleanAttr(caseAttr, R.styleable.Keyboard_Case_isSplitLayout,
+                                "splitLayout"),
                         textAttr(caseAttr.getString(R.styleable.Keyboard_Case_isIconDefined),
                                 "isIconDefined"),
                         textAttr(caseAttr.getString(R.styleable.Keyboard_Case_localeCode),
@@ -723,6 +729,18 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         } finally {
             caseAttr.recycle();
         }
+    }
+
+    private static boolean matchLocaleCodes(TypedArray caseAttr, final Locale locale) {
+        return matchString(caseAttr, R.styleable.Keyboard_Case_localeCode, locale.toString());
+    }
+
+    private static boolean matchLanguageCodes(TypedArray caseAttr, Locale locale) {
+        return matchString(caseAttr, R.styleable.Keyboard_Case_languageCode, locale.getLanguage());
+    }
+
+    private static boolean matchCountryCodes(TypedArray caseAttr, Locale locale) {
+        return matchString(caseAttr, R.styleable.Keyboard_Case_countryCode, locale.getCountry());
     }
 
     private static boolean matchInteger(final TypedArray a, final int index, final int value) {
@@ -834,7 +852,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         mTopEdge = false;
     }
 
-    private void endKey(final Key key) {
+    private void endKey(@Nonnull final Key key) {
         mParams.onAddKey(key);
         if (mLeftEdge) {
             key.markAsLeftEdge(mParams);
@@ -847,6 +865,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     }
 
     private void endKeyboard() {
+        mParams.removeRedundantMoreKeys();
         // {@link #parseGridRows(XmlPullParser,boolean)} may populate keyboard rows higher than
         // previously expected.
         final int actualHeight = mCurrentY - mParams.mVerticalGap + mParams.mBottomPadding;

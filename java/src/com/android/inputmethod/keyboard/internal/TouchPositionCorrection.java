@@ -16,8 +16,8 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import org.smc.inputmethod.annotations.UsedForTesting;
-import org.smc.inputmethod.indic.define.DebugFlags;
+import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.latin.define.DebugFlags;
 
 public final class TouchPositionCorrection {
     private static final int TOUCH_POSITION_CORRECTION_RECORD_SIZE = 3;
@@ -80,6 +80,7 @@ public final class TouchPositionCorrection {
         return mRadii.length;
     }
 
+    @SuppressWarnings({ "static-method", "unused" })
     public float getX(final int row) {
         return 0.0f;
         // Touch position correction data for X coordinate is obsolete.

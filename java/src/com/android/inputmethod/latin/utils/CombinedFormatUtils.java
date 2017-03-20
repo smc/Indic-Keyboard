@@ -17,8 +17,8 @@
 package com.android.inputmethod.latin.utils;
 
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
+import com.android.inputmethod.latin.makedict.NgramProperty;
 import com.android.inputmethod.latin.makedict.ProbabilityInfo;
-import com.android.inputmethod.latin.makedict.WeightedString;
 import com.android.inputmethod.latin.makedict.WordProperty;
 
 import java.util.HashMap;
@@ -26,14 +26,16 @@ import java.util.HashMap;
 public class CombinedFormatUtils {
     public static final String DICTIONARY_TAG = "dictionary";
     public static final String BIGRAM_TAG = "bigram";
-    public static final String SHORTCUT_TAG = "shortcut";
+    public static final String NGRAM_TAG = "ngram";
+    public static final String NGRAM_PREV_WORD_TAG = "prev_word";
     public static final String PROBABILITY_TAG = "f";
     public static final String HISTORICAL_INFO_TAG = "historicalInfo";
     public static final String HISTORICAL_INFO_SEPARATOR = ":";
     public static final String WORD_TAG = "word";
     public static final String BEGINNING_OF_SENTENCE_TAG = "beginning_of_sentence";
     public static final String NOT_A_WORD_TAG = "not_a_word";
-    public static final String BLACKLISTED_TAG = "blacklisted";
+    public static final String POSSIBLY_OFFENSIVE_TAG = "possibly_offensive";
+    public static final String TRUE_VALUE = "true";
 
     public static String formatAttributeMap(final HashMap<String, String> attributeMap) {
         final StringBuilder builder = new StringBuilder();
@@ -58,29 +60,29 @@ public class CombinedFormatUtils {
         builder.append(",");
         builder.append(formatProbabilityInfo(wordProperty.mProbabilityInfo));
         if (wordProperty.mIsBeginningOfSentence) {
-            builder.append("," + BEGINNING_OF_SENTENCE_TAG + "=true");
+            builder.append("," + BEGINNING_OF_SENTENCE_TAG + "=" + TRUE_VALUE);
         }
         if (wordProperty.mIsNotAWord) {
-            builder.append("," + NOT_A_WORD_TAG + "=true");
+            builder.append("," + NOT_A_WORD_TAG + "=" + TRUE_VALUE);
         }
-        if (wordProperty.mIsBlacklistEntry) {
-            builder.append("," + BLACKLISTED_TAG + "=true");
+        if (wordProperty.mIsPossiblyOffensive) {
+            builder.append("," + POSSIBLY_OFFENSIVE_TAG + "=" + TRUE_VALUE);
         }
         builder.append("\n");
-        if (wordProperty.mShortcutTargets != null) {
-            for (final WeightedString shortcutTarget : wordProperty.mShortcutTargets) {
-                builder.append("  " + SHORTCUT_TAG + "=" + shortcutTarget.mWord);
+        if (wordProperty.mHasNgrams) {
+            for (final NgramProperty ngramProperty : wordProperty.mNgrams) {
+                builder.append(" " + NGRAM_TAG + "=" + ngramProperty.mTargetWord.mWord);
                 builder.append(",");
-                builder.append(formatProbabilityInfo(shortcutTarget.mProbabilityInfo));
+                builder.append(formatProbabilityInfo(ngramProperty.mTargetWord.mProbabilityInfo));
                 builder.append("\n");
-            }
-        }
-        if (wordProperty.mBigrams != null) {
-            for (final WeightedString bigram : wordProperty.mBigrams) {
-                builder.append("  " + BIGRAM_TAG + "=" + bigram.mWord);
-                builder.append(",");
-                builder.append(formatProbabilityInfo(bigram.mProbabilityInfo));
-                builder.append("\n");
+                for (int i = 0; i < ngramProperty.mNgramContext.getPrevWordCount(); i++) {
+                    builder.append("  " + NGRAM_PREV_WORD_TAG + "[" + i + "]="
+                            + ngramProperty.mNgramContext.getNthPrevWord(i + 1));
+                    if (ngramProperty.mNgramContext.isNthPrevWordBeginningOfSentence(i + 1)) {
+                        builder.append("," + BEGINNING_OF_SENTENCE_TAG + "=true");
+                    }
+                    builder.append("\n");
+                }
             }
         }
         return builder.toString();
@@ -99,5 +101,9 @@ public class CombinedFormatUtils {
             builder.append(probabilityInfo.mCount);
         }
         return builder.toString();
+    }
+
+    public static boolean isLiteralTrue(final String value) {
+        return TRUE_VALUE.equalsIgnoreCase(value);
     }
 }

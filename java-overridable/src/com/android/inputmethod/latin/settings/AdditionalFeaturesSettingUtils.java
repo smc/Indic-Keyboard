@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package org.smc.inputmethod.indic.settings;
+package com.android.inputmethod.latin.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceFragment;
+import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethodcommon.InputMethodSettingsFragment;
+import com.android.inputmethod.latin.RichInputMethodSubtype;
+import com.android.inputmethod.latin.RichInputMethodManager;
+
+import javax.annotation.Nonnull;
 
 /**
  * Utility class for managing additional features settings.
  */
+@SuppressWarnings("unused")
 public class AdditionalFeaturesSettingUtils {
     public static final int ADDITIONAL_FEATURES_SETTINGS_SIZE = 0;
 
@@ -32,12 +38,20 @@ public class AdditionalFeaturesSettingUtils {
     }
 
     public static void addAdditionalFeaturesPreferences(
-            final Context context, final InputMethodSettingsFragment settingsFragment) {
+            final Context context, final PreferenceFragment settingsFragment) {
         // do nothing.
     }
 
-    public static void readAdditionalFeaturesPreferencesIntoArray(
+    public static void readAdditionalFeaturesPreferencesIntoArray(final Context context,
             final SharedPreferences prefs, final int[] additionalFeaturesPreferences) {
         // do nothing.
+    }
+
+    @Nonnull
+    public static RichInputMethodSubtype createRichInputMethodSubtype(
+            @Nonnull final RichInputMethodManager imm,
+            @Nonnull final InputMethodSubtype subtype,
+            final Context context) {
+        return new RichInputMethodSubtype(subtype);
     }
 }

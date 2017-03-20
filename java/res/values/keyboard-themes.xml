@@ -25,11 +25,12 @@
         <item>@string/keyboard_theme_holo_white</item>
         <item>@string/keyboard_theme_holo_blue</item>
     </string-array>
-    <!-- An element must be a keyboard theme id of {@link KeyboardTheme#THEME_ID_*}. -->
-    <string-array name="keyboard_theme_ids" translatable="false">
+    <!-- An element must be a keyboard theme id of
+         {@link com.android.inputmethod.keyboard.KeyboardTheme#THEME_ID_ICS} etc. -->
+    <integer-array name="keyboard_theme_ids" translatable="false">
         <item>3</item>
         <item>4</item>
         <item>2</item>
         <item>0</item>
-    </string-array>
+    </integer-array>
 </resources>

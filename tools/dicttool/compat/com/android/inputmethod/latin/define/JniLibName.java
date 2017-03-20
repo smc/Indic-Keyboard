@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.smc.inputmethod.indic.define;
+package com.android.inputmethod.latin.define;
 
 public final class JniLibName {
     private JniLibName() {

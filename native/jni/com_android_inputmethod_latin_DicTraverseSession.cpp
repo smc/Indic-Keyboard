@@ -19,10 +19,10 @@
 #include "com_android_inputmethod_latin_DicTraverseSession.h"
 
 #include "defines.h"
+#include "dictionary/property/ngram_context.h"
 #include "jni.h"
 #include "jni_common.h"
 #include "suggest/core/session/dic_traverse_session.h"
-#include "suggest/core/session/prev_words_info.h"
 
 namespace latinime {
 class Dictionary;
@@ -40,14 +40,14 @@ static void latinime_initDicTraverseSession(JNIEnv *env, jclass clazz, jlong tra
     }
     Dictionary *dict = reinterpret_cast<Dictionary *>(dictionary);
     if (!previousWord) {
-        PrevWordsInfo prevWordsInfo;
-        ts->init(dict, &prevWordsInfo, 0 /* suggestOptions */);
+        NgramContext emptyNgramContext;
+        ts->init(dict, &emptyNgramContext, 0 /* suggestOptions */);
         return;
     }
     int prevWord[previousWordLength];
     env->GetIntArrayRegion(previousWord, 0, previousWordLength, prevWord);
-    PrevWordsInfo prevWordsInfo(prevWord, previousWordLength, false /* isStartOfSentence */);
-    ts->init(dict, &prevWordsInfo, 0 /* suggestOptions */);
+    NgramContext ngramContext(prevWord, previousWordLength, false /* isStartOfSentence */);
+    ts->init(dict, &ngramContext, 0 /* suggestOptions */);
 }
 
 static void latinime_releaseDicTraverseSession(JNIEnv *env, jclass clazz, jlong traverseSession) {

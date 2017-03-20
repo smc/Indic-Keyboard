@@ -16,13 +16,14 @@
 
 package com.android.inputmethod.latin.utils;
 
-import org.smc.inputmethod.indic.R;
+import com.android.inputmethod.latin.R;
 
 import android.content.Context;
 
 /**
  * Helper class to get the metadata URI and the additional ID.
  */
+@SuppressWarnings("unused")
 public class MetadataFileUriGetter {
     private MetadataFileUriGetter() {
         // This helper class is not instantiable.

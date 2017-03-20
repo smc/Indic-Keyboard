@@ -17,43 +17,44 @@
 package com.android.inputmethod.keyboard;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
+import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
+import com.android.inputmethod.event.Event;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet.KeyboardLayoutSetException;
 import com.android.inputmethod.keyboard.emoji.EmojiPalettesView;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
 import com.android.inputmethod.keyboard.internal.KeyboardTextsSet;
-
-import org.smc.inputmethod.compat.InputMethodServiceCompatUtils;
-import org.smc.inputmethod.indic.InputView;
-import org.smc.inputmethod.indic.LatinIME;
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.RichInputMethodManager;
-import org.smc.inputmethod.indic.SubtypeSwitcher;
-import org.smc.inputmethod.indic.WordComposer;
-import org.smc.inputmethod.indic.settings.Settings;
-import org.smc.inputmethod.indic.settings.SettingsValues;
+import com.android.inputmethod.latin.InputView;
+import com.android.inputmethod.latin.LatinIME;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.RichInputMethodManager;
+import com.android.inputmethod.latin.WordComposer;
+import com.android.inputmethod.latin.define.ProductionFlags;
+import com.android.inputmethod.latin.settings.Settings;
+import com.android.inputmethod.latin.settings.SettingsValues;
+import com.android.inputmethod.latin.utils.CapsModeUtils;
+import com.android.inputmethod.latin.utils.LanguageOnSpacebarUtils;
+import com.android.inputmethod.latin.utils.RecapitalizeStatus;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.ScriptUtils;
 
+import javax.annotation.Nonnull;
+
 public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private static final String TAG = KeyboardSwitcher.class.getSimpleName();
-
-    private SubtypeSwitcher mSubtypeSwitcher;
-    private SharedPreferences mPrefs;
 
     private InputView mCurrentInputView;
     private View mMainKeyboardFrame;
     private MainKeyboardView mKeyboardView;
     private EmojiPalettesView mEmojiPalettesView;
     private LatinIME mLatinIME;
+    private RichInputMethodManager mRichImm;
     private boolean mIsHardwareAcceleratedDrawingEnabled;
 
     private KeyboardState mState;
@@ -76,14 +77,12 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public static void init(final LatinIME latinIme) {
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(latinIme);
-        sInstance.initInternal(latinIme, prefs);
+        sInstance.initInternal(latinIme);
     }
 
-    private void initInternal(final LatinIME latinIme, final SharedPreferences prefs) {
+    private void initInternal(final LatinIME latinIme) {
         mLatinIME = latinIme;
-        mPrefs = prefs;
-        mSubtypeSwitcher = SubtypeSwitcher.getInstance();
+        mRichImm = RichInputMethodManager.getInstance();
         mState = new KeyboardState(this);
         mIsHardwareAcceleratedDrawingEnabled =
                 InputMethodServiceCompatUtils.enableHardwareAcceleration(mLatinIME);
@@ -91,7 +90,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     public void updateKeyboardTheme() {
         final boolean themeUpdated = updateKeyboardThemeAndContextThemeWrapper(
-                mLatinIME, KeyboardTheme.getKeyboardTheme(mPrefs));
+                mLatinIME, KeyboardTheme.getKeyboardTheme(mLatinIME /* context */));
         if (themeUpdated && mKeyboardView != null) {
             mLatinIME.setInputView(onCreateInputView(mIsHardwareAcceleratedDrawingEnabled));
         }
@@ -114,18 +113,19 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 mThemeContext, editorInfo);
         final Resources res = mThemeContext.getResources();
         final int keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
-        final int keyboardHeight = ResourceUtils.getDefaultKeyboardHeight(res);
+        final int keyboardHeight = ResourceUtils.getKeyboardHeight(res, settingsValues);
         builder.setKeyboardGeometry(keyboardWidth, keyboardHeight);
-        builder.setSubtype(mSubtypeSwitcher.getCurrentSubtype());
+        builder.setSubtype(mRichImm.getCurrentSubtype());
         builder.setVoiceInputKeyEnabled(settingsValues.mShowsVoiceInputKey);
         builder.setLanguageSwitchKeyEnabled(mLatinIME.shouldShowLanguageSwitchKey());
+        builder.setSplitLayoutEnabledByUser(ProductionFlags.IS_SPLIT_KEYBOARD_SUPPORTED
+                && settingsValues.mIsSplitKeyboardEnabled);
         mKeyboardLayoutSet = builder.build();
         try {
             mState.onLoadKeyboard(currentAutoCapsState, currentRecapitalizeState);
-            mKeyboardTextsSet.setLocale(mSubtypeSwitcher.getCurrentSubtypeLocale(), mThemeContext);
+            mKeyboardTextsSet.setLocale(mRichImm.getCurrentSubtypeLocale(), mThemeContext);
         } catch (KeyboardLayoutSetException e) {
             Log.w(TAG, "loading keyboard failed: " + e.mKeyboardId, e.getCause());
-            return;
         }
     }
 
@@ -141,15 +141,18 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         }
     }
 
-    private void setKeyboard(final Keyboard keyboard) {
+    private void setKeyboard(
+            @Nonnull final int keyboardId,
+            @Nonnull final KeyboardSwitchState toggleState) {
         // Make {@link MainKeyboardView} visible and hide {@link EmojiPalettesView}.
         final SettingsValues currentSettingsValues = Settings.getInstance().getCurrent();
-        setMainKeyboardFrame(currentSettingsValues);
+        setMainKeyboardFrame(currentSettingsValues, toggleState);
         // TODO: pass this object to setKeyboard instead of getting the current values.
         final MainKeyboardView keyboardView = mKeyboardView;
         final Keyboard oldKeyboard = keyboardView.getKeyboard();
-        keyboardView.setKeyboard(keyboard);
-        mCurrentInputView.setKeyboardTopPadding(keyboard.mTopPadding);
+        final Keyboard newKeyboard = mKeyboardLayoutSet.getKeyboard(keyboardId);
+        keyboardView.setKeyboard(newKeyboard);
+        mCurrentInputView.setKeyboardTopPadding(newKeyboard.mTopPadding);
         keyboardView.setKeyPreviewPopupEnabled(
                 currentSettingsValues.mKeyPreviewPopupOn,
                 currentSettingsValues.mKeyPreviewPopupDismissDelay);
@@ -161,12 +164,12 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 currentSettingsValues.mKeyPreviewDismissEndXScale,
                 currentSettingsValues.mKeyPreviewDismissEndYScale,
                 currentSettingsValues.mKeyPreviewDismissDuration);
-        keyboardView.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
+        keyboardView.updateShortcutKey(mRichImm.isShortcutImeReady());
         final boolean subtypeChanged = (oldKeyboard == null)
-                || !keyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
-        final int languageOnSpacebarFormatType = mSubtypeSwitcher.getLanguageOnSpacebarFormatType(
-                keyboard.mId.mSubtype);
-        final boolean hasMultipleEnabledIMEsOrSubtypes = RichInputMethodManager.getInstance()
+                || !newKeyboard.mId.mSubtype.equals(oldKeyboard.mId.mSubtype);
+        final int languageOnSpacebarFormatType = LanguageOnSpacebarUtils
+                .getLanguageOnSpacebarFormatType(newKeyboard.mId.mSubtype);
+        final boolean hasMultipleEnabledIMEsOrSubtypes = mRichImm
                 .hasMultipleEnabledIMEsOrSubtypes(true /* shouldIncludeAuxiliarySubtypes */);
         keyboardView.startDisplayLanguageOnSpacebar(subtypeChanged, languageOnSpacebarFormatType,
                 hasMultipleEnabledIMEsOrSubtypes);
@@ -204,42 +207,82 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setAlphabetKeyboard() {
-        setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET));
+        if (DEBUG_ACTION) {
+            Log.d(TAG, "setAlphabetKeyboard");
+        }
+        setKeyboard(KeyboardId.ELEMENT_ALPHABET, KeyboardSwitchState.OTHER);
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setAlphabetManualShiftedKeyboard() {
-        setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED));
+        if (DEBUG_ACTION) {
+            Log.d(TAG, "setAlphabetManualShiftedKeyboard");
+        }
+        setKeyboard(KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED, KeyboardSwitchState.OTHER);
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setAlphabetAutomaticShiftedKeyboard() {
-        setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED));
+        if (DEBUG_ACTION) {
+            Log.d(TAG, "setAlphabetAutomaticShiftedKeyboard");
+        }
+        setKeyboard(KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED, KeyboardSwitchState.OTHER);
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setAlphabetShiftLockedKeyboard() {
-        setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED));
+        if (DEBUG_ACTION) {
+            Log.d(TAG, "setAlphabetShiftLockedKeyboard");
+        }
+        setKeyboard(KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED, KeyboardSwitchState.OTHER);
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setAlphabetShiftLockShiftedKeyboard() {
-        setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED));
+        if (DEBUG_ACTION) {
+            Log.d(TAG, "setAlphabetShiftLockShiftedKeyboard");
+        }
+        setKeyboard(KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED, KeyboardSwitchState.OTHER);
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setSymbolsKeyboard() {
-        setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_SYMBOLS));
+        if (DEBUG_ACTION) {
+            Log.d(TAG, "setSymbolsKeyboard");
+        }
+        setKeyboard(KeyboardId.ELEMENT_SYMBOLS, KeyboardSwitchState.OTHER);
     }
 
-    private void setMainKeyboardFrame(final SettingsValues settingsValues) {
-        mMainKeyboardFrame.setVisibility(
-                settingsValues.mHasHardwareKeyboard ? View.GONE : View.VISIBLE);
+    // Implements {@link KeyboardState.SwitchActions}.
+    @Override
+    public void setSymbolsShiftedKeyboard() {
+        if (DEBUG_ACTION) {
+            Log.d(TAG, "setSymbolsShiftedKeyboard");
+        }
+        setKeyboard(KeyboardId.ELEMENT_SYMBOLS_SHIFTED, KeyboardSwitchState.SYMBOLS_SHIFTED);
+    }
+
+    public boolean isImeSuppressedByHardwareKeyboard(
+            @Nonnull final SettingsValues settingsValues,
+            @Nonnull final KeyboardSwitchState toggleState) {
+        return settingsValues.mHasHardwareKeyboard && toggleState == KeyboardSwitchState.HIDDEN;
+    }
+
+    private void setMainKeyboardFrame(
+            @Nonnull final SettingsValues settingsValues,
+            @Nonnull final KeyboardSwitchState toggleState) {
+        final int visibility =  isImeSuppressedByHardwareKeyboard(settingsValues, toggleState)
+                ? View.GONE : View.VISIBLE;
+        mKeyboardView.setVisibility(visibility);
+        // The visibility of {@link #mKeyboardView} must be aligned with {@link #MainKeyboardFrame}.
+        // @see #getVisibleKeyboardView() and
+        // @see LatinIME#onComputeInset(android.inputmethodservice.InputMethodService.Insets)
+        mMainKeyboardFrame.setVisibility(visibility);
         mEmojiPalettesView.setVisibility(View.GONE);
         mEmojiPalettesView.stopEmojiPalettes();
     }
@@ -247,39 +290,89 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void setEmojiKeyboard() {
+        if (DEBUG_ACTION) {
+            Log.d(TAG, "setEmojiKeyboard");
+        }
         final Keyboard keyboard = mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET);
         mMainKeyboardFrame.setVisibility(View.GONE);
+        // The visibility of {@link #mKeyboardView} must be aligned with {@link #MainKeyboardFrame}.
+        // @see #getVisibleKeyboardView() and
+        // @see LatinIME#onComputeInset(android.inputmethodservice.InputMethodService.Insets)
+        mKeyboardView.setVisibility(View.GONE);
         mEmojiPalettesView.startEmojiPalettes(
                 mKeyboardTextsSet.getText(KeyboardTextsSet.SWITCH_TO_ALPHA_KEY_LABEL),
                 mKeyboardView.getKeyVisualAttribute(), keyboard.mIconsSet);
         mEmojiPalettesView.setVisibility(View.VISIBLE);
     }
 
-    public void onToggleEmojiKeyboard() {
-        if (mKeyboardLayoutSet == null || !isShowingEmojiPalettes()) {
-            mLatinIME.startShowingInputView();
-            setEmojiKeyboard();
-        } else {
-            mLatinIME.stopShowingInputView();
-            setAlphabetKeyboard();
+    public enum KeyboardSwitchState {
+        HIDDEN(-1),
+        SYMBOLS_SHIFTED(KeyboardId.ELEMENT_SYMBOLS_SHIFTED),
+        EMOJI(KeyboardId.ELEMENT_EMOJI_RECENTS),
+        OTHER(-1);
+
+        final int mKeyboardId;
+
+        KeyboardSwitchState(int keyboardId) {
+            mKeyboardId = keyboardId;
         }
     }
 
-    // Implements {@link KeyboardState.SwitchActions}.
-    @Override
-    public void setSymbolsShiftedKeyboard() {
-        setKeyboard(mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_SYMBOLS_SHIFTED));
+    public KeyboardSwitchState getKeyboardSwitchState() {
+        boolean hidden = !isShowingEmojiPalettes()
+                && (mKeyboardLayoutSet == null
+                || mKeyboardView == null
+                || !mKeyboardView.isShown());
+        KeyboardSwitchState state;
+        if (hidden) {
+            return KeyboardSwitchState.HIDDEN;
+        } else if (isShowingEmojiPalettes()) {
+            return KeyboardSwitchState.EMOJI;
+        } else if (isShowingKeyboardId(KeyboardId.ELEMENT_SYMBOLS_SHIFTED)) {
+            return KeyboardSwitchState.SYMBOLS_SHIFTED;
+        }
+        return KeyboardSwitchState.OTHER;
+    }
+
+    public void onToggleKeyboard(@Nonnull final KeyboardSwitchState toggleState) {
+        KeyboardSwitchState currentState = getKeyboardSwitchState();
+        Log.w(TAG, "onToggleKeyboard() : Current = " + currentState + " : Toggle = " + toggleState);
+        if (currentState == toggleState) {
+            mLatinIME.stopShowingInputView();
+            mLatinIME.hideWindow();
+            setAlphabetKeyboard();
+        } else {
+            mLatinIME.startShowingInputView(true);
+            if (toggleState == KeyboardSwitchState.EMOJI) {
+                setEmojiKeyboard();
+            } else {
+                mEmojiPalettesView.stopEmojiPalettes();
+                mEmojiPalettesView.setVisibility(View.GONE);
+
+                mMainKeyboardFrame.setVisibility(View.VISIBLE);
+                mKeyboardView.setVisibility(View.VISIBLE);
+                setKeyboard(toggleState.mKeyboardId, toggleState);
+            }
+        }
     }
 
     // Future method for requesting an updating to the shift state.
-    public void requestUpdatingShiftState(final int currentAutoCapsState,
-            final int currentRecapitalizeState) {
-        mState.onUpdateShiftState(currentAutoCapsState, currentRecapitalizeState);
+    @Override
+    public void requestUpdatingShiftState(final int autoCapsFlags, final int recapitalizeMode) {
+        if (DEBUG_ACTION) {
+            Log.d(TAG, "requestUpdatingShiftState: "
+                    + " autoCapsFlags=" + CapsModeUtils.flagsToString(autoCapsFlags)
+                    + " recapitalizeMode=" + RecapitalizeStatus.modeToString(recapitalizeMode));
+        }
+        mState.onUpdateShiftState(autoCapsFlags, recapitalizeMode);
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void startDoubleTapShiftKeyTimer() {
+        if (DEBUG_TIMER_ACTION) {
+            Log.d(TAG, "startDoubleTapShiftKeyTimer");
+        }
         final MainKeyboardView keyboardView = getMainKeyboardView();
         if (keyboardView != null) {
             keyboardView.startDoubleTapShiftKeyTimer();
@@ -289,6 +382,9 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public void cancelDoubleTapShiftKeyTimer() {
+        if (DEBUG_TIMER_ACTION) {
+            Log.d(TAG, "setAlphabetKeyboard");
+        }
         final MainKeyboardView keyboardView = getMainKeyboardView();
         if (keyboardView != null) {
             keyboardView.cancelDoubleTapShiftKeyTimer();
@@ -298,6 +394,9 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
     public boolean isInDoubleTapShiftKeyTimeout() {
+        if (DEBUG_TIMER_ACTION) {
+            Log.d(TAG, "isInDoubleTapShiftKeyTimeout");
+        }
         final MainKeyboardView keyboardView = getMainKeyboardView();
         return keyboardView != null && keyboardView.isInDoubleTapShiftKeyTimeout();
     }
@@ -305,9 +404,22 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     /**
      * Updates state machine to figure out when to automatically switch back to the previous mode.
      */
-    public void onCodeInput(final int code, final int currentAutoCapsState,
+    public void onEvent(final Event event, final int currentAutoCapsState,
             final int currentRecapitalizeState) {
-        mState.onCodeInput(code, currentAutoCapsState, currentRecapitalizeState);
+        mState.onEvent(event, currentAutoCapsState, currentRecapitalizeState);
+    }
+
+    public boolean isShowingKeyboardId(@Nonnull int... keyboardIds) {
+        if (mKeyboardView == null || !mKeyboardView.isShown()) {
+            return false;
+        }
+        int activeKeyboardId = mKeyboardView.getKeyboard().mId.mElementId;
+        for (int keyboardId : keyboardIds) {
+            if (activeKeyboardId == keyboardId) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isShowingEmojiPalettes() {
@@ -348,7 +460,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         }
 
         updateKeyboardThemeAndContextThemeWrapper(
-                mLatinIME, KeyboardTheme.getKeyboardTheme(mPrefs));
+                mLatinIME, KeyboardTheme.getKeyboardTheme(mLatinIME /* context */));
         mCurrentInputView = (InputView)LayoutInflater.from(mThemeContext).inflate(
                 R.layout.input_view, null);
         mMainKeyboardFrame = mCurrentInputView.findViewById(R.id.main_keyboard_frame);
@@ -362,12 +474,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 isHardwareAcceleratedDrawingEnabled);
         mEmojiPalettesView.setKeyboardActionListener(mLatinIME);
         return mCurrentInputView;
-    }
-
-    public void onNetworkStateChanged() {
-        if (mKeyboardView != null) {
-            mKeyboardView.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady());
-        }
     }
 
     public int getKeyboardShiftMode() {

@@ -20,10 +20,11 @@
 #include <vector>
 
 #include "defines.h"
+#include "dictionary/header/header_read_write_utils.h"
+#include "dictionary/interface/dictionary_header_structure_policy.h"
+#include "dictionary/property/ngram_context.h"
+#include "dictionary/property/word_property.h"
 #include "jni.h"
-#include "suggest/core/session/prev_words_info.h"
-#include "suggest/core/policy/dictionary_header_structure_policy.h"
-#include "suggest/policyimpl/dictionary/header/header_read_write_utils.h"
 #include "utils/char_utils.h"
 
 namespace latinime {
@@ -50,6 +51,7 @@ class JniDataUtils {
             const jsize keyUtf8Length = env->GetStringUTFLength(keyString);
             char keyChars[keyUtf8Length + 1];
             env->GetStringUTFRegion(keyString, 0, env->GetStringLength(keyString), keyChars);
+            env->DeleteLocalRef(keyString);
             keyChars[keyUtf8Length] = '\0';
             DictionaryHeaderStructurePolicy::AttributeMap::key_type key;
             HeaderReadWriteUtils::insertCharactersIntoVector(keyChars, &key);
@@ -59,6 +61,7 @@ class JniDataUtils {
             const jsize valueUtf8Length = env->GetStringUTFLength(valueString);
             char valueChars[valueUtf8Length + 1];
             env->GetStringUTFRegion(valueString, 0, env->GetStringLength(valueString), valueChars);
+            env->DeleteLocalRef(valueString);
             valueChars[valueUtf8Length] = '\0';
             DictionaryHeaderStructurePolicy::AttributeMap::mapped_type value;
             HeaderReadWriteUtils::insertCharactersIntoVector(valueChars, &value);
@@ -96,18 +99,14 @@ class JniDataUtils {
         }
     }
 
-    static PrevWordsInfo constructPrevWordsInfo(JNIEnv *env, jobjectArray prevWordCodePointArrays,
-            jbooleanArray isBeginningOfSentenceArray) {
+    static NgramContext constructNgramContext(JNIEnv *env, jobjectArray prevWordCodePointArrays,
+            jbooleanArray isBeginningOfSentenceArray, const size_t prevWordCount) {
         int prevWordCodePoints[MAX_PREV_WORD_COUNT_FOR_N_GRAM][MAX_WORD_LENGTH];
         int prevWordCodePointCount[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
         bool isBeginningOfSentence[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
-        jsize prevWordsCount = env->GetArrayLength(prevWordCodePointArrays);
-        for (size_t i = 0; i < NELEMS(prevWordCodePoints); ++i) {
+        for (size_t i = 0; i < prevWordCount; ++i) {
             prevWordCodePointCount[i] = 0;
             isBeginningOfSentence[i] = false;
-            if (prevWordsCount <= static_cast<int>(i)) {
-                continue;
-            }
             jintArray prevWord = (jintArray)env->GetObjectArrayElement(prevWordCodePointArrays, i);
             if (!prevWord) {
                 continue;
@@ -117,14 +116,15 @@ class JniDataUtils {
                 continue;
             }
             env->GetIntArrayRegion(prevWord, 0, prevWordLength, prevWordCodePoints[i]);
+            env->DeleteLocalRef(prevWord);
             prevWordCodePointCount[i] = prevWordLength;
             jboolean isBeginningOfSentenceBoolean = JNI_FALSE;
             env->GetBooleanArrayRegion(isBeginningOfSentenceArray, i, 1 /* len */,
                     &isBeginningOfSentenceBoolean);
             isBeginningOfSentence[i] = isBeginningOfSentenceBoolean == JNI_TRUE;
         }
-        return PrevWordsInfo(prevWordCodePoints, prevWordCodePointCount, isBeginningOfSentence,
-                MAX_PREV_WORD_COUNT_FOR_N_GRAM);
+        return NgramContext(prevWordCodePoints, prevWordCodePointCount, isBeginningOfSentence,
+                prevWordCount);
     }
 
     static void putBooleanToArray(JNIEnv *env, jbooleanArray array, const int index,
@@ -140,6 +140,12 @@ class JniDataUtils {
             const float value) {
         env->SetFloatArrayRegion(array, index, 1 /* len */, &value);
     }
+
+    static void outputWordProperty(JNIEnv *const env, const WordProperty &wordProperty,
+            jintArray outCodePoints, jbooleanArray outFlags, jintArray outProbabilityInfo,
+            jobject outNgramPrevWordsArray, jobject outNgramPrevWordIsBeginningOfSentenceArray,
+            jobject outNgramTargets, jobject outNgramProbabilities, jobject outShortcutTargets,
+            jobject outShortcutProbabilities);
 
  private:
     DISALLOW_IMPLICIT_CONSTRUCTORS(JniDataUtils);

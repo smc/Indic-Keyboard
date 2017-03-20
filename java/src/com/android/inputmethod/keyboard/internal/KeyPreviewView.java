@@ -27,10 +27,9 @@ import android.view.Gravity;
 import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.Key;
+import com.android.inputmethod.latin.R;
 
 import java.util.HashSet;
-
-import org.smc.inputmethod.indic.R;
 
 /**
  * The pop up key preview view.

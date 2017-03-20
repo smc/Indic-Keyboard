@@ -26,6 +26,7 @@
 #include "suggest/core/dictionary/error_type_utils.h"
 #include "suggest/core/layout/proximity_info_state.h"
 #include "utils/char_utils.h"
+#include "utils/int_array_view.h"
 
 #if DEBUG_DICT
 #define LOGI_SHOW_ADD_COST_PROP \
@@ -103,10 +104,10 @@ class DicNode {
         PROF_NODE_COPY(&dicNode->mProfiler, mProfiler);
     }
 
-    // Init for root with prevWordsPtNodePos which is used for n-gram
-    void initAsRoot(const int rootPtNodeArrayPos, const int *const prevWordsPtNodePos) {
+    // Init for root with prevWordIds which is used for n-gram
+    void initAsRoot(const int rootPtNodeArrayPos, const WordIdArrayView prevWordIds) {
         mIsCachedForNextSuggestion = false;
-        mDicNodeProperties.init(rootPtNodeArrayPos, prevWordsPtNodePos);
+        mDicNodeProperties.init(rootPtNodeArrayPos, prevWordIds);
         mDicNodeState.init();
         PROF_NODE_RESET(mProfiler);
     }
@@ -114,12 +115,11 @@ class DicNode {
     // Init for root with previous word
     void initAsRootWithPreviousWord(const DicNode *const dicNode, const int rootPtNodeArrayPos) {
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
-        int newPrevWordsPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
-        newPrevWordsPtNodePos[0] = dicNode->mDicNodeProperties.getPtNodePos();
-        for (size_t i = 1; i < NELEMS(newPrevWordsPtNodePos); ++i) {
-            newPrevWordsPtNodePos[i] = dicNode->getPrevWordsTerminalPtNodePos()[i - 1];
-        }
-        mDicNodeProperties.init(rootPtNodeArrayPos, newPrevWordsPtNodePos);
+        WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> newPrevWordIds;
+        newPrevWordIds[0] = dicNode->mDicNodeProperties.getWordId();
+        dicNode->getPrevWordIds().limit(newPrevWordIds.size() - 1)
+                .copyToArray(&newPrevWordIds, 1 /* offset */);
+        mDicNodeProperties.init(rootPtNodeArrayPos, WordIdArrayView::fromArray(newPrevWordIds));
         mDicNodeState.initAsRootWithPreviousWord(&dicNode->mDicNodeState,
                 dicNode->mDicNodeProperties.getDepth());
         PROF_NODE_COPY(&dicNode->mProfiler, mProfiler);
@@ -135,19 +135,16 @@ class DicNode {
         PROF_NODE_COPY(&parentDicNode->mProfiler, mProfiler);
     }
 
-    void initAsChild(const DicNode *const dicNode, const int ptNodePos,
-            const int childrenPtNodeArrayPos, const int probability, const bool isTerminal,
-            const bool hasChildren, const bool isBlacklistedOrNotAWord,
-            const uint16_t mergedNodeCodePointCount, const int *const mergedNodeCodePoints) {
+    void initAsChild(const DicNode *const dicNode, const int childrenPtNodeArrayPos,
+            const int wordId, const CodePointArrayView mergedCodePoints) {
         uint16_t newDepth = static_cast<uint16_t>(dicNode->getNodeCodePointCount() + 1);
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
         const uint16_t newLeavingDepth = static_cast<uint16_t>(
-                dicNode->mDicNodeProperties.getLeavingDepth() + mergedNodeCodePointCount);
-        mDicNodeProperties.init(ptNodePos, childrenPtNodeArrayPos, mergedNodeCodePoints[0],
-                probability, isTerminal, hasChildren, isBlacklistedOrNotAWord, newDepth,
-                newLeavingDepth, dicNode->mDicNodeProperties.getPrevWordsTerminalPtNodePos());
-        mDicNodeState.init(&dicNode->mDicNodeState, mergedNodeCodePointCount,
-                mergedNodeCodePoints);
+                dicNode->mDicNodeProperties.getLeavingDepth() + mergedCodePoints.size());
+        mDicNodeProperties.init(childrenPtNodeArrayPos, mergedCodePoints[0],
+                wordId, newDepth, newLeavingDepth, dicNode->mDicNodeProperties.getPrevWordIds());
+        mDicNodeState.init(&dicNode->mDicNodeState, mergedCodePoints.size(),
+                mergedCodePoints.data());
         PROF_NODE_COPY(&dicNode->mProfiler, mProfiler);
     }
 
@@ -179,9 +176,6 @@ class DicNode {
     // Check if the current word and the previous word can be considered as a valid multiple word
     // suggestion.
     bool isValidMultipleWordSuggestion() const {
-        if (isBlacklistedOrNotAWord()) {
-            return false;
-        }
         // Treat suggestion as invalid if the current and the previous word are single character
         // words.
         const int prevWordLen = mDicNodeState.mDicNodeStateOutput.getPrevWordsLength()
@@ -204,22 +198,17 @@ class DicNode {
     }
 
     // Used to get n-gram probability in DicNodeUtils.
-    int getPtNodePos() const {
-        return mDicNodeProperties.getPtNodePos();
+    int getWordId() const {
+        return mDicNodeProperties.getWordId();
     }
 
-    // TODO: Use view class to return PtNodePos array.
-    const int *getPrevWordsTerminalPtNodePos() const {
-        return mDicNodeProperties.getPrevWordsTerminalPtNodePos();
+    const WordIdArrayView getPrevWordIds() const {
+        return mDicNodeProperties.getPrevWordIds();
     }
 
     // Used in DicNodeUtils
     int getChildrenPtNodeArrayPos() const {
         return mDicNodeProperties.getChildrenPtNodeArrayPos();
-    }
-
-    int getProbability() const {
-        return mDicNodeProperties.getProbability();
     }
 
     AK_FORCE_INLINE bool isTerminalDicNode() const {
@@ -306,8 +295,9 @@ class DicNode {
     }
 
     // Used to prune nodes
-    float getCompoundDistance(const float languageWeight) const {
-        return mDicNodeState.mDicNodeStateScoring.getCompoundDistance(languageWeight);
+    float getCompoundDistance(const float weightOfLangModelVsSpatialModel) const {
+        return mDicNodeState.mDicNodeStateScoring.getCompoundDistance(
+                weightOfLangModelVsSpatialModel);
     }
 
     AK_FORCE_INLINE const int *getOutputWordBuf() const {
@@ -402,10 +392,6 @@ class DicNode {
 
     ErrorTypeUtils::ErrorType getContainedErrorTypes() const {
         return mDicNodeState.mDicNodeStateScoring.getContainedErrorTypes();
-    }
-
-    bool isBlacklistedOrNotAWord() const {
-        return mDicNodeProperties.isBlacklistedOrNotAWord();
     }
 
     inline uint16_t getNodeCodePointCount() const {

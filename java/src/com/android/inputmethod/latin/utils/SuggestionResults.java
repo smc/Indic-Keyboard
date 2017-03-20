@@ -16,36 +16,36 @@
 
 package com.android.inputmethod.latin.utils;
 
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.define.ProductionFlags;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Locale;
 import java.util.TreeSet;
-
-import org.smc.inputmethod.indic.SuggestedWords.SuggestedWordInfo;
-import org.smc.inputmethod.indic.define.ProductionFlags;
 
 /**
  * A TreeSet of SuggestedWordInfo that is bounded in size and throws everything that's smaller
  * than its limit
  */
 public final class SuggestionResults extends TreeSet<SuggestedWordInfo> {
-    public final Locale mLocale;
     public final ArrayList<SuggestedWordInfo> mRawSuggestions;
     // TODO: Instead of a boolean , we may want to include the context of this suggestion results,
-    // such as {@link PrevWordsInfo}.
+    // such as {@link NgramContext}.
     public final boolean mIsBeginningOfSentence;
+    public final boolean mFirstSuggestionExceedsConfidenceThreshold;
     private final int mCapacity;
 
-    public SuggestionResults(final Locale locale, final int capacity,
-            final boolean isBeginningOfSentence) {
-        this(locale, sSuggestedWordInfoComparator, capacity, isBeginningOfSentence);
+    public SuggestionResults(final int capacity, final boolean isBeginningOfSentence,
+            final boolean firstSuggestionExceedsConfidenceThreshold) {
+        this(sSuggestedWordInfoComparator, capacity, isBeginningOfSentence,
+                firstSuggestionExceedsConfidenceThreshold);
     }
 
-    private SuggestionResults(final Locale locale, final Comparator<SuggestedWordInfo> comparator,
-            final int capacity, final boolean isBeginningOfSentence) {
+    private SuggestionResults(final Comparator<SuggestedWordInfo> comparator, final int capacity,
+            final boolean isBeginningOfSentence,
+            final boolean firstSuggestionExceedsConfidenceThreshold) {
         super(comparator);
-        mLocale = locale;
         mCapacity = capacity;
         if (ProductionFlags.INCLUDE_RAW_SUGGESTIONS) {
             mRawSuggestions = new ArrayList<>();
@@ -53,6 +53,7 @@ public final class SuggestionResults extends TreeSet<SuggestedWordInfo> {
             mRawSuggestions = null;
         }
         mIsBeginningOfSentence = isBeginningOfSentence;
+        mFirstSuggestionExceedsConfidenceThreshold = firstSuggestionExceedsConfidenceThreshold;
     }
 
     @Override
@@ -70,8 +71,7 @@ public final class SuggestionResults extends TreeSet<SuggestedWordInfo> {
         return super.addAll(e);
     }
 
-    private static final class SuggestedWordInfoComparator
-            implements Comparator<SuggestedWordInfo> {
+    static final class SuggestedWordInfoComparator implements Comparator<SuggestedWordInfo> {
         // This comparator ranks the word info with the higher frequency first. That's because
         // that's the order we want our elements in.
         @Override

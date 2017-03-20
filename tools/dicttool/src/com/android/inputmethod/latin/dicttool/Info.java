@@ -45,8 +45,8 @@ public class Info extends Dicttool.Command {
         int whitelistCount = 0;
         for (final WordProperty wordProperty : dict) {
             ++wordCount;
-            if (null != wordProperty.mBigrams) {
-                bigramCount += wordProperty.mBigrams.size();
+            if (wordProperty.mHasNgrams) {
+                bigramCount += wordProperty.mNgrams.size();
             }
             if (null != wordProperty.mShortcutTargets) {
                 shortcutCount += wordProperty.mShortcutTargets.size();
@@ -64,8 +64,7 @@ public class Info extends Dicttool.Command {
                 + " whitelist entries)");
     }
 
-    private static void showWordInfo(final FusionDictionary dict, final String word,
-            final boolean plumbing) {
+    private static void showWordInfo(final FusionDictionary dict, final String word) {
         final PtNode ptNode = FusionDictionary.findWordInTree(dict.mRootNodeArray, word);
         if (null == ptNode) {
             System.out.println(word + " is not in the dictionary");
@@ -76,8 +75,8 @@ public class Info extends Dicttool.Command {
         if (ptNode.getIsNotAWord()) {
             System.out.println("  Is not a word");
         }
-        if (ptNode.getIsBlacklistEntry()) {
-            System.out.println("  Is a blacklist entry");
+        if (ptNode.getIsPossiblyOffensive()) {
+            System.out.println("  Is possibly offensive");
         }
         final ArrayList<WeightedString> shortcutTargets = ptNode.getShortcutTargets();
         if (null == shortcutTargets || shortcutTargets.isEmpty()) {
@@ -124,7 +123,7 @@ public class Info extends Dicttool.Command {
             showInfo(dict, plumbing);
         } else {
             for (int i = 1; i < mArgs.length; ++i) {
-                showWordInfo(dict, mArgs[i], plumbing);
+                showWordInfo(dict, mArgs[i]);
             }
         }
     }

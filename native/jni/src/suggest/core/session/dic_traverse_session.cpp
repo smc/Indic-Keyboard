@@ -17,10 +17,10 @@
 #include "suggest/core/session/dic_traverse_session.h"
 
 #include "defines.h"
+#include "dictionary/interface/dictionary_header_structure_policy.h"
+#include "dictionary/interface/dictionary_structure_with_buffer_policy.h"
+#include "dictionary/property/ngram_context.h"
 #include "suggest/core/dictionary/dictionary.h"
-#include "suggest/core/policy/dictionary_header_structure_policy.h"
-#include "suggest/core/policy/dictionary_structure_with_buffer_policy.h"
-#include "suggest/core/session/prev_words_info.h"
 
 namespace latinime {
 
@@ -30,13 +30,13 @@ const int DicTraverseSession::DICTIONARY_SIZE_THRESHOLD_TO_USE_LARGE_CACHE_FOR_S
         256 * 1024;
 
 void DicTraverseSession::init(const Dictionary *const dictionary,
-        const PrevWordsInfo *const prevWordsInfo, const SuggestOptions *const suggestOptions) {
+        const NgramContext *const ngramContext, const SuggestOptions *const suggestOptions) {
     mDictionary = dictionary;
     mMultiWordCostMultiplier = getDictionaryStructurePolicy()->getHeaderStructurePolicy()
             ->getMultiWordCostMultiplier();
     mSuggestOptions = suggestOptions;
-    prevWordsInfo->getPrevWordsTerminalPtNodePos(
-            getDictionaryStructurePolicy(), mPrevWordsPtNodePos, true /* tryLowerCaseSearch */);
+    mPrevWordIdCount = ngramContext->getPrevWordIds(getDictionaryStructurePolicy(),
+            &mPrevWordIdArray, true /* tryLowerCaseSearch */).size();
 }
 
 void DicTraverseSession::setupForGetSuggestions(const ProximityInfo *pInfo,
@@ -69,8 +69,12 @@ void DicTraverseSession::initializeProximityInfoStates(const int *const inputCod
     for (int i = 0; i < maxPointerCount; ++i) {
         mProximityInfoStates[i].initInputParams(i, maxSpatialDistance, getProximityInfo(),
                 inputCodePoints, inputSize, inputXs, inputYs, times, pointerIds,
-                maxPointerCount == MAX_POINTER_COUNT_G
-                /* TODO: this is a hack. fix proximity info state */);
+                // Right now the line below is trying to figure out whether this is a gesture by
+                // looking at the pointer count and assuming whatever is above the cutoff is
+                // a gesture and whatever is below is type. This is hacky and incorrect, we
+                // should pass the correct information instead.
+                maxPointerCount == MAX_POINTER_COUNT_G,
+                getDictionaryStructurePolicy()->getHeaderStructurePolicy()->getLocale());
         mInputSize += mProximityInfoStates[i].size();
     }
 }

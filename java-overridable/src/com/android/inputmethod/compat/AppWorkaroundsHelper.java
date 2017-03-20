@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package org.smc.inputmethod.compat;
+package com.android.inputmethod.compat;
 
 import android.content.pm.PackageInfo;
 
+@SuppressWarnings("unused")
 public class AppWorkaroundsHelper {
     private AppWorkaroundsHelper() {
         // This helper class is not publicly instantiable.

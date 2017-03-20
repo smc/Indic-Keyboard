@@ -14,20 +14,16 @@
  * the License.
  */
 
-package org.smc.inputmethod.dictionarypack;
+package com.android.inputmethod.dictionarypack;
 
 import android.content.Context;
 
 /**
- * Helper to get the metadata URI from its base URI and the additional ID, if any.
+ * Helper to get the metadata URI from its base URI.
  */
+@SuppressWarnings("unused")
 public class MetadataUriGetter {
-    private MetadataUriGetter() {
-        // This helper class is not instantiable.
-    }
-
-    public static String getUri(final Context context, final String baseUri,
-            final String additionalId) {
+    public static String getUri(final Context context, final String baseUri) {
         return baseUri;
     }
 }

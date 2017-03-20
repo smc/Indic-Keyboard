@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.smc.inputmethod.indic.define;
+package com.android.inputmethod.latin.define;
 
 public final class ProductionFlags {
     private ProductionFlags() {
@@ -24,15 +24,8 @@ public final class ProductionFlags {
     public static final boolean IS_HARDWARE_KEYBOARD_SUPPORTED = false;
 
     /**
-     * When true, enable {@link InputMethodService#onUpdateCursorAnchorInfo} callback via
-     * {@link InputConnection#requestUpdateCursorAnchorInfo}. This flag has no effect in API
-     * Level 20 and prior. In general, this callback provides detailed positional information,
-     * even though an explicit support is required by the editor.
-     */
-    public static final boolean ENABLE_CURSOR_ANCHOR_INFO_CALLBACK = true;
-
-    /**
-     * Include all suggestions from all dictionaries in {@link SuggestedWords#mRawSuggestions}.
+     * Include all suggestions from all dictionaries in
+     * {@link com.android.inputmethod.latin.SuggestedWords#mRawSuggestions}.
      */
     public static final boolean INCLUDE_RAW_SUGGESTIONS = false;
 
@@ -40,4 +33,26 @@ public final class ProductionFlags {
      * When false, the metrics logging is not yet ready to be enabled.
      */
     public static final boolean IS_METRICS_LOGGING_SUPPORTED = false;
+
+    /**
+     * When {@code false}, the split keyboard is not yet ready to be enabled.
+     */
+    public static final boolean IS_SPLIT_KEYBOARD_SUPPORTED = true;
+
+    /**
+     * When {@code false}, account sign-in in keyboard is not yet ready to be enabled.
+     */
+    public static final boolean ENABLE_ACCOUNT_SIGN_IN = false;
+
+    /**
+     * When {@code true}, user history dictionary sync feature is ready to be enabled.
+     */
+    public static final boolean ENABLE_USER_HISTORY_DICTIONARY_SYNC =
+            ENABLE_ACCOUNT_SIGN_IN && false;
+
+    /**
+     * When {@code true}, the IME maintains per account {@link UserHistoryDictionary}.
+     */
+    public static final boolean ENABLE_PER_ACCOUNT_USER_HISTORY_DICTIONARY =
+            ENABLE_ACCOUNT_SIGN_IN && false;
 }

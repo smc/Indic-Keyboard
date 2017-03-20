@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2013, The Android Open Source Project
+** Copyright 2015, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="KeyboardTheme.KLP" parent="KeyboardIcons.Holo">
+        <item name="inputViewStyle">@style/InputView.Holo</item>
         <item name="keyboardStyle">@style/Keyboard.KLP</item>
         <item name="keyboardViewStyle">@style/KeyboardView.KLP</item>
         <item name="mainKeyboardViewStyle">@style/MainKeyboardView.KLP</item>
@@ -72,8 +73,10 @@
         <item name="languageOnSpacebarTextShadowRadius">1.0</item>
         <item name="languageOnSpacebarTextShadowColor">@color/spacebar_text_shadow_color_holo</item>
     </style>
-    <!-- Though {@link EmojiPalettesView} doesn't extend {@link KeyboardView}, some views inside it,
-         for instance delete button, need themed {@link KeyboardView} attributes. -->
+    <!-- Though {@link com.android.inputmethod.keyboard.emoji.EmojiPalettesView} doesn't extend
+         {@link com.android.inputmethod.keyboard.KeyboardView}, some views inside it, for instance
+         delete button, need themed {@link com.android.inputmethod.keyboard.KeyboardView}
+         attributes. -->
     <style
         name="EmojiPalettesView.KLP"
         parent="MainKeyboardView.KLP"
@@ -90,6 +93,16 @@
         <item name="iconEmojiCategory4Tab">@drawable/ic_emoji_places_holo_dark</item>
         <item name="iconEmojiCategory5Tab">@drawable/ic_emoji_symbols_holo_dark</item>
         <item name="iconEmojiCategory6Tab">@drawable/ic_emoji_emoticons_holo_dark</item>
+        <item name="iconEmojiCategory7Tab">@drawable/ic_emoji_flag_holo_dark</item>
+        <item name="iconEmojiCategory8Tab">@drawable/ic_emoji_people_holo_dark</item>
+        <item name="iconEmojiCategory9Tab">@drawable/ic_emoji_nature_holo_dark</item>
+        <item name="iconEmojiCategory10Tab">@drawable/ic_emoji_food_holo_dark</item>
+        <item name="iconEmojiCategory11Tab">@drawable/ic_emoji_places_holo_dark</item>
+        <item name="iconEmojiCategory12Tab">@drawable/ic_emoji_activity_holo_dark</item>
+        <item name="iconEmojiCategory13Tab">@drawable/ic_emoji_objects_holo_dark</item>
+        <item name="iconEmojiCategory14Tab">@drawable/ic_emoji_symbols_holo_dark</item>
+        <item name="iconEmojiCategory15Tab">@drawable/ic_emoji_flag_holo_dark</item>
+        <item name="iconEmojiCategory16Tab">@drawable/ic_emoji_people_holo_dark</item>
     </style>
     <style
         name="MoreKeysKeyboard.KLP"

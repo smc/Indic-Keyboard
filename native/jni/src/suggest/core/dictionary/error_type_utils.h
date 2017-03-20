@@ -30,8 +30,10 @@ class ErrorTypeUtils {
     typedef uint32_t ErrorType;
 
     static const ErrorType NOT_AN_ERROR;
-    static const ErrorType MATCH_WITH_CASE_ERROR;
-    static const ErrorType MATCH_WITH_ACCENT_ERROR;
+    static const ErrorType MATCH_WITH_WRONG_CASE;
+    static const ErrorType MATCH_WITH_MISSING_ACCENT;
+    static const ErrorType MATCH_WITH_MISSING_EXPLICIT_ACCENT;
+    static const ErrorType MATCH_WITH_WRONG_ACCENT;
     static const ErrorType MATCH_WITH_DIGRAPH;
     // Treat error as an intentional omission when the CorrectionType is omission and the node can
     // be intentional omission.
@@ -51,9 +53,17 @@ class ErrorTypeUtils {
         return (containedErrorTypes & ~ERRORS_TREATED_AS_AN_EXACT_MATCH) == 0;
     }
 
+    static bool isPerfectMatch(const ErrorType containedErrorTypes) {
+        return (containedErrorTypes & ~ERRORS_TREATED_AS_A_PERFECT_MATCH) == 0;
+    }
+
     static bool isExactMatchWithIntentionalOmission(const ErrorType containedErrorTypes) {
         return (containedErrorTypes
                 & ~ERRORS_TREATED_AS_AN_EXACT_MATCH_WITH_INTENTIONAL_OMISSION) == 0;
+    }
+
+    static bool isMissingExplicitAccent(const ErrorType errorType) {
+        return (errorType & MATCH_WITH_MISSING_EXPLICIT_ACCENT) != 0;
     }
 
     static bool isEditCorrectionError(const ErrorType errorType) {
@@ -72,6 +82,7 @@ class ErrorTypeUtils {
     DISALLOW_IMPLICIT_CONSTRUCTORS(ErrorTypeUtils);
 
     static const ErrorType ERRORS_TREATED_AS_AN_EXACT_MATCH;
+    static const ErrorType ERRORS_TREATED_AS_A_PERFECT_MATCH;
     static const ErrorType ERRORS_TREATED_AS_AN_EXACT_MATCH_WITH_INTENTIONAL_OMISSION;
 };
 } // namespace latinime

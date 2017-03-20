@@ -19,7 +19,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- For backward compatibility.
-         See {@link SettingsValues#needsToShowVoiceInputKey(SharedPreferences,Resources)} -->
+         @see com.android.inputmethod.latin.settings.SettingsValues#needsToShowVoiceInputKey(android.content.SharedPreferences,android.content.res.Resources) -->
     <string name="voice_mode_main">0</string>
 
     <!-- Subtype locale display name exceptions.
@@ -30,8 +30,17 @@
         <item>en_US</item>
         <item>en_GB</item>
         <item>es_US</item>
-        <item>mnw</item>
+        <item>hi_ZZ</item>
+        <item>sr_ZZ</item>
     </string-array>
+
+    <!-- Subtype locale whose name should be displayed in Locale.ROOT. -->
+    <string-array name="subtype_locale_displayed_in_root_locale">
+        <item>hi_ZZ</item>
+        <item>sr_ZZ</item>
+    </string-array>
+    <string name="subtype_in_root_locale_hi_ZZ">Hinglish</string>
+    <string name="subtype_in_root_locale_sr_ZZ">Srpski</string>
 
     <!-- Generic subtype label -->
     <string name="subtype_generic">%s</string>
@@ -39,17 +48,31 @@
     <!-- Predefined keyboard layouts for additional subtype -->
     <string-array name="predefined_layouts">
         <item>qwerty</item>
+        <item>qwertz</item>
+        <item>azerty</item>
+        <item>dvorak</item>
+        <item>colemak</item>
+        <item>pcqwerty</item>
     </string-array>
     <!-- Predefined keyboard layout display names -->
     <string-array name="predefined_layout_display_names">
-        <item>English</item>
+        <item>QWERTY</item>
+        <item>QWERTZ</item>
+        <item>AZERTY</item>
+        <item>Dvorak</item>
+        <item>Colemak</item>
+        <item>PC</item>
     </string-array>
     <!-- Description for generic subtype that has predefined layout.
          The string resource name must be "subtype_generic_<layout name>".
          The string resource with "No language" also must be added to strings.xml and the resource
          name must be "subtype_no_language_<layout name>" -->
     <string name="subtype_generic_qwerty">%s (QWERTY)</string>
-    <string name="subtype_mnw">Mon</string>
+    <string name="subtype_generic_qwertz">%s (QWERTZ)</string>
+    <string name="subtype_generic_azerty">%s (AZERTY)</string>
+    <string name="subtype_generic_dvorak">%s (Dvorak)</string>
+    <string name="subtype_generic_colemak">%s (Colemak)</string>
+    <string name="subtype_generic_pcqwerty">%s (PC)</string>
 
     <!-- Description for Bulgarian (BDS) subtype. -->
     <string name="subtype_bulgarian_bds">%s (BDS)</string>

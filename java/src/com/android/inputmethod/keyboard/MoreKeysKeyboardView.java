@@ -26,13 +26,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.inputmethod.accessibility.AccessibilityUtils;
+import com.android.inputmethod.accessibility.MoreKeysKeyboardAccessibilityDelegate;
 import com.android.inputmethod.keyboard.internal.KeyDrawParams;
-
-import org.smc.inputmethod.accessibility.AccessibilityUtils;
-import org.smc.inputmethod.accessibility.MoreKeysKeyboardAccessibilityDelegate;
-import org.smc.inputmethod.indic.Constants;
-import org.smc.inputmethod.indic.R;
-import com.android.inputmethod.latin.utils.CoordinateUtils;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.common.CoordinateUtils;
 
 /**
  * A view that renders a virtual {@link MoreKeysKeyboard}. It handles rendering of keys and

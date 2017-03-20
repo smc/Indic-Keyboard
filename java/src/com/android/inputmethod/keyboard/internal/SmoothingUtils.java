@@ -16,13 +16,12 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import android.util.Log;
-
+import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.internal.MatrixUtils.MatrixOperationFailedException;
 
-import java.util.Arrays;
+import android.util.Log;
 
-import org.smc.inputmethod.annotations.UsedForTesting;
+import java.util.Arrays;
 
 /**
  * Utilities to smooth coordinates. Currently, we calculate 3d least squares formula by using

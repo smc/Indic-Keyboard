@@ -18,8 +18,10 @@
 #define LATINIME_DIC_NODE_PROPERTIES_H
 
 #include <cstdint>
+#include <cstdlib>
 
 #include "defines.h"
+#include "utils/int_array_view.h"
 
 namespace latinime {
 
@@ -29,82 +31,59 @@ namespace latinime {
 class DicNodeProperties {
  public:
     AK_FORCE_INLINE DicNodeProperties()
-            : mPtNodePos(NOT_A_DICT_POS), mChildrenPtNodeArrayPos(NOT_A_DICT_POS),
-              mProbability(NOT_A_PROBABILITY), mDicNodeCodePoint(NOT_A_CODE_POINT),
-              mIsTerminal(false), mHasChildrenPtNodes(false),
-              mIsBlacklistedOrNotAWord(false), mDepth(0), mLeavingDepth(0) {}
+            : mChildrenPtNodeArrayPos(NOT_A_DICT_POS), mDicNodeCodePoint(NOT_A_CODE_POINT),
+              mWordId(NOT_A_WORD_ID), mDepth(0), mLeavingDepth(0), mPrevWordCount(0) {}
 
     ~DicNodeProperties() {}
 
     // Should be called only once per DicNode is initialized.
-    void init(const int pos, const int childrenPos, const int nodeCodePoint, const int probability,
-            const bool isTerminal, const bool hasChildren, const bool isBlacklistedOrNotAWord,
-            const uint16_t depth, const uint16_t leavingDepth, const int *const prevWordsNodePos) {
-        mPtNodePos = pos;
+    void init(const int childrenPos, const int nodeCodePoint, const int wordId,
+            const uint16_t depth, const uint16_t leavingDepth, const WordIdArrayView prevWordIds) {
         mChildrenPtNodeArrayPos = childrenPos;
         mDicNodeCodePoint = nodeCodePoint;
-        mProbability = probability;
-        mIsTerminal = isTerminal;
-        mHasChildrenPtNodes = hasChildren;
-        mIsBlacklistedOrNotAWord = isBlacklistedOrNotAWord;
+        mWordId = wordId;
         mDepth = depth;
         mLeavingDepth = leavingDepth;
-        memmove(mPrevWordsTerminalPtNodePos, prevWordsNodePos, sizeof(mPrevWordsTerminalPtNodePos));
+        prevWordIds.copyToArray(&mPrevWordIds, 0 /* offset */);
+        mPrevWordCount = prevWordIds.size();
     }
 
     // Init for root with prevWordsPtNodePos which is used for n-gram
-    void init(const int rootPtNodeArrayPos, const int *const prevWordsNodePos) {
-        mPtNodePos = NOT_A_DICT_POS;
+    void init(const int rootPtNodeArrayPos, const WordIdArrayView prevWordIds) {
         mChildrenPtNodeArrayPos = rootPtNodeArrayPos;
         mDicNodeCodePoint = NOT_A_CODE_POINT;
-        mProbability = NOT_A_PROBABILITY;
-        mIsTerminal = false;
-        mHasChildrenPtNodes = true;
-        mIsBlacklistedOrNotAWord = false;
+        mWordId = NOT_A_WORD_ID;
         mDepth = 0;
         mLeavingDepth = 0;
-        memmove(mPrevWordsTerminalPtNodePos, prevWordsNodePos, sizeof(mPrevWordsTerminalPtNodePos));
+        prevWordIds.copyToArray(&mPrevWordIds, 0 /* offset */);
+        mPrevWordCount = prevWordIds.size();
     }
 
     void initByCopy(const DicNodeProperties *const dicNodeProp) {
-        mPtNodePos = dicNodeProp->mPtNodePos;
         mChildrenPtNodeArrayPos = dicNodeProp->mChildrenPtNodeArrayPos;
         mDicNodeCodePoint = dicNodeProp->mDicNodeCodePoint;
-        mProbability = dicNodeProp->mProbability;
-        mIsTerminal = dicNodeProp->mIsTerminal;
-        mHasChildrenPtNodes = dicNodeProp->mHasChildrenPtNodes;
-        mIsBlacklistedOrNotAWord = dicNodeProp->mIsBlacklistedOrNotAWord;
+        mWordId = dicNodeProp->mWordId;
         mDepth = dicNodeProp->mDepth;
         mLeavingDepth = dicNodeProp->mLeavingDepth;
-        memmove(mPrevWordsTerminalPtNodePos, dicNodeProp->mPrevWordsTerminalPtNodePos,
-                sizeof(mPrevWordsTerminalPtNodePos));
+        const WordIdArrayView prevWordIdArrayView = dicNodeProp->getPrevWordIds();
+        prevWordIdArrayView.copyToArray(&mPrevWordIds, 0 /* offset */);
+        mPrevWordCount = prevWordIdArrayView.size();
     }
 
     // Init as passing child
     void init(const DicNodeProperties *const dicNodeProp, const int codePoint) {
-        mPtNodePos = dicNodeProp->mPtNodePos;
         mChildrenPtNodeArrayPos = dicNodeProp->mChildrenPtNodeArrayPos;
         mDicNodeCodePoint = codePoint; // Overwrite the node char of a passing child
-        mProbability = dicNodeProp->mProbability;
-        mIsTerminal = dicNodeProp->mIsTerminal;
-        mHasChildrenPtNodes = dicNodeProp->mHasChildrenPtNodes;
-        mIsBlacklistedOrNotAWord = dicNodeProp->mIsBlacklistedOrNotAWord;
+        mWordId = dicNodeProp->mWordId;
         mDepth = dicNodeProp->mDepth + 1; // Increment the depth of a passing child
         mLeavingDepth = dicNodeProp->mLeavingDepth;
-        memmove(mPrevWordsTerminalPtNodePos, dicNodeProp->mPrevWordsTerminalPtNodePos,
-                sizeof(mPrevWordsTerminalPtNodePos));
-    }
-
-    int getPtNodePos() const {
-        return mPtNodePos;
+        const WordIdArrayView prevWordIdArrayView = dicNodeProp->getPrevWordIds();
+        prevWordIdArrayView.copyToArray(&mPrevWordIds, 0 /* offset */);
+        mPrevWordCount = prevWordIdArrayView.size();
     }
 
     int getChildrenPtNodeArrayPos() const {
         return mChildrenPtNodeArrayPos;
-    }
-
-    int getProbability() const {
-        return mProbability;
     }
 
     int getDicNodeCodePoint() const {
@@ -121,35 +100,32 @@ class DicNodeProperties {
     }
 
     bool isTerminal() const {
-        return mIsTerminal;
+        return mWordId != NOT_A_WORD_ID;
     }
 
     bool hasChildren() const {
-        return mHasChildrenPtNodes || mDepth != mLeavingDepth;
+        return (mChildrenPtNodeArrayPos != NOT_A_DICT_POS) || mDepth != mLeavingDepth;
     }
 
-    bool isBlacklistedOrNotAWord() const {
-        return mIsBlacklistedOrNotAWord;
+    const WordIdArrayView getPrevWordIds() const {
+        return WordIdArrayView::fromArray(mPrevWordIds).limit(mPrevWordCount);
     }
 
-    const int *getPrevWordsTerminalPtNodePos() const {
-        return mPrevWordsTerminalPtNodePos;
+    int getWordId() const {
+        return mWordId;
     }
 
  private:
     // Caution!!!
     // Use a default copy constructor and an assign operator because shallow copies are ok
     // for this class
-    int mPtNodePos;
     int mChildrenPtNodeArrayPos;
-    int mProbability;
     int mDicNodeCodePoint;
-    bool mIsTerminal;
-    bool mHasChildrenPtNodes;
-    bool mIsBlacklistedOrNotAWord;
+    int mWordId;
     uint16_t mDepth;
     uint16_t mLeavingDepth;
-    int mPrevWordsTerminalPtNodePos[MAX_PREV_WORD_COUNT_FOR_N_GRAM];
+    WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> mPrevWordIds;
+    size_t mPrevWordCount;
 };
 } // namespace latinime
 #endif // LATINIME_DIC_NODE_PROPERTIES_H

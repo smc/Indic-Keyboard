@@ -23,13 +23,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.inputmethod.keyboard.Key;
+import com.android.inputmethod.latin.common.CoordinateUtils;
+import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 
 import java.util.ArrayDeque;
 import java.util.HashMap;
-import java.util.HashSet;
-
-import com.android.inputmethod.latin.utils.CoordinateUtils;
-import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 
 /**
  * This class controls pop up key previews. This class decides:
@@ -68,12 +66,6 @@ public final class KeyPreviewChoreographer {
 
     public boolean isShowingKeyPreview(final Key key) {
         return mShowingKeyPreviewViews.containsKey(key);
-    }
-
-    public void dismissAllKeyPreviews() {
-        for (final Key key : new HashSet<>(mShowingKeyPreviewViews.keySet())) {
-            dismissKeyPreview(key, false /* withAnimation */);
-        }
     }
 
     public void dismissKeyPreview(final Key key, final boolean withAnimation) {
@@ -149,7 +141,7 @@ public final class KeyPreviewChoreographer {
         keyPreviewView.setPivotY(previewHeight);
     }
 
-    private void showKeyPreview(final Key key, final KeyPreviewView keyPreviewView,
+    void showKeyPreview(final Key key, final KeyPreviewView keyPreviewView,
             final boolean withAnimation) {
         if (!withAnimation) {
             keyPreviewView.setVisibility(View.VISIBLE);
@@ -167,25 +159,25 @@ public final class KeyPreviewChoreographer {
     }
 
     public Animator createShowUpAnimator(final Key key, final KeyPreviewView keyPreviewView) {
-        final Animator animator = mParams.createShowUpAnimator(keyPreviewView);
-        animator.addListener(new AnimatorListenerAdapter() {
+        final Animator showUpAnimator = mParams.createShowUpAnimator(keyPreviewView);
+        showUpAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(final Animator animator) {
                 showKeyPreview(key, keyPreviewView, false /* withAnimation */);
             }
         });
-        return animator;
+        return showUpAnimator;
     }
 
     private Animator createDismissAnimator(final Key key, final KeyPreviewView keyPreviewView) {
-        final Animator animator = mParams.createDismissAnimator(keyPreviewView);
-        animator.addListener(new AnimatorListenerAdapter() {
+        final Animator dismissAnimator = mParams.createDismissAnimator(keyPreviewView);
+        dismissAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(final Animator animator) {
                 dismissKeyPreview(key, false /* withAnimation */);
             }
         });
-        return animator;
+        return dismissAnimator;
     }
 
     private static class KeyPreviewAnimators extends AnimatorListenerAdapter {

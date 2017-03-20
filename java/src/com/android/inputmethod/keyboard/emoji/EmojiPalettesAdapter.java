@@ -26,8 +26,7 @@ import android.view.ViewGroup;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardView;
-
-import org.smc.inputmethod.indic.R;
+import com.android.inputmethod.latin.R;
 
 final class EmojiPalettesAdapter extends PagerAdapter {
     private static final String TAG = EmojiPalettesAdapter.class.getSimpleName();

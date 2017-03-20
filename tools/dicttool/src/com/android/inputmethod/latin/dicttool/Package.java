@@ -16,10 +16,10 @@
 
 package com.android.inputmethod.latin.dicttool;
 
-import java.io.BufferedInputStream;
+import com.android.inputmethod.latin.makedict.DictionaryHeader;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,16 +79,16 @@ public class Package {
             if (mArgs.length != 2) {
                 throw new RuntimeException("Too many/too few arguments for command " + COMMAND);
             }
-            final BinaryDictOffdeviceUtils.DecoderChainSpec decodedSpec =
-                    BinaryDictOffdeviceUtils.getRawDictionaryOrNull(new File(mArgs[0]));
+            final BinaryDictOffdeviceUtils.DecoderChainSpec<DictionaryHeader> decodedSpec =
+                    BinaryDictOffdeviceUtils.decodeDictionaryForProcess(new File(mArgs[0]),
+                            new BinaryDictOffdeviceUtils.HeaderReaderProcessor());
             if (null == decodedSpec) {
                 System.out.println(mArgs[0] + " does not seem to be a dictionary");
                 return;
             }
             System.out.println("Packaging : " + decodedSpec.describeChain());
-            System.out.println("Uncompressed size : " + decodedSpec.mFile.length());
             try (
-                final InputStream input = getFileInputStream(decodedSpec.mFile);
+                final InputStream input = decodedSpec.getStream(new File(mArgs[0]));
                 final OutputStream output = new BufferedOutputStream(
                         getFileOutputStreamOrStdOut(mArgs[1]))
             ) {

@@ -25,22 +25,26 @@ import android.view.MotionEvent;
 import com.android.inputmethod.keyboard.internal.BatchInputArbiter;
 import com.android.inputmethod.keyboard.internal.BatchInputArbiter.BatchInputArbiterListener;
 import com.android.inputmethod.keyboard.internal.BogusMoveEventDetector;
+import com.android.inputmethod.keyboard.internal.DrawingProxy;
 import com.android.inputmethod.keyboard.internal.GestureEnabler;
 import com.android.inputmethod.keyboard.internal.GestureStrokeDrawingParams;
 import com.android.inputmethod.keyboard.internal.GestureStrokeDrawingPoints;
 import com.android.inputmethod.keyboard.internal.GestureStrokeRecognitionParams;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
+import com.android.inputmethod.keyboard.internal.TimerProxy;
 import com.android.inputmethod.keyboard.internal.TypingTimeRecorder;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.common.CoordinateUtils;
+import com.android.inputmethod.latin.common.InputPointers;
+import com.android.inputmethod.latin.define.DebugFlags;
+import com.android.inputmethod.latin.settings.Settings;
+import com.android.inputmethod.latin.utils.ResourceUtils;
 
 import java.util.ArrayList;
 
-import org.smc.inputmethod.indic.Constants;
-import org.smc.inputmethod.indic.InputPointers;
-import org.smc.inputmethod.indic.R;
-import org.smc.inputmethod.indic.define.DebugFlags;
-import org.smc.inputmethod.indic.settings.Settings;
-import com.android.inputmethod.latin.utils.CoordinateUtils;
-import com.android.inputmethod.latin.utils.ResourceUtils;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public final class PointerTracker implements PointerTrackerQueue.Element,
         BatchInputArbiterListener {
@@ -49,60 +53,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private static final boolean DEBUG_MOVE_EVENT = false;
     private static final boolean DEBUG_LISTENER = false;
     private static boolean DEBUG_MODE = DebugFlags.DEBUG_ENABLED || DEBUG_EVENT;
-
-    public interface DrawingProxy {
-        public void invalidateKey(Key key);
-        public void showKeyPreview(Key key);
-        public void dismissKeyPreview(Key key);
-        public void showSlidingKeyInputPreview(PointerTracker tracker);
-        public void dismissSlidingKeyInputPreview();
-        public void showGestureTrail(PointerTracker tracker, boolean showsFloatingPreviewText);
-    }
-
-    public interface TimerProxy {
-        public void startTypingStateTimer(Key typedKey);
-        public boolean isTypingState();
-        public void startKeyRepeatTimerOf(PointerTracker tracker, int repeatCount, int delay);
-        public void startLongPressTimerOf(PointerTracker tracker, int delay);
-        public void cancelLongPressTimerOf(PointerTracker tracker);
-        public void cancelLongPressShiftKeyTimers();
-        public void cancelKeyTimersOf(PointerTracker tracker);
-        public void startDoubleTapShiftKeyTimer();
-        public void cancelDoubleTapShiftKeyTimer();
-        public boolean isInDoubleTapShiftKeyTimeout();
-        public void startUpdateBatchInputTimer(PointerTracker tracker);
-        public void cancelUpdateBatchInputTimer(PointerTracker tracker);
-        public void cancelAllUpdateBatchInputTimers();
-
-        public static class Adapter implements TimerProxy {
-            @Override
-            public void startTypingStateTimer(Key typedKey) {}
-            @Override
-            public boolean isTypingState() { return false; }
-            @Override
-            public void startKeyRepeatTimerOf(PointerTracker tracker, int repeatCount, int delay) {}
-            @Override
-            public void startLongPressTimerOf(PointerTracker tracker, int delay) {}
-            @Override
-            public void cancelLongPressTimerOf(PointerTracker tracker) {}
-            @Override
-            public void cancelLongPressShiftKeyTimers() {}
-            @Override
-            public void cancelKeyTimersOf(PointerTracker tracker) {}
-            @Override
-            public void startDoubleTapShiftKeyTimer() {}
-            @Override
-            public void cancelDoubleTapShiftKeyTimer() {}
-            @Override
-            public boolean isInDoubleTapShiftKeyTimeout() { return false; }
-            @Override
-            public void startUpdateBatchInputTimer(PointerTracker tracker) {}
-            @Override
-            public void cancelUpdateBatchInputTimer(PointerTracker tracker) {}
-            @Override
-            public void cancelAllUpdateBatchInputTimers() {}
-        }
-    }
 
     static final class PointerTrackerParams {
         public final boolean mKeySelectionByDraggingFinger;
@@ -164,6 +114,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
     // The position and time at which first down event occurred.
     private long mDownTime;
+    @Nonnull
     private int[] mDownCoordinates = CoordinateUtils.newInstance();
     private long mUpTime;
 
@@ -271,7 +222,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         final int trackersSize = sTrackers.size();
         for (int i = 0; i < trackersSize; ++i) {
             final PointerTracker tracker = sTrackers.get(i);
-            tracker.setReleasedKeyGraphics(tracker.getKey());
+            tracker.setReleasedKeyGraphics(tracker.getKey(), true /* withAnimation */);
         }
     }
 
@@ -417,6 +368,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         return mIsInDraggingFinger;
     }
 
+    @Nullable
     public Key getKey() {
         return mCurrentKey;
     }
@@ -430,19 +382,17 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         return mKeyDetector.detectHitKey(x, y);
     }
 
-    private void setReleasedKeyGraphics(final Key key) {
-        sDrawingProxy.dismissKeyPreview(key);
+    private void setReleasedKeyGraphics(@Nullable final Key key, final boolean withAnimation) {
         if (key == null) {
             return;
         }
 
-        // Even if the key is disabled, update the key release graphics just in case.
-        updateReleaseKeyGraphics(key);
+        sDrawingProxy.onKeyReleased(key, withAnimation);
 
         if (key.isShift()) {
             for (final Key shiftKey : mKeyboard.mShiftKeys) {
                 if (shiftKey != key) {
-                    updateReleaseKeyGraphics(shiftKey);
+                    sDrawingProxy.onKeyReleased(shiftKey, false /* withAnimation */);
                 }
             }
         }
@@ -451,11 +401,11 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             final int altCode = key.getAltCode();
             final Key altKey = mKeyboard.getKey(altCode);
             if (altKey != null) {
-                updateReleaseKeyGraphics(altKey);
+                sDrawingProxy.onKeyReleased(altKey, false /* withAnimation */);
             }
             for (final Key k : mKeyboard.mAltCodeKeysWhileTyping) {
                 if (k != key && k.getAltCode() == altCode) {
-                    updateReleaseKeyGraphics(k);
+                    sDrawingProxy.onKeyReleased(k, false /* withAnimation */);
                 }
             }
         }
@@ -466,7 +416,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         return sTypingTimeRecorder.needsToSuppressKeyPreviewPopup(eventTime);
     }
 
-    private void setPressedKeyGraphics(final Key key, final long eventTime) {
+    private void setPressedKeyGraphics(@Nullable final Key key, final long eventTime) {
         if (key == null) {
             return;
         }
@@ -478,15 +428,13 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             return;
         }
 
-        if (!key.noKeyPreview() && !sInGesture && !needsToSuppressKeyPreviewPopup(eventTime)) {
-            sDrawingProxy.showKeyPreview(key);
-        }
-        updatePressKeyGraphics(key);
+        final boolean noKeyPreview = sInGesture || needsToSuppressKeyPreviewPopup(eventTime);
+        sDrawingProxy.onKeyPressed(key, !noKeyPreview);
 
         if (key.isShift()) {
             for (final Key shiftKey : mKeyboard.mShiftKeys) {
                 if (shiftKey != key) {
-                    updatePressKeyGraphics(shiftKey);
+                    sDrawingProxy.onKeyPressed(shiftKey, false /* withPreview */);
                 }
             }
         }
@@ -495,31 +443,21 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             final int altCode = key.getAltCode();
             final Key altKey = mKeyboard.getKey(altCode);
             if (altKey != null) {
-                updatePressKeyGraphics(altKey);
+                sDrawingProxy.onKeyPressed(altKey, false /* withPreview */);
             }
             for (final Key k : mKeyboard.mAltCodeKeysWhileTyping) {
                 if (k != key && k.getAltCode() == altCode) {
-                    updatePressKeyGraphics(k);
+                    sDrawingProxy.onKeyPressed(k, false /* withPreview */);
                 }
             }
         }
-    }
-
-    private static void updateReleaseKeyGraphics(final Key key) {
-        key.onReleased();
-        sDrawingProxy.invalidateKey(key);
-    }
-
-    private static void updatePressKeyGraphics(final Key key) {
-        key.onPressed();
-        sDrawingProxy.invalidateKey(key);
     }
 
     public GestureStrokeDrawingPoints getGestureStrokeDrawingPoints() {
         return mGestureStrokeDrawingPoints;
     }
 
-    public void getLastCoordinates(final int[] outCoords) {
+    public void getLastCoordinates(@Nonnull final int[] outCoords) {
         CoordinateUtils.set(outCoords, mLastX, mLastY);
     }
 
@@ -527,7 +465,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         return mDownTime;
     }
 
-    public void getDownCoordinates(final int[] outCoords) {
+    public void getDownCoordinates(@Nonnull final int[] outCoords) {
         CoordinateUtils.copy(outCoords, mDownCoordinates);
     }
 
@@ -576,7 +514,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         }
         sListener.onStartBatchInput();
         dismissAllMoreKeysPanels();
-        sTimerProxy.cancelLongPressTimerOf(this);
+        sTimerProxy.cancelLongPressTimersOf(this);
     }
 
     private void showGestureTrail() {
@@ -766,7 +704,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private void resetKeySelectionByDraggingFinger() {
         mIsInDraggingFinger = false;
         mIsInSlidingKeyInput = false;
-        sDrawingProxy.dismissSlidingKeyInputPreview();
+        sDrawingProxy.showSlidingKeyInputPreview(null /* tracker */);
     }
 
     private void onGestureMoveEvent(final int x, final int y, final long eventTime,
@@ -885,7 +823,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     }
 
     private void processDraggingFingerOutFromOldKey(final Key oldKey) {
-        setReleasedKeyGraphics(oldKey);
+        setReleasedKeyGraphics(oldKey, true /* withAnimation */);
         callListenerOnRelease(oldKey, oldKey.getCode(), true /* withSliding */);
         startKeySelectionByDraggingFinger(oldKey);
         sTimerProxy.cancelKeyTimersOf(this);
@@ -928,12 +866,12 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             }
             onUpEvent(x, y, eventTime);
             cancelTrackingForAction();
-            setReleasedKeyGraphics(oldKey);
+            setReleasedKeyGraphics(oldKey, true /* withAnimation */);
         } else {
             if (!mIsDetectingGesture) {
                 cancelTrackingForAction();
             }
-            setReleasedKeyGraphics(oldKey);
+            setReleasedKeyGraphics(oldKey, true /* withAnimation */);
         }
     }
 
@@ -961,7 +899,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             onGestureMoveEvent(x, y, eventTime, true /* isMajorEvent */, newKey);
             if (sInGesture) {
                 mCurrentKey = null;
-                setReleasedKeyGraphics(oldKey);
+                setReleasedKeyGraphics(oldKey, true /* withAnimation */);
                 return;
             }
         }
@@ -1026,7 +964,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         final int currentRepeatingKeyCode = mCurrentRepeatingKeyCode;
         mCurrentRepeatingKeyCode = Constants.NOT_A_CODE;
         // Release the last pressed key.
-        setReleasedKeyGraphics(currentKey);
+        setReleasedKeyGraphics(currentKey, true /* withAnimation */);
 
         if (isShowingMoreKeysPanel()) {
             if (!mIsTrackingForActionDisabled) {
@@ -1063,14 +1001,6 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         }
     }
 
-    public void onShowMoreKeysPanel(final MoreKeysPanel panel) {
-        setReleasedKeyGraphics(mCurrentKey);
-        final int translatedX = panel.translateX(mLastX);
-        final int translatedY = panel.translateY(mLastY);
-        panel.onDownEvent(translatedX, translatedY, mPointerId, SystemClock.uptimeMillis());
-        mMoreKeysPanel = panel;
-    }
-
     @Override
     public void cancelTrackingForAction() {
         if (isShowingMoreKeysPanel()) {
@@ -1083,14 +1013,49 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         return !mIsTrackingForActionDisabled;
     }
 
-    public void cancelLongPressTimer() {
-        sTimerProxy.cancelLongPressTimerOf(this);
+    public void onLongPressed() {
+        sTimerProxy.cancelLongPressTimersOf(this);
+        if (isShowingMoreKeysPanel()) {
+            return;
+        }
+        final Key key = getKey();
+        if (key == null) {
+            return;
+        }
+        if (key.hasNoPanelAutoMoreKey()) {
+            cancelKeyTracking();
+            final int moreKeyCode = key.getMoreKeys()[0].mCode;
+            sListener.onPressKey(moreKeyCode, 0 /* repeatCont */, true /* isSinglePointer */);
+            sListener.onCodeInput(moreKeyCode, Constants.NOT_A_COORDINATE,
+                    Constants.NOT_A_COORDINATE, false /* isKeyRepeat */);
+            sListener.onReleaseKey(moreKeyCode, false /* withSliding */);
+            return;
+        }
+        final int code = key.getCode();
+        if (code == Constants.CODE_SPACE || code == Constants.CODE_LANGUAGE_SWITCH) {
+            // Long pressing the space key invokes IME switcher dialog.
+            if (sListener.onCustomRequest(Constants.CUSTOM_CODE_SHOW_INPUT_METHOD_PICKER)) {
+                cancelKeyTracking();
+                sListener.onReleaseKey(code, false /* withSliding */);
+                return;
+            }
+        }
+
+        setReleasedKeyGraphics(key, false /* withAnimation */);
+        final MoreKeysPanel moreKeysPanel = sDrawingProxy.showMoreKeysKeyboard(key, this);
+        if (moreKeysPanel == null) {
+            return;
+        }
+        final int translatedX = moreKeysPanel.translateX(mLastX);
+        final int translatedY = moreKeysPanel.translateY(mLastY);
+        moreKeysPanel.onDownEvent(translatedX, translatedY, mPointerId, SystemClock.uptimeMillis());
+        mMoreKeysPanel = moreKeysPanel;
     }
 
-    public void onLongPressed() {
+    private void cancelKeyTracking() {
         resetKeySelectionByDraggingFinger();
         cancelTrackingForAction();
-        setReleasedKeyGraphics(mCurrentKey);
+        setReleasedKeyGraphics(mCurrentKey, true /* withAnimation */);
         sPointerTrackerQueue.remove(this);
     }
 
@@ -1107,7 +1072,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
 
     private void onCancelEventInternal() {
         sTimerProxy.cancelKeyTimersOf(this);
-        setReleasedKeyGraphics(mCurrentKey);
+        setReleasedKeyGraphics(mCurrentKey, true /* withAnimation */);
         resetKeySelectionByDraggingFinger();
         dismissMoreKeysPanel();
     }
@@ -1153,7 +1118,7 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
     private void startLongPressTimer(final Key key) {
         // Note that we need to cancel all active long press shift key timers if any whenever we
         // start a new long press timer for both non-shift and shift keys.
-        sTimerProxy.cancelLongPressShiftKeyTimers();
+        sTimerProxy.cancelLongPressShiftKeyTimer();
         if (sInGesture) return;
         if (key == null) return;
         if (!key.isLongPressEnabled()) return;

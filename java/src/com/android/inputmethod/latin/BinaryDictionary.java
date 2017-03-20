@@ -20,12 +20,22 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
 
-import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.common.ComposedData;
+import com.android.inputmethod.latin.common.Constants;
+import com.android.inputmethod.latin.common.FileUtils;
+import com.android.inputmethod.latin.common.InputPointers;
+import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.WordProperty;
+import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
+import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
+import com.android.inputmethod.latin.utils.JniUtils;
+import com.android.inputmethod.latin.utils.WordInputEventForPersonalization;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,21 +44,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import org.smc.inputmethod.annotations.UsedForTesting;
-import org.smc.inputmethod.indic.Constants;
-import org.smc.inputmethod.indic.Dictionary;
-import org.smc.inputmethod.indic.InputPointers;
-import org.smc.inputmethod.indic.SuggestedWords.SuggestedWordInfo;
-import org.smc.inputmethod.indic.WordComposer;
-import org.smc.inputmethod.indic.settings.SettingsValuesForSuggestion;
-import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
-import com.android.inputmethod.latin.utils.FileUtils;
-import com.android.inputmethod.latin.utils.JniUtils;
-import com.android.inputmethod.latin.utils.LanguageModelParam;
-import com.android.inputmethod.latin.utils.StringUtils;
-
-// additional imports since we changed the package name.
-// -- don't delete on merge
+import javax.annotation.Nonnull;
 
 /**
  * Implements a static, compacted, binary dictionary of standard words.
@@ -60,6 +56,9 @@ public final class BinaryDictionary extends Dictionary {
     // The cutoff returned by native for auto-commit confidence.
     // Must be equal to CONFIDENCE_TO_AUTO_COMMIT in native/jni/src/defines.h
     private static final int CONFIDENCE_TO_AUTO_COMMIT = 1000000;
+
+    public static final int DICTIONARY_MAX_WORD_LENGTH = 48;
+    public static final int MAX_PREV_WORD_COUNT_FOR_N_GRAM = 3;
 
     @UsedForTesting
     public static final String UNIGRAM_COUNT_QUERY = "UNIGRAM_COUNT";
@@ -75,9 +74,9 @@ public final class BinaryDictionary extends Dictionary {
     // Format to get unigram flags from native side via getWordPropertyNative().
     private static final int FORMAT_WORD_PROPERTY_OUTPUT_FLAG_COUNT = 5;
     private static final int FORMAT_WORD_PROPERTY_IS_NOT_A_WORD_INDEX = 0;
-    private static final int FORMAT_WORD_PROPERTY_IS_BLACKLISTED_INDEX = 1;
-    private static final int FORMAT_WORD_PROPERTY_HAS_BIGRAMS_INDEX = 2;
-    private static final int FORMAT_WORD_PROPERTY_HAS_SHORTCUTS_INDEX = 3;
+    private static final int FORMAT_WORD_PROPERTY_IS_POSSIBLY_OFFENSIVE_INDEX = 1;
+    private static final int FORMAT_WORD_PROPERTY_HAS_NGRAMS_INDEX = 2;
+    private static final int FORMAT_WORD_PROPERTY_HAS_SHORTCUTS_INDEX = 3; // DEPRECATED
     private static final int FORMAT_WORD_PROPERTY_IS_BEGINNING_OF_SENTENCE_INDEX = 4;
 
     // Format to get probability and historical info from native side via getWordPropertyNative().
@@ -91,7 +90,6 @@ public final class BinaryDictionary extends Dictionary {
     public static final String DIR_NAME_SUFFIX_FOR_RECORD_MIGRATION = ".migrating";
 
     private long mNativeDict;
-    private final Locale mLocale;
     private final long mDictSize;
     private final String mDictFilePath;
     private final boolean mUseFullEditDistance;
@@ -125,8 +123,7 @@ public final class BinaryDictionary extends Dictionary {
     public BinaryDictionary(final String filename, final long offset, final long length,
             final boolean useFullEditDistance, final Locale locale, final String dictType,
             final boolean isUpdatable) {
-        super(dictType);
-        mLocale = locale;
+        super(dictType, locale);
         mDictSize = length;
         mDictFilePath = filename;
         mIsUpdatable = isUpdatable;
@@ -146,8 +143,7 @@ public final class BinaryDictionary extends Dictionary {
     public BinaryDictionary(final String filename, final boolean useFullEditDistance,
             final Locale locale, final String dictType, final long formatVersion,
             final Map<String, String> attributeMap) {
-        super(dictType);
-        mLocale = locale;
+        super(dictType, locale);
         mDictSize = 0;
         mDictFilePath = filename;
         // On memory dictionary is always updatable.
@@ -188,36 +184,41 @@ public final class BinaryDictionary extends Dictionary {
             boolean[] isBeginningOfSentenceArray, int[] word);
     private static native void getWordPropertyNative(long dict, int[] word,
             boolean isBeginningOfSentence, int[] outCodePoints, boolean[] outFlags,
-            int[] outProbabilityInfo, ArrayList<int[]> outBigramTargets,
-            ArrayList<int[]> outBigramProbabilityInfo, ArrayList<int[]> outShortcutTargets,
-            ArrayList<Integer> outShortcutProbabilities);
+            int[] outProbabilityInfo, ArrayList<int[][]> outNgramPrevWordsArray,
+            ArrayList<boolean[]> outNgramPrevWordIsBeginningOfSentenceArray,
+            ArrayList<int[]> outNgramTargets, ArrayList<int[]> outNgramProbabilityInfo,
+            ArrayList<int[]> outShortcutTargets, ArrayList<Integer> outShortcutProbabilities);
     private static native int getNextWordNative(long dict, int token, int[] outCodePoints,
             boolean[] outIsBeginningOfSentence);
     private static native void getSuggestionsNative(long dict, long proximityInfo,
             long traverseSession, int[] xCoordinates, int[] yCoordinates, int[] times,
             int[] pointerIds, int[] inputCodePoints, int inputSize, int[] suggestOptions,
             int[][] prevWordCodePointArrays, boolean[] isBeginningOfSentenceArray,
-            int[] outputSuggestionCount, int[] outputCodePoints, int[] outputScores,
-            int[] outputIndices, int[] outputTypes, int[] outputAutoCommitFirstWordConfidence,
-            float[] inOutLanguageWeight);
+            int prevWordCount, int[] outputSuggestionCount, int[] outputCodePoints,
+            int[] outputScores, int[] outputIndices, int[] outputTypes,
+            int[] outputAutoCommitFirstWordConfidence,
+            float[] inOutWeightOfLangModelVsSpatialModel);
     private static native boolean addUnigramEntryNative(long dict, int[] word, int probability,
             int[] shortcutTarget, int shortcutProbability, boolean isBeginningOfSentence,
-            boolean isNotAWord, boolean isBlacklisted, int timestamp);
+            boolean isNotAWord, boolean isPossiblyOffensive, int timestamp);
     private static native boolean removeUnigramEntryNative(long dict, int[] word);
     private static native boolean addNgramEntryNative(long dict,
             int[][] prevWordCodePointArrays, boolean[] isBeginningOfSentenceArray,
             int[] word, int probability, int timestamp);
     private static native boolean removeNgramEntryNative(long dict,
             int[][] prevWordCodePointArrays, boolean[] isBeginningOfSentenceArray, int[] word);
-    private static native int addMultipleDictionaryEntriesNative(long dict,
-            LanguageModelParam[] languageModelParams, int startIndex);
+    private static native boolean updateEntriesForWordWithNgramContextNative(long dict,
+            int[][] prevWordCodePointArrays, boolean[] isBeginningOfSentenceArray,
+            int[] word, boolean isValidWord, int count, int timestamp);
+    private static native int updateEntriesForInputEventsNative(long dict,
+            WordInputEventForPersonalization[] inputEvents, int startIndex);
     private static native String getPropertyNative(long dict, String query);
     private static native boolean isCorruptedNative(long dict);
     private static native boolean migrateNative(long dict, String dictFilePath,
             long newFormatVersion);
 
     // TODO: Move native dict into session
-    private final void loadDictionary(final String path, final long startOffset,
+    private void loadDictionary(final String path, final long startOffset,
             final long length, final boolean isUpdatable) {
         mHasUpdated = false;
         mNativeDict = openNative(path, startOffset, length, isUpdatable);
@@ -264,23 +265,25 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     @Override
-    public ArrayList<SuggestedWordInfo> getSuggestions(final WordComposer composer,
-            final PrevWordsInfo prevWordsInfo, final ProximityInfo proximityInfo,
+    public ArrayList<SuggestedWordInfo> getSuggestions(final ComposedData composedData,
+            final NgramContext ngramContext, final long proximityInfoHandle,
             final SettingsValuesForSuggestion settingsValuesForSuggestion,
-            final int sessionId, final float[] inOutLanguageWeight) {
+            final int sessionId, final float weightForLocale,
+            final float[] inOutWeightOfLangModelVsSpatialModel) {
         if (!isValidDictionary()) {
             return null;
         }
         final DicTraverseSession session = getTraverseSession(sessionId);
         Arrays.fill(session.mInputCodePoints, Constants.NOT_A_CODE);
-        prevWordsInfo.outputToArray(session.mPrevWordCodePointArrays,
+        ngramContext.outputToArray(session.mPrevWordCodePointArrays,
                 session.mIsBeginningOfSentenceArray);
-        final InputPointers inputPointers = composer.getInputPointers();
-        final boolean isGesture = composer.isBatchMode();
+        final InputPointers inputPointers = composedData.mInputPointers;
+        final boolean isGesture = composedData.mIsBatchMode;
         final int inputSize;
         if (!isGesture) {
-            inputSize = composer.copyCodePointsExceptTrailingSingleQuotesAndReturnCodePointCount(
-                    session.mInputCodePoints);
+            inputSize =
+                    composedData.copyCodePointsExceptTrailingSingleQuotesAndReturnCodePointCount(
+                        session.mInputCodePoints);
             if (inputSize < 0) {
                 return null;
             }
@@ -291,41 +294,45 @@ public final class BinaryDictionary extends Dictionary {
         session.mNativeSuggestOptions.setIsGesture(isGesture);
         session.mNativeSuggestOptions.setBlockOffensiveWords(
                 settingsValuesForSuggestion.mBlockPotentiallyOffensive);
-        session.mNativeSuggestOptions.setSpaceAwareGestureEnabled(
-                settingsValuesForSuggestion.mSpaceAwareGestureEnabled);
-        session.mNativeSuggestOptions.setAdditionalFeaturesOptions(
-                settingsValuesForSuggestion.mAdditionalFeaturesSettingValues);
-        if (inOutLanguageWeight != null) {
-            session.mInputOutputLanguageWeight[0] = inOutLanguageWeight[0];
+        session.mNativeSuggestOptions.setWeightForLocale(weightForLocale);
+        if (inOutWeightOfLangModelVsSpatialModel != null) {
+            session.mInputOutputWeightOfLangModelVsSpatialModel[0] =
+                    inOutWeightOfLangModelVsSpatialModel[0];
         } else {
-            session.mInputOutputLanguageWeight[0] = Dictionary.NOT_A_LANGUAGE_WEIGHT;
+            session.mInputOutputWeightOfLangModelVsSpatialModel[0] =
+                    Dictionary.NOT_A_WEIGHT_OF_LANG_MODEL_VS_SPATIAL_MODEL;
         }
         // TOOD: Pass multiple previous words information for n-gram.
-        getSuggestionsNative(mNativeDict, proximityInfo.getNativeProximityInfo(),
+        getSuggestionsNative(mNativeDict, proximityInfoHandle,
                 getTraverseSession(sessionId).getSession(), inputPointers.getXCoordinates(),
                 inputPointers.getYCoordinates(), inputPointers.getTimes(),
                 inputPointers.getPointerIds(), session.mInputCodePoints, inputSize,
                 session.mNativeSuggestOptions.getOptions(), session.mPrevWordCodePointArrays,
-                session.mIsBeginningOfSentenceArray, session.mOutputSuggestionCount,
-                session.mOutputCodePoints, session.mOutputScores, session.mSpaceIndices,
-                session.mOutputTypes, session.mOutputAutoCommitFirstWordConfidence,
-                session.mInputOutputLanguageWeight);
-        if (inOutLanguageWeight != null) {
-            inOutLanguageWeight[0] = session.mInputOutputLanguageWeight[0];
+                session.mIsBeginningOfSentenceArray, ngramContext.getPrevWordCount(),
+                session.mOutputSuggestionCount, session.mOutputCodePoints, session.mOutputScores,
+                session.mSpaceIndices, session.mOutputTypes,
+                session.mOutputAutoCommitFirstWordConfidence,
+                session.mInputOutputWeightOfLangModelVsSpatialModel);
+        if (inOutWeightOfLangModelVsSpatialModel != null) {
+            inOutWeightOfLangModelVsSpatialModel[0] =
+                    session.mInputOutputWeightOfLangModelVsSpatialModel[0];
         }
         final int count = session.mOutputSuggestionCount[0];
         final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<>();
         for (int j = 0; j < count; ++j) {
-            final int start = j * Constants.DICTIONARY_MAX_WORD_LENGTH;
+            final int start = j * DICTIONARY_MAX_WORD_LENGTH;
             int len = 0;
-            while (len < Constants.DICTIONARY_MAX_WORD_LENGTH
+            while (len < DICTIONARY_MAX_WORD_LENGTH
                     && session.mOutputCodePoints[start + len] != 0) {
                 ++len;
             }
             if (len > 0) {
                 suggestions.add(new SuggestedWordInfo(
                         new String(session.mOutputCodePoints, start, len),
-                        session.mOutputScores[j], session.mOutputTypes[j], this /* sourceDict */,
+                        "" /* prevWordsContext */,
+                        (int)(session.mOutputScores[j] * weightForLocale),
+                        session.mOutputTypes[j],
+                        this /* sourceDict */,
                         session.mSpaceIndices[j] /* indexOfTouchPointOfSecondWord */,
                         session.mOutputAutoCommitFirstWordConfidence[0]));
             }
@@ -348,31 +355,34 @@ public final class BinaryDictionary extends Dictionary {
 
     @Override
     public int getFrequency(final String word) {
-        if (TextUtils.isEmpty(word)) return NOT_A_PROBABILITY;
-        int[] codePoints = StringUtils.toCodePointArray(word);
+        if (TextUtils.isEmpty(word)) {
+            return NOT_A_PROBABILITY;
+        }
+        final int[] codePoints = StringUtils.toCodePointArray(word);
         return getProbabilityNative(mNativeDict, codePoints);
     }
 
     @Override
     public int getMaxFrequencyOfExactMatches(final String word) {
-        if (TextUtils.isEmpty(word)) return NOT_A_PROBABILITY;
-        int[] codePoints = StringUtils.toCodePointArray(word);
+        if (TextUtils.isEmpty(word)) {
+            return NOT_A_PROBABILITY;
+        }
+        final int[] codePoints = StringUtils.toCodePointArray(word);
         return getMaxProbabilityOfExactMatchesNative(mNativeDict, codePoints);
     }
 
     @UsedForTesting
-    public boolean isValidNgram(final PrevWordsInfo prevWordsInfo, final String word) {
-        return getNgramProbability(prevWordsInfo, word) != NOT_A_PROBABILITY;
+    public boolean isValidNgram(final NgramContext ngramContext, final String word) {
+        return getNgramProbability(ngramContext, word) != NOT_A_PROBABILITY;
     }
 
-    public int getNgramProbability(final PrevWordsInfo prevWordsInfo, final String word) {
-        if (!prevWordsInfo.isValid() || TextUtils.isEmpty(word)) {
+    public int getNgramProbability(final NgramContext ngramContext, final String word) {
+        if (!ngramContext.isValid() || TextUtils.isEmpty(word)) {
             return NOT_A_PROBABILITY;
         }
-        final int[][] prevWordCodePointArrays = new int[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM][];
-        final boolean[] isBeginningOfSentenceArray =
-                new boolean[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM];
-        prevWordsInfo.outputToArray(prevWordCodePointArrays, isBeginningOfSentenceArray);
+        final int[][] prevWordCodePointArrays = new int[ngramContext.getPrevWordCount()][];
+        final boolean[] isBeginningOfSentenceArray = new boolean[ngramContext.getPrevWordCount()];
+        ngramContext.outputToArray(prevWordCodePointArrays, isBeginningOfSentenceArray);
         final int[] wordCodePoints = StringUtils.toCodePointArray(word);
         return getNgramProbabilityNative(mNativeDict, prevWordCodePointArrays,
                 isBeginningOfSentenceArray, wordCodePoints);
@@ -383,25 +393,28 @@ public final class BinaryDictionary extends Dictionary {
             return null;
         }
         final int[] codePoints = StringUtils.toCodePointArray(word);
-        final int[] outCodePoints = new int[Constants.DICTIONARY_MAX_WORD_LENGTH];
+        final int[] outCodePoints = new int[DICTIONARY_MAX_WORD_LENGTH];
         final boolean[] outFlags = new boolean[FORMAT_WORD_PROPERTY_OUTPUT_FLAG_COUNT];
         final int[] outProbabilityInfo =
                 new int[FORMAT_WORD_PROPERTY_OUTPUT_PROBABILITY_INFO_COUNT];
-        final ArrayList<int[]> outBigramTargets = new ArrayList<>();
-        final ArrayList<int[]> outBigramProbabilityInfo = new ArrayList<>();
+        final ArrayList<int[][]> outNgramPrevWordsArray = new ArrayList<>();
+        final ArrayList<boolean[]> outNgramPrevWordIsBeginningOfSentenceArray =
+                new ArrayList<>();
+        final ArrayList<int[]> outNgramTargets = new ArrayList<>();
+        final ArrayList<int[]> outNgramProbabilityInfo = new ArrayList<>();
         final ArrayList<int[]> outShortcutTargets = new ArrayList<>();
         final ArrayList<Integer> outShortcutProbabilities = new ArrayList<>();
         getWordPropertyNative(mNativeDict, codePoints, isBeginningOfSentence, outCodePoints,
-                outFlags, outProbabilityInfo, outBigramTargets, outBigramProbabilityInfo,
-                outShortcutTargets, outShortcutProbabilities);
+                outFlags, outProbabilityInfo, outNgramPrevWordsArray,
+                outNgramPrevWordIsBeginningOfSentenceArray, outNgramTargets,
+                outNgramProbabilityInfo, outShortcutTargets, outShortcutProbabilities);
         return new WordProperty(codePoints,
                 outFlags[FORMAT_WORD_PROPERTY_IS_NOT_A_WORD_INDEX],
-                outFlags[FORMAT_WORD_PROPERTY_IS_BLACKLISTED_INDEX],
-                outFlags[FORMAT_WORD_PROPERTY_HAS_BIGRAMS_INDEX],
-                outFlags[FORMAT_WORD_PROPERTY_HAS_SHORTCUTS_INDEX],
+                outFlags[FORMAT_WORD_PROPERTY_IS_POSSIBLY_OFFENSIVE_INDEX],
+                outFlags[FORMAT_WORD_PROPERTY_HAS_NGRAMS_INDEX],
                 outFlags[FORMAT_WORD_PROPERTY_IS_BEGINNING_OF_SENTENCE_INDEX], outProbabilityInfo,
-                outBigramTargets, outBigramProbabilityInfo, outShortcutTargets,
-                outShortcutProbabilities);
+                outNgramPrevWordsArray, outNgramPrevWordIsBeginningOfSentenceArray,
+                outNgramTargets, outNgramProbabilityInfo);
     }
 
     public static class GetNextWordPropertyResult {
@@ -419,7 +432,7 @@ public final class BinaryDictionary extends Dictionary {
      * If token is 0, this method newly starts iterating the dictionary.
      */
     public GetNextWordPropertyResult getNextWordProperty(final int token) {
-        final int[] codePoints = new int[Constants.DICTIONARY_MAX_WORD_LENGTH];
+        final int[] codePoints = new int[DICTIONARY_MAX_WORD_LENGTH];
         final boolean[] isBeginningOfSentence = new boolean[1];
         final int nextToken = getNextWordNative(mNativeDict, token, codePoints,
                 isBeginningOfSentence);
@@ -429,18 +442,16 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     // Add a unigram entry to binary dictionary with unigram attributes in native code.
-    public boolean addUnigramEntry(final String word, final int probability,
-            final String shortcutTarget, final int shortcutProbability,
-            final boolean isBeginningOfSentence, final boolean isNotAWord,
-            final boolean isBlacklisted, final int timestamp) {
+    public boolean addUnigramEntry(
+            final String word, final int probability, final boolean isBeginningOfSentence,
+            final boolean isNotAWord, final boolean isPossiblyOffensive, final int timestamp) {
         if (word == null || (word.isEmpty() && !isBeginningOfSentence)) {
             return false;
         }
         final int[] codePoints = StringUtils.toCodePointArray(word);
-        final int[] shortcutTargetCodePoints = (shortcutTarget != null) ?
-                StringUtils.toCodePointArray(shortcutTarget) : null;
-        if (!addUnigramEntryNative(mNativeDict, codePoints, probability, shortcutTargetCodePoints,
-                shortcutProbability, isBeginningOfSentence, isNotAWord, isBlacklisted, timestamp)) {
+        if (!addUnigramEntryNative(mNativeDict, codePoints, probability,
+                null /* shortcutTargetCodePoints */, 0 /* shortcutProbability */,
+                isBeginningOfSentence, isNotAWord, isPossiblyOffensive, timestamp)) {
             return false;
         }
         mHasUpdated = true;
@@ -461,15 +472,14 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     // Add an n-gram entry to the binary dictionary with timestamp in native code.
-    public boolean addNgramEntry(final PrevWordsInfo prevWordsInfo, final String word,
+    public boolean addNgramEntry(final NgramContext ngramContext, final String word,
             final int probability, final int timestamp) {
-        if (!prevWordsInfo.isValid() || TextUtils.isEmpty(word)) {
+        if (!ngramContext.isValid() || TextUtils.isEmpty(word)) {
             return false;
         }
-        final int[][] prevWordCodePointArrays = new int[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM][];
-        final boolean[] isBeginningOfSentenceArray =
-                new boolean[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM];
-        prevWordsInfo.outputToArray(prevWordCodePointArrays, isBeginningOfSentenceArray);
+        final int[][] prevWordCodePointArrays = new int[ngramContext.getPrevWordCount()][];
+        final boolean[] isBeginningOfSentenceArray = new boolean[ngramContext.getPrevWordCount()];
+        ngramContext.outputToArray(prevWordCodePointArrays, isBeginningOfSentenceArray);
         final int[] wordCodePoints = StringUtils.toCodePointArray(word);
         if (!addNgramEntryNative(mNativeDict, prevWordCodePointArrays,
                 isBeginningOfSentenceArray, wordCodePoints, probability, timestamp)) {
@@ -479,35 +489,38 @@ public final class BinaryDictionary extends Dictionary {
         return true;
     }
 
-    // Remove an n-gram entry from the binary dictionary in native code.
-    public boolean removeNgramEntry(final PrevWordsInfo prevWordsInfo, final String word) {
-        if (!prevWordsInfo.isValid() || TextUtils.isEmpty(word)) {
+    // Update entries for the word occurrence with the ngramContext.
+    public boolean updateEntriesForWordWithNgramContext(@Nonnull final NgramContext ngramContext,
+            final String word, final boolean isValidWord, final int count, final int timestamp) {
+        if (TextUtils.isEmpty(word)) {
             return false;
         }
-        final int[][] prevWordCodePointArrays = new int[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM][];
-        final boolean[] isBeginningOfSentenceArray =
-                new boolean[Constants.MAX_PREV_WORD_COUNT_FOR_N_GRAM];
-        prevWordsInfo.outputToArray(prevWordCodePointArrays, isBeginningOfSentenceArray);
+        final int[][] prevWordCodePointArrays = new int[ngramContext.getPrevWordCount()][];
+        final boolean[] isBeginningOfSentenceArray = new boolean[ngramContext.getPrevWordCount()];
+        ngramContext.outputToArray(prevWordCodePointArrays, isBeginningOfSentenceArray);
         final int[] wordCodePoints = StringUtils.toCodePointArray(word);
-        if (!removeNgramEntryNative(mNativeDict, prevWordCodePointArrays,
-                isBeginningOfSentenceArray, wordCodePoints)) {
+        if (!updateEntriesForWordWithNgramContextNative(mNativeDict, prevWordCodePointArrays,
+                isBeginningOfSentenceArray, wordCodePoints, isValidWord, count, timestamp)) {
             return false;
         }
         mHasUpdated = true;
         return true;
     }
 
-    public void addMultipleDictionaryEntries(final LanguageModelParam[] languageModelParams) {
-        if (!isValidDictionary()) return;
-        int processedParamCount = 0;
-        while (processedParamCount < languageModelParams.length) {
+    @UsedForTesting
+    public void updateEntriesForInputEvents(final WordInputEventForPersonalization[] inputEvents) {
+        if (!isValidDictionary()) {
+            return;
+        }
+        int processedEventCount = 0;
+        while (processedEventCount < inputEvents.length) {
             if (needsToRunGC(true /* mindsBlockByGC */)) {
                 flushWithGC();
             }
-            processedParamCount = addMultipleDictionaryEntriesNative(mNativeDict,
-                    languageModelParams, processedParamCount);
+            processedEventCount = updateEntriesForInputEventsNative(mNativeDict, inputEvents,
+                    processedEventCount);
             mHasUpdated = true;
-            if (processedParamCount <= 0) {
+            if (processedEventCount <= 0) {
                 return;
             }
         }
@@ -525,7 +538,9 @@ public final class BinaryDictionary extends Dictionary {
 
     // Flush to dict file if the dictionary has been updated.
     public boolean flush() {
-        if (!isValidDictionary()) return false;
+        if (!isValidDictionary()) {
+            return false;
+        }
         if (mHasUpdated) {
             if (!flushNative(mNativeDict, mDictFilePath)) {
                 return false;
@@ -545,7 +560,9 @@ public final class BinaryDictionary extends Dictionary {
 
     // Run GC and flush to dict file.
     public boolean flushWithGC() {
-        if (!isValidDictionary()) return false;
+        if (!isValidDictionary()) {
+            return false;
+        }
         if (!flushWithGCNative(mNativeDict, mDictFilePath)) {
             return false;
         }
@@ -560,7 +577,9 @@ public final class BinaryDictionary extends Dictionary {
      * @return whether GC is needed to run or not.
      */
     public boolean needsToRunGC(final boolean mindsBlockByGC) {
-        if (!isValidDictionary()) return false;
+        if (!isValidDictionary()) {
+            return false;
+        }
         return needsToRunGCNative(mNativeDict, mindsBlockByGC);
     }
 
@@ -604,8 +623,10 @@ public final class BinaryDictionary extends Dictionary {
     }
 
     @UsedForTesting
-    public String getPropertyForTest(final String query) {
-        if (!isValidDictionary()) return "";
+    public String getPropertyForGettingStats(final String query) {
+        if (!isValidDictionary()) {
+            return "";
+        }
         return getPropertyNative(mNativeDict, query);
     }
 

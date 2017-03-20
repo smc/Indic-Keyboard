@@ -24,12 +24,13 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 
+import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.settings.SettingsValues;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.PatternSyntaxException;
-
-import org.smc.inputmethod.annotations.UsedForTesting;
-import org.smc.inputmethod.indic.R;
 
 public final class ResourceUtils {
     private static final String TAG = ResourceUtils.class.getSimpleName();
@@ -110,7 +111,6 @@ public final class ResourceUtils {
      * are true for the specified key value pairs.
      *
      * For example, "condition,constant" has the following format.
-     * (See {@link ResourceUtilsTests#testFindConstantForKeyValuePairsRegexp()})
      *  - HARDWARE=mako,constantForNexus4
      *  - MODEL=Nexus 4:MANUFACTURER=LGE,constantForNexus4
      *  - ,defaultConstant
@@ -119,6 +119,7 @@ public final class ResourceUtils {
      * @param conditionConstantArray an array of "condition,constant" elements to be searched.
      * @return the constant part of the matched "condition,constant" element. Returns null if no
      * condition matches.
+     * @see com.android.inputmethod.latin.utils.ResourceUtilsTests#testFindConstantForKeyValuePairsRegexp()
      */
     @UsedForTesting
     static String findConstantForKeyValuePairs(final HashMap<String, String> keyValuePairs,
@@ -184,6 +185,15 @@ public final class ResourceUtils {
     public static int getDefaultKeyboardWidth(final Resources res) {
         final DisplayMetrics dm = res.getDisplayMetrics();
         return dm.widthPixels;
+    }
+
+    public static int getKeyboardHeight(final Resources res, final SettingsValues settingsValues) {
+        final int defaultKeyboardHeight = getDefaultKeyboardHeight(res);
+        if (settingsValues.mHasKeyboardResize) {
+            // mKeyboardHeightScale Ranges from [.5,1.2], from xml/prefs_screen_debug.xml
+            return (int)(defaultKeyboardHeight * settingsValues.mKeyboardHeightScale);
+        }
+        return defaultKeyboardHeight;
     }
 
     public static int getDefaultKeyboardHeight(final Resources res) {

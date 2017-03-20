@@ -21,7 +21,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import org.smc.inputmethod.indic.R;
+import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 
 final class EmojiLayoutParams {
