@@ -35,8 +35,7 @@
             latin:keySpec="-"
             latin:moreKeys="+"
             latin:keyLabelFlags="hasPopupHint"
-            latin:keyStyle="numKeyStyle"
-            latin:backgroundType="functional"
+            latin:keyStyle="numFunctionalKeyStyle"
             latin:keyWidth="fillRight" />
     </Row>
     <Row>
@@ -55,8 +54,7 @@
             >
                 <Key
                     latin:keySpec="."
-                    latin:keyStyle="numKeyStyle"
-                    latin:backgroundType="functional"
+                    latin:keyStyle="numFunctionalKeyStyle"
                     latin:keyWidth="fillRight" />
             </case>
             <case
@@ -64,17 +62,15 @@
             >
                 <Key
                     latin:keySpec="."
-                    latin:moreKeys="!text/morekeys_am_pm"
                     latin:keyLabelFlags="hasPopupHint"
-                    latin:keyStyle="numKeyStyle"
-                    latin:backgroundType="functional"
+                    latin:moreKeys="!text/morekeys_am_pm"
+                    latin:keyStyle="numFunctionalKeyStyle"
                     latin:keyWidth="fillRight" />
             </case>
             <default>
                 <Key
                     latin:keySpec=","
-                    latin:keyStyle="numKeyStyle"
-                    latin:backgroundType="functional"
+                    latin:keyStyle="numFunctionalKeyStyle"
                     latin:keyWidth="fillRight" />
             </default>
         </switch>

@@ -2,7 +2,10 @@
 <!--
 /*
 **
-** Copyright 2014, The Android Open Source Project
+** Author: Jishnu Mohan <jishnu7@gmail.com>
+** Copyright ©
+**      2012-2013 Jishnu Mohan
+**      2013-2014 Jishnu Mohan, Swathanthra Malayalam Computing (SMC), International Centre for Free and Open Source Software (ICFOSS)
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -18,28 +21,38 @@
 */
 -->
 
-<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
-    <include latin:keyboardLayout="@xml/key_styles_common" />
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res-auto"
+>
+    <include
+        latin:keyboardLayout="@xml/key_styles_common" />
     <Row
-        latin:keyWidth="9.091%p"
-        latin:keyLabelFlags="fontNormal|autoXScale"
+        latin:keyWidth="10%p"
     >
-        <include latin:keyboardLayout="@xml/rowkeys_tamil1" />
+        <include
+            latin:keyboardLayout="@xml/rowkeys_tamil1" />
     </Row>
     <Row
-        latin:keyWidth="9.091%p"
-        latin:keyLabelFlags="fontNormal|autoXScale"
+        latin:keyWidth="10%p"
     >
-        <include latin:keyboardLayout="@xml/rowkeys_tamil2" />
+        <include
+            latin:keyboardLayout="@xml/rowkeys_tamil2"
+            latin:keyXPos="0.25%p" />
     </Row>
     <Row
-        latin:keyWidth="9.091%p"
-        latin:keyLabelFlags="fontNormal|autoXScale"
+        latin:keyWidth="10%p"
     >
-        <include latin:keyboardLayout="@xml/rowkeys_tamil3" />
+        <Key
+            latin:keyStyle="shiftKeyStyle"
+            latin:keyWidth="15%p"
+            latin:visualInsetsRight="1%p" />
+        <include
+            latin:keyboardLayout="@xml/rowkeys_tamil3" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillRight" />
+            latin:keyWidth="fillRight"
+            latin:visualInsetsLeft="1%p" />
     </Row>
-    <include latin:keyboardLayout="@xml/row_qwerty4" />
+    <include
+        latin:keyboardLayout="@xml/row_qwerty4" />
 </merge>

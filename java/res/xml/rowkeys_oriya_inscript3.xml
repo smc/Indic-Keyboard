@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Author: Jishnu Mohan <jishnu7@gmail.com>
+** Copyright © 2013-2014 Jishnu Mohan, Swathanthra Malayalam Computing (SMC), International Centre for Free and Open Source Software (ICFOSS)
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res-auto"
+>
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+        >
+            <!--A ଓ ORIYA LETTER O-->
+            <Key
+                latin:keySpec="&#x0B13;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--S ଏ ORIYA LETTER E-->
+            <Key
+                latin:keySpec="&#x0B0F;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--D ଅ ORIYA LETTER A-->
+            <Key
+                latin:keySpec="&#x0B05;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--F ଇ ORIYA LETTER I-->
+            <Key
+                latin:keySpec="&#x0B07;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--G ଉ ORIYA LETTER U-->
+            <Key
+                latin:keySpec="&#x0B09;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--H ଫ ORIYA LETTER PHA-->
+            <Key
+                latin:keySpec="&#x0B2B;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <Key latin:keySpec="&#x0020;" />
+
+            <!--K ଖ ORIYA LETTER KHA-->
+            <Key
+                latin:keySpec="&#x0B16;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--L ଥ ORIYA LETTER THA-->
+            <Key
+                latin:keySpec="&#x0B25;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--\: ଛ ORIYA LETTER CHA-->
+            <Key
+                latin:keySpec="&#x0B1B;"
+                latin:moreKeys=":"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <Key
+                latin:keySpec="&#x0B20;"
+                latin:moreKeys="&quot;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+        </case>
+
+        <default>
+            <!--a ୋ ORIYA VOWEL SIGN O-->
+            <Key
+                latin:keySpec="&#x0B4B;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--s େ ORIYA VOWEL SIGN E-->
+            <Key
+                latin:keySpec="&#x0B47;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--d ୍ ORIYA SIGN VIRAMA-->
+            <Key
+                latin:keySpec="&#x0B4D;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--f ି ORIYA VOWEL SIGN I-->
+            <Key
+                latin:keySpec="&#x0B3F;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--g ୁ ORIYA VOWEL SIGN U-->
+            <Key
+                latin:keySpec="&#x0B41;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--h ପ ORIYA LETTER PA-->
+            <Key
+                latin:keySpec="&#x0B2A;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--j ର ORIYA LETTER RA-->
+            <Key
+                latin:keySpec="&#x0B30;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--k କ ORIYA LETTER KA-->
+            <Key
+                latin:keySpec="&#x0B15;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--l ତ ORIYA LETTER TA-->
+            <Key
+                latin:keySpec="&#x0B24;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--\; ଚ ORIYA LETTER CA-->
+            <Key
+                latin:keySpec="&#x0B1A;"
+                latin:moreKeys=";"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <Key
+                latin:keySpec="&#x0B1F;"
+                latin:moreKeys="'"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+         </default>
+    </switch>
+</merge>

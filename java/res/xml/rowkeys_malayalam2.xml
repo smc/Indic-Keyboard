@@ -2,7 +2,10 @@
 <!--
 /*
 **
-** Copyright 2014, The Android Open Source Project
+** Author: Jishnu Mohan <jishnu7@gmail.com>
+** Copyright ©
+**      2012-2013 Jishnu Mohan
+**      2013-2014 Jishnu Mohan, Swathanthra Malayalam Computing (SMC), International Centre for Free and Open Source Software (ICFOSS)
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -18,60 +21,103 @@
 */
 -->
 
-<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
-    <!-- U+0D15: "ക" MALAYALAM LETTER KA
-         U+0D16: "ഖ" MALAYALAM LETTER KHA -->
-    <Key
-        latin:keySpec="&#x0D15;"
-        latin:moreKeys="&#x0D16;" />
-    <!-- U+0D17: "ഗ" MALAYALAM LETTER GA
-         U+0D18: "ഘ" MALAYALAM LETTER GHA -->
-    <Key
-        latin:keySpec="&#x0D17;"
-        latin:moreKeys="&#x0D18;" />
-    <!-- U+0D19: "ങ" MALAYALAM LETTER NGA
-         U+0D1E: "ഞ" MALAYALAM LETTER NYA -->
-    <Key
-        latin:keySpec="&#x0D19;"
-        latin:moreKeys="&#x0D1E;" />
-    <!-- U+0D1A: "ച" MALAYALAM LETTER CA
-         U+0D1B: "ഛ" MALAYALAM LETTER CHA -->
-    <Key
-        latin:keySpec="&#x0D1A;"
-        latin:moreKeys="&#x0D1B;" />
-    <!-- U+0D1C: "ജ" MALAYALAM LETTER JA
-         U+0D1D: "ഝ" MALAYALAM LETTER JHA -->
-    <Key
-        latin:keySpec="&#x0D1C;"
-        latin:moreKeys="&#x0D1D;" />
-    <!-- U+0D1F: "ട" MALAYALAM LETTER TTA
-         U+0D20: "ഠ" MALAYALAM LETTER TTHA -->
-    <Key
-        latin:keySpec="&#x0D1F;"
-        latin:moreKeys="&#x0D20;" />
-    <!-- U+0D21: "ഡ" MALAYALAM LETTER DDA
-         U+0D22: "ഢ" MALAYALAM LETTER DDHA -->
-    <Key
-        latin:keySpec="&#x0D21;"
-        latin:moreKeys="&#x0D22;" />
-    <!-- U+0D23: "ണ" MALAYALAM LETTER NNA
-         U+0D7A: "ൺ" MALAYALAM LETTER CHILLU NN -->
-    <Key
-        latin:keySpec="&#x0D23;"
-        latin:moreKeys="&#x0D7A;" />
-    <!-- U+0D24: "ത" MALAYALAM LETTER TA
-         U+0D25: "ഥ" MALAYALAM LETTER THA -->
-    <Key
-        latin:keySpec="&#x0D24;"
-        latin:moreKeys="&#x0D25;" />
-    <!-- U+0D26: "ദ" MALAYALAM LETTER DA
-         U+0D27: "ധ" MALAYALAM LETTER DHA -->
-    <Key
-        latin:keySpec="&#x0D26;"
-        latin:moreKeys="&#x0D27;" />
-    <!-- U+0D28: "ഗന" MALAYALAM LETTER NA
-         U+0D7B: "ൻ" MALAYALAM LETTER CHILLU N -->
-    <Key
-        latin:keySpec="&#x0D28;"
-        latin:moreKeys="&#x0D7B;" />
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res-auto"
+>
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+        >
+
+            <!-- അ, ആ -->
+            <Key
+                latin:keySpec="&#x0D05;"
+                latin:moreKeys="&#x0D06;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- ഷ, ക്ഷ -->
+            <Key
+                latin:keySpec="&#x0D37;"
+                latin:moreKeys="&#x0D15;&#x0D4D;&#x0D37;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- ധ, ഢ -->
+            <Key
+                latin:keySpec="&#x0D27;"
+                latin:moreKeys="&#x0D22;"
+                latin:keyHintLabel="&#x0D22;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- ഫ -->
+            <Key
+                latin:keySpec="&#x0D2B;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- ഘ -->
+            <Key
+                latin:keySpec="&#x0D18;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- ഃ -->
+            <Key
+                latin:keySpec="&#x0D03;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- ഝ -->
+            <Key
+                latin:keySpec="&#x0D1D;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- ഖ -->
+            <Key
+                latin:keySpec="&#x0D16;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- ള, ള്ള, ള്‍ -->
+            <Key
+                latin:keySpec="&#x0D33;"
+                latin:moreKeys="&#x0D33;&#x0D4D;&#x0D33;,&#x0D33;&#x0D4D;&#x200D;"
+                latin:keyLabelFlags="fontNormal" />
+        </case>
+
+        <default>
+            <!-- ാ, ആ -->
+            <Key
+                latin:keySpec="&#x0D3E;"
+                latin:moreKeys="&#x0D06;"
+                latin:keyHintLabel="&#x0D06;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- സ, സ്സ -->
+            <Key
+                latin:keySpec="&#x0D38;"
+                latin:moreKeys="&#x0D38;&#x0D4D;&#x0D38;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- ദ, ഡ, ഡ്ഡ, ദ്ദ -->
+            <Key
+                latin:keySpec="&#x0D26;"
+                latin:moreKeys="&#x0D21;,&#x0D21;&#x0D4D;&#x0D21;,&#x0D26;&#x0D4D;&#x0D26;"
+                latin:keyHintLabel="&#x0D21;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- ഫ -->
+            <Key
+                latin:keySpec="&#x0D2B;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- ഗ, ഗ്ഗ -->
+            <Key
+                latin:keySpec="&#x0D17;"
+                latin:moreKeys="&#x0D17;&#x0D4D;&#x0D17;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- ഹ -->
+            <Key
+                latin:keySpec="&#x0D39;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- ജ, ജ്ജ -->
+            <Key
+                latin:keySpec="&#x0D1C;"
+                latin:moreKeys="&#x0D1C;&#x0D4D;&#x0D1C;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- ക, ക്ക, ക്‍ , ങ്ക-->
+            <Key
+                latin:keySpec="&#x0D15;"
+                latin:moreKeys="&#x0D15;&#x0D4D;&#x0D15;,&#x0d15;&#x0D4D;&#x200D;,&#x0D19;&#x0D4D;&#x0D15;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- ല, ല്‍, ല്ല -->
+            <Key
+                latin:keySpec="&#x0D32;"
+                latin:moreKeys="&#x0D32;&#x0D4D;&#x200D;,&#x0D32;&#x0D4D;&#x0D32;"
+                latin:keyHintLabel="&#x0D32;&#x0D4D;&#x200D;"
+                latin:keyLabelFlags="fontNormal" />
+         </default>
+    </switch>
 </merge>

@@ -80,7 +80,6 @@
         </case>
         <!-- fa: Persian (Rial and Afgahni)
              hi: Hindi (Indian Rupee)
-             hi_ZZ: Hinglish (Indian Rupee)
              iw: Hebrew (New Sheqel)
              lo: Lao (Kip)
              mn: Mongolian (Tugrik)
@@ -94,13 +93,12 @@
              its unicode, although there is no font glyph for it as of September 2013. -->
         <!-- TODO: The currency sign of Russian Ruble was created in 2014 and assigned U+20BD for
              its unicode, although there is no font glyph for it as of August 2014. -->
-        <case latin:languageCode="fa|hi|iw|lo|mn|ne|th|uk|vi">
+        <case latin:languageCode="fa|hi|iw|lo|mn|ne|th|uk|vi|en">
             <include latin:keyboardLayout="@xml/key_styles_currency_generic" />
         </case>
         <!-- si_LK: Sinhala (Sri Lanka) (Sri Lanka Rupee)
-             ta_LK: Tamil (Sri Lanka) (Sri Lanka Rupee)
-             bn_BD: Bengali (Bangladesh) (Taka) -->
-        <case latin:countryCode="LK|BD">
+             ta_LK: Tamil (Sri Lanka) (Sri Lanka Rupee) -->
+        <case latin:countryCode="LK">
             <include latin:keyboardLayout="@xml/key_styles_currency_generic" />
         </case>
         <!-- bn_IN: Bengali (India) (Indian Rupee)

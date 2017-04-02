@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+** Burmese / Myanmar
+** Author: Jishnu Mohan <jishnu7@gmail.com>
+** Copyright © 2014 Jishnu Mohan
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res-auto"
+ >
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+            >
+            <!-- MYANMAR LETTER BA -->
+            <Key
+                latin:keySpec="&#x1017;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- MYANMAR CONSONANT SIGN MEDIAL HA -->
+            <Key
+                latin:keySpec="&#x103E;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- MYANMAR VOWEL SIGN II -->
+            <Key
+                latin:keySpec="&#x102E;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- MYANMAR SIGN VIRAMA -->
+            <Key
+                latin:keySpec="&#x1039;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- MYANMAR CONSONANT SIGN MEDIAL WA -->
+            <Key
+                latin:keySpec="&#x103D;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- MYANMAR SIGN ANUSVARA -->
+            <Key
+                latin:keySpec="&#x1036;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- MYANMAR VOWEL SIGN AI -->
+            <Key
+                latin:keySpec="&#x1032;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- MYANMAR LETTER DA
+                 MYANMAR LETTER DDA -->
+            <Key
+                latin:keySpec="&#x1012;"
+                latin:moreKeys="&#x100D;"
+                latin:keyHintLabel="&#x100D;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- MYANMAR LETTER DHA
+                 MYANMAR LETTER DDHA -->
+            <Key
+                latin:keySpec="&#x1013;"
+                latin:moreKeys="&#x100E;"
+                latin:keyHintLabel="&#x100E;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- MYANMAR LETTER GA -->
+            <Key
+                latin:keySpec="&#x1002;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- MYANMAR LETTER SSA -->
+            <Key
+                latin:keySpec="&#x1051;"
+                latin:keyLabelFlags="fontNormal" />
+        </case>
+
+        <default>
+            <!-- MYANMAR VOWEL SIGN E -->
+            <Key
+               latin:keySpec="&#x1031;"
+               latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- MYANMAR CONSONANT SIGN MEDIAL YA -->
+            <Key
+               latin:keySpec="&#x103B;"
+               latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- MYANMAR VOWEL SIGN I -->
+            <Key
+               latin:keySpec="&#x102D;"
+               latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- MYANMAR SIGN ASAT -->
+            <Key
+               latin:keySpec="&#x103A;"
+               latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- MYANMAR VOWEL SIGN TALL AA -->
+            <Key
+               latin:keySpec="&#x102B;"
+               latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- MYANMAR SIGN DOT BELOW -->
+            <Key
+               latin:keySpec="&#x1037;"
+               latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- MYANMAR CONSONANT SIGN MEDIAL RA
+                 MYANMAR LETTER RA
+                 MYANMAR LETTER VOCALIC R
+                 MYANMAR LETTER VOCALIC RR -->
+            <Key
+               latin:keySpec="&#x103C;"
+               latin:keyHintLabel="&#x101B;"
+               latin:moreKeys="&#x101B;,&#x1052;,&#x1053;"
+               latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- MYANMAR VOWEL SIGN U -->
+            <Key
+               latin:keySpec="&#x102F;"
+               latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- MYANMAR VOWEL SIGN UU -->
+            <Key
+               latin:keySpec="&#x1030;"
+               latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!-- MYANMAR SIGN VISARGA -->
+            <Key
+               latin:keySpec="&#x1038;"
+               latin:keyLabelFlags="fontNormal" />
+            <!-- MYANMAR SYMBOL GENITIVE -->
+            <Key
+              latin:keySpec="&#x104F;"
+              latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+        </default>
+    </switch>
+</merge>

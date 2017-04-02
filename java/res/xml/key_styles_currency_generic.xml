@@ -24,7 +24,7 @@
          U+00A2: "¢" CENT SIGN -->
     <key-style
         latin:styleName="currencyKeyStyle"
-        latin:keySpec="!text/keyspec_currency"
+        latin:keySpec="&#x20b9;"
         latin:moreKeys="!text/morekeys_currency_generic" />
     <key-style
         latin:styleName="moreCurrency1KeyStyle"

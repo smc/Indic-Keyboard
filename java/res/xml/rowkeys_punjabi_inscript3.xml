@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Author: Jishnu Mohan <jishnu7@gmail.com>
+** Copyright © 2013-2014 Jishnu Mohan, Swathanthra Malayalam Computing (SMC), International Centre for Free and Open Source Software (ICFOSS)
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res-auto"
+>
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+        >
+            <!--A ਓ GURMUKHI LETTER OO-->
+            <Key
+                latin:keySpec="&#x0A13;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--S ਏ GURMUKHI LETTER EE-->
+            <Key
+                latin:keySpec="&#x0A0F;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--D ਅ GURMUKHI LETTER A-->
+            <Key
+                latin:keySpec="&#x0A05;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--F ਇ GURMUKHI LETTER I-->
+            <Key
+                latin:keySpec="&#x0A07;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--G ਉ GURMUKHI LETTER U-->
+            <Key
+                latin:keySpec="&#x0A09;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--H ਫ GURMUKHI LETTER PHA-->
+            <Key
+                latin:keySpec="&#x0A2B;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--J ੜ GURMUKHI LETTER RRA-->
+            <Key
+                latin:keySpec="&#x0A5C;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--K ਖ GURMUKHI LETTER KHA-->
+            <Key
+                latin:keySpec="&#x0A16;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--L ਥ GURMUKHI LETTER THA-->
+            <Key
+                latin:keySpec="&#x0A25;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--\: ਛ GURMUKHI LETTER CHA-->
+            <Key
+                latin:keySpec="&#x0A1B;"
+                latin:moreKeys=":"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--" ਠ GURMUKHI LETTER TTHA-->
+            <Key
+                latin:keySpec="&#x0A20;"
+                latin:moreKeys="&quot;"
+                latin:keyLabelFlags="fontNormal" />
+        </case>
+
+        <default>
+            <!--a ੋ GURMUKHI VOWEL SIGN OO-->
+            <Key
+                latin:keySpec="&#x0A4B;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--s ੇ GURMUKHI VOWEL SIGN EE-->
+            <Key
+                latin:keySpec="&#x0A47;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--d ੍ GURMUKHI SIGN VIRAMA-->
+            <Key
+                latin:keySpec="&#x0A4D;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--f ਿ GURMUKHI VOWEL SIGN I-->
+            <Key
+                latin:keySpec="&#x0A3F;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--g ੁ GURMUKHI VOWEL SIGN U-->
+            <Key
+                latin:keySpec="&#x0A41;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--h ਪ GURMUKHI LETTER PA-->
+            <Key
+                latin:keySpec="&#x0A2A;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--j ਰ GURMUKHI LETTER RA-->
+            <Key
+                latin:keySpec="&#x0A30;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--k ਕ GURMUKHI LETTER KA-->
+            <Key
+                latin:keySpec="&#x0A15;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--l ਤ GURMUKHI LETTER TA-->
+            <Key
+                latin:keySpec="&#x0A24;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--\; ਚ GURMUKHI LETTER CA-->
+            <Key
+                latin:keySpec="&#x0A1A;"
+                latin:moreKeys=";"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--' ਟ GURMUKHI LETTER TTA-->
+            <Key
+                latin:keySpec="&#x0A1F;"
+                latin:moreKeys="'"
+                latin:keyLabelFlags="fontNormal" />
+         </default>
+    </switch>
+</merge>

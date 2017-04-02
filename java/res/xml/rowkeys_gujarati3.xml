@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Author: Jishnu Mohan <jishnu7@gmail.com>
+** Copyright © 2013-2014 Jishnu Mohan, Swathanthra Malayalam Computing (SMC), International Centre for Free and Open Source Software (ICFOSS)
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res-auto"
+ >
+    <switch>
+      <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+            >
+            <!--Z ઁ GUJARATI SIGN CANDRABINDU-->
+            <Key
+                latin:keySpec="&#x0A81;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--X ક્ષ  -->
+            <Key
+                latin:keySpec="&#x0A95;&#x0ACD;&#x0A95;&#x0ACD;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--C છ GUJARATI LETTER CHA-->
+            <Key
+                latin:keySpec="&#x0A9B;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--V ઽ GUJARATI SIGN AVAGRAHA-->
+            <Key
+                latin:keySpec="&#x0ABD;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--B ભ GUJARATI LETTER BHA-->
+            <Key
+                latin:keySpec="&#x0AAD;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--N ણ GUJARATI LETTER NNA-->
+            <Key
+                latin:keySpec="&#x0AA3;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--M ં GUJARATI SIGN ANUSVARA-->
+            <Key
+                latin:keySpec="&#x0A82;"
+                latin:keyLabelFlags="fontNormal" />
+          </case>
+      <default>
+            <!--z ઙ GUJARATI LETTER NGA-->
+            <!-- ઼ GUJARATI SIGN NUKTA-->
+            <Key
+                latin:keySpec="&#x0A99;"
+                latin:moreKeys="&#x0ABC;"
+                latin:keyHintLabel="&#x0ABC;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--x ષ GUJARATI LETTER SSA-->
+            <Key
+                latin:keySpec="&#x0AB7;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--c ચ GUJARATI LETTER CA-->
+            <Key
+                latin:keySpec="&#x0A9A;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--v વ GUJARATI LETTER VA-->
+            <Key
+                latin:keySpec="&#x0AB5;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--b બ GUJARATI LETTER BA-->
+            <Key
+                latin:keySpec="&#x0AAC;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--n ન GUJARATI LETTER NA-->
+            <Key
+                latin:keySpec="&#x0AA8;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--m મ GUJARATI LETTER MA-->
+            <Key
+                latin:keySpec="&#x0AAE;"
+                latin:keyLabelFlags="fontNormal" />
+        </default>
+    </switch>
+</merge>

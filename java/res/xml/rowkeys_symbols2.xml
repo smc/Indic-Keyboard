@@ -44,8 +44,7 @@
         </default>
     </switch>
     <Key
-        latin:keyStyle="currencyKeyStyle"
-        latin:keyLabelFlags="followKeyLetterRatio" />
+        latin:keyStyle="currencyKeyStyle" />
     <Key
         latin:keySpec="!text/keyspec_symbols_percent"
         latin:moreKeys="!text/morekeys_symbols_percent" />

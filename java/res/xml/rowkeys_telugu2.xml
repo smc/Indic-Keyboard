@@ -2,7 +2,8 @@
 <!--
 /*
 **
-** Copyright 2014, The Android Open Source Project
+** Author: Jishnu Mohan <jishnu7@gmail.com>
+** Copyright © 2013-2014 Jishnu Mohan, Swathanthra Malayalam Computing (SMC), International Centre for Free and Open Source Software (ICFOSS)
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -18,61 +19,93 @@
 */
 -->
 
-<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
-    <!-- U+0C4B: "ో" TELUGU VOWEL SIGN OO
-         U+0C13: "ఓ" TELUGU LETTER OO -->
-    <Key
-        latin:keySpec="&#x0C4B;"
-        latin:moreKeys="&#x0C13;" />
-    <!-- U+0C47: "ే" TELUGU VOWEL SIGN EE
-         U+0C0F: "ఏ" TELUGU LETTER EE -->
-    <Key
-        latin:keySpec="&#x0C47;"
-        latin:moreKeys="&#x0C0F;" />
-    <!-- U+0C4D: "్" TELUGU SIGN VIRAMA
-         U+0C05: "అ" TELUGU LETTER A -->
-    <Key
-        latin:keySpec="&#x0C4D;"
-        latin:moreKeys="&#x0C05;" />
-    <!-- U+0C3F: "ి" TELUGU VOWEL SIGN I
-         U+0C07: "ఇ" TELUGU LETTER I -->
-    <Key
-        latin:keySpec="&#x0C3F;"
-        latin:moreKeys="&#x0C07;" />
-    <!-- U+0C41: "ు" TELUGU VOWEL SIGN U
-         U+0C09: "ఉ" TELUGU LETTER U -->
-    <Key
-        latin:keySpec="&#x0C41;"
-        latin:moreKeys="&#x0C09;" />
-    <!-- U+0C2A: "ప" TELUGU LETTER PA
-         U+0C2B: "ఫ" TELUGU LETTER PHA -->
-    <Key
-        latin:keySpec="&#x0C2A;"
-        latin:moreKeys="&#x0C2B;" />
-    <!-- U+0C30: "ర" TELUGU LETTER RA
-         U+0C31: "ఱ" TELUGU LETTER RRA
-         U+0C4D/U+0C30: "్ర" TELUGU SIGN VIRAMA/TELUGU LETTER RA -->
-    <Key
-        latin:keySpec="&#x0C30;"
-        latin:moreKeys="&#x0C31;,&#x0C4D;&#x0C30;" />
-    <!-- U+0C15: "క" TELUGU LETTER KA
-         U+0C16: "ఖ" TELUGU LETTER KHA -->
-    <Key
-        latin:keySpec="&#x0C15;"
-        latin:moreKeys="&#x0C16;" />
-    <!-- U+0C24: "త" TELUGU LETTER TA
-         U+0C25: "థ" TELUGU LETTER THA -->
-    <Key
-        latin:keySpec="&#x0C24;"
-        latin:moreKeys="&#x0C25;" />
-    <!-- U+0C1A: "చ" TELUGU LETTER CA
-         U+0C1B: "ఛ" TELUGU LETTER CHA -->
-    <Key
-        latin:keySpec="&#x0C1A;"
-        latin:moreKeys="&#x0C1B;" />
-    <!-- U+0C1F: "ట" TELUGU LETTER TTA
-         U+0C20: "ఠ" TELUGU LETTER TTHA -->
-    <Key
-        latin:keySpec="&#x0C1F;"
-        latin:moreKeys="&#x0C20;" />
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res-auto"
+ >
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+            >
+            <!-- A: aa matra, aa, short a -->
+            <Key
+                latin:keySpec="&#x0C06;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- S: sa, sha -->
+            <Key
+                latin:keySpec="&#x0C36;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- D: dental da, dha -->
+            <Key
+                latin:keySpec="&#x0C27;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- F: virama, vocalic RR matra, vocalic RR -->
+            <Key
+                latin:keySpec="&#x0C44;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- G: ga, gha -->
+            <Key
+                latin:keySpec="&#x0C18;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- H: ha, visarga, jihvanuliya, upadhmaniya -->
+            <Key
+                latin:keySpec="&#x0C03;"
+                
+                latin:keyLabelFlags="fontNormal" />
+            <!-- J: ja, jha -->
+            <Key
+                latin:keySpec="&#x0C1D;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- K: ka, kha -->
+            <Key
+                latin:keySpec="&#x0C16;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- L: la, lla, vocalic L matra, vocalic L -->
+            <Key
+                latin:keySpec="&#x0C33;"
+                latin:moreKeys="&#x0C0C;"
+                latin:keyLabelFlags="fontNormal" />
+        </case>
+
+        <default>
+            <!-- A: aa matra, aa, short a -->
+            <Key
+                latin:keySpec="&#x0C3E;"
+                latin:moreKeys="&#x0C05;"
+                latin:keyLabelFlags="fontNormal" />
+            <!--  S: sa, sha -->
+            <Key
+                latin:keySpec="&#x0C38;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- D: dental da, dha -->
+            <Key
+                latin:keySpec="&#x0C26;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- F: virama, vocalic RR matra, vocalic RR -->
+            <Key
+                latin:keySpec="&#x0C4D;"
+                latin:moreKeys="&#x0C60;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- G: ga, gha -->
+            <Key
+                latin:keySpec="&#x0C17;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- H: ha, visarga, jihvanuliya, upadhmaniya -->
+            <Key
+                latin:keySpec="&#x0C39;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- J: ja, jha -->
+            <Key
+                latin:keySpec="&#x0C1C;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- K: ka, kha -->
+            <Key
+                latin:keySpec="&#x0C15;"
+                latin:keyLabelFlags="fontNormal" />
+            <!-- L: la, lla, vocalic L matra, vocalic L -->
+            <Key
+                latin:keySpec="&#x0C32;"
+                latin:moreKeys="&#x0C62;"
+                latin:keyLabelFlags="fontNormal" />
+        </default>
+    </switch>
 </merge>

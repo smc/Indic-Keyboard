@@ -28,18 +28,16 @@
     <Row>
         <Key
             latin:keySpec="-"
-            latin:keyStyle="numSymbolKeyStyle"
+            latin:keyStyle="numKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
             latin:keySpec="+"
-            latin:keyStyle="numSymbolKeyStyle"
+            latin:keyStyle="numKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
-            latin:keySpec="!string/label_pause_key|,"
-            latin:keyLabelFlags="followKeyLabelRatio|autoXScale"
-            latin:keyStyle="numSymbolKeyStyle"
+            latin:keyStyle="numPauseKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
@@ -57,18 +55,16 @@
     <Row>
         <Key
             latin:keySpec=","
-            latin:keyStyle="numSymbolKeyStyle"
+            latin:keyStyle="numKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
             latin:keySpec="."
-            latin:keyStyle="numSymbolKeyStyle"
+            latin:keyStyle="numKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
-            latin:keySpec="!string/label_wait_key|;"
-            latin:keyLabelFlags="followKeyLabelRatio|autoXScale"
-            latin:keyStyle="numSymbolKeyStyle"
+            latin:keyStyle="numWaitKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
@@ -86,17 +82,17 @@
     <Row>
         <Key
             latin:keySpec="("
-            latin:keyStyle="numSymbolKeyStyle"
+            latin:keyStyle="numKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
             latin:keySpec=")"
-            latin:keyStyle="numSymbolKeyStyle"
+            latin:keyStyle="numKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
             latin:keySpec="N"
-            latin:keyStyle="numSymbolKeyStyle"
+            latin:keyStyle="numKeyStyle"
             latin:keyWidth="10%p"
             latin:backgroundType="functional" />
         <Key
@@ -113,16 +109,13 @@
         <Key
             latin:keyStyle="tabletNumSpaceKeyStyle"
             latin:keyWidth="30%p" />
-        <!-- U+FF0A: "＊" FULLWIDTH ASTERISK -->
         <Key
-            latin:keySpec="&#xFF0A;|*"
-            latin:keyStyle="numSymbolKeyStyle"
+            latin:keyStyle="numStarKeyStyle"
             latin:keyXPos="31%p" />
         <Key
-            latin:keyStyle="num0KeyStyle"
-            latin:keyHintLabel="+" />
+            latin:keyStyle="num0KeyStyle" />
         <Key
             latin:keySpec="\#"
-            latin:keyStyle="numSymbolKeyStyle" />
+            latin:keyStyle="numKeyStyle" />
     </Row>
 </merge>

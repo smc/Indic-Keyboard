@@ -32,6 +32,13 @@
                 latin:keyStyle="settingsMoreKeysStyle" />
         </case>
         <case
+            latin:languageCode="ml|hi|as|kn|te"
+            latin:keyboardLayoutSet="qwerty">
+            <Key
+                latin:keySpec="~"
+                latin:keyStyle="settingsMoreKeysStyle" />
+        </case>
+        <case
             latin:mode="url"
         >
             <Key

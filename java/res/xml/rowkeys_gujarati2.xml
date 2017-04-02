@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Author: Jishnu Mohan <jishnu7@gmail.com>
+** Copyright © 2013-2014 Jishnu Mohan, Swathanthra Malayalam Computing (SMC), International Centre for Free and Open Source Software (ICFOSS)
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res-auto"
+ >
+    <switch>
+        <case
+            latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+            >
+            <!--A આ GUJARATI LETTER AA-->
+            <Key
+                latin:keySpec="&#x0A86;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--S શ GUJARATI LETTER SHA-->
+            <Key
+                latin:keySpec="&#x0AB6;"
+                latin:moreKeys="&#x0AB6;&#x0ACD;&#x0AB0;"
+                latin:keyHintLabel="&#x0AB6;&#x0ACD;&#x0AB0;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--D ધ GUJARATI LETTER DHA-->
+            <!-- ઢ GUJARATI LETTER DDHA-->
+            <Key
+                latin:keySpec="&#x0AA7;"
+                latin:moreKeys="&#x0AA2;"
+                latin:keyHintLabel="&#x0AA2;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--F અ GUJARATI LETTER A-->
+            <Key
+                latin:keySpec="&#x0A85;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--G ઘ GUJARATI LETTER GHA-->
+            <Key
+                latin:keySpec="&#x0A98;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--H ઃ GUJARATI SIGN VISARGA-->
+            <Key
+                latin:keySpec="&#x0A83;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--J ઝ GUJARATI LETTER JHA-->
+            <Key
+                latin:keySpec="&#x0A9D;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--K ખ GUJARATI LETTER KHA-->
+            <Key
+                latin:keySpec="&#x0A96;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--L ળ GUJARATI LETTER LLA-->
+            <Key
+                latin:keySpec="&#x0AB3;"
+                latin:keyLabelFlags="fontNormal" />
+        </case>
+
+        <default>
+            <!--a ા GUJARATI VOWEL SIGN AA-->
+            <Key
+                latin:keySpec="&#x0ABE;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--s સ GUJARATI LETTER SA-->
+            <Key
+                latin:keySpec="&#x0AB8;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--d દ GUJARATI LETTER DA-->
+            <!-- ડ GUJARATI LETTER DDA-->
+            <Key
+                latin:keySpec="&#x0AA6;"
+                latin:moreKeys="&#x0AA1;"
+                latin:keyHintLabel="&#x0AA1;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--f ્ GUJARATI SIGN VIRAMA-->
+            <Key
+                latin:keySpec="&#x0ACD;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--g ગ GUJARATI LETTER GA-->
+            <Key
+                latin:keySpec="&#x0A97;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--h હ GUJARATI LETTER HA-->
+            <Key
+                latin:keySpec="&#x0AB9;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--j જ GUJARATI LETTER JA-->
+            <Key
+                latin:keySpec="&#x0A9C;"
+                latin:moreKeys="&#x0A9C;&#x0ACD;&#x0A9E;"
+                latin:keyHintLabel="&#x0A9C;&#x0ACD;&#x0A9E;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--k ક GUJARATI LETTER KA-->
+            <!-- ક્ષ KSSA-->
+            <Key
+                latin:keySpec="&#x0A95;"
+                latin:moreKeys="&#x0A95;&#x0ACD;&#x0AB7;"
+                latin:keyHintLabel="&#x0A95;&#x0ACD;&#x0AB7;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!--l લ GUJARATI LETTER LA-->
+            <Key
+                latin:keySpec="&#x0AB2;"
+                latin:keyLabelFlags="fontNormal" />
+        </default>
+    </switch>
+</merge>

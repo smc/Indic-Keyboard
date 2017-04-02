@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Author: Jishnu Mohan <jishnu7@gmail.com>
+** Copyright © 2013-2014 Jishnu Mohan, Swathanthra Malayalam Computing (SMC), International Centre for Free and Open Source Software (ICFOSS)
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res-auto"
+>
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+        >
+            <!--Q ઔ GUJARATI LETTER AU-->
+            <Key
+                latin:keySpec="&#x0A94;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--W ઐ GUJARATI LETTER AI-->
+            <Key
+                latin:keySpec="&#x0A90;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--E આ GUJARATI LETTER AA-->
+            <Key
+                latin:keySpec="&#x0A86;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--R ઈ GUJARATI LETTER II-->
+            <Key
+                latin:keySpec="&#x0A88;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--T ઊ GUJARATI LETTER UU-->
+            <Key
+                latin:keySpec="&#x0A8A;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--Y ભ GUJARATI LETTER BHA-->
+            <Key
+                latin:keySpec="&#x0AAD;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--U ઙ GUJARATI LETTER NGA-->
+            <Key
+                latin:keySpec="&#x0A99;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--I ઘ GUJARATI LETTER GHA-->
+            <Key
+                latin:keySpec="&#x0A98;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--O ધ GUJARATI LETTER DHA-->
+            <Key
+                latin:keySpec="&#x0AA7;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--P ઝ GUJARATI LETTER JHA-->
+            <Key
+                latin:keySpec="&#x0A9D;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--{ ઢ GUJARATI LETTER DDHA-->
+            <Key
+                latin:keySpec="&#x0AA2;"
+                latin:moreKeys="{"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--} ઼ GUJARATI SIGN NUKTA-->
+            <Key
+                latin:keySpec="&#x0A9E;"
+                latin:moreKeys="}"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--| &#x0A91; ઑGUJARATI VOWEL CANDRA O -->
+            <Key
+                latin:keySpec="&#x0A91;"
+                latin:moreKeys="\|"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+        </case>
+
+        <default>
+            <!--q ૌ GUJARATI VOWEL SIGN AU-->
+            <Key
+                latin:keySpec="&#x0ACC;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--w ૈ GUJARATI VOWEL SIGN AI-->
+            <Key
+                latin:keySpec="&#x0AC8;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--e ા GUJARATI VOWEL SIGN AA-->
+            <Key
+                latin:keySpec="&#x0ABE;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--r ી GUJARATI VOWEL SIGN II-->
+            <Key
+                latin:keySpec="&#x0AC0;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--t ૂ GUJARATI VOWEL SIGN UU-->
+            <Key
+                latin:keySpec="&#x0AC2;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--y બ GUJARATI LETTER BA-->
+            <Key
+                latin:keySpec="&#x0AAC;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--u હ GUJARATI LETTER HA-->
+            <Key
+                latin:keySpec="&#x0AB9;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--i ગ GUJARATI LETTER GA-->
+            <Key
+                latin:keySpec="&#x0A97;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--o દ GUJARATI LETTER DA-->
+            <Key
+                latin:keySpec="&#x0AA6;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--p જ GUJARATI LETTER JA-->
+            <Key
+                latin:keySpec="&#x0A9C;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--\[ ડ GUJARATI LETTER DDA-->
+            <Key
+                latin:keySpec="&#x0AA1;"
+                latin:moreKeys="["
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <Key
+                latin:keySpec="]"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+            <!--&#x0AC9; ૉGUJARATI VOWEL SIGN CANDRA O\-->
+            <Key
+                latin:keySpec="&#x0AC9;"
+                latin:moreKeys="\\"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+         </default>
+    </switch>
+</merge>

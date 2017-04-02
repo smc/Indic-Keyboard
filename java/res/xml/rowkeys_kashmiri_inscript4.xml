@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Author: Jishnu Mohan <jishnu7@gmail.com>
+** Copyright © 2014 Jishnu Mohan
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted" >
+            <!--Z ऎ DEVANAGARI LETTER SHORT E-->
+            <Key
+                latin:keySpec="&#x090E;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!--X ँ DEVANAGARI SIGN CANDRABINDU-->
+            <Key
+                latin:keySpec="&#x0901;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!--C ण DEVANAGARI LETTER NNA-->
+            <Key
+                latin:keySpec="&#x0923;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!--V ऩ DEVANAGARI LETTER NNNA-->
+            <Key
+                latin:keySpec="&#x0929;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!--B ऴ DEVANAGARI LETTER LLLA-->
+            <Key
+                latin:keySpec="&#x0934;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!--N ळ DEVANAGARI LETTER LLA-->
+            <Key
+                latin:keySpec="&#x0933;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!--M श DEVANAGARI LETTER SHA-->
+            <Key
+                latin:keySpec="&#x0936;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!--\< ष DEVANAGARI LETTER SSA-->
+            <Key
+                latin:keySpec="&#x0937;"
+                latin:moreKeys="&lt;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!--\> । DEVANAGARI DANDA-->
+            <Key
+                latin:keySpec="&#x0964;"
+                latin:moreKeys="&gt;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!--\? य़ DEVANAGARI LETTER YYA-->
+            <Key
+                latin:keySpec="&#x095F;"
+                latin:moreKeys="\?"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+        </case>
+
+        <default>
+            <!--z ॆ DEVANAGARI VOWEL SIGN SHORT E-->
+            <Key
+                latin:keySpec="&#x0946;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!--x ं DEVANAGARI SIGN ANUSVARA-->
+            <Key
+                latin:keySpec="&#x0902;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!--c म DEVANAGARI LETTER MA-->
+            <Key
+                latin:keySpec="&#x092E;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!--v न DEVANAGARI LETTER NA-->
+            <Key
+                latin:keySpec="&#x0928;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!--b व DEVANAGARI LETTER VA-->
+            <Key
+                latin:keySpec="&#x0935;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!--n ल DEVANAGARI LETTER LA-->
+            <Key
+                latin:keySpec="&#x0932;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!--m स DEVANAGARI LETTER SA-->
+            <Key
+                latin:keySpec="&#x0938;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!--, ,  -->
+            <Key
+                latin:keySpec="&#x02C;"
+                latin:moreKeys=","
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <Key
+                latin:keySpec="."
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <!--/ य DEVANAGARI LETTER YA-->
+            <Key
+                latin:keySpec="&#x092F;"
+                latin:moreKeys="/"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+
+         </default>
+    </switch>
+</merge>
