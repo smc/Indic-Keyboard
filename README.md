@@ -84,7 +84,7 @@ Other layouts are specific to the languages - do try them out.
         2. Run bash on it using `docker run -it registry.gitlab.com/balasankarc/indic-keyboard:dev bash`
 2. `git clone --recursive git@gitlab.com:smc/Indic-Keyboard.git`
 4. `cd java`
-5. Use `./gradlew assembleDebug` to build the package.
+5. `gradle assembleDebug` to build the package.
 
 ## Supporters
 
