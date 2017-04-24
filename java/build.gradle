@@ -65,7 +65,3 @@ android {
         checkReleaseBuilds false
     }
 }
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.2'
-}
