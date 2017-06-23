@@ -1,5 +1,9 @@
 project.ext.set("archivesBaseName", "IndicKeyboard");
 
+repositories {
+    mavenCentral()
+}
+
 buildscript {
     repositories {
         mavenCentral()
@@ -10,20 +14,16 @@ buildscript {
 }
 apply plugin: 'com.android.application'
 
-repositories {
-    mavenCentral()
-}
 
 dependencies {
     compile 'com.android.support:support-v4:23.2.1'
-    compile 'com.google.code.findbugs:jsr305:3.0.0'
-    compile fileTree(dir: 'libs', include: '*.jar')
-    //compile project(':ime')
+    compile 'com.google.code.findbugs:jsr305:3.0.2'
+    compile project(':ime')
 }
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "25.0.3"
 
     defaultConfig {
         applicationId "org.smc.inputmethod.indic"

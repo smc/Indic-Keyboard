@@ -1,0 +1,2 @@
+include ':ime'
+project(':ime').projectDir = new File(settingsDir, '../ime')
