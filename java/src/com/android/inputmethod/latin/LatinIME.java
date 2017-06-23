@@ -128,6 +128,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      * replacement or removal.
      */
     private static final String SCHEME_PACKAGE = "package";
+    private static final String TRANSLITERATION_METHOD = "TransliterationMethod";
 
     final Settings mSettings;
     private final DictionaryFacilitator mDictionaryFacilitator =
@@ -600,10 +601,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private boolean checkForTransliteration() {
-        InputMethodSubtype currentSubtype = mSubtypeSwitcher.getCurrentSubtype();
-        if(currentSubtype.containsExtraValueKey(Constants.Subtype.ExtraValue.TRANSLITERATION_METHOD)) {
+        InputMethodSubtype currentSubtype = mRichImm.getCurrentSubtype().getRawSubtype();
+        if(currentSubtype.containsExtraValueKey(TRANSLITERATION_METHOD)) {
             try {
-                String transliterationName = currentSubtype.getExtraValueOf(Constants.Subtype.ExtraValue.TRANSLITERATION_METHOD);
+                String transliterationName = currentSubtype.getExtraValueOf(TRANSLITERATION_METHOD);
                 mInputLogic.enableTransliteration(transliterationName);
                 Log.d("IndicKeyboard", "-------------transliteration enabled-----------");
                 return true;
