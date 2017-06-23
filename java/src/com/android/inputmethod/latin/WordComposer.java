@@ -34,6 +34,8 @@ import android.util.Log;
 
 import javax.annotation.Nonnull;
 
+import org.smc.ime.InputMethod;
+
 /**
  * A place to store the currently composing word with information such as adjacent key codes as well
  */
@@ -65,6 +67,8 @@ public final class WordComposer {
     // TODO: this should be done in a comprehensive way by the User History feature instead of
     // as an ad-hockery here.
     private String mRejectedBatchModeSuggestion;
+
+    private InputMethod mTransliterationMethod;
 
     // Cache these values for performance
     private CharSequence mTypedWordCache;
