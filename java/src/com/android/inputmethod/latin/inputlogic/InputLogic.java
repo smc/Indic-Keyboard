@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin.inputlogic;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.SystemClock;
 import android.text.SpannableString;
@@ -2376,10 +2377,10 @@ public final class InputLogic {
         return mWordComposer.size();
     }
 
-    public void enableTransliteration(String transliterationMethod) {
+    public void enableTransliteration(String transliterationMethod, Context context) {
         InputMethod im;
         try {
-            im = InputMethod.fromName(transliterationMethod);
+            im = InputMethod.fromName(transliterationMethod, context);
             mWordComposer.setTransliterationMethod(im);
             mConnection.setTransliterationMethod(im);
             isTransliteration = true;
