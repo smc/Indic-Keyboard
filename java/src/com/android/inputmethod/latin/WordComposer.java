@@ -115,6 +115,10 @@ public final class WordComposer {
         }
     }
 
+    public void setTransliterationMethod(InputMethod transliterationMethod) {
+        mTransliterationMethod = transliterationMethod;
+    }
+
     /**
      * Clear out the keys registered so far.
      */
