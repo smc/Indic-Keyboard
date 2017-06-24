@@ -63,17 +63,19 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
     private View mActionStart;
     private View mActionNext;
     private TextView mStep1Bullet;
-    private TextView mActionFinish;
+    //private TextView mActionFinish;
     private SetupStepGroup mSetupStepGroup;
     private static final String STATE_STEP = "step";
     private int mStepNumber;
     private boolean mNeedsToAdjustStepNumberToSystemState;
+    private boolean finishState;
     private static final int STEP_WELCOME = 0;
     private static final int STEP_1 = 1;
     private static final int STEP_2 = 2;
     private static final int STEP_3 = 3;
-    private static final int STEP_LAUNCHING_IME_SETTINGS = 4;
-    private static final int STEP_BACK_FROM_IME_SETTINGS = 5;
+    private static final int STEP_4 = 4;
+    private static final int STEP_LAUNCHING_IME_SETTINGS = 5;
+    private static final int STEP_BACK_FROM_IME_SETTINGS = 6;
 
     private SettingsPoolingHandler mHandler;
 
@@ -191,48 +193,39 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         });
         mSetupStepGroup.addStep(step3);
 
-        mWelcomeVideoUri = new Uri.Builder()
-                .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
-                .authority(getPackageName())
-                .path(Integer.toString(R.raw.setup_welcome_video))
-                .build();
-        final VideoView welcomeVideoView = (VideoView)findViewById(R.id.setup_welcome_video);
-        welcomeVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+        final SetupStep step4 = new SetupStep(STEP_4, applicationName,
+                (TextView)findViewById(R.id.setup_step4_bullet), findViewById(R.id.setup_step4),
+                R.string.setup_step4_title, R.string.setup_step4_instruction,
+                0 /* finishedInstruction */, R.drawable.ic_setup_finish,
+                R.string.setup_finish_action);
+        step4.setAction(new Runnable() {
             @Override
-            public void onPrepared(final MediaPlayer mp) {
-                // Now VideoView has been laid-out and ready to play, remove background of it to
-                // reveal the video.
-                welcomeVideoView.setBackgroundResource(0);
-                mp.setLooping(true);
+            public void run() {
+                finish();
             }
         });
-        welcomeVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(final MediaPlayer mp, final int what, final int extra) {
-                Log.e(TAG, "Playing welcome video causes error: what=" + what + " extra=" + extra);
-                hideWelcomeVideoAndShowWelcomeImage();
-                return true;
-            }
-        });
-        mWelcomeVideoView = welcomeVideoView;
-        mWelcomeImageView = (ImageView)findViewById(R.id.setup_welcome_image);
+        mSetupStepGroup.addStep(step4);
 
         mActionStart = findViewById(R.id.setup_start_label);
         mActionStart.setOnClickListener(this);
         mActionNext = findViewById(R.id.setup_next);
         mActionNext.setOnClickListener(this);
+        /*
         mActionFinish = (TextView)findViewById(R.id.setup_finish);
         TextViewCompatUtils.setCompoundDrawablesRelativeWithIntrinsicBounds(mActionFinish,
                 getResources().getDrawable(R.drawable.ic_setup_finish), null, null, null);
         mActionFinish.setOnClickListener(this);
+        */
     }
 
     @Override
     public void onClick(final View v) {
+        /*
         if (v == mActionFinish) {
             finish();
             return;
         }
+        */
         final int currentStep = determineSetupStepNumber();
         final int nextStep;
         if (v == mActionStart) {
@@ -295,6 +288,8 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         intent.putExtra(Settings.EXTRA_INPUT_METHOD_ID, imi.getId());
         startActivity(intent);
+        mNeedsToAdjustStepNumberToSystemState = true;
+        finishState = true;
     }
 
     private int determineSetupStepNumberFromLauncher() {
@@ -302,7 +297,7 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         if (stepNumber == STEP_1) {
             return STEP_WELCOME;
         }
-        if (stepNumber == STEP_3) {
+        if (stepNumber == STEP_4) {
             return STEP_LAUNCHING_IME_SETTINGS;
         }
         return stepNumber;
@@ -318,6 +313,9 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         }
         if (!UncachedInputMethodManagerUtils.isThisImeCurrent(this, mImm)) {
             return STEP_2;
+        }
+        if (finishState) {
+            return STEP_4;
         }
         return STEP_3;
     }
@@ -335,7 +333,7 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
     }
 
     private static boolean isInSetupSteps(final int stepNumber) {
-        return stepNumber >= STEP_1 && stepNumber <= STEP_3;
+        return stepNumber >= STEP_1 && stepNumber <= STEP_4;
     }
 
     @Override
@@ -426,7 +424,7 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         final boolean isStepActionAlreadyDone = mStepNumber < determineSetupStepNumber();
         mSetupStepGroup.enableStep(mStepNumber, isStepActionAlreadyDone);
         mActionNext.setVisibility(isStepActionAlreadyDone ? View.VISIBLE : View.GONE);
-        mActionFinish.setVisibility((mStepNumber == STEP_3) ? View.VISIBLE : View.GONE);
+        //mActionFinish.setVisibility((mStepNumber == STEP_4) ? View.VISIBLE : View.GONE);
     }
 
     static final class SetupStep implements View.OnClickListener {
