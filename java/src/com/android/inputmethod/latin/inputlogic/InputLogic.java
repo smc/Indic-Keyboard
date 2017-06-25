@@ -1214,7 +1214,7 @@ public final class InputLogic {
                 && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces) {
             final TextRange range = mConnection.getWordRangeAtCursor(
                     settingsValues.mSpacingAndPunctuations,
-                    currentKeyboardScriptId);
+                    currentKeyboardScriptId, isTransliteration);
             if (range != null) {
                 return range.mWord.toString();
             }
