@@ -17,21 +17,15 @@
 package com.android.inputmethod.latin.setup;
 
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Message;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import com.android.inputmethod.compat.TextViewCompatUtils;
 import com.android.inputmethod.compat.ViewCompatUtils;
@@ -48,18 +42,11 @@ import javax.annotation.Nonnull;
 public final class SetupWizardActivity extends Activity implements View.OnClickListener {
     static final String TAG = SetupWizardActivity.class.getSimpleName();
 
-    // For debugging purpose.
-    private static final boolean FORCE_TO_SHOW_WELCOME_SCREEN = false;
-    private static final boolean ENABLE_WELCOME_VIDEO = true;
-
     private InputMethodManager mImm;
 
     private View mSetupWizard;
     private View mWelcomeScreen;
     private View mSetupScreen;
-    private Uri mWelcomeVideoUri;
-    private VideoView mWelcomeVideoView;
-    private ImageView mWelcomeImageView;
     private View mActionStart;
     private View mActionNext;
     private TextView mStep1Bullet;
@@ -305,9 +292,6 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
 
     private int determineSetupStepNumber() {
         mHandler.cancelPollingImeSettings();
-        if (FORCE_TO_SHOW_WELCOME_SCREEN) {
-            return STEP_1;
-        }
         if (!UncachedInputMethodManagerUtils.isThisImeEnabled(this, mImm)) {
             return STEP_1;
         }
@@ -374,26 +358,8 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         super.onBackPressed();
     }
 
-    void hideWelcomeVideoAndShowWelcomeImage() {
-        mWelcomeVideoView.setVisibility(View.GONE);
-        mWelcomeImageView.setImageResource(R.raw.setup_welcome_image);
-        mWelcomeImageView.setVisibility(View.VISIBLE);
-    }
-
-    private void showAndStartWelcomeVideo() {
-        mWelcomeVideoView.setVisibility(View.VISIBLE);
-        mWelcomeVideoView.setVideoURI(mWelcomeVideoUri);
-        mWelcomeVideoView.start();
-    }
-
-    private void hideAndStopWelcomeVideo() {
-        mWelcomeVideoView.stopPlayback();
-        mWelcomeVideoView.setVisibility(View.GONE);
-    }
-
     @Override
     protected void onPause() {
-        hideAndStopWelcomeVideo();
         super.onPause();
     }
 
@@ -413,14 +379,8 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         mWelcomeScreen.setVisibility(welcomeScreen ? View.VISIBLE : View.GONE);
         mSetupScreen.setVisibility(welcomeScreen ? View.GONE : View.VISIBLE);
         if (welcomeScreen) {
-            if (ENABLE_WELCOME_VIDEO) {
-                showAndStartWelcomeVideo();
-            } else {
-                hideWelcomeVideoAndShowWelcomeImage();
-            }
             return;
         }
-        hideAndStopWelcomeVideo();
         final boolean isStepActionAlreadyDone = mStepNumber < determineSetupStepNumber();
         mSetupStepGroup.enableStep(mStepNumber, isStepActionAlreadyDone);
         mActionNext.setVisibility(isStepActionAlreadyDone ? View.VISIBLE : View.GONE);
