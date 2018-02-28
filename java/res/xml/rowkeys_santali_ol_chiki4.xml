@@ -57,7 +57,7 @@
                 latin:keyHintLabel="&lt;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec=","
+                latin:keySpec="&#x1C79;"
                 latin:moreKeys="&gt;"
                 latin:keyHintLabel="&gt;"
                 latin:keyLabelFlags="fontNormal" />
