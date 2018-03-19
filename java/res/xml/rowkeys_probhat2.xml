@@ -57,6 +57,7 @@
                 latin:keyLabelFlags="fontNormal" />
             <Key
                 latin:keySpec="!icon/zwnj_key|&#x200C;"
+                latin:additionalMoreKeys="&#x200D;"
                 latin:keyLabelFlags="fontNormal" />
         </case>
 
