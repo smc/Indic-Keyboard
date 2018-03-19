@@ -38,12 +38,18 @@
                 latin:keyLabelFlags="fontNormal" />
             <Key
                 latin:keySpec="&#x09A0;"
+                latin:keyHintLabel="&#x09F3;"
+                latin:additionalMoreKeys="&#x09F3;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
                 latin:keySpec="&#x0990;"
+                latin:keyHintLabel="&#x099E;"
+                latin:additionalMoreKeys="&#x099E;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
                 latin:keySpec="&#x0989;"
+                latin:keyHintLabel="&#x09CE;"
+                latin:additionalMoreKeys="&#x09CE;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
                 latin:keySpec="&#x0987;"
