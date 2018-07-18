@@ -29,32 +29,32 @@
             <Key
                 latin:keySpec="`"
                 latin:moreKeys="&#x1C7B;"
-                latin:keyHintLabel="&#x1C7B;"                
+                latin:keyHintLabel="&#x1C7B;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
                 latin:keySpec="&#x1C51;"
                 latin:moreKeys="!,1"
-                latin:keyHintLabel="!"               
+                latin:keyHintLabel="!"
                 latin:keyLabelFlags="fontNormal" />
             <Key
                 latin:keySpec="&#x1C52;"
                 latin:moreKeys="\@,2"
-                latin:keyHintLabel="\@" 
+                latin:keyHintLabel="\@"
                 latin:keyLabelFlags="fontNormal" />
             <Key
                 latin:keySpec="&#x1C53;"
                 latin:moreKeys="\#,3"
-                latin:keyHintLabel="\#"                 
+                latin:keyHintLabel="\#"
                 latin:keyLabelFlags="fontNormal" />
             <Key
                 latin:keySpec="&#x1C54;"
                 latin:moreKeys="$,&#x20B9;,4"
-                latin:keyHintLabel="&#x20B9;"                 
+                latin:keyHintLabel="&#x20B9;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
                 latin:keySpec="&#x1C55;"
                 latin:moreKeys="%,5"
-                latin:keyHintLabel="%"                 
+                latin:keyHintLabel="%"
                 latin:keyLabelFlags="fontNormal" />
             <Key
                 latin:keySpec="&#x1C56;"
@@ -68,27 +68,27 @@
             <Key
                 latin:keySpec="&#x1C58;"
                 latin:moreKeys="*,8"
-                latin:keyHintLabel="*"                
+                latin:keyHintLabel="*"
                 latin:keyLabelFlags="fontNormal" />
             <Key
                 latin:keySpec="&#x1C59;"
                 latin:moreKeys="(,9"
-                latin:keyHintLabel="("                
+                latin:keyHintLabel="("
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
                 latin:keySpec="&#x1C50;"
                 latin:moreKeys="),0"
-                latin:keyHintLabel=")"                
+                latin:keyHintLabel=")"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
                 latin:keySpec="-"
                 latin:moreKeys="&#x1C7C;,_"
-                latin:keyHintLabel="&#x1C7C;" 
+                latin:keyHintLabel="&#x1C7C;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
                 latin:keySpec="="
                 latin:moreKeys="+"
-                latin:keyHintLabel="+" 
+                latin:keyHintLabel="+"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </default>
     </switch>

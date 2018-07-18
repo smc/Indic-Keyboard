@@ -65,7 +65,7 @@
                 latin:keySpec="/"
                 latin:moreKeys="\?"
                 latin:keyHintLabel="\?"
-                latin:keyLabelFlags="fontNormal" />            
+                latin:keyLabelFlags="fontNormal" />
          </default>
     </switch>
 </merge>

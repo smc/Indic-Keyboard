@@ -69,12 +69,12 @@
                 latin:keySpec="]"
                 latin:moreKeys="}"
                 latin:keyHintLabel="}"
-                latin:keyLabelFlags="fontNormal" />              
+                latin:keyLabelFlags="fontNormal" />
             <Key
                 latin:keySpec="&#x1C7F;"
                 latin:moreKeys="&#x1C7E;"
                 latin:keyHintLabel="&#x1C7E;"
-                latin:keyLabelFlags="fontNormal" />            
+                latin:keyLabelFlags="fontNormal" />
          </default>
     </switch>
 </merge>
