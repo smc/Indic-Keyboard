@@ -1,3 +1,6 @@
+**Note**: This repository is a mirror of the original [GitLab repository](https://gitlab.com/smc/indic-keyboard). Report issues on [that issue tracker](https://gitlab.com/smc/indic-keyboard/issues)
+
+
 ## Indic Keyboard
 
 ![icon-image](https://cloud.githubusercontent.com/assets/321335/7845586/792e62a8-04d5-11e5-84bb-2425c04c5253.png)
