@@ -284,10 +284,15 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=santali_inscript,EmojiCapable" />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
-            android:label="@string/keyboard_name_sat_ol_chiki"
+            android:label="@string/keyboard_name_sat_olck"
             android:imeSubtypeLocale="sat_IN"
             android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=santali_ol_chiki,EmojiCapable" />
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=santali_olck,EmojiCapable" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_sat_olck_compact"
+            android:imeSubtypeLocale="sat_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=santali_olck_compact,EmojiCapable" />
     
     <!-- Sinhalese -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"

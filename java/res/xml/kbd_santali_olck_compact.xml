@@ -24,5 +24,5 @@
     xmlns:latin="http://schemas.android.com/apk/res-auto"
 >
     <include
-        latin:keyboardLayout="@xml/rows_santali_ol_chiki" />
+        latin:keyboardLayout="@xml/rows_santali_olck_compact" />
 </Keyboard>

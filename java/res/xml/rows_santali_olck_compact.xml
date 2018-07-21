@@ -24,11 +24,11 @@
 >
     <include latin:keyboardLayout="@xml/key_styles_common" />
     <Row latin:keyWidth="10%p" >
-        <include latin:keyboardLayout="@xml/rowkeys_santali_ol_chiki1" />
+        <include latin:keyboardLayout="@xml/rowkeys_santali_olck_compact1" />
     </Row>
     <Row latin:keyWidth="10%p" >
         <include
-            latin:keyboardLayout="@xml/rowkeys_santali_ol_chiki2"
+            latin:keyboardLayout="@xml/rowkeys_santali_olck_compact2"
             latin:keyXPos="10%p" />
     </Row>
     <Row latin:keyWidth="10%p" >
@@ -37,7 +37,7 @@
             latin:keyWidth="20%p"
             latin:visualInsetsRight="1%p" />
         <include
-            latin:keyboardLayout="@xml/rowkeys_santali_ol_chiki3" />
+            latin:keyboardLayout="@xml/rowkeys_santali_olck_compact3" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight"
