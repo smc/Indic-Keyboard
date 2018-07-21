@@ -29,12 +29,12 @@
     <Row latin:keyWidth="10%p" >
         <include
             latin:keyboardLayout="@xml/rowkeys_santali_ol_chiki2"
-            latin:keyXPos="5%p" />
+            latin:keyXPos="10%p" />
     </Row>
     <Row latin:keyWidth="10%p" >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="15%p"
+            latin:keyWidth="20%p"
             latin:visualInsetsRight="1%p" />
         <include
             latin:keyboardLayout="@xml/rowkeys_santali_ol_chiki3" />

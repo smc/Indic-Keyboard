@@ -40,11 +40,14 @@
         latin:keySpec="&#x1C5C;"
         latin:keyLabelFlags="fontNormal"/>
       <Key
-        latin:keySpec="!"
-        latin:keyLabelFlags="fontNormal"/>
+        latin:keySpec="&#x1C66;"
+        latin:keyLabelFlags="fontNormal" />
     </case>
 
     <default>
+      <Key
+        latin:keySpec="&#x1C76;"
+        latin:keyLabelFlags="fontNormal"/>
       <Key
         latin:keySpec="&#x1C79;"
         latin:keyLabelFlags="fontNormal"/>
@@ -60,9 +63,6 @@
         latin:keyLabelFlags="fontNormal"/>
       <Key
         latin:keySpec="&#x1C77;"
-        latin:keyLabelFlags="fontNormal"/>
-      <Key
-        latin:keySpec='|'
         latin:keyLabelFlags="fontNormal"/>
     </default>
   </switch>
