@@ -25,28 +25,33 @@
                  U+0912/U+0902: "ऒं" DEVANAGARI LETTER SHORT O//DEVANAGARI SIGN ANUSVARA -->
             <Key
                 latin:keySpec="&#x0914;"
+                latin:keyHintLabel="&#x0912;&#x0902;"
                 latin:moreKeys="&#x0912;&#x0902;" />
             <!-- U+0910: "ऐ" DEVANAGARI LETTER AI
                  U+0910/U+0902: "ऐं" DEVANAGARI LETTER AI/DEVANAGARI SIGN ANUSVARA -->
             <Key
                 latin:keySpec="&#x0910;"
+                latin:keyHintLabel="&#x0910;&#x0902;"
                 latin:moreKeys="&#x0910;&#x0902;" />
             <!-- U+0906: "आ" DEVANAGARI LETTER AA
                  U+0906/U+0902: "आं" DEVANAGARI LETTER AA/DEVANAGARI SIGN ANUSVARA
                  U+0906/U+0901: "आँ" DEVANAGARI LETTER AA/DEVANAGARI SIGN CANDRABINDU -->
             <Key
                 latin:keySpec="&#x0906;"
+                latin:keyHintLabel="&#x0906;&#x0902;"
                 latin:moreKeys="&#x0906;&#x0902;,&#x0906;&#x0901;" />
             <!-- U+0908: "ई" DEVANAGARI LETTER II
                  U+0908/U+0902: "ईं" DEVANAGARI LETTER II/DEVANAGARI SIGN ANUSVARA -->
             <Key
                 latin:keySpec="&#x0908;"
+                latin:keyHintLabel="&#x0908;&#x0902;"
                 latin:moreKeys="&#x0908;&#x0902;" />
             <!-- U+090A: "ऊ" DEVANAGARI LETTER UU
                  U+090A/U+0902: "ऊं" DEVANAGARI LETTER UU/DEVANAGARI SIGN ANUSVARA
                  U+090A/U+0901: "ऊँ" DEVANAGARI LETTER UU/DEVANAGARI SIGN CANDRABINDU -->
             <Key
                 latin:keySpec="&#x090A;"
+                latin:keyHintLabel="&#x090A;&#x0902;"
                 latin:moreKeys="&#x090A;&#x0902;,&#x090A;&#x0901;" />
             <!-- U+092D: "भ" DEVANAGARI LETTER BHA -->
             <Key latin:keySpec="&#x092D;" />
@@ -62,6 +67,7 @@
                  U+0936/U+094D/U+0930: "श्र" DEVANAGARI LETTER SHA/DEVANAGARI SIGN VIRAMA/DEVANAGARI LETTER RA -->
             <Key
                 latin:keySpec="&#x0927;"
+                latin:keyHintLabel="&#x0915;&#x094D;&#x0937;"
                 latin:moreKeys="&#x0915;&#x094D;&#x0937;,&#x0936;&#x094D;&#x0930;" />
             <!-- U+091D: "झ" DEVANAGARI LETTER JHA -->
             <Key latin:keySpec="&#x091D;" />
