@@ -17,8 +17,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         coreApp="true"
         package="org.smc.inputmethod.indic"
-        android:versionCode="26"
-        android:versionName="2.1.0-beta1">
+        android:versionCode="27"
+        android:versionName="2.1.0">
 
     <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="22" />
 
