@@ -113,19 +113,19 @@ public final class KeyboardTextsTable {
         /*  27: 2 */ "morekeys_s",
         /*  28: 2 */ "morekeys_n",
         /*  29: 2 */ "morekeys_c",
-        /*  30: 1 */ "morekeys_y",
-        /*  31: 1 */ "morekeys_d",
-        /*  32: 1 */ "morekeys_r",
-        /*  33: 1 */ "morekeys_t",
-        /*  34: 1 */ "morekeys_z",
-        /*  35: 1 */ "morekeys_k",
-        /*  36: 1 */ "morekeys_l",
-        /*  37: 1 */ "morekeys_g",
-        /*  38: 1 */ "morekeys_h",
-        /*  39: 1 */ "morekeys_j",
-        /*  40: 1 */ "morekeys_w",
-        /*  41: 1 */ "morekeys_currency_dollar",
-        /*  42: 1 */ "keyspec_comma",
+        /*  30: 2 */ "keyspec_comma",
+        /*  31: 1 */ "morekeys_y",
+        /*  32: 1 */ "morekeys_d",
+        /*  33: 1 */ "morekeys_r",
+        /*  34: 1 */ "morekeys_t",
+        /*  35: 1 */ "morekeys_z",
+        /*  36: 1 */ "morekeys_k",
+        /*  37: 1 */ "morekeys_l",
+        /*  38: 1 */ "morekeys_g",
+        /*  39: 1 */ "morekeys_h",
+        /*  40: 1 */ "morekeys_j",
+        /*  41: 1 */ "morekeys_w",
+        /*  42: 1 */ "morekeys_currency_dollar",
         /*  43: 1 */ "keyspec_symbols_semicolon",
         /*  44: 0 */ "morekeys_v",
         /*  45: 0 */ "morekeys_q",
@@ -275,8 +275,12 @@ public final class KeyboardTextsTable {
         // Label for "switch to symbols" key.
         /* keylabel_to_symbol */ "?123",
         /* morekeys_a ~ */
-        EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
-        EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
+        EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
+        /* ~ morekeys_c */
+        // Comma key
+        /* keyspec_comma */ ",",
+        /* morekeys_y ~ */
+        EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
         /* ~ morekeys_w */
         // $ - I'm making ₹ as default
         // U+00A2: "¢" CENT SIGN
@@ -285,8 +289,6 @@ public final class KeyboardTextsTable {
         // U+00A5: "¥" YEN SIGN
         // U+20B1: "₱" PESO SIGN
         /* morekeys_currency_dollar */ "$,\u00A2,\u00A3,\u20AC,\u00A5,\u20B1",
-        // Comma key
-        /* keyspec_comma */ ",",
         /* keyspec_symbols_semicolon */ ";",
         /* morekeys_v ~ */
         EMPTY, EMPTY, EMPTY,
@@ -505,11 +507,13 @@ public final class KeyboardTextsTable {
         /* keyspec_symbols_0 */ "\u09E6",
         /* keylabel_to_symbol */ "\u09E7\u09E8\u09E9",
         /* morekeys_a ~ */
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null,
+        null, null, null, null, null, null, null, null,
+        /* ~ morekeys_c */
+        /* keyspec_comma */ "\u09CD",
+        /* morekeys_y ~ */
+        null, null, null, null, null, null, null, null, null, null, null,
         /* ~ morekeys_w */
         /* morekeys_currency_dollar */ "\u09F3",
-        /* keyspec_comma */ "\u09CD",
         /* keyspec_symbols_semicolon */ "\u0983",
     };
 
@@ -788,6 +792,10 @@ public final class KeyboardTextsTable {
         /* keyspec_symbols_9 */ "\u0B6F",
         /* keyspec_symbols_0 */ "\u0B66",
         /* keylabel_to_symbol */ "\u0B67\u0B68\u0B69",
+        /* morekeys_a ~ */
+        null, null, null, null, null, null, null, null,
+        /* ~ morekeys_c */
+        /* keyspec_comma */ "\u0B3C",
     };
 
     /* Locale pa_IN: Panjabi (India) */
@@ -960,6 +968,7 @@ public final class KeyboardTextsTable {
         // U+010B: "ċ" LATIN SMALL LETTER C WITH DOT ABOVE
         // U+010D: "č" LATIN SMALL LETTER C WITH CARON
         /* morekeys_c */ "\u00E7,\u0107,\u0109,\u010B,\u010D",
+        /* keyspec_comma */ null,
         // U+00FD: "ý" LATIN SMALL LETTER Y WITH ACUTE
         // U+0177: "ŷ" LATIN SMALL LETTER Y WITH CIRCUMFLEX
         // U+00FF: "ÿ" LATIN SMALL LETTER Y WITH DIAERESIS
@@ -1016,11 +1025,11 @@ public final class KeyboardTextsTable {
         "mr_IN"  , TEXTS_mr_IN, /*  22/ 22 Marathi (India) */
         "my"     , TEXTS_my,    /*  22/ 22 Burmese */
         "ne_NP"  , TEXTS_ne_NP, /*  22/ 22 Nepali (Nepal) */
-        "or_IN"  , TEXTS_or_IN, /*  22/ 22 Oriya (India) */
+        "or_IN"  , TEXTS_or_IN, /*  23/ 31 Oriya (India) */
         "pa_IN"  , TEXTS_pa_IN, /*  22/ 22 Panjabi (India) */
         "ta_IN"  , TEXTS_ta_IN, /*  22/ 22 Tamil (India) */
         "te_IN"  , TEXTS_te_IN, /*  22/ 22 Telugu (India) */
-        "zz"     , TEXTS_zz,    /*  19/ 41 Alphabet */
+        "zz"     , TEXTS_zz,    /*  19/ 42 Alphabet */
     };
 
     static {
