@@ -81,9 +81,9 @@
                 latin:keyHintLabel=")"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="-"
-                latin:moreKeys="&#x1C7C;,_"
-                latin:keyHintLabel="&#x1C7C;"
+                latin:keySpec="&#x1C7C;"
+                latin:moreKeys="-,_"
+                latin:keyHintLabel="-"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
                 latin:keySpec="="
