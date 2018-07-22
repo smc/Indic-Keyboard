@@ -28,6 +28,8 @@
     <string name="keyspec_symbols_8">&#x09EE;</string>
     <string name="keyspec_symbols_9">&#x09EF;</string>
     <string name="keyspec_symbols_0">&#x09E6;</string>
+    <string name="keyspec_symbols_semicolon">&#x0983;</string>
+    <string name="keyspec_comma">&#x09CD;</string>
     <string name="additional_morekeys_symbols_1">1</string>
     <string name="additional_morekeys_symbols_2">2</string>
     <string name="additional_morekeys_symbols_3">3</string>
@@ -40,4 +42,5 @@
     <string name="additional_morekeys_symbols_0">0</string>
     <string name="keylabel_to_alpha">&#x0985;</string>
     <string name="keylabel_to_symbol">&#x09E7;&#x09E8;&#x09E9;</string>
+    <string name="morekeys_currency_dollar">&#x09F3;</string>
 </resources>

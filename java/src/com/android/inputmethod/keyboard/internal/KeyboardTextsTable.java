@@ -105,28 +105,28 @@ public final class KeyboardTextsTable {
         /*  19:11 */ "keyspec_symbols_9",
         /*  20:11 */ "keyspec_symbols_0",
         /*  21:11 */ "keylabel_to_symbol",
-        /*  22: 2 */ "morekeys_a",
-        /*  23: 2 */ "morekeys_e",
-        /*  24: 2 */ "morekeys_i",
-        /*  25: 2 */ "morekeys_o",
-        /*  26: 2 */ "morekeys_u",
-        /*  27: 2 */ "morekeys_s",
-        /*  28: 2 */ "morekeys_n",
-        /*  29: 2 */ "morekeys_c",
-        /*  30: 2 */ "keyspec_comma",
-        /*  31: 1 */ "morekeys_y",
-        /*  32: 1 */ "morekeys_d",
-        /*  33: 1 */ "morekeys_r",
-        /*  34: 1 */ "morekeys_t",
-        /*  35: 1 */ "morekeys_z",
-        /*  36: 1 */ "morekeys_k",
-        /*  37: 1 */ "morekeys_l",
-        /*  38: 1 */ "morekeys_g",
-        /*  39: 1 */ "morekeys_h",
-        /*  40: 1 */ "morekeys_j",
-        /*  41: 1 */ "morekeys_w",
-        /*  42: 1 */ "morekeys_currency_dollar",
-        /*  43: 1 */ "keyspec_symbols_semicolon",
+        /*  22: 3 */ "keyspec_comma",
+        /*  23: 2 */ "morekeys_a",
+        /*  24: 2 */ "morekeys_e",
+        /*  25: 2 */ "morekeys_i",
+        /*  26: 2 */ "morekeys_o",
+        /*  27: 2 */ "morekeys_u",
+        /*  28: 2 */ "morekeys_s",
+        /*  29: 2 */ "morekeys_n",
+        /*  30: 2 */ "morekeys_c",
+        /*  31: 2 */ "morekeys_currency_dollar",
+        /*  32: 2 */ "keyspec_symbols_semicolon",
+        /*  33: 1 */ "morekeys_y",
+        /*  34: 1 */ "morekeys_d",
+        /*  35: 1 */ "morekeys_r",
+        /*  36: 1 */ "morekeys_t",
+        /*  37: 1 */ "morekeys_z",
+        /*  38: 1 */ "morekeys_k",
+        /*  39: 1 */ "morekeys_l",
+        /*  40: 1 */ "morekeys_g",
+        /*  41: 1 */ "morekeys_h",
+        /*  42: 1 */ "morekeys_j",
+        /*  43: 1 */ "morekeys_w",
         /*  44: 0 */ "morekeys_v",
         /*  45: 0 */ "morekeys_q",
         /*  46: 0 */ "morekeys_x",
@@ -274,14 +274,11 @@ public final class KeyboardTextsTable {
         /* keyspec_symbols_0 */ "0",
         // Label for "switch to symbols" key.
         /* keylabel_to_symbol */ "?123",
+        // Comma key
+        /* keyspec_comma */ ",",
         /* morekeys_a ~ */
         EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
         /* ~ morekeys_c */
-        // Comma key
-        /* keyspec_comma */ ",",
-        /* morekeys_y ~ */
-        EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
-        /* ~ morekeys_w */
         // $ - I'm making ₹ as default
         // U+00A2: "¢" CENT SIGN
         // U+00A3: "£" POUND SIGN
@@ -290,8 +287,9 @@ public final class KeyboardTextsTable {
         // U+20B1: "₱" PESO SIGN
         /* morekeys_currency_dollar */ "$,\u00A2,\u00A3,\u20AC,\u00A5,\u20B1",
         /* keyspec_symbols_semicolon */ ";",
-        /* morekeys_v ~ */
-        EMPTY, EMPTY, EMPTY,
+        /* morekeys_y ~ */
+        EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
+        EMPTY,
         /* ~ morekeys_x */
         /* keyspec_q */ "q",
         /* keyspec_w */ "w",
@@ -480,6 +478,12 @@ public final class KeyboardTextsTable {
         /* keyspec_symbols_9 */ "\u09EF",
         /* keyspec_symbols_0 */ "\u09E6",
         /* keylabel_to_symbol */ "\u09E7\u09E8\u09E9",
+        /* keyspec_comma */ "\u09CD",
+        /* morekeys_a ~ */
+        null, null, null, null, null, null, null, null,
+        /* ~ morekeys_c */
+        /* morekeys_currency_dollar */ "\u09F3",
+        /* keyspec_symbols_semicolon */ "\u0983",
     };
 
     /* Locale bn_IN: Bengali (India) */
@@ -506,13 +510,10 @@ public final class KeyboardTextsTable {
         /* keyspec_symbols_9 */ "\u09EF",
         /* keyspec_symbols_0 */ "\u09E6",
         /* keylabel_to_symbol */ "\u09E7\u09E8\u09E9",
+        /* keyspec_comma */ "\u09CD",
         /* morekeys_a ~ */
         null, null, null, null, null, null, null, null,
         /* ~ morekeys_c */
-        /* keyspec_comma */ "\u09CD",
-        /* morekeys_y ~ */
-        null, null, null, null, null, null, null, null, null, null, null,
-        /* ~ morekeys_w */
         /* morekeys_currency_dollar */ "\u09F3",
         /* keyspec_symbols_semicolon */ "\u0983",
     };
@@ -521,8 +522,8 @@ public final class KeyboardTextsTable {
     private static final String[] TEXTS_en = {
         /* keylabel_to_alpha ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null,
-        /* ~ keylabel_to_symbol */
+        null, null, null, null, null, null, null, null,
+        /* ~ keyspec_comma */
         // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
         // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
         // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
@@ -792,9 +793,6 @@ public final class KeyboardTextsTable {
         /* keyspec_symbols_9 */ "\u0B6F",
         /* keyspec_symbols_0 */ "\u0B66",
         /* keylabel_to_symbol */ "\u0B67\u0B68\u0B69",
-        /* morekeys_a ~ */
-        null, null, null, null, null, null, null, null,
-        /* ~ morekeys_c */
         /* keyspec_comma */ "\u0B3C",
     };
 
@@ -890,8 +888,8 @@ public final class KeyboardTextsTable {
     private static final String[] TEXTS_zz = {
         /* keylabel_to_alpha ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null,
-        /* ~ keylabel_to_symbol */
+        null, null, null, null, null, null, null, null,
+        /* ~ keyspec_comma */
         // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
         // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
         // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
@@ -968,7 +966,8 @@ public final class KeyboardTextsTable {
         // U+010B: "ċ" LATIN SMALL LETTER C WITH DOT ABOVE
         // U+010D: "č" LATIN SMALL LETTER C WITH CARON
         /* morekeys_c */ "\u00E7,\u0107,\u0109,\u010B,\u010D",
-        /* keyspec_comma */ null,
+        /* morekeys_currency_dollar */ null,
+        /* keyspec_symbols_semicolon */ null,
         // U+00FD: "ý" LATIN SMALL LETTER Y WITH ACUTE
         // U+0177: "ŷ" LATIN SMALL LETTER Y WITH CIRCUMFLEX
         // U+00FF: "ÿ" LATIN SMALL LETTER Y WITH DIAERESIS
@@ -1016,20 +1015,20 @@ public final class KeyboardTextsTable {
     private static final Object[] LOCALES_AND_TEXTS = {
     // "locale", TEXT_ARRAY,  /* numberOfNonNullText/lengthOf_TEXT_ARRAY localeName */
         "DEFAULT", TEXTS_DEFAULT, /* 168/168 DEFAULT */
-        "as_IN"  , TEXTS_as_IN, /*  22/ 22 Assamese (India) */
-        "bn_IN"  , TEXTS_bn_IN, /*  25/ 44 Bengali (India) */
-        "en"     , TEXTS_en,    /*   8/ 30 English */
+        "as_IN"  , TEXTS_as_IN, /*  25/ 33 Assamese (India) */
+        "bn_IN"  , TEXTS_bn_IN, /*  25/ 33 Bengali (India) */
+        "en"     , TEXTS_en,    /*   8/ 31 English */
         "hi_IN"  , TEXTS_hi_IN, /*  22/ 22 Hindi (India) */
         "kn_IN"  , TEXTS_kn_IN, /*  22/ 22 Kannada (India) */
         "ml_IN"  , TEXTS_ml_IN, /*  11/ 11 Malayalam (India) */
         "mr_IN"  , TEXTS_mr_IN, /*  22/ 22 Marathi (India) */
         "my"     , TEXTS_my,    /*  22/ 22 Burmese */
         "ne_NP"  , TEXTS_ne_NP, /*  22/ 22 Nepali (Nepal) */
-        "or_IN"  , TEXTS_or_IN, /*  23/ 31 Oriya (India) */
+        "or_IN"  , TEXTS_or_IN, /*  23/ 23 Oriya (India) */
         "pa_IN"  , TEXTS_pa_IN, /*  22/ 22 Panjabi (India) */
         "ta_IN"  , TEXTS_ta_IN, /*  22/ 22 Tamil (India) */
         "te_IN"  , TEXTS_te_IN, /*  22/ 22 Telugu (India) */
-        "zz"     , TEXTS_zz,    /*  19/ 42 Alphabet */
+        "zz"     , TEXTS_zz,    /*  19/ 44 Alphabet */
     };
 
     static {
