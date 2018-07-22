@@ -39,8 +39,16 @@
             latin:keyWidth="fillRight"
             latin:visualInsetsLeft="1%p" />
     </Row>
-    <Row latin:keyWidth="10%p" >
+    <Row latin:keyWidth="7.692%p" >
+        <Key
+            latin:keyStyle="shiftKeyStyle"
+            latin:keyWidth="11.538%p"
+            latin:visualInsetsRight="1%p" />
         <include latin:keyboardLayout="@xml/rowkeys_santali_olck4" />
+        <Key
+            latin:keyStyle="shiftKeyStyle"
+            latin:keyWidth="fillRight"
+            latin:visualInsetsLeft="1%p" />
     </Row>
     <include latin:keyboardLayout="@xml/row_pcqwerty5" />
 </merge>
