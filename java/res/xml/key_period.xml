@@ -23,8 +23,8 @@
 >
     <switch>
         <case
-            latin:languageCode="hi|bn"
-            latin:keyboardLayoutSet="hindi|qwerty"
+            latin:languageCode="hi|bn|pa"
+            latin:keyboardLayoutSet="hindi|qwerty|bn_probhat|punjabi"
         >
             <!-- U+0964: "।" DEVANAGARI DANDA -->
             <Key
