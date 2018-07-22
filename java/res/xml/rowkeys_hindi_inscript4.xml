@@ -110,13 +110,11 @@
                 latin:keySpec="&#x0938;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key
-                latin:keySpec=","
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <include
+                latin:keyboardLayout="@xml/key_comma" />
 
-            <Key
-                latin:keySpec="."
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <include
+                latin:keyboardLayout="@xml/key_period" />
 
             <!--/ य DEVANAGARI LETTER YA-->
             <Key
