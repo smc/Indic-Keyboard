@@ -88,8 +88,9 @@
                 latin:keyLabelFlags="fontNormal" />
 
             <Key
-                latin:keySpec="|"
-                latin:keyLabelFlags="fontNormal" />
+                latin:keySpec="&#x0965;"
+                latin:moreKeys="|"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </case>
 
         <default>
@@ -156,8 +157,9 @@
                 latin:keyLabelFlags="fontNormal" />
 
             <Key
-                latin:keySpec="\\"
-                latin:keyLabelFlags="fontNormal" />
+                latin:keySpec="&#x0964;"
+                latin:moreKeys="\\"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
          </default>
     </switch>
 </merge>
