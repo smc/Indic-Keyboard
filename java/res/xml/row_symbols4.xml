@@ -25,8 +25,18 @@
         latin:keySpec="_" />
     <include
         latin:keyboardLayout="@xml/key_space_symbols" />
-    <Key
-        latin:keySpec="/" />
+    <switch>
+        <case
+            latin:languageCode="ta"
+        >
+            <Key
+                latin:keyStyle="zwnjKeyStyle" />
+        </case>
+        <default>
+            <Key
+                latin:keySpec="/" />
+        </default>
+    </switch>
     <!-- U+2026: "…" HORIZONTAL ELLIPSIS -->
     <Key
         latin:keySpec="."
