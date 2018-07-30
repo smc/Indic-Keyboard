@@ -73,9 +73,9 @@
         </case>
         <default>
             <Key
-                latin:keySpec="`"
-                latin:moreKeys="&#x1C7B;"
-                latin:keyHintLabel="&#x1C7B;"
+                latin:keySpec="&#x1C7B;"
+                latin:moreKeys="`"
+                latin:keyHintLabel="`"
                 latin:keyLabelFlags="fontNormal" />
             <Key
                 latin:keySpec="&#x1C51;"
