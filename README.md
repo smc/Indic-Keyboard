@@ -4,9 +4,14 @@
 
 Indic Keyboard is a versatile keyboard for Android users who wish to use Indic and Indian languages to type messages, compose emails and generally prefer to use them in addition to English on their phone. You can use this application to type anywhere in your phone that you would normally type in English. It currently supports 23 languages and 54 layouts.
 
-## Are there pre-built binaries available ?
+## Download
 
-Yes, You can [get it from Google Play.](https://play.google.com/store/apps/details?id=org.smc.inputmethod.indic)
+[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png"
+     alt="Get it on Google Play"
+     height="80">](https://play.google.com/store/apps/details?id=org.smc.inputmethod.indic)
+[<img src="https://f-droid.org/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/org.smc.inputmethod.indic/)
 
 ## Will my phone support it ?
 
