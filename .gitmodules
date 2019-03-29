@@ -6,7 +6,7 @@
 	url = https://github.com/androidtweak/dictionaries.git
 [submodule "ime"]
 	path = ime
-	url = https://gitlab.com/smc/android-ime.git
+	url = https://gitlab.com/indicproject/android-ime.git
 [submodule "inputmethodcommon"]
 	path = inputmethodcommon
 	url = https://android.googlesource.com/platform/frameworks/opt/inputmethodcommon

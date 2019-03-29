@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Author: Arushi Dogra <arushidogra1995@gmail.com>
+** Copyright ©
+**      2012-2013 Jishnu Mohan
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+  <switch>
+    <case
+      latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+      >
+      <Key
+        latin:keySpec="&#x1C5F;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C65;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C70;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C5D;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C5C;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C66;"
+        latin:keyLabelFlags="fontNormal" />
+    </case>
+
+    <default>
+      <Key
+        latin:keySpec="&#x1C76;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C79;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C7D;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C6A;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C7A;"
+        latin:additionalMoreKeys=";"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C77;"
+        latin:keyLabelFlags="fontNormal"/>
+    </default>
+  </switch>
+</merge>

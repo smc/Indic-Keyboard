@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Author: Arushi Dogra <arushidogra1995@gmail.com>
+** Copyright ©
+**      2012-2013 Jishnu Mohan
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+  <switch>
+    <case
+      latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
+      >
+      <Key
+        latin:keySpec="&#x1C6F;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C7C;"
+        latin:moreKeys="-"
+        latin:keyLabelFlags="fontNormal" />
+      <Key
+        latin:keySpec="&#x1C60;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C5E;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C61;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C6B;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C5A;"
+        latin:keyLabelFlags="fontNormal" />
+      <Key
+        latin:keySpec="&#x1C64;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C72;"
+        latin:keyLabelFlags="fontNormal" />
+      <Key
+        latin:keySpec="&#x1C50;"
+        latin:keyLabelFlags="fontNormal" />
+    </case>
+
+    <default>
+      <Key
+        latin:keySpec="&#x1C51;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C52;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C53;"
+        latin:keyLabelFlags="fontNormal"
+        latin:additionalMoreKeys="#" />
+      <Key
+        latin:keySpec="&#x1C54;"
+        latin:keyLabelFlags="fontNormal"
+        latin:additionalMoreKeys="$" />
+      <Key
+        latin:keySpec="&#x1C55;"
+        latin:keyLabelFlags="fontNormal"
+        latin:additionalMoreKeys="%" />
+      <Key
+        latin:keySpec="&#x1C56;"
+        latin:keyLabelFlags="fontNormal"
+        latin:additionalMoreKeys="^" />
+      <Key
+        latin:keySpec="&#x1C57;"
+        latin:keyLabelFlags="fontNormal"/>
+      <Key
+        latin:keySpec="&#x1C58;"
+        latin:keyLabelFlags="fontNormal"
+        latin:additionalMoreKeys="*" />
+      <Key
+        latin:keySpec="&#x1C59;"
+        latin:keyLabelFlags="fontNormal"
+        latin:additionalMoreKeys="(" />
+      <Key
+        latin:keySpec="&#x1C50;"
+        latin:keyLabelFlags="fontNormal"
+        latin:additionalMoreKeys=")" />
+    </default>
+  </switch>
+</merge>

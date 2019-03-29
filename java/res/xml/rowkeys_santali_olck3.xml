@@ -3,7 +3,8 @@
 /*
 **
 ** Author: Jishnu Mohan <jishnu7@gmail.com>
-** Copyright © 2013-2014 Jishnu Mohan, Swathanthra Malayalam Computing (SMC), International Centre for Free and Open Source Software (ICFOSS)
+** Copyright ©
+**      2018 Jishnu Mohan
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -23,77 +24,88 @@
     xmlns:latin="http://schemas.android.com/apk/res-auto"
 >
     <switch>
-        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
-        >
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted">
             <Key
-                latin:keySpec="&#x0985;"
+                latin:keySpec="&#x1C5F;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x09B7;"
+                latin:keySpec="&#x1C65;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <Key
+                latin:keySpec="&#x1C6B;"
+                latin:moreKeys="&#x1C70;"
+                latin:keyHintLabel="&#x1C70;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <Key
+                latin:keySpec="&#x1C5D;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x09A2;"
+                latin:keySpec="&#x1C5C;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x09A5;"
+                latin:keySpec="&#x1C77;"
+                latin:moreKeys="&#x1C66;"
+                latin:keyHintLabel="&#x1C66;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x0998;"
+                latin:keySpec="&#x1C61;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x0983;"
+                latin:keySpec="&#x1C60;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x099D;"
+                latin:keySpec="&#x1C5E;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x0996;"
+                latin:keySpec="&#x1C7A;"
+                latin:moreKeys=";"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x0982;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="&#x09CC;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="!icon/zwnj_key|&#x200C;"
-                latin:additionalMoreKeys="&#x200D;"
+                latin:keySpec="&quot;"
+                latin:moreKeys="'"
                 latin:keyLabelFlags="fontNormal" />
         </case>
-
         <default>
             <Key
-                latin:keySpec="&#x09BE;"
+                latin:keySpec="&#x1C5F;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x09B8;"
+                latin:keySpec="&#x1C65;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <Key
+                latin:keySpec="&#x1C70;"
+                latin:moreKeys="&#x1C6B;"
+                latin:keyHintLabel="&#x1C6B;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <Key
+                latin:keySpec="&#x1C5D;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x09A1;"
+                latin:keySpec="&#x1C5C;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x09A4;"
+                latin:keySpec="&#x1C66;"
+                latin:moreKeys="&#x1C77;"
+                latin:keyHintLabel="&#x1C77;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x0997;"
+                latin:keySpec="&#x1C61;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x09B9;"
+                latin:keySpec="&#x1C60;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x099C;"
+                latin:keySpec="&#x1C5E;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x0995;"
+                latin:keySpec=";"
+                latin:moreKeys="&#x1C7A;"
+                latin:keyHintLabel="&#x1C7A;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x09B2;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="&#x09CB;"
-                latin:keyLabelFlags="fontNormal" />
-            <Key
-                latin:keySpec="&#x0965;"
+                latin:keySpec="'"
+                latin:moreKeys="&quot;"
+                latin:keyHintLabel="&quot;"
                 latin:keyLabelFlags="fontNormal" />
          </default>
     </switch>

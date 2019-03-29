@@ -88,7 +88,8 @@
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keySpec="|"
+                latin:keySpec="&#x0965;"
+                latin:moreKeys="|"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </case>
 
@@ -156,7 +157,8 @@
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keySpec="\\"
+                latin:keySpec="&#x0964;"
+                latin:moreKeys="\\"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
          </default>
     </switch>

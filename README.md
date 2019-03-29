@@ -76,11 +76,15 @@ Indic keyboard provides multiple "keyboard layouts". This means that you will ha
 Other layouts are specific to the languages - do try them out.
 
 ## HOWTO Build
-1. Install gradle, Android Support Repository, SDK and other usual android stuffs.
+1. Install gradle, Android Support Repository, SDK and other usual android stuffs, 
+    1. Download the necessary tools from https://developer.android.com/studio/index.html and install them. Also set the necessary environment variables like `ANDROID_HOME`
+    1. You can optionally use the development environment provided as a Docker image which has all the necessary tools bundled in it
+        1. Pull the image using the command `docker pull registry.gitlab.com/smc/indic-keyboard:dev`
+        2. Run bash on it using `docker run -it registry.gitlab.com/balasankarc/indic-keyboard:dev bash`
 1. `git clone --recursive git@gitlab.com:indicproject/indic-keyboard.git`
 1. build jni lib `cd native/jni && ndk-build -e "APP_ABI=armeabi-v7a" -C ./`
 1. `cd java`
-1. Use `./gradlew assembleDebug` to build the package.
+1. `gradle assembleDebug` to build the package.
 
 ## Supporters
 
