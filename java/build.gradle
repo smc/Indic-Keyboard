@@ -3,14 +3,14 @@ project.ext.set("archivesBaseName", "IndicKeyboard");
 allprojects {
     repositories {
         google()
-        mavenCentral()
+        jcenter()
     }
 }
 
 buildscript {
     repositories {
-        mavenCentral()
         google()
+        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.0'
@@ -36,6 +36,7 @@ android {
         versionCode 26
         versionName "3.0.0-beta1"
     }
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -47,12 +48,13 @@ android {
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
         }
-        aaptOptions {
-            noCompress ".dict"
-        }
-
-        instrumentTest.setRoot('tests')
+        androidTest.setRoot('tests')
     }
+
+    aaptOptions {
+        noCompress ".dict"
+    }
+
     signingConfigs {
         release {
         }
