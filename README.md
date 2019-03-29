@@ -77,9 +77,10 @@ Other layouts are specific to the languages - do try them out.
 
 ## HOWTO Build
 1. Install gradle, Android Support Repository, SDK and other usual android stuffs.
-2. `git clone --recursive git@gitlab.com:smc/Indic-Keyboard.git`
-4. `cd java`
-5. Use `./gradlew assembleDebug` to build the package.
+1. `git clone --recursive git@gitlab.com:indicproject/indic-keyboard.git`
+1. build jni lib `cd native/jni && ndk-build -e "APP_ABI=armeabi-v7a" -C ./`
+1. `cd java`
+1. Use `./gradlew assembleDebug` to build the package.
 
 ## Supporters
 
