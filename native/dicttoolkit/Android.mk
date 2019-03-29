@@ -36,7 +36,7 @@ LOCAL_CFLAGS += -Werror -Wall -Wextra -Weffc++ -Wformat=2 -Wcast-qual -Wcast-ali
 
 # To suppress compiler warnings for unused variables/functions used for debug features etc.
 LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
-LOCAL_CFLAGS += -std=c++11 -Wno-unused-parameter -Wno-unused-function
+LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
 
 include $(LOCAL_PATH)/NativeFileList.mk
 include $(LATIN_IME_CORE_PATH)/NativeFileList.mk
@@ -51,7 +51,6 @@ LOCAL_SRC_FILES := $(LATIN_IME_DICT_TOOLKIT_MAIN_SRC_FILES) \
 LOCAL_MODULE := dicttoolkit
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_CLANG := true
 LOCAL_CXX_STL := libc++
 
 include $(BUILD_HOST_EXECUTABLE)

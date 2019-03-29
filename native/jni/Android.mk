@@ -63,7 +63,6 @@ endif # FLAG_DO_PROFILE
 LOCAL_MODULE := libjni_latinime_common_static
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_CLANG := true
 LOCAL_SDK_VERSION := 14
 LOCAL_NDK_STL_VARIANT := c++_static
 
@@ -87,9 +86,9 @@ endif # FLAG_DO_PROFILE
 LOCAL_MODULE := libjni_latinime
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_CLANG := true
 LOCAL_SDK_VERSION := 14
 LOCAL_NDK_STL_VARIANT := c++_static
+LOCAL_CFLAGS := -Wall -Werror
 LOCAL_LDFLAGS += -ldl
 
 include $(BUILD_SHARED_LIBRARY)
@@ -101,3 +100,4 @@ include $(LOCAL_PATH)/CleanupNativeFileList.mk
 
 #################### Unit test on target environment
 #include $(LOCAL_PATH)/TargetUnitTests.mk
+//LOCAL_CFLAGS += -Wall -Werror
