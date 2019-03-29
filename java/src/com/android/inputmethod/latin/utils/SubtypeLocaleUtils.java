@@ -44,7 +44,7 @@ public final class SubtypeLocaleUtils {
     static final String TAG = SubtypeLocaleUtils.class.getSimpleName();
 
     // This reference class {@link R} must be located in the same package as LatinIME.java.
-    private static final String RESOURCE_PACKAGE_NAME = R.class.getPackage().getName();
+    private static final String RESOURCE_PACKAGE_NAME = "org.smc.inputmethod.indic";
 
     // Special language code to represent "no language".
     public static final String NO_LANGUAGE = "zz";

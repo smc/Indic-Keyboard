@@ -34,7 +34,8 @@ public class DictionaryPackConstants {
      * Authority for the ContentProvider protocol.
      */
     // TODO: find some way to factorize this string with the one in the resources
-    public static final String AUTHORITY = DICTIONARY_DOMAIN;
+    public static final String AUTHORITY = "org.smc.inputmethod.dictionarypack.aosp";
+
 
     /**
      * The action of the intent for publishing that new dictionary data is available.
