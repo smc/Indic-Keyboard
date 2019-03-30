@@ -32,9 +32,9 @@ android {
     defaultConfig {
         applicationId "org.smc.inputmethod.indic"
         minSdkVersion 14
-        targetSdkVersion 26
-        versionCode 28
-        versionName "3.0.0-beta2"
+        targetSdkVersion 28
+        versionCode 29
+        versionName "3.0.0-beta3"
     }
 
     sourceSets {
