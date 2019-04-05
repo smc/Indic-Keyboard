@@ -80,13 +80,14 @@
     <string name="double_quotes">!text/double_lqm_rqm</string>
     <string name="single_angle_quotes">!text/single_laqm_raqm</string>
     <string name="double_angle_quotes">!text/double_laqm_raqm</string>
-    <!-- U+00A2: "¢" CENT SIGN
+    <!-- $ - I'm making ₹ as default
+         U+00A2: "¢" CENT SIGN
          U+00A3: "£" POUND SIGN
          U+20AC: "€" EURO SIGN
          U+00A5: "¥" YEN SIGN
          U+20B1: "₱" PESO SIGN -->
-    <string name="morekeys_currency_dollar">&#x00A2;,&#x00A3;,&#x20AC;,&#x00A5;,&#x20B1;</string>
-    <string name="keyspec_currency">$</string>
+    <string name="morekeys_currency_dollar">$,&#x00A2;,&#x00A3;,&#x20AC;,&#x00A5;,&#x20B1;</string>
+    <string name="keyspec_currency">&#x20b9;</string>
     <string name="morekeys_currency_generic">$,&#x00A2;,&#x20AC;,&#x00A3;,&#x00A5;,&#x20B1;</string>
     <string name="morekeys_punctuation">"!autoColumnOrder!8,\\,,?,!,#,!text/keyspec_right_parenthesis,!text/keyspec_left_parenthesis,/,;,',@,:,-,\",+,\\%,&amp;"</string>
     <string name="morekeys_tablet_punctuation">"!autoColumnOrder!7,\\,,',#,!text/keyspec_right_parenthesis,!text/keyspec_left_parenthesis,/,;,@,:,-,\",+,\\%,&amp;"</string>

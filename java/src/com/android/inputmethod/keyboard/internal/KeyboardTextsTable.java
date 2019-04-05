@@ -168,7 +168,7 @@ public final class KeyboardTextsTable {
         /*  82: 0 */ "double_quotes",
         /*  83: 0 */ "single_angle_quotes",
         /*  84: 0 */ "double_angle_quotes",
-        /*  85: 0 */ "keylabel_for_currency",
+        /*  85: 0 */ "keyspec_currency",
         /*  86: 0 */ "morekeys_currency_generic",
         /*  87: 0 */ "morekeys_punctuation",
         /*  88: 0 */ "morekeys_tablet_punctuation",
@@ -251,6 +251,14 @@ public final class KeyboardTextsTable {
         /* 165: 0 */ "morekeys_double_quote",
         /* 166: 0 */ "morekeys_tablet_double_quote",
         /* 167: 0 */ "keyspec_emoji_action_key",
+        /* 168: 0 */ "label_go_key",
+        /* 169: 0 */ "label_send_key",
+        /* 170: 0 */ "label_next_key",
+        /* 171: 0 */ "label_done_key",
+        /* 172: 0 */ "label_search_key",
+        /* 173: 0 */ "label_previous_key",
+        /* 174: 0 */ "label_pause_key",
+        /* 175: 0 */ "label_wait_key",
     };
 
     private static final String EMPTY = "";
@@ -304,7 +312,7 @@ public final class KeyboardTextsTable {
         /* double_quotes */ "!text/double_lqm_rqm",
         /* single_angle_quotes */ "!text/single_laqm_raqm",
         /* double_angle_quotes */ "!text/double_laqm_raqm",
-        /* keylabel_for_currency */ "$",
+        /* keyspec_currency */ "\u20B9",
         /* morekeys_currency_generic */ "$,\u00A2,\u20AC,\u00A3,\u00A5,\u20B1",
         /* morekeys_punctuation */ "!autoColumnOrder!8,\\,,?,!,#,!text/keyspec_right_parenthesis,!text/keyspec_left_parenthesis,/,;,',@,:,-,\",+,\\%,&",
         /* morekeys_tablet_punctuation */ "!autoColumnOrder!7,\\,,',#,!text/keyspec_right_parenthesis,!text/keyspec_left_parenthesis,/,;,@,:,-,\",+,\\%,&",
@@ -452,6 +460,14 @@ public final class KeyboardTextsTable {
         /* morekeys_double_quote */ "!fixedColumnOrder!5,!text/double_quotes,!text/double_angle_quotes",
         /* morekeys_tablet_double_quote */ "!fixedColumnOrder!6,!text/double_quotes,!text/single_quotes,!text/double_angle_quotes,!text/single_angle_quotes",
         /* keyspec_emoji_action_key */ "!icon/emoji_action_key|!code/key_emoji",
+        /* label_go_key */ "!string/label_go_key",
+        /* label_send_key */ "!string/label_send_key",
+        /* label_next_key */ "!string/label_next_key",
+        /* label_done_key */ "!string/label_done_key",
+        /* label_search_key */ "!string/label_search_key",
+        /* label_previous_key */ "!string/label_previous_key",
+        /* label_pause_key */ "!string/label_pause_key",
+        /* label_wait_key */ "!string/label_wait_key",
     };
 
     /* Locale as_IN: Assamese (India) */
@@ -1014,7 +1030,7 @@ public final class KeyboardTextsTable {
 
     private static final Object[] LOCALES_AND_TEXTS = {
     // "locale", TEXT_ARRAY,  /* numberOfNonNullText/lengthOf_TEXT_ARRAY localeName */
-        "DEFAULT", TEXTS_DEFAULT, /* 168/168 DEFAULT */
+        "DEFAULT", TEXTS_DEFAULT, /* 176/176 DEFAULT */
         "as_IN"  , TEXTS_as_IN, /*  25/ 33 Assamese (India) */
         "bn_IN"  , TEXTS_bn_IN, /*  25/ 33 Bengali (India) */
         "en"     , TEXTS_en,    /*   8/ 31 English */
