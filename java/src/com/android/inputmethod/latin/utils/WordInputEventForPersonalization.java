@@ -22,7 +22,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.define.DecoderSpecificConstants;
-import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
+import org.smc.inputmethod.indic.settings.SpacingAndPunctuations;
 
 import java.util.ArrayList;
 import java.util.List;

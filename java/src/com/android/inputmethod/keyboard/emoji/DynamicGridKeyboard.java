@@ -22,7 +22,7 @@ import android.util.Log;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.latin.settings.Settings;
+import org.smc.inputmethod.indic.settings.Settings;
 import com.android.inputmethod.latin.utils.JsonUtils;
 
 import java.util.ArrayDeque;

@@ -22,8 +22,10 @@ import android.util.LruCache;
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.common.ComposedData;
-import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
+import org.smc.inputmethod.indic.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.utils.SuggestionResults;
+
+import org.smc.inputmethod.indic.LatinIME;
 
 import java.io.File;
 import java.util.ArrayList;

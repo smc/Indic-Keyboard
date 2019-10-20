@@ -22,7 +22,7 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.common.InputPointers;
-import com.android.inputmethod.latin.inputlogic.PrivateCommandPerformer;
+import org.smc.inputmethod.indic.inputlogic.PrivateCommandPerformer;
 
 import java.util.Locale;
 

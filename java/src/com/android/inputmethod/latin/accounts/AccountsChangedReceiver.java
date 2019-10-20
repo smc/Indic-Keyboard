@@ -26,7 +26,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.latin.settings.LocalSettingsConstants;
+import org.smc.inputmethod.indic.settings.LocalSettingsConstants;
 
 /**
  * {@link BroadcastReceiver} for {@link AccountManager#LOGIN_ACCOUNTS_CHANGED_ACTION}.

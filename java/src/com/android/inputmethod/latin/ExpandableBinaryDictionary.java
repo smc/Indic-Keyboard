@@ -28,7 +28,7 @@ import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.WordProperty;
-import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
+import org.smc.inputmethod.indic.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.CombinedFormatUtils;
 import com.android.inputmethod.latin.utils.ExecutorUtils;

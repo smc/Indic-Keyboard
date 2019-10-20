@@ -19,7 +19,7 @@ package com.android.inputmethod.latin.utils;
 import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.NgramContext.WordInfo;
 import com.android.inputmethod.latin.define.DecoderSpecificConstants;
-import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
+import org.smc.inputmethod.indic.settings.SpacingAndPunctuations;
 
 import java.util.Arrays;
 import java.util.regex.Pattern;

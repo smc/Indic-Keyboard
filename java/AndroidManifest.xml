@@ -60,7 +60,7 @@
             android:directBootAware="true">
 
         <!-- Services -->
-        <service android:name="LatinIME"
+        <service android:name="org.smc.inputmethod.indic.LatinIME"
                 android:label="@string/english_ime_name"
                 android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
@@ -69,7 +69,7 @@
             <meta-data android:name="android.view.im" android:resource="@xml/method" />
         </service>
 
-        <service android:name=".spellcheck.AndroidSpellCheckerService"
+        <service android:name="org.smc.inputmethod.indic.spellcheck.AndroidSpellCheckerService"
                  android:label="@string/spell_checker_service_name"
                  android:permission="android.permission.BIND_TEXT_SERVICE">
             <intent-filter>
@@ -84,7 +84,7 @@
         </service>
 
         <!-- Activities -->
-        <activity android:name=".setup.SetupActivity"
+        <activity android:name="org.smc.inputmethod.indic.setup.SetupActivity"
                 android:theme="@style/platformActivityTheme"
                 android:label="@string/english_ime_name"
                 android:icon="@drawable/ic_launcher_keyboard"
@@ -103,7 +103,7 @@
             android:taskAffinity="" >
         </activity>
 
-        <activity android:name=".setup.SetupWizardActivity"
+        <activity android:name="org.smc.inputmethod.indic.setup.SetupWizardActivity"
                 android:theme="@style/platformActivityTheme"
                 android:label="@string/english_ime_name"
                 android:clearTaskOnLaunch="true">
@@ -112,7 +112,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".settings.SettingsActivity"
+        <activity android:name="org.smc.inputmethod.indic.settings.SettingsActivity"
                 android:theme="@style/platformSettingsTheme"
                 android:label="@string/english_ime_settings">
             <intent-filter>
@@ -120,7 +120,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".spellcheck.SpellCheckerSettingsActivity"
+        <activity android:name="org.smc.inputmethod.indic.spellcheck.SpellCheckerSettingsActivity"
                   android:theme="@style/platformSettingsTheme"
                   android:label="@string/android_spell_checker_settings">
             <intent-filter>
@@ -146,7 +146,7 @@
         </activity>
 
         <!-- Unexported activity used for tests. -->
-        <activity android:name=".settings.TestFragmentActivity"
+        <activity android:name="org.smc.inputmethod.indic.settings.TestFragmentActivity"
                 android:exported="false" />
 
         <!-- Broadcast receivers -->
@@ -159,7 +159,7 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.android.inputmethod.latin.DictionaryPackInstallBroadcastReceiver" android:exported="false">
+        <receiver android:name="org.smc.inputmethod.indic.DictionaryPackInstallBroadcastReceiver" android:exported="false">
             <intent-filter>
                 <action android:name="com.android.inputmethod.dictionarypack.aosp.UNKNOWN_CLIENT" />
             </intent-filter>

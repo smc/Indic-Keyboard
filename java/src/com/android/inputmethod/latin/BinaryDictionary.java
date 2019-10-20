@@ -32,7 +32,7 @@ import com.android.inputmethod.latin.makedict.FormatSpec;
 import com.android.inputmethod.latin.makedict.FormatSpec.DictionaryOptions;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 import com.android.inputmethod.latin.makedict.WordProperty;
-import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
+import org.smc.inputmethod.indic.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.utils.BinaryDictionaryUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.WordInputEventForPersonalization;

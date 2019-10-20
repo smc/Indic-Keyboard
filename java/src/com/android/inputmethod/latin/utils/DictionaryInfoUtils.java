@@ -28,14 +28,13 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.dictionarypack.UpdateHandler;
 import com.android.inputmethod.latin.AssetFileAddress;
 import com.android.inputmethod.latin.BinaryDictionaryGetter;
-import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.common.FileUtils;
 import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
-import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
+import org.smc.inputmethod.indic.settings.SpacingAndPunctuations;
 
 import java.io.File;
 import java.io.FilenameFilter;

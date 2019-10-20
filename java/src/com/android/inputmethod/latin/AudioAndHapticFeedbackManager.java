@@ -23,7 +23,7 @@ import android.view.HapticFeedbackConstants;
 import android.view.View;
 
 import com.android.inputmethod.latin.common.Constants;
-import com.android.inputmethod.latin.settings.SettingsValues;
+import org.smc.inputmethod.indic.settings.SettingsValues;
 
 /**
  * This class gathers audio feedback and haptic feedback functions.

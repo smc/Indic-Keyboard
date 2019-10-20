@@ -38,7 +38,7 @@ import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.CoordinateUtils;
 import com.android.inputmethod.latin.common.InputPointers;
 import com.android.inputmethod.latin.define.DebugFlags;
-import com.android.inputmethod.latin.settings.Settings;
+import org.smc.inputmethod.indic.settings.Settings;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 
 import java.util.ArrayList;

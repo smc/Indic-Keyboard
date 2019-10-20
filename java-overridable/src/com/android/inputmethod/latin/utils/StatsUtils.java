@@ -21,9 +21,7 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.SuggestedWords;
-import com.android.inputmethod.latin.settings.SettingsValues;
-
-import javax.annotation.Nullable;
+import org.smc.inputmethod.indic.settings.SettingsValues;
 
 @SuppressWarnings("unused")
 public final class StatsUtils {

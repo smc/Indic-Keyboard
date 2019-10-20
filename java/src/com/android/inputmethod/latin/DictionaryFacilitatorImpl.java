@@ -30,8 +30,8 @@ import com.android.inputmethod.latin.common.ComposedData;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.permissions.PermissionsUtil;
-import com.android.inputmethod.latin.personalization.UserHistoryDictionary;
-import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
+import org.smc.inputmethod.indic.personalization.UserHistoryDictionary;
+import org.smc.inputmethod.indic.settings.SettingsValuesForSuggestion;
 import com.android.inputmethod.latin.utils.ExecutorUtils;
 import com.android.inputmethod.latin.utils.SuggestionResults;
 

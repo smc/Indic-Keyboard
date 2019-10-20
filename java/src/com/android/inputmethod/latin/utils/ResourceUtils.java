@@ -26,7 +26,7 @@ import android.util.TypedValue;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.settings.SettingsValues;
+import org.smc.inputmethod.indic.settings.SettingsValues;
 
 import java.util.ArrayList;
 import java.util.HashMap;

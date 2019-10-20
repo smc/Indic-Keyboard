@@ -27,7 +27,7 @@ import com.android.inputmethod.annotations.ExternallyReferenced;
 import com.android.inputmethod.latin.ContactsManager.ContactsChangedListener;
 import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.permissions.PermissionsUtil;
-import com.android.inputmethod.latin.personalization.AccountUtils;
+import org.smc.inputmethod.indic.personalization.AccountUtils;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -28,7 +28,6 @@ import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -56,11 +55,10 @@ import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.CoordinateUtils;
-import com.android.inputmethod.latin.settings.DebugSettings;
+import org.smc.inputmethod.indic.settings.DebugSettings;
 import com.android.inputmethod.latin.utils.LanguageOnSpacebarUtils;
 import com.android.inputmethod.latin.utils.TypefaceUtils;
 
-import java.util.Locale;
 import java.util.WeakHashMap;
 
 import javax.annotation.Nonnull;

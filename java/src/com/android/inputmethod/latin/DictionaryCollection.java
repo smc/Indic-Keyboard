@@ -20,7 +20,7 @@ import android.util.Log;
 
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.common.ComposedData;
-import com.android.inputmethod.latin.settings.SettingsValuesForSuggestion;
+import org.smc.inputmethod.indic.settings.SettingsValuesForSuggestion;
 
 import java.util.ArrayList;
 import java.util.Collection;

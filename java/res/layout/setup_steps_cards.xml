@@ -42,7 +42,7 @@
             style="@style/setupStepBulletStyle"
             android:text="@string/setup_step4_bullet" />
     </LinearLayout>
-    <com.android.inputmethod.latin.setup.SetupStepIndicatorView
+    <org.smc.inputmethod.indic.setup.SetupStepIndicatorView
         android:id="@+id/setup_step_indicator"
         style="@style/setupStepIndicatorStyle" />
     <FrameLayout

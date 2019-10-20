@@ -34,8 +34,8 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
 import com.android.inputmethod.dictionarypack.DownloadManagerWrapper;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
-import com.android.inputmethod.latin.settings.Settings;
-import com.android.inputmethod.latin.setup.SetupActivity;
+import org.smc.inputmethod.indic.settings.Settings;
+import org.smc.inputmethod.indic.setup.SetupActivity;
 import com.android.inputmethod.latin.utils.UncachedInputMethodManagerUtils;
 
 /**

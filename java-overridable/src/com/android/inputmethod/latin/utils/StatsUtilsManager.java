@@ -20,7 +20,7 @@ package com.android.inputmethod.latin.utils;
 import android.content.Context;
 
 import com.android.inputmethod.latin.DictionaryFacilitator;
-import com.android.inputmethod.latin.settings.SettingsValues;
+import org.smc.inputmethod.indic.settings.SettingsValues;
 
 @SuppressWarnings("unused")
 public class StatsUtilsManager {

@@ -21,6 +21,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import org.smc.inputmethod.indic.LatinIME;
+
 public class DictionaryDumpBroadcastReceiver extends BroadcastReceiver {
   private static final String TAG = DictionaryDumpBroadcastReceiver.class.getSimpleName();
 

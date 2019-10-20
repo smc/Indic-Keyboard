@@ -22,7 +22,7 @@ import android.text.TextUtils;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.StringUtils;
-import com.android.inputmethod.latin.settings.SpacingAndPunctuations;
+import org.smc.inputmethod.indic.settings.SpacingAndPunctuations;
 
 import java.util.ArrayList;
 import java.util.Locale;
