@@ -26,14 +26,14 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 28
     buildToolsVersion '28.0.3'
 
     defaultConfig {
         applicationId "org.smc.inputmethod.indic"
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 32
+        versionCode 33
         versionName "3.0.0-beta5"
     }
 
