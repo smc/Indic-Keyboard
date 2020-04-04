@@ -37,7 +37,7 @@
         </case>
         <default>
             <Key
-                latin:keySpec="&quot;"
+                latin:keySpec="\&quot;"
                 latin:moreKeys="!text/morekeys_double_quote" />
             <Key
                 latin:keySpec="\'"
