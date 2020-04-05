@@ -362,7 +362,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             // Default value
             return !isApplicationInSystemImage;
         }
-        return prefs.getBoolean(PREF_SHOW_SETUP_WIZARD_ICON, false);
+        return prefs.getBoolean(PREF_SHOW_SETUP_WIZARD_ICON, true);
     }
 
     public static boolean readHasHardwareKeyboard(final Configuration conf) {
