@@ -65,6 +65,10 @@ android {
 
     signingConfigs {
         release {
+            storeFile file(String.valueOf(System.getenv("INDIC_KEYSTORE")))
+            storePassword System.getenv("INDIC_KEYSTORE_PASSWORD")
+            keyAlias System.getenv("INDIC_KEY_ALIAS")
+            keyPassword System.getenv("INDIC_KEY_PASSWORD")
         }
     }
     buildTypes {
