@@ -104,6 +104,8 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     // This is being used only for the backward compatibility.
     private static final String PREF_SUPPRESS_LANGUAGE_SWITCH_KEY =
             "pref_suppress_language_switch_key";
+    private static final String PREF_SHOW_NUMBER_ROW =
+            "pref_show_number_row";
 
     private static final String PREF_LAST_USED_PERSONALIZATION_TOKEN =
             "pref_last_used_personalization_token";
@@ -270,6 +272,10 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             editor.apply();
         }
         return prefs.getBoolean(PREF_SHOW_LANGUAGE_SWITCH_KEY, true);
+    }
+
+    public static boolean readShowsNumberRow(final SharedPreferences prefs) {
+        return prefs.getBoolean(PREF_SHOW_NUMBER_ROW, false);
     }
 
     public static String readPrefAdditionalSubtypes(final SharedPreferences prefs,

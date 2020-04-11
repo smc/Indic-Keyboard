@@ -124,6 +124,11 @@
     <!-- Description for option enabling or disabling the double-space period feature that lets double tap on spacebar insert a period followed by a space [CHAR LIMIT=65] -->
     <string name="use_double_space_period_summary">Double tap on spacebar inserts a period followed by a space</string>
 
+    <!-- Option to enable number row -->
+    <string name="number_row">Number row</string>
+    <!-- Description for option to enable number row -->
+    <string name="number_row_summary">Always show number row</string>
+
     <!-- Option to enable auto capitalization of sentences -->
     <string name="auto_cap">Auto-capitalization</string>
     <!-- Description for option to enable auto capitalization of sentences -->

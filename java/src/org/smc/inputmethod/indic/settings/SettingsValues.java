@@ -69,6 +69,7 @@ public class SettingsValues {
     public final boolean mShowsVoiceInputKey;
     public final boolean mIncludesOtherImesInLanguageSwitchList;
     public final boolean mShowsLanguageSwitchKey;
+    public final boolean mShowsNumberRow;
     public final boolean mUseContactsDict;
     public final boolean mUsePersonalizedDicts;
     public final boolean mUseDoubleSpacePeriod;
@@ -145,6 +146,7 @@ public class SettingsValues {
                 : true /* forcibly */;
         mShowsLanguageSwitchKey = Settings.ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS
                 ? Settings.readShowsLanguageSwitchKey(prefs) : true /* forcibly */;
+        mShowsNumberRow = Settings.readShowsNumberRow(prefs);
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mUsePersonalizedDicts = prefs.getBoolean(Settings.PREF_KEY_USE_PERSONALIZED_DICTS, true);
         mUseDoubleSpacePeriod = prefs.getBoolean(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true)
@@ -280,6 +282,10 @@ public class SettingsValues {
             return imm.hasMultipleEnabledIMEsOrSubtypes(false /* include aux subtypes */);
         }
         return imm.hasMultipleEnabledSubtypesInThisIme(false /* include aux subtypes */);
+    }
+
+    public boolean isNumberRowEnabled() {
+        return mShowsNumberRow;
     }
 
     public boolean isSameInputType(final EditorInfo editorInfo) {

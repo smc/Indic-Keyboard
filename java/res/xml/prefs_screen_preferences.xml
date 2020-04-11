@@ -19,6 +19,12 @@
     xmlns:latin="http://schemas.android.com/apk/res-auto"
     android:title="@string/settings_screen_preferences">
     <CheckBoxPreference
+        android:key="number_row"
+        android:title="@string/number_row"
+        android:summary="@string/number_row_summary"
+        android:defaultValue="false"
+        android:persistent="true" />
+    <CheckBoxPreference
         android:key="auto_cap"
         android:title="@string/auto_cap"
         android:summary="@string/auto_cap_summary"

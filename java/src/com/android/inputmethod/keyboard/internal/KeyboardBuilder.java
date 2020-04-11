@@ -666,6 +666,9 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             final boolean languageSwitchKeyEnabledMatched = matchBoolean(caseAttr,
                     R.styleable.Keyboard_Case_languageSwitchKeyEnabled,
                     id.mLanguageSwitchKeyEnabled);
+            final boolean numberRowEnabledMatched = matchBoolean(caseAttr,
+                    R.styleable.Keyboard_Case_numberRowEnabled,
+                    id.mNumberRowEnabled);
             final boolean isMultiLineMatched = matchBoolean(caseAttr,
                     R.styleable.Keyboard_Case_isMultiLine, id.isMultiLine());
             final boolean imeActionMatched = matchInteger(caseAttr,
@@ -681,7 +684,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             final boolean selected = keyboardLayoutSetMatched && keyboardLayoutSetElementMatched
                     && keyboardThemeMacthed && modeMatched && navigateNextMatched
                     && navigatePreviousMatched && passwordInputMatched && clobberSettingsKeyMatched
-                    && hasShortcutKeyMatched  && languageSwitchKeyEnabledMatched
+                    && hasShortcutKeyMatched  && languageSwitchKeyEnabledMatched && numberRowEnabledMatched
                     && isMultiLineMatched && imeActionMatched && isIconDefinedMatched
                     && localeCodeMatched && languageCodeMatched && countryCodeMatched
                     && splitLayoutMatched;
@@ -710,6 +713,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                                 "hasShortcutKey"),
                         booleanAttr(caseAttr, R.styleable.Keyboard_Case_languageSwitchKeyEnabled,
                                 "languageSwitchKeyEnabled"),
+                        booleanAttr(caseAttr, R.styleable.Keyboard_Case_numberRowEnabled,
+                                "numberRowEnabled"),
                         booleanAttr(caseAttr, R.styleable.Keyboard_Case_isMultiLine,
                                 "isMultiLine"),
                         booleanAttr(caseAttr, R.styleable.Keyboard_Case_isSplitLayout,
