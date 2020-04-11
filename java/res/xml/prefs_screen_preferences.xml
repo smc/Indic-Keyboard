@@ -56,4 +56,15 @@
         android:title="@string/voice_input"
         android:defaultValue="true"
         android:persistent="true" />
+    <CheckBoxPreference
+        android:key="pref_resize_keyboard"
+        android:title="@string/prefs_resize_keyboard"
+        android:defaultValue="false"
+        android:persistent="true" />
+    <org.smc.inputmethod.indic.settings.SeekBarDialogPreference
+        android:dependency="pref_resize_keyboard"
+        android:key="pref_keyboard_height_scale"
+        android:title="@string/prefs_keyboard_height_scale"
+        latin:minValue="50"
+        latin:maxValue="120" /> <!-- percentage -->
 </PreferenceScreen>

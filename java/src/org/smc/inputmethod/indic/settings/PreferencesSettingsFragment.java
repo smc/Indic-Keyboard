@@ -27,6 +27,8 @@ import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
 
+import java.util.Locale;
+
 /**
  * "Preferences" settings sub screen.
  *
@@ -69,6 +71,9 @@ public final class PreferencesSettingsFragment extends SubScreenFragment {
         }
 
         refreshEnablingsOfKeypressSoundAndVibrationSettings();
+
+        setupKeyboardHeight(
+                Settings.PREF_KEYBOARD_HEIGHT_SCALE, SettingsValues.DEFAULT_SIZE_SCALE);
     }
 
     @Override
@@ -100,5 +105,51 @@ public final class PreferencesSettingsFragment extends SubScreenFragment {
                 Settings.readVibrationEnabled(prefs, res));
         setPreferenceEnabled(Settings.PREF_KEYPRESS_SOUND_VOLUME,
                 Settings.readKeypressSoundEnabled(prefs, res));
+    }
+
+    private void setupKeyboardHeight(final String prefKey, final float defaultValue) {
+        final SharedPreferences prefs = getSharedPreferences();
+        final SeekBarDialogPreference pref = (SeekBarDialogPreference)findPreference(prefKey);
+        if (pref == null) {
+            return;
+        }
+        pref.setInterface(new SeekBarDialogPreference.ValueProxy() {
+            private static final float PERCENTAGE_FLOAT = 100.0f;
+            private float getValueFromPercentage(final int percentage) {
+                return percentage / PERCENTAGE_FLOAT;
+            }
+
+            private int getPercentageFromValue(final float floatValue) {
+                return (int)(floatValue * PERCENTAGE_FLOAT);
+            }
+
+            @Override
+            public void writeValue(final int value, final String key) {
+                prefs.edit().putFloat(key, getValueFromPercentage(value)).apply();
+            }
+
+            @Override
+            public void writeDefaultValue(final String key) {
+                prefs.edit().remove(key).apply();
+            }
+
+            @Override
+            public int readValue(final String key) {
+                return getPercentageFromValue(Settings.readKeyboardHeight(prefs, defaultValue));
+            }
+
+            @Override
+            public int readDefaultValue(final String key) {
+                return getPercentageFromValue(defaultValue);
+            }
+
+            @Override
+            public String getValueText(final int value) {
+                return String.format(Locale.ROOT, "%d%%", value);
+            }
+
+            @Override
+            public void feedbackValue(final int value) {}
+        });
     }
 }
