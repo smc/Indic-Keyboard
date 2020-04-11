@@ -24,6 +24,14 @@
 >
     <include
         latin:keyboardLayout="@xml/key_styles_common" />
+    <switch>
+      <case latin:numberRowEnabled="true">
+        <Row latin:keyWidth="10%p">
+          <include
+            latin:keyboardLayout="@xml/rowkeys_symbols1" />
+        </Row>
+      </case>
+    </switch>
     <Row latin:keyWidth="8.2%p" >
         <include latin:keyboardLayout="@xml/rowkeys_mon1" latin:keyXPos="1%p" />
     </Row>
