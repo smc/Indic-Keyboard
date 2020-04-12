@@ -79,6 +79,7 @@ public final class KeyboardId {
     public final EditorInfo mEditorInfo;
     public final boolean mClobberSettingsKey;
     public final boolean mLanguageSwitchKeyEnabled;
+    public final boolean mEmojiSwitchKeyEnabled;
     public final boolean mNumberRowEnabled;
     public final String mCustomActionLabel;
     public final boolean mHasShortcutKey;
@@ -95,6 +96,7 @@ public final class KeyboardId {
         mEditorInfo = params.mEditorInfo;
         mClobberSettingsKey = params.mNoSettingsKey;
         mLanguageSwitchKeyEnabled = params.mLanguageSwitchKeyEnabled;
+        mEmojiSwitchKeyEnabled = params.mEmojiSwitchKeyEnabled;
         mNumberRowEnabled = params.mNumberRowEnabled;
         mCustomActionLabel = (mEditorInfo.actionLabel != null)
                 ? mEditorInfo.actionLabel.toString() : null;
@@ -114,6 +116,7 @@ public final class KeyboardId {
                 id.mClobberSettingsKey,
                 id.mHasShortcutKey,
                 id.mLanguageSwitchKeyEnabled,
+                id.mEmojiSwitchKeyEnabled,
                 id.mNumberRowEnabled,
                 id.isMultiLine(),
                 id.imeAction(),
@@ -136,6 +139,7 @@ public final class KeyboardId {
                 && other.mClobberSettingsKey == mClobberSettingsKey
                 && other.mHasShortcutKey == mHasShortcutKey
                 && other.mLanguageSwitchKeyEnabled == mLanguageSwitchKeyEnabled
+                && other.mEmojiSwitchKeyEnabled == mEmojiSwitchKeyEnabled
                 && other.mNumberRowEnabled == mNumberRowEnabled
                 && other.isMultiLine() == isMultiLine()
                 && other.imeAction() == imeAction()
@@ -207,6 +211,7 @@ public final class KeyboardId {
                 (passwordInput() ? " passwordInput" : ""),
                 (mHasShortcutKey ? " hasShortcutKey" : ""),
                 (mLanguageSwitchKeyEnabled ? " languageSwitchKeyEnabled" : ""),
+                (mEmojiSwitchKeyEnabled ? " emojiSwitchKeyEnabled" : ""),
                 (mNumberRowEnabled ? " numberRowEnabled" : ""),
                 (isMultiLine() ? " isMultiLine" : ""),
                 (mIsSplitLayout ? " isSplitLayout" : "")

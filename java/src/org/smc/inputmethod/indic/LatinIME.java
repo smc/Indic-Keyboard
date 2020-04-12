@@ -1982,6 +1982,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return mRichImm.shouldOfferSwitchingToNextInputMethod(token, fallbackValue);
     }
 
+    public boolean shouldShowEmojiSwitchKey() {
+        final boolean value = mSettings.getCurrent().isEmojiSwitchKeyEnabled();
+
+        return value;
+    }
+
     public boolean shouldShowNumberRow() {
         final boolean value = mSettings.getCurrent().isNumberRowEnabled();
 

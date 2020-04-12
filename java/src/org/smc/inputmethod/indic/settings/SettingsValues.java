@@ -69,6 +69,7 @@ public class SettingsValues {
     public final boolean mShowsVoiceInputKey;
     public final boolean mIncludesOtherImesInLanguageSwitchList;
     public final boolean mShowsLanguageSwitchKey;
+    public final boolean mShowsEmojiSwitchKey;
     public final boolean mShowsNumberRow;
     public final boolean mUseContactsDict;
     public final boolean mUsePersonalizedDicts;
@@ -146,6 +147,7 @@ public class SettingsValues {
                 : true /* forcibly */;
         mShowsLanguageSwitchKey = Settings.ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS
                 ? Settings.readShowsLanguageSwitchKey(prefs) : true /* forcibly */;
+        mShowsEmojiSwitchKey = Settings.readShowsEmojiSwitchKey(prefs);
         mShowsNumberRow = Settings.readShowsNumberRow(prefs);
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mUsePersonalizedDicts = prefs.getBoolean(Settings.PREF_KEY_USE_PERSONALIZED_DICTS, true);
@@ -282,6 +284,10 @@ public class SettingsValues {
             return imm.hasMultipleEnabledIMEsOrSubtypes(false /* include aux subtypes */);
         }
         return imm.hasMultipleEnabledSubtypesInThisIme(false /* include aux subtypes */);
+    }
+
+    public boolean isEmojiSwitchKeyEnabled() {
+        return mShowsEmojiSwitchKey;
     }
 
     public boolean isNumberRowEnabled() {

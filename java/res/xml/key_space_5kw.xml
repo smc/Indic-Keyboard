@@ -22,6 +22,10 @@
     xmlns:latin="http://schemas.android.com/apk/res-auto"
 >
     <switch>
+      <case latin:emojiSwitchKeyEnabled="true">
+        <Key latin:keyStyle="emojiKeyStyle" />
+      </case>
+
       <case latin:languageSwitchKeyEnabled="true">
         <Key latin:keyStyle="languageSwitchKeyStyle" />
       </case>

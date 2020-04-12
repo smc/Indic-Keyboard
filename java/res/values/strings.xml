@@ -129,6 +129,11 @@
     <!-- Description for option to enable number row -->
     <string name="number_row_summary">Always show number row</string>
 
+    <!-- Option to enable number row -->
+    <string name="emoji_switch_key">Show emoji switch key</string>
+    <!-- Description for option to enable number row -->
+    <string name="emoji_switch_key_summary">Always show emoji switch key. When this is enabled, language switch key cannot be shown.</string>
+
     <!-- Option to enable auto capitalization of sentences -->
     <string name="auto_cap">Auto-capitalization</string>
     <!-- Description for option to enable auto capitalization of sentences -->

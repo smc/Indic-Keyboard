@@ -25,6 +25,12 @@
         android:defaultValue="false"
         android:persistent="true" />
     <CheckBoxPreference
+        android:key="pref_show_emoji_switch_key"
+        android:title="@string/emoji_switch_key"
+        android:summary="@string/emoji_switch_key_summary"
+        android:defaultValue="false"
+        android:persistent="true" />
+    <CheckBoxPreference
         android:key="auto_cap"
         android:title="@string/auto_cap"
         android:summary="@string/auto_cap_summary"

@@ -104,6 +104,8 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     // This is being used only for the backward compatibility.
     private static final String PREF_SUPPRESS_LANGUAGE_SWITCH_KEY =
             "pref_suppress_language_switch_key";
+    private static final String PREF_SHOW_EMOJI_SWITCH_KEY =
+            "pref_show_emoji_switch_key";
     private static final String PREF_SHOW_NUMBER_ROW =
             "pref_show_number_row";
 
@@ -275,6 +277,10 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             editor.apply();
         }
         return prefs.getBoolean(PREF_SHOW_LANGUAGE_SWITCH_KEY, true);
+    }
+
+    public static boolean readShowsEmojiSwitchKey(final SharedPreferences prefs) {
+        return prefs.getBoolean(PREF_SHOW_EMOJI_SWITCH_KEY, false);
     }
 
     public static boolean readShowsNumberRow(final SharedPreferences prefs) {
