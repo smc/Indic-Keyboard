@@ -22,47 +22,29 @@
     xmlns:latin="http://schemas.android.com/apk/res-auto"
 >
     <switch>
+      <case latin:languageSwitchKeyEnabled="true">
+        <Key latin:keyStyle="languageSwitchKeyStyle" />
+      </case>
+
+      <default>
+        <Key latin:keyStyle="emojiKeyStyle" />
+      </default>
+    </switch>
+
+    <switch>
         <!-- for transliteration -->
-        <case
-            latin:languageCode="be|gu|hi|kn|ml|ne|or|ta|te"
-            latin:languageSwitchKeyEnabled="true">
-            <Key
-                latin:keyStyle="languageSwitchKeyStyle" />
-            <Key
-                latin:keyStyle="spaceKeyStyle"
-                latin:keyWidth="30%p" />
-            <Key
-                latin:keyStyle="zwnjKeyStyle" />
-        </case>
-        <case
-            latin:languageCode="be|gu|hi|kn|ml|ne|or|ta|te"
-            latin:languageSwitchKeyEnabled="false">
-            <Key
-                latin:keyStyle="emojiKeyStyle" />
-            <Key
-                latin:keyStyle="spaceKeyStyle"
-                latin:keyWidth="30%p" />
-            <Key
-                latin:keyStyle="zwnjKeyStyle" />
+        <case latin:languageCode="be|gu|hi|kn|ml|ne|or|ta|te">
+          <Key
+              latin:keyStyle="spaceKeyStyle"
+              latin:keyWidth="30%p" />
+          <Key
+              latin:keyStyle="zwnjKeyStyle" />
         </case>
 
-        <case
-            latin:languageSwitchKeyEnabled="true"
-        >
-            <Key
-                latin:keyStyle="languageSwitchKeyStyle" />
-            <Key
-                latin:keyStyle="spaceKeyStyle"
-                latin:keyWidth="40%p" />
-        </case>
-
-        <!-- languageSwitchKeyEnabled="false" -->
         <default>
-            <Key
-                latin:keyStyle="emojiKeyStyle" />
-            <Key
-                latin:keyStyle="spaceKeyStyle"
-                latin:keyWidth="40%p" />
+          <Key
+            latin:keyStyle="spaceKeyStyle"
+            latin:keyWidth="40%p" />
         </default>
     </switch>
 </merge>
