@@ -27,9 +27,9 @@
         android:title="@string/settings_screen_accounts"
         android:key="screen_accounts" />
     <PreferenceScreen
-        android:fragment="org.smc.inputmethod.indic.settings.AppearanceSettingsFragment"
-        android:title="@string/settings_screen_appearance"
-        android:key="screen_appearance" />
+        android:fragment="org.smc.inputmethod.indic.settings.ThemeSettingsFragment"
+        android:key="screen_theme"
+        android:title="@string/settings_screen_theme" />
     <!--
     <PreferenceScreen
         android:fragment="org.smc.inputmethod.indic.settings.GestureSettingsFragment"
