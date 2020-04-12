@@ -284,10 +284,10 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         if (stepNumber == STEP_1) {
             return STEP_WELCOME;
         }
-        if (stepNumber == STEP_4) {
-            return STEP_LAUNCHING_IME_SETTINGS;
+        if (stepNumber == STEP_2) {
+            return stepNumber;
         }
-        return stepNumber;
+        return STEP_LAUNCHING_IME_SETTINGS;
     }
 
     private int determineSetupStepNumber() {
