@@ -53,8 +53,8 @@
     -->
 
     <application android:label="@string/english_ime_name"
-            android:icon="@drawable/ic_launcher_keyboard"
-            android:supportsRtl="true"
+            android:icon="@mipmap/ic_launcher"
+            android:roundIcon="@mipmap/ic_launcher_round"
             android:allowBackup="true"
             android:defaultToDeviceProtectedStorage="true"
             android:directBootAware="true">
@@ -87,7 +87,8 @@
         <activity android:name="org.smc.inputmethod.indic.setup.SetupActivity"
                 android:theme="@style/platformActivityTheme"
                 android:label="@string/english_ime_name"
-                android:icon="@drawable/ic_launcher_keyboard"
+                android:icon="@mipmap/ic_launcher"
+                android:roundIcon="@mipmap/ic_launcher_round"
                 android:launchMode="singleTask"
                 android:noHistory="true">
             <intent-filter>
