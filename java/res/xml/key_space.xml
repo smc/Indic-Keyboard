@@ -22,17 +22,18 @@
     xmlns:latin="http://schemas.android.com/apk/res-auto"
 >
     <switch>
-      <case latin:emojiSwitchKeyEnabled="true">
-        <Key latin:keyStyle="emojiKeyStyle" />
-      </case>
+        <!-- im mode already has emoji key in place of enter -->
+        <case latin:mode="im" latin:languageSwitchKeyEnabled="true">
+            <Key latin:keyStyle="languageSwitchKeyStyle" />
+        </case>
 
-      <case latin:languageSwitchKeyEnabled="true">
-        <Key latin:keyStyle="languageSwitchKeyStyle" />
-      </case>
+        <case latin:emojiSwitchKeyEnabled="true">
+            <Key latin:keyStyle="emojiKeyStyle" />
+        </case>
 
-      <default>
-        <Key latin:keyStyle="emojiKeyStyle" />
-      </default>
+        <case latin:languageSwitchKeyEnabled="true">
+            <Key latin:keyStyle="languageSwitchKeyStyle" />
+        </case>
     </switch>
 
     <switch>
