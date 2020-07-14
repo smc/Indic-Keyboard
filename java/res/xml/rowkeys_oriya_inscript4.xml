@@ -57,9 +57,9 @@
                 latin:moreKeys="&lt;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <!--\> ୤  -->
+            <!--\> ।  -->
             <Key
-                latin:keySpec="&#x0B64;"
+                latin:keySpec="&#x0964;"
                 latin:moreKeys="&gt;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
