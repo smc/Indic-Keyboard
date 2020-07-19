@@ -406,7 +406,9 @@ mobile devices. [CHAR LIMIT=25] -->
     <!-- Title of the setup wizard welcome screen. [CHAR LIMT=40] -->
     <string name="setup_welcome_title">"Welcome to <xliff:g id="application_name">%s</xliff:g>"</string>
     <!-- Additional title of the setup wizard welcome screen, just below the setup_welcome_title. [CHAR_LIMIT=64] -->
-    <string name="setup_welcome_additional_description">"नमस्ते\nவணக்கம் \nനമസ്കാരം \nನಮಸ್ಕಾರ \nనమస్కారం \nনমস্কার \nਸਤਿ ਸ੍ਰੀ ਅਕਾਲ \nનમસ્તે"</string>
+    <string name="setup_welcome_additional_description">
+        "\nनमस्ते\nவணக்கம்\nনমস্কার\nനമസ്കാരം\nనమస్కారం\nਸਤਿ ਸ੍ਰੀ ਅਕਾਲ\nনমস্কাৰ\nನಮಸ್ಕಾರ\nखुरुमजरी\nનમસ્તે\n"
+    </string>
     <!-- The label of the button that starts the setup wizard. [CHAR_LIMIT=64] -->
     <string name="setup_start_action">Get started</string>
     <!-- The label of the button that navigates the user to the next step of the setup wizard. [CHAR_LIMIT=64] -->
