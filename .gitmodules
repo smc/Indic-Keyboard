@@ -1,9 +1,9 @@
 [submodule "tools-indic"]
 	path = tools-indic
-	url = https://github.com/androidtweak/Indic-Keyboard-tools.git
+	url = https://gitlab.com/indicproject/Indic-Keyboard-tools.git
 [submodule "dictionaries-indic"]
 	path = dictionaries-indic
-	url = https://github.com/androidtweak/dictionaries.git
+	url = https://gitlab.com/indicproject/dictionaries.git
 [submodule "ime"]
 	path = ime
 	url = https://gitlab.com/indicproject/android-ime.git
