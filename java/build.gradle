@@ -13,7 +13,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.3'
+        classpath 'com.android.tools.build:gradle:4.0.1'
     }
 }
 
@@ -27,14 +27,14 @@ dependencies {
 
 android {
     compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    buildToolsVersion '29.0.2'
 
     defaultConfig {
         applicationId "org.smc.inputmethod.indic"
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 34
-        versionName "3.0.0-beta6"
+        versionCode 35
+        versionName "3.0"
     }
 
     splits {
