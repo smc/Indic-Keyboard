@@ -97,9 +97,9 @@ Government of India's Department of IT R & D project undertaken by ICFOSS funded
 
 Kannada Anysoft keyboard layout was funded via [Bounty Source](https://www.bountysource.com/issues/3406116-anysoft-like-kannada-inscript-keyboard-15) by Thejesh GN
 
-## Contributors
+## Contributions and Credits
 
-Jishnu Mohan contributed most of the features and updates.
+Jishnu Mohan is the founder and maintainer.
 
 Anoop P Contributed Swanalekha Layout(beta) and converted [java-morelangs  module](https://github.com/androidtweak/java-morelangs) to an [Android library](https://gitlab.com/smc/android-ime).
 
@@ -112,5 +112,9 @@ Anivar Aravind helped with project management.
 Indic Project community members (Akshay, Balasankar, Ashik, Santhosh ) contributed documentation.
 
 Many keyboard layouts were adapted from the [jquery.ime](https://github.com/wikimedia/jquery.ime) project of Wikimedia Foundation. They were contributed by volunteers.
+
+Akshy contributed in layout bug fixes and in tooling.
+
+Some icons from from FontAwesome, they are in [Creative Commons Attribution 4.0 International license](https://fontawesome.com/license)
 
 ## TODO
