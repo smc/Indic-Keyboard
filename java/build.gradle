@@ -33,7 +33,7 @@ android {
         applicationId "org.smc.inputmethod.indic"
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 35
+        versionCode 40
         versionName "3.0"
     }
 
@@ -42,6 +42,7 @@ android {
         enable true
         universalApk false
         include "armeabi-v7a", "arm64-v8a"
+        exclude "x86", "x86_64"
       }
     }
 
@@ -81,5 +82,11 @@ android {
 
     lintOptions {
         checkReleaseBuilds false
+    }
+
+    android.applicationVariants.all { variant ->
+      variant.outputs.eachWithIndex { output, outputIndex ->
+        output.versionCodeOverride = variant.versionCode + outputIndex
+      }
     }
 }
