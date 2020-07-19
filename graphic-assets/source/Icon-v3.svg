@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:export-ydpi="3840"
+   inkscape:export-xdpi="3840"
+   inkscape:export-filename="/Users/jishnu/Desktop/indic_keyboard.png"
+   inkscape:version="1.0 (4035a4f, 2020-05-01)"
+   sodipodi:docname="Icon (edit this).svg"
+   id="svg873"
+   version="1.1"
+   fill="none"
+   viewBox="0 0 49.999998 49.99999"
+   height="50"
+   width="50">
+  <metadata
+     id="metadata879">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs877" />
+  <sodipodi:namedview
+     inkscape:current-layer="svg873"
+     inkscape:window-maximized="0"
+     inkscape:window-y="23"
+     inkscape:window-x="0"
+     inkscape:cy="61.681411"
+     inkscape:cx="36.855461"
+     inkscape:zoom="2.6059914"
+     width="50mm"
+     units="px"
+     showgrid="false"
+     id="namedview875"
+     inkscape:window-height="853"
+     inkscape:window-width="1379"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     guidetolerance="10"
+     gridtolerance="10"
+     objecttolerance="10"
+     borderopacity="1"
+     bordercolor="#666666"
+     pagecolor="#ffffff" />
+  <rect
+     y="0.38373113"
+     x="-0.38373113"
+     height="49.501316"
+     width="51.03624"
+     id="rect1505"
+     style="opacity:0.95;fill:#4caf50;fill-opacity:1" />
+  <g
+     transform="translate(-30,-28.5)"
+     id="g900">
+    <path
+       fill-rule="evenodd"
+       clip-rule="evenodd"
+       d="M 73.7882,52 H 36.2243 C 35.0065,52 34,52.9402 34,54.165 V 74.7484 C 34,75.9608 35.0065,77 36.2243,77 H 73.7882 C 75.0059,77 76,75.9608 76,74.7484 V 54.165 C 76,52.9402 75.0059,52 73.7882,52 Z"
+       fill="#585858"
+       id="path835"
+       inkscape:export-filename="/Users/jishnu/Desktop/indic_keyboard.png"
+       inkscape:export-xdpi="2340.7659"
+       inkscape:export-ydpi="2340.7659" />
+    <path
+       fill-rule="evenodd"
+       clip-rule="evenodd"
+       d="m 41.7663,56.33 h -3.3302 c -0.2858,0 -0.4598,0.2103 -0.4598,0.4948 v 3.3155 c 0,0.2846 0.174,0.5196 0.4598,0.5196 h 3.3302 c 0.2858,0 0.5591,-0.235 0.5591,-0.5196 v -3.3155 c 0,-0.2845 -0.2733,-0.4948 -0.5591,-0.4948 z"
+       fill="#eeeeee"
+       id="path837"
+       inkscape:export-filename="/Users/jishnu/Desktop/indic_keyboard.png"
+       inkscape:export-xdpi="2340.7659"
+       inkscape:export-ydpi="2340.7659" />
+    <path
+       fill-rule="evenodd"
+       clip-rule="evenodd"
+       d="m 49.2219,56.33 h -3.3302 c -0.2858,0 -0.4597,0.2103 -0.4597,0.4948 v 3.3155 c 0,0.2846 0.1739,0.5196 0.4597,0.5196 h 3.3302 c 0.2858,0 0.5592,-0.235 0.5592,-0.5196 v -3.3155 c 0,-0.2845 -0.2734,-0.4948 -0.5592,-0.4948 z"
+       fill="#eeeeee"
+       id="path839"
+       inkscape:export-filename="/Users/jishnu/Desktop/indic_keyboard.png"
+       inkscape:export-xdpi="2340.7659"
+       inkscape:export-ydpi="2340.7659" />
+    <path
+       fill-rule="evenodd"
+       clip-rule="evenodd"
+       d="m 56.6775,56.33 h -3.3302 c -0.2858,0 -0.4597,0.2103 -0.4597,0.4948 v 3.3155 c 0,0.2846 0.1739,0.5196 0.4597,0.5196 h 3.3302 c 0.2858,0 0.5592,-0.235 0.5592,-0.5196 v -3.3155 c 0,-0.2845 -0.2734,-0.4948 -0.5592,-0.4948 z"
+       fill="#eeeeee"
+       id="path841"
+       inkscape:export-filename="/Users/jishnu/Desktop/indic_keyboard.png"
+       inkscape:export-xdpi="2340.7659"
+       inkscape:export-ydpi="2340.7659" />
+    <path
+       fill-rule="evenodd"
+       clip-rule="evenodd"
+       d="M 64.1331,56.33 H 60.803 c -0.2858,0 -0.4598,0.2103 -0.4598,0.4948 v 3.3155 c 0,0.2846 0.174,0.5196 0.4598,0.5196 h 3.3301 c 0.2858,0 0.5592,-0.235 0.5592,-0.5196 v -3.3155 c 0,-0.2845 -0.2734,-0.4948 -0.5592,-0.4948 z"
+       fill="#eeeeee"
+       id="path843"
+       inkscape:export-filename="/Users/jishnu/Desktop/indic_keyboard.png"
+       inkscape:export-xdpi="2340.7659"
+       inkscape:export-ydpi="2340.7659" />
+    <path
+       fill-rule="evenodd"
+       clip-rule="evenodd"
+       d="m 71.5888,56.33 h -3.3302 c -0.2858,0 -0.4598,0.2103 -0.4598,0.4948 v 3.3155 c 0,0.2846 0.174,0.5196 0.4598,0.5196 h 3.3302 c 0.2858,0 0.5591,-0.235 0.5591,-0.5196 v -3.3155 c 0,-0.2845 -0.2733,-0.4948 -0.5591,-0.4948 z"
+       fill="#eeeeee"
+       id="path845"
+       inkscape:export-filename="/Users/jishnu/Desktop/indic_keyboard.png"
+       inkscape:export-xdpi="2340.7659"
+       inkscape:export-ydpi="2340.7659" />
+    <path
+       fill-rule="evenodd"
+       clip-rule="evenodd"
+       d="m 41.7663,62.6393 h -3.3302 c -0.2858,0 -0.4598,0.2104 -0.4598,0.4949 v 3.3155 c 0,0.2846 0.174,0.5196 0.4598,0.5196 h 3.3302 c 0.2858,0 0.5591,-0.235 0.5591,-0.5196 v -3.3155 c 0,-0.2845 -0.2733,-0.4949 -0.5591,-0.4949 z"
+       fill="#eeeeee"
+       id="path847"
+       inkscape:export-filename="/Users/jishnu/Desktop/indic_keyboard.png"
+       inkscape:export-xdpi="2340.7659"
+       inkscape:export-ydpi="2340.7659" />
+    <path
+       fill-rule="evenodd"
+       clip-rule="evenodd"
+       d="m 49.2219,62.6393 h -3.3302 c -0.2858,0 -0.4597,0.2104 -0.4597,0.4949 v 3.3155 c 0,0.2846 0.1739,0.5196 0.4597,0.5196 h 3.3302 c 0.2858,0 0.5592,-0.235 0.5592,-0.5196 v -3.3155 c 0,-0.2845 -0.2734,-0.4949 -0.5592,-0.4949 z"
+       fill="#eeeeee"
+       id="path849"
+       inkscape:export-filename="/Users/jishnu/Desktop/indic_keyboard.png"
+       inkscape:export-xdpi="2340.7659"
+       inkscape:export-ydpi="2340.7659" />
+    <path
+       fill-rule="evenodd"
+       clip-rule="evenodd"
+       d="m 56.6775,62.6393 h -3.3302 c -0.2858,0 -0.4597,0.2104 -0.4597,0.4949 v 3.3155 c 0,0.2846 0.1739,0.5196 0.4597,0.5196 h 3.3302 c 0.2858,0 0.5592,-0.235 0.5592,-0.5196 v -3.3155 c 0,-0.2845 -0.2734,-0.4949 -0.5592,-0.4949 z"
+       fill="#eeeeee"
+       id="path851"
+       inkscape:export-filename="/Users/jishnu/Desktop/indic_keyboard.png"
+       inkscape:export-xdpi="2340.7659"
+       inkscape:export-ydpi="2340.7659" />
+    <path
+       fill-rule="evenodd"
+       clip-rule="evenodd"
+       d="M 64.1331,62.6393 H 60.803 c -0.2858,0 -0.4598,0.2104 -0.4598,0.4949 v 3.3155 c 0,0.2846 0.174,0.5196 0.4598,0.5196 h 3.3301 c 0.2858,0 0.5592,-0.235 0.5592,-0.5196 v -3.3155 c 0,-0.2845 -0.2734,-0.4949 -0.5592,-0.4949 z"
+       fill="#eeeeee"
+       id="path853"
+       inkscape:export-filename="/Users/jishnu/Desktop/indic_keyboard.png"
+       inkscape:export-xdpi="2340.7659"
+       inkscape:export-ydpi="2340.7659" />
+    <path
+       fill-rule="evenodd"
+       clip-rule="evenodd"
+       d="m 71.5888,62.6393 h -3.3302 c -0.2858,0 -0.4598,0.2104 -0.4598,0.4949 v 3.3155 c 0,0.2846 0.174,0.5196 0.4598,0.5196 h 3.3302 c 0.2858,0 0.5591,-0.235 0.5591,-0.5196 v -3.3155 c 0,-0.2845 -0.2733,-0.4949 -0.5591,-0.4949 z"
+       fill="#eeeeee"
+       id="path855"
+       inkscape:export-filename="/Users/jishnu/Desktop/indic_keyboard.png"
+       inkscape:export-xdpi="2340.7659"
+       inkscape:export-ydpi="2340.7659" />
+    <path
+       fill-rule="evenodd"
+       clip-rule="evenodd"
+       d="m 41.7663,69.0774 h -3.3302 c -0.2858,0 -0.4598,0.2103 -0.4598,0.4949 v 3.3155 c 0,0.2845 0.174,0.5196 0.4598,0.5196 h 3.3302 c 0.2858,0 0.5591,-0.2351 0.5591,-0.5196 v -3.3155 c 0,-0.2846 -0.2733,-0.4949 -0.5591,-0.4949 z"
+       fill="#eeeeee"
+       id="path857"
+       inkscape:export-filename="/Users/jishnu/Desktop/indic_keyboard.png"
+       inkscape:export-xdpi="2340.7659"
+       inkscape:export-ydpi="2340.7659" />
+    <path
+       fill-rule="evenodd"
+       clip-rule="evenodd"
+       d="M 64.1331,69.0774 H 62.5178 60.803 56.6775 53.3473 49.2219 47.1343 45.8917 c -0.2858,0 -0.4597,0.2103 -0.4597,0.4949 v 3.3155 c 0,0.2845 0.1739,0.5196 0.4597,0.5196 h 1.2426 2.0876 4.1254 3.3302 4.1255 1.7148 1.6153 c 0.2858,0 0.5592,-0.2351 0.5592,-0.5196 v -3.3155 c 0,-0.2846 -0.2734,-0.4949 -0.5592,-0.4949 z"
+       fill="#eeeeee"
+       id="path859"
+       inkscape:export-filename="/Users/jishnu/Desktop/indic_keyboard.png"
+       inkscape:export-xdpi="2340.7659"
+       inkscape:export-ydpi="2340.7659" />
+    <path
+       fill-rule="evenodd"
+       clip-rule="evenodd"
+       d="m 71.5888,69.0774 h -3.3302 c -0.2858,0 -0.4598,0.2103 -0.4598,0.4949 v 3.3155 c 0,0.2845 0.174,0.5196 0.4598,0.5196 h 3.3302 c 0.2858,0 0.5591,-0.2351 0.5591,-0.5196 v -3.3155 c 0,-0.2846 -0.2733,-0.4949 -0.5591,-0.4949 z"
+       fill="#eeeeee"
+       id="path861"
+       inkscape:export-filename="/Users/jishnu/Desktop/indic_keyboard.png"
+       inkscape:export-xdpi="2340.7659"
+       inkscape:export-ydpi="2340.7659" />
+    <path
+       fill-rule="evenodd"
+       clip-rule="evenodd"
+       d="m 42,52.8848 c 0,0.7109 0.4556,1.6464 1.0221,2.0704 L 53.9692,63 64.941,54.9552 C 65.5198,54.5312 66,53.6082 66,52.8848 V 46 H 42 Z"
+       fill="#9ac368"
+       id="path863"
+       inkscape:export-filename="/Users/jishnu/Desktop/indic_keyboard.png"
+       inkscape:export-xdpi="2340.7659"
+       inkscape:export-ydpi="2340.7659" />
+    <path
+       d="M 44,48 43.2,47.2222 42,46 h 2 z"
+       fill="#111111"
+       id="path865"
+       inkscape:export-filename="/Users/jishnu/Desktop/indic_keyboard.png"
+       inkscape:export-xdpi="2340.7659"
+       inkscape:export-ydpi="2340.7659" />
+    <path
+       fill-rule="evenodd"
+       clip-rule="evenodd"
+       d="M 66.5126,30 H 45.9724 C 44.8794,30 44,30.931 44,31.9986 V 40.08 48 H 68.4975 V 39.72 31.9986 C 68.4975,30.931 67.6055,30 66.5126,30 Z"
+       fill="#585858"
+       id="path867"
+       inkscape:export-filename="/Users/jishnu/Desktop/indic_keyboard.png"
+       inkscape:export-xdpi="2340.7659"
+       inkscape:export-ydpi="2340.7659" />
+    <path
+       d="m 57.099,39.6349 c 0.8116,-0.6032 2.0459,-1.3333 2.6715,-1.3333 0.4396,0 0.8793,0.3492 0.8793,0.8413 0,0.7301 -0.5918,1.8888 -1.3865,2.7619 l 1.1667,0.9365 h 0.1352 c 0.7609,-0.9842 1.1667,-1.8254 1.1667,-2.8096 0,-1.9047 -1.7077,-2.9206 -2.5362,-2.9206 -0.5749,0 -1.4711,0.4762 -2.1136,0.9048 L 57.0652,35.1905 H 63 V 35.0317 L 62.4251,34 H 49 v 0.1587 l 0.5749,1.0318 h 1.1666 c 0,0.8571 -0.0169,1.6349 -0.0169,2.3651 0,0.2381 0,0.492 0.0169,0.7777 0.0339,1.127 1.7416,2.8413 3.3479,2.8413 0.5579,0 0.9299,-0.1587 1.5217,-0.5238 L 55.5942,43.1429 56.9469,44 h 0.169 z m -3.7874,0.508 c -0.5073,0 -1.0821,-0.4604 -1.099,-1.4604 l -0.0339,-3.492 h 3.4831 l -0.0338,3.7936 c -0.9807,0.7143 -1.6739,1.1588 -2.3164,1.1588 z"
+       fill="#eeeeee"
+       id="path869"
+       inkscape:export-filename="/Users/jishnu/Desktop/indic_keyboard.png"
+       inkscape:export-xdpi="2340.7659"
+       inkscape:export-ydpi="2340.7659" />
+    <path
+       d="m 60,49 v 1.1171 H 48 V 49 Z m -5.1169,9 c -0.9024,0 -1.7442,-0.2098 -2.5255,-0.6294 -0.7813,-0.43 -1.4855,-1.1223 -2.1128,-2.0769 -0.6162,-0.9545 -1.1499,-2.2343 -1.6011,-3.8392 l 1.2545,-0.3146 c 0.3852,1.3007 0.8033,2.3706 1.2545,3.2098 0.4622,0.8391 0.9904,1.458 1.5846,1.8566 0.6052,0.3986 1.3095,0.5979 2.1128,0.5979 0.6822,0 1.2269,-0.1049 1.6341,-0.3147 0.4071,-0.2203 0.6987,-0.5087 0.8748,-0.8654 0.1761,-0.3671 0.2641,-0.771 0.2641,-1.2115 0,-0.4406 -0.088,-0.8392 -0.2641,-1.1958 -0.1761,-0.3671 -0.4236,-0.6556 -0.7428,-0.8654 -0.3191,-0.2098 -0.6932,-0.3147 -1.1224,-0.3147 -0.4402,0 -0.7593,0.0892 -0.9573,0.2675 -0.1871,0.1783 -0.2807,0.4143 -0.2807,0.708 0,0.1049 0.0111,0.2151 0.0331,0.3305 0.022,0.1153 0.0605,0.2465 0.1155,0.3933 l -1.271,0.236 c -0.066,-0.1993 -0.121,-0.3933 -0.165,-0.5821 -0.033,-0.1889 -0.0496,-0.3829 -0.0496,-0.5822 0,-0.6084 0.2311,-1.0752 0.6933,-1.4004 0.4732,-0.3251 1.0784,-0.4877 1.8157,-0.4877 0.6822,0 1.282,0.1521 1.7992,0.4563 0.5172,0.2937 0.9243,0.708 1.2214,1.243 0.2971,0.5349 0.4457,1.1538 0.4457,1.8566 0,0.6609 -0.1486,1.2588 -0.4457,1.7937 -0.2861,0.5245 -0.7263,0.9441 -1.3205,1.2588 C 56.5337,57.8427 55.7854,58 54.8831,58 Z"
+       fill="#eeeeee"
+       id="path871"
+       inkscape:export-filename="/Users/jishnu/Desktop/indic_keyboard.png"
+       inkscape:export-xdpi="2340.7659"
+       inkscape:export-ydpi="2340.7659" />
+  </g>
+</svg>
