@@ -1,6 +1,6 @@
 ## Indic Keyboard
 
-![icon-image](https://cloud.githubusercontent.com/assets/321335/7845586/792e62a8-04d5-11e5-84bb-2425c04c5253.png)
+![icon-image](https://gitlab.com/indicproject/indic-keyboard/-/raw/master/graphic-assets/ic_launcher-playstore.png)
 
 Indic Keyboard is a versatile keyboard for Android users who wish to use Indic and Indian languages to type messages, compose emails and generally prefer to use them in addition to English on their phone. You can use this application to type anywhere in your phone that you would normally type in English. It currently supports 23 languages and 54 layouts.
 
