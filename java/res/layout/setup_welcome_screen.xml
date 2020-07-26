@@ -17,7 +17,7 @@
 ** limitations under the License.
 */
 -->
-<LinearLayout
+<RelativeLayout
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
@@ -32,4 +32,17 @@
             <include layout="@layout/setup_welcome_video" />
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/setup_background"
+        android:layout_alignParentBottom="true">
+
+        <org.smc.inputmethod.indic.setup.SetupStartIndicatorView
+            android:layout_width="match_parent"
+            android:paddingBottom="10dp"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+</RelativeLayout>
