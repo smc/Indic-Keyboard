@@ -38,5 +38,9 @@
         android:layout_weight="@integer/setup_body_weight_in_screen"
         android:orientation="vertical">
         <include layout="@layout/setup_welcome_video" />
+        <org.smc.inputmethod.indic.setup.SetupStartIndicatorView
+            android:layout_width="match_parent"
+            android:paddingBottom="10dp"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </LinearLayout>
