@@ -494,7 +494,7 @@ public final class KeyboardTextsTable {
         /* keyspec_symbols_9 */ "\u09EF",
         /* keyspec_symbols_0 */ "\u09E6",
         /* keylabel_to_symbol */ "\u09E7\u09E8\u09E9",
-        /* keyspec_comma */ "\u09CD",
+        /* keyspec_comma */ ",",
         /* morekeys_a ~ */
         null, null, null, null, null, null, null, null,
         /* ~ morekeys_c */
@@ -526,7 +526,7 @@ public final class KeyboardTextsTable {
         /* keyspec_symbols_9 */ "\u09EF",
         /* keyspec_symbols_0 */ "\u09E6",
         /* keylabel_to_symbol */ "\u09E7\u09E8\u09E9",
-        /* keyspec_comma */ "\u09CD",
+        /* keyspec_comma */ ",",
         /* morekeys_a ~ */
         null, null, null, null, null, null, null, null,
         /* ~ morekeys_c */
