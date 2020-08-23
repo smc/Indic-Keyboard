@@ -365,7 +365,8 @@ mobile devices. [CHAR LIMIT=25] -->
     <string name="keyboard_theme_material_dark" translatable="false">Material Dark</string>
     <!-- The keyboard theme name, Material Light. This is marked as translatable="false" because this is a proper name of system-wide UI Theme.  -->
     <string name="keyboard_theme_material_light" translatable="false">Material Light</string>
-
+    <string name="keyboard_theme_dark_border" translatable="false">Material Dark Border</string>
+    <string name="keyboard_theme_light_border" translatable="false">Material Light Border</string>
     <!-- Title of the preference settings for custom input styles (language and keyboard layout pairs) [CHAR LIMIT=35]-->
     <string name="custom_input_styles_title">Custom input styles</string>
     <!-- Title of the option menu to add a new style entry in the preference settings [CHAR LIMIT=16] -->
