@@ -240,6 +240,7 @@
             <enum name="LXXDark" value="4" />
             <enum name="LXXLightBorder" value="5" />
             <enum name="LXXDarkBorder" value="6" />
+            <enum name="AMOLEDBorder" value="7" />
         </attr>
         <!-- Touch position correction -->
         <attr name="touchPositionCorrectionData" format="reference" />
