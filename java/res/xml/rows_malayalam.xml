@@ -36,12 +36,14 @@
     </switch>
     <Row
         latin:keyWidth="10%p"
+        latin:keyLabelFlags="fontNormal|autoXScale"
     >
         <include
             latin:keyboardLayout="@xml/rowkeys_malayalam1" />
     </Row>
     <Row
         latin:keyWidth="10%p"
+        latin:keyLabelFlags="fontNormal|autoXScale"
     >
         <include
             latin:keyboardLayout="@xml/rowkeys_malayalam2"
@@ -49,13 +51,15 @@
     </Row>
     <Row
         latin:keyWidth="10%p"
+        latin:keyLabelFlags="fontNormal|autoXScale"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="15%p"
             latin:visualInsetsRight="1%p" />
         <include
-            latin:keyboardLayout="@xml/rowkeys_malayalam3" />
+            latin:keyboardLayout="@xml/rowkeys_malayalam3"
+            />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight"
