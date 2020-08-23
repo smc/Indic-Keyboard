@@ -1060,6 +1060,9 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         if (isShowingMoreKeysPanel()) {
             return;
         }
+        if(mCursorMoved) {
+            return;
+        }
         final Key key = getKey();
         if (key == null) {
             return;
