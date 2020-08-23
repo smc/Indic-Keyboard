@@ -33,7 +33,7 @@ android {
         applicationId "org.smc.inputmethod.indic"
         minSdkVersion 14
         targetSdkVersion 28
-        versionCode 50
+        versionCode 52
         versionName "3.2"
     }
 
