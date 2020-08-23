@@ -120,15 +120,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.android.inputmethod.dictionarypack.DictionarySettingsActivity"
-                android:theme="@style/platformSettingsTheme"
-                android:label="@string/dictionary_settings_title"
-                android:uiOptions="splitActionBarWhenNarrow">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
-        </activity>
-
         <activity android:name="com.android.inputmethod.dictionarypack.DownloadOverMeteredDialog"
                 android:theme="@style/platformActivityTheme"
                 android:label="@string/dictionary_install_over_metered_network_prompt">
