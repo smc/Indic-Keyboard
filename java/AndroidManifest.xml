@@ -166,13 +166,6 @@
             </intent-filter>
         </receiver>
 
-        <!-- Broadcast receiver for AccountManager#LOGIN_ACCOUNTS_CHANGED_ACTION. -->
-        <receiver android:name=".accounts.AccountsChangedReceiver">
-            <intent-filter>
-                <action android:name="android.accounts.LOGIN_ACCOUNTS_CHANGED" />
-            </intent-filter>
-        </receiver>
-
         <!-- Content providers -->
         <provider android:name="com.android.inputmethod.dictionarypack.DictionaryProvider"
                 android:grantUriPermissions="true"

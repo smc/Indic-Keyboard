@@ -23,10 +23,6 @@
         android:title="@string/settings_screen_preferences"
         android:key="screen_preferences" />
     <PreferenceScreen
-        android:fragment="org.smc.inputmethod.indic.settings.AccountsSettingsFragment"
-        android:title="@string/settings_screen_accounts"
-        android:key="screen_accounts" />
-    <PreferenceScreen
         android:fragment="org.smc.inputmethod.indic.settings.ThemeSettingsFragment"
         android:key="screen_theme"
         android:title="@string/settings_screen_theme" />
