@@ -43,7 +43,7 @@ Some phones may not support all the languages listed since the phone's maker shi
 - Sinhala Keyboard / Sinhalese (සිංහල) Transliteration
 - Tamil Keyboard (தமிழ்) - Tamil-99, Inscript, Phonetic, Compact, Transliteration
 - Telugu Keyboard (తెలుగు) - Phonetic, Inscript, Transliteration, KaChaTaThaPa, Compact
-- Urdu Keyboard (اردو) - Transliteration
+- Urdu Keyboard (اردو) - Navees, Transliteration
 
 ## License 
 
