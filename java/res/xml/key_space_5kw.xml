@@ -38,7 +38,7 @@
 
     <switch>
         <!-- for transliteration -->
-        <case latin:languageCode="be|gu|hi|kn|ml|ne|or|ta|te">
+        <case latin:languageCode="be|gu|hi|kn|ml|ne|or|ta|te|ur">
           <Key
               latin:keyStyle="spaceKeyStyle"
               latin:keyWidth="30%p" />

@@ -57,5 +57,6 @@
     <string name="keyboard_name_te_inscript">తెలుగు  - Inscript </string>
     <string name="keyboard_name_te_kachatathapa">తెలుగు  - కచటతప </string>
     <string name="keyboard_name_te_transliteration">తెలుగు - లిప్యంతరీకరణ</string>
+    <string name="keyboard_name_ur_navees">اردو</string>
     <string name="keyboard_name_ur_transliteration">اردو - Transliteration</string>
 </resources>

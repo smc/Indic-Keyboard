@@ -22,7 +22,7 @@
     xmlns:latin="http://schemas.android.com/apk/res-auto"
 >
     <switch>
-        <case latin:languageCode="be|gu|hi|kn|ml|ne|or|ta|te"
+        <case latin:languageCode="be|gu|hi|kn|ml|ne|or|ta|te|ur"
             latin:languageSwitchKeyEnabled="true">
             <Key latin:keyStyle="languageSwitchKeyStyle" />
             <Key
@@ -32,7 +32,7 @@
                 latin:keyStyle="zwnjKeyStyle" />
         </case>
 
-        <case latin:languageCode="be|gu|hi|kn|ml|ne|or|ta|te"
+        <case latin:languageCode="be|gu|hi|kn|ml|ne|or|ta|te|ur"
             latin:languageSwitchKeyEnabled="false">
             <Key
                 latin:keyStyle="spaceKeyStyle"
