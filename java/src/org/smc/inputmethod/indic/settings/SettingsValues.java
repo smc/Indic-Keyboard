@@ -120,6 +120,7 @@ public class SettingsValues {
     public final float mKeyPreviewShowUpStartYScale;
     public final float mKeyPreviewDismissEndXScale;
     public final float mKeyPreviewDismissEndYScale;
+    public final boolean mIncognitoModeEnabled;
 
     @Nullable public final String mAccount;
 
@@ -188,10 +189,10 @@ public class SettingsValues {
                 null /* default */);
         mGestureFloatingPreviewTextEnabled = !mInputAttributes.mDisableGestureFloatingPreviewText
                 && prefs.getBoolean(Settings.PREF_GESTURE_FLOATING_PREVIEW_TEXT, true);
-        mAutoCorrectionEnabledPerUserSettings = mAutoCorrectEnabled
-                && !mInputAttributes.mInputTypeNoAutoCorrect;
-        mSuggestionsEnabledPerUserSettings = !mInputAttributes.mNoLearning
+        mAutoCorrectionEnabledPerUserSettings = mAutoCorrectEnabled;
+        mSuggestionsEnabledPerUserSettings = !mInputAttributes.mIsPasswordField
                 && readSuggestionsEnabled(prefs);
+        mIncognitoModeEnabled = mInputAttributes.mNoLearning;
         mIsInternal = Settings.isInternal(prefs);
         mHasCustomKeyPreviewAnimationParams = prefs.getBoolean(
                 DebugSettings.PREF_HAS_CUSTOM_KEY_PREVIEW_ANIMATION_PARAMS, false);

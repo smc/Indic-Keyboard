@@ -69,6 +69,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private final ViewGroup mSuggestionsStrip;
     private final ImageButton mVoiceKey;
     private final ImageButton mBackToKeyboardKey;
+    private final ImageButton mIncognitoIcon;
     private final View mImportantNoticeStrip;
     MainKeyboardView mMainKeyboardView;
 
@@ -144,6 +145,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mSuggestionsStrip = (ViewGroup)findViewById(R.id.suggestions_strip);
         mBackToKeyboardKey = (ImageButton)findViewById(R.id.suggestions_strip_back_to_keyboard_key);
         mVoiceKey = (ImageButton)findViewById(R.id.suggestions_strip_voice_key);
+        mIncognitoIcon = findViewById(R.id.suggestions_strip_incognito_icon);
         mImportantNoticeStrip = findViewById(R.id.important_notice_strip);
         mStripVisibilityGroup = new StripVisibilityGroup(this, mSuggestionsStrip,
                 mImportantNoticeStrip);
@@ -180,6 +182,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
                 R.styleable.Keyboard, defStyle, R.style.SuggestionStripView);
         final Drawable iconVoice = keyboardAttr.getDrawable(R.styleable.Keyboard_iconShortcutKey);
         final Drawable iconBackToKeyboard = keyboardAttr.getDrawable(R.styleable.Keyboard_iconBackToKeyboardKey);
+        final Drawable iconIncognito = keyboardAttr.getDrawable(R.styleable.Keyboard_iconIncognitoKey);
         keyboardAttr.recycle();
 
         mVoiceKey.setImageDrawable(iconVoice);
@@ -187,6 +190,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
         mBackToKeyboardKey.setImageDrawable(iconBackToKeyboard);
         mBackToKeyboardKey.setOnClickListener(this);
+        mIncognitoIcon.setImageDrawable(iconIncognito);
     }
 
     /**
@@ -202,9 +206,10 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         final int visibility = shouldBeVisible ? VISIBLE : (isFullscreenMode ? GONE : INVISIBLE);
         setVisibility(visibility);
 
+        final SettingsValues currentSettingsValues = Settings.getInstance().getCurrent();
         if (!isEmojiSearch) {
-            final SettingsValues currentSettingsValues = Settings.getInstance().getCurrent();
             mVoiceKey.setVisibility(currentSettingsValues.mShowsVoiceInputKey ? VISIBLE : INVISIBLE);
+            mIncognitoIcon.setVisibility(currentSettingsValues.mIncognitoModeEnabled ? VISIBLE : INVISIBLE);
         }
     }
 
@@ -507,6 +512,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     public void setEmojiSearch() {
         isEmojiSearch = true;
         mVoiceKey.setVisibility(GONE);
+        mIncognitoIcon.setVisibility(GONE);
         mBackToKeyboardKey.setVisibility(VISIBLE);
     }
 
@@ -515,5 +521,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mBackToKeyboardKey.setVisibility(GONE);
         final SettingsValues currentSettingsValues = Settings.getInstance().getCurrent();
         mVoiceKey.setVisibility(currentSettingsValues.mShowsVoiceInputKey ? VISIBLE : INVISIBLE);
+        mIncognitoIcon.setVisibility(currentSettingsValues.mIncognitoModeEnabled ? VISIBLE : INVISIBLE);
     }
 }
