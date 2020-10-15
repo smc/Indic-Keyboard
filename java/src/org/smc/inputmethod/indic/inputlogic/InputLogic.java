@@ -54,6 +54,9 @@ import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.RecapitalizeStatus;
 import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.TextRange;
+import com.varnamproject.varnam.Varnam;
+import com.varnamproject.varnam.VarnamException;
+import com.varnamproject.varnam.Word;
 
 import org.smc.ime.InputMethod;
 import org.smc.inputmethod.indic.LatinIME;
@@ -63,6 +66,7 @@ import org.smc.inputmethod.indic.settings.SpacingAndPunctuations;
 import org.smc.inputmethod.indic.suggestions.SuggestionStripViewAccessor;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
@@ -113,6 +117,8 @@ public final class InputLogic {
 
     private boolean isIndic;
     private boolean isTransliteration;
+
+    private Varnam varnam = null;
 
     private boolean isEmoji;
     private EmojiSearch emojiSearch;
@@ -1477,7 +1483,63 @@ public final class InputLogic {
             startTimeMillis = System.currentTimeMillis();
             Log.d(TAG, "performUpdateSuggestionStripSync()");
         }
+
         Log.w("IndicKeyboard", "performUpdateSuggestionStripSync");
+
+        if (!mWordComposer.isComposingWord() && !settingsValues.mBigramPredictionEnabled) {
+            mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+            return;
+        }
+
+        if (varnam != null) {
+            final String typedWordString = mWordComposer.getTypedWord();
+            ArrayList<SuggestedWordInfo> suggestedWords = new ArrayList<SuggestedWordInfo>();
+
+            try {
+                Log.d("varnam", "aaaa" + typedWordString);
+                List<Word> words = varnam.transliterate(typedWordString);
+
+                final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
+                        typedWordString,
+                        "" /* prevWordsContext */,
+                        0,
+                        SuggestedWordInfo.KIND_TYPED,
+                        Dictionary.DICTIONARY_USER_TYPED,
+                        SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                        SuggestedWordInfo.NOT_A_CONFIDENCE);
+                suggestedWords.add(typedWordInfo);
+
+                for (int i = 0;i < words.size(); i++) {
+                    Log.d("varnam", words.get(i).getText() + words.get(i).getConfidence());
+                    final SuggestedWordInfo wordInfo = new SuggestedWordInfo(
+                            words.get(i).getText(),
+                            "" /* prevWordsContext */,
+                            words.get(i).getConfidence(),
+                            SuggestedWordInfo.KIND_COMPLETION,
+                            Dictionary.DICTIONARY_RESUMED,
+                            SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                            SuggestedWordInfo.NOT_A_CONFIDENCE);
+                    suggestedWords.add(wordInfo);
+                }
+
+                if (words.size() > 0) {
+                    mSuggestionStripViewAccessor.showSuggestionStrip(new SuggestedWords(
+                            suggestedWords,
+                            null,
+                            null,
+                            true,
+                            true,
+                            false,
+                            SuggestedWords.INPUT_STYLE_NONE,
+                            SuggestedWords.NOT_A_SEQUENCE_NUMBER
+                    ));
+                }
+            } catch (VarnamException e) {
+                Log.e("VarnamException", e.toString());
+            }
+            return;
+        }
+
         // Check if we have a suggestion engine attached.
         if (!settingsValues.needsToLookupSuggestions()) {
             if (mWordComposer.isComposingWord()) {
@@ -1486,11 +1548,6 @@ public final class InputLogic {
             }
             // Clear the suggestions strip.
             mSuggestionStripViewAccessor.showSuggestionStrip(SuggestedWords.getEmptyInstance());
-            return;
-        }
-
-        if (!mWordComposer.isComposingWord() && !settingsValues.mBigramPredictionEnabled) {
-            mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             return;
         }
 
@@ -2427,6 +2484,12 @@ public final class InputLogic {
             mWordComposer.setTransliterationMethod(im);
             mConnection.setTransliterationMethod(im);
             isTransliteration = true;
+
+            if (transliterationMethod.substring(0, 7).equals("varnam-")) {
+                String scheme = transliterationMethod.substring(7);
+                Log.d("IndicKeyboard", "varnam input method");
+                enableVarnam(scheme, context);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -2437,6 +2500,20 @@ public final class InputLogic {
         mWordComposer.setTransliterationMethod(null);
         mConnection.setTransliterationMethod(null);
         isTransliteration = false;
+        varnam = null;
+    }
+
+    public void enableVarnam (String scheme, Context context) {
+        // TODO: make it a user accessible folder
+        String varnamFolder = context.getFilesDir().getPath() + "/varnam";
+        String vstFile = varnamFolder + "/" + scheme + ".vst";
+        String learningsFile = varnamFolder + "/" + scheme + ".vst.learnings";
+
+        try {
+            varnam = new Varnam(vstFile, learningsFile);
+        } catch (VarnamException e) {
+            Log.e("VarnamException", e.toString());
+        }
     }
 
     public void setEmojiSearch(Context context) {

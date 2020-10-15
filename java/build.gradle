@@ -24,6 +24,7 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'androidx.viewpager:viewpager:1.0.0'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
+    implementation 'net.java.dev.jna:jna:4.4.0@aar'
     implementation project(':ime')
 }
 
@@ -42,6 +43,13 @@ android {
         targetSdkVersion 28
         versionCode 52
         versionName "3.2"
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++17"
+                arguments "-DNO_PTHREAD_DL=TRUE"
+                targets "varnam"
+            }
+        }
     }
 
     splits {
@@ -98,5 +106,11 @@ android {
         output.versionCodeOverride =
           variant.versionCode + project.ext.versionCodeOffsets.get(output.getFilter(OutputFile.ABI))
       }
+    }
+    externalNativeBuild {
+        cmake {
+            path "../native/libvarnam/CMakeLists.txt"
+            version "3.10.2"
+        }
     }
 }
