@@ -1470,10 +1470,23 @@ public final class InputLogic {
         if (TextUtils.isEmpty(suggestion)) return;
         final boolean wasAutoCapitalized =
                 mWordComposer.wasAutoCapitalized() && !mWordComposer.isMostlyCaps();
-        final int timeStampInSeconds = (int)TimeUnit.MILLISECONDS.toSeconds(
-                System.currentTimeMillis());
-        mDictionaryFacilitator.addToUserHistory(suggestion, wasAutoCapitalized,
-                ngramContext, timeStampInSeconds, settingsValues.mBlockPotentiallyOffensive);
+
+        if (varnam != null) {
+            try {
+                varnam.learn(suggestion);
+                if (DebugFlags.DEBUG_ENABLED) {
+                    // TODO potential privacy issue in log ?
+                    Log.d("Varnam", "learned " + suggestion);
+                }
+            } catch (VarnamException e) {
+                Log.e("VarnamException", "learn: " + e.toString());
+            }
+        } else {
+            final int timeStampInSeconds = (int) TimeUnit.MILLISECONDS.toSeconds(
+                    System.currentTimeMillis());
+            mDictionaryFacilitator.addToUserHistory(suggestion, wasAutoCapitalized,
+                    ngramContext, timeStampInSeconds, settingsValues.mBlockPotentiallyOffensive);
+        }
     }
 
     public void performUpdateSuggestionStripSync(final SettingsValues settingsValues,
@@ -1496,7 +1509,6 @@ public final class InputLogic {
             ArrayList<SuggestedWordInfo> suggestedWords = new ArrayList<SuggestedWordInfo>();
 
             try {
-                Log.d("varnam", "aaaa" + typedWordString);
                 List<Word> words = varnam.transliterate(typedWordString);
 
                 final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
