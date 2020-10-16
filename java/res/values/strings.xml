@@ -46,6 +46,8 @@
     <string name="settings_screen_gesture">Gesture Typing</string>
     <!-- Settings screen title for text correction options [CHAR_LIMIT=33] -->
     <string name="settings_screen_correction">Text correction</string>
+    <!-- Settings screen title for varnam settings [CHAR LIMIT=33] -->
+    <string name="settings_screen_varnam">Varnam</string>
     <!-- Settings screen title for advanced settings [CHAR LIMIT=33] -->
     <string name="settings_screen_advanced">Advanced</string>
     <!-- Settings screen title for keyboard theme settings [CHAR LIMIT=33] -->
@@ -604,4 +606,7 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
     <string name="space_trackpad">Space bar trackpad</string>
     <string name="delete_swipe_summary">Perform a swipe from the delete key to select and remove bigger portions of text at once</string>
     <string name="space_trackpad_summary">Swipe on the spacebar to move the cursor</string>
+
+    <string name="pref_varnam_category_import">Import Words</string>
+    <string name="pref_varnam_import_file">Import From File</string>
 </resources>

@@ -27,6 +27,7 @@ import org.smc.inputmethod.indic.settings.GestureSettingsFragment;
 import org.smc.inputmethod.indic.settings.PreferencesSettingsFragment;
 import org.smc.inputmethod.indic.settings.SettingsFragment;
 import org.smc.inputmethod.indic.settings.ThemeSettingsFragment;
+import org.smc.inputmethod.indic.settings.VarnamSettingsFragment;
 import org.smc.inputmethod.indic.spellcheck.SpellCheckerSettingsFragment;
 import org.smc.inputmethod.indic.userdictionary.UserDictionaryAddWordFragment;
 import org.smc.inputmethod.indic.userdictionary.UserDictionaryList;
@@ -46,6 +47,7 @@ public class FragmentUtils {
         sLatinImeFragments.add(CustomInputStyleSettingsFragment.class.getName());
         sLatinImeFragments.add(GestureSettingsFragment.class.getName());
         sLatinImeFragments.add(CorrectionSettingsFragment.class.getName());
+        sLatinImeFragments.add(VarnamSettingsFragment.class.getName());
         sLatinImeFragments.add(AdvancedSettingsFragment.class.getName());
         sLatinImeFragments.add(DebugSettingsFragment.class.getName());
         sLatinImeFragments.add(SettingsFragment.class.getName());

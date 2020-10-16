@@ -37,6 +37,10 @@
         android:title="@string/settings_screen_correction"
         android:key="screen_correction" />
     <PreferenceScreen
+        android:fragment="org.smc.inputmethod.indic.settings.VarnamSettingsFragment"
+        android:title="@string/settings_screen_varnam"
+        android:key="screen_advanced" />
+    <PreferenceScreen
         android:fragment="org.smc.inputmethod.indic.settings.AdvancedSettingsFragment"
         android:title="@string/settings_screen_advanced"
         android:key="screen_advanced" />
