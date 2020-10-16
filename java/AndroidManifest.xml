@@ -112,6 +112,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:label="@string/settings_screen_varnam"
+            android:name="org.smc.inputmethod.indic.settings.VarnamSettingsActivity"
+            android:theme="@style/platformSettingsTheme" />
+
         <activity android:name="org.smc.inputmethod.indic.spellcheck.SpellCheckerSettingsActivity"
                   android:theme="@style/platformSettingsTheme"
                   android:label="@string/android_spell_checker_settings">

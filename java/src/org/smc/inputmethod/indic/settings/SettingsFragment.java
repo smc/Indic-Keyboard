@@ -28,7 +28,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.FeedbackUtils;
 import com.android.inputmethodcommon.InputMethodSettingsFragment;
@@ -51,6 +50,16 @@ public final class SettingsFragment extends InputMethodSettingsFragment {
         final PreferenceScreen preferenceScreen = getPreferenceScreen();
         preferenceScreen.setTitle(
                 ApplicationUtils.getActivityTitleResId(getActivity(), SettingsActivity.class));
+
+        // TODO rewriting entire deprecated PreferenceScreen with the new androidx will remove this
+        preferenceScreen.findPreference("screen_varnam").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent myIntent = new Intent(getActivity(), VarnamSettingsActivity.class);
+                getActivity().startActivity(myIntent);
+                return true;
+            }
+        });
     }
 
     @Override

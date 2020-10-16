@@ -36,10 +36,14 @@
         android:fragment="org.smc.inputmethod.indic.settings.CorrectionSettingsFragment"
         android:title="@string/settings_screen_correction"
         android:key="screen_correction" />
-    <PreferenceScreen
-        android:fragment="org.smc.inputmethod.indic.settings.VarnamSettingsFragment"
+    <Preference
         android:title="@string/settings_screen_varnam"
-        android:key="screen_advanced" />
+        android:summary="Varnam is a word based transliterator"
+        android:key="screen_varnam">
+        <intent
+            android:targetPackage="org.smc.inputmethod.indic.settings"
+            android:targetClass="org.smc.inputmethod.indic.settings.VarnamSettingsActivity" />
+    </Preference>
     <PreferenceScreen
         android:fragment="org.smc.inputmethod.indic.settings.AdvancedSettingsFragment"
         android:title="@string/settings_screen_advanced"

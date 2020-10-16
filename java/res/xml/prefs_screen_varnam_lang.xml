@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2020, Subin Siby <mail@subinsb.com>
+     Licensed under the Apache License, Version 2.0
+-->
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:title="@string/settings_screen_varnam"
+    app:key="screen_varnam_lang">
+    <PreferenceCategory
+        android:layout_height="wrap_content"
+        app:title="@string/pref_varnam_category_import">
+        <Preference
+            app:key="pref_varnam_import_file"
+            app:title="@string/pref_varnam_import_file" />
+    </PreferenceCategory>
+</androidx.preference.PreferenceScreen>

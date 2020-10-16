@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2020, Subin Siby <mail@subinsb.com>
+     Licensed under the Apache License, Version 2.0
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/varnam_settings_fragment"
+        android:name="org.smc.inputmethod.indic.settings.VarnamSettingsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="0dp"></androidx.fragment.app.FragmentContainerView>
+
+    <LinearLayout
+        android:id="@+id/varnam_import_file_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="invisible">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:id="@+id/varnam_import_file_progress"
+            android:layout_width="match_parent"
+            android:layout_height="12dp" />
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true"
+            android:scrollbars="vertical">
+
+            <TextView
+                android:id="@+id/varnam_import_file_log"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="2dp"
+                android:paddingTop="2dp"
+                android:paddingRight="2dp"
+                android:paddingBottom="2dp"
+                android:textIsSelectable="true" />
+        </ScrollView>
+
+    </LinearLayout>
+</LinearLayout>
