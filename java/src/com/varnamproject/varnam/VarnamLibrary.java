@@ -6,6 +6,7 @@
 
 package com.varnamproject.varnam;
 
+import com.sun.jna.Callback;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
@@ -21,6 +22,13 @@ public interface VarnamLibrary extends Library {
   String varnam_get_last_error(Pointer handle);
   int varnam_transliterate(Pointer handle, String input, PointerByReference output);
   int varnam_learn(Pointer handle, String word);
+
+  interface LearnCallback extends Callback {
+    void invoke(Pointer handle, String word, int status_code, Pointer object);
+  }
+
+  int varnam_learn_from_file(Pointer handle, String path, Varnam.LearnStatus status, LearnCallback callback, Pointer object);
+
   int varnam_config(Pointer handle, int type, Object... args);
   
   // varray related functions
