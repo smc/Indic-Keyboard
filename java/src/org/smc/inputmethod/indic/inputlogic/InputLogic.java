@@ -930,7 +930,8 @@ public final class InputLogic {
         }
         // isComposingWord() may have changed since we stored wasComposing
         if (mWordComposer.isComposingWord()) {
-            if (settingsValues.mAutoCorrectionEnabledPerUserSettings) {
+            // Varnam requires auto correction
+            if (settingsValues.mAutoCorrectionEnabledPerUserSettings || varnam != null) {
                 final String separator = shouldAvoidSendingCode ? LastComposedWord.NOT_A_SEPARATOR
                         : StringUtils.newSingleCodePointString(codePoint);
                 commitCurrentAutoCorrection(settingsValues, separator, handler);
@@ -1522,7 +1523,7 @@ public final class InputLogic {
                 suggestedWords.add(typedWordInfo);
 
                 for (int i = 0;i < words.size(); i++) {
-                    Log.d("varnam", words.get(i).getText() + words.get(i).getConfidence());
+                    Log.d("varnam", words.get(i).getText() + "-" + words.get(i).getConfidence());
                     final SuggestedWordInfo wordInfo = new SuggestedWordInfo(
                             words.get(i).getText(),
                             "" /* prevWordsContext */,
