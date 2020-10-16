@@ -2517,16 +2517,7 @@ public final class InputLogic {
     }
 
     public void enableVarnam (String scheme, Context context) {
-        // TODO: make it a user accessible folder
-        String varnamFolder = context.getFilesDir().getPath() + "/varnam";
-        String vstFile = varnamFolder + "/" + scheme + ".vst";
-        String learningsFile = varnamFolder + "/" + scheme + ".vst.learnings";
-
-        try {
-            varnam = new Varnam(vstFile, learningsFile);
-        } catch (VarnamException e) {
-            Log.e("VarnamException", e.toString());
-        }
+        varnam = VarnamIndicKeyboard.makeVarnam(scheme, context);
     }
 
     public void setEmojiSearch(Context context) {
