@@ -35,11 +35,13 @@ public final class VarnamSettingsFragment extends PreferenceFragmentCompat {
         // Enabled languages
         PreferenceCategory enabledPreferenceCategory = new PreferenceCategory(preferenceScreen.getContext());
         enabledPreferenceCategory.setTitle(R.string.pref_varnam_category_enabled);
+        enabledPreferenceCategory.setIconSpaceReserved(false);
         preferenceScreen.addPreference(enabledPreferenceCategory);
 
         // Available languages
         PreferenceCategory disabledPreferenceCategory = new PreferenceCategory(preferenceScreen.getContext());
         disabledPreferenceCategory.setTitle(R.string.pref_varnam_category_disabled);
+        disabledPreferenceCategory.setIconSpaceReserved(false);
         preferenceScreen.addPreference(disabledPreferenceCategory);
 
         Context context = getPreferenceManager().getContext();
@@ -51,6 +53,7 @@ public final class VarnamSettingsFragment extends PreferenceFragmentCompat {
             PreferenceScreen screen = getPreferenceManager().createPreferenceScreen(context);
             screen.setTitle(scheme.name);
             screen.setFragment("org.smc.inputmethod.indic.settings.VarnamSettingsLangFragment");
+            screen.setIconSpaceReserved(false);
             screen.getExtras().putString("id", keyboardIdentifier);
 
             disabledPreferenceCategory.addPreference(screen);

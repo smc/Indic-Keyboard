@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:padding="0dp"></androidx.fragment.app.FragmentContainerView>
 
+    <!-- This will be only visible in sub language preference -->
     <LinearLayout
         android:id="@+id/varnam_import_file_status"
         android:layout_width="match_parent"

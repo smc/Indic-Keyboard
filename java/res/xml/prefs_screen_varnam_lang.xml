@@ -9,9 +9,11 @@
     app:key="screen_varnam_lang">
     <PreferenceCategory
         android:layout_height="wrap_content"
-        app:title="@string/pref_varnam_category_import">
+        app:title="@string/pref_varnam_category_import"
+        app:iconSpaceReserved="false">
         <Preference
             app:key="pref_varnam_import_file"
-            app:title="@string/pref_varnam_import_file" />
+            app:title="@string/pref_varnam_import_file"
+            app:iconSpaceReserved="false"/>
     </PreferenceCategory>
 </androidx.preference.PreferenceScreen>

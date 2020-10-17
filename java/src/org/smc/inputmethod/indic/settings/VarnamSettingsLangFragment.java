@@ -46,6 +46,8 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
     private ProgressBar progressBar;
     private TextView logTextView;
 
+    private Thread learnThread;
+
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.prefs_screen_varnam_lang);
@@ -58,13 +60,13 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
         scheme = VarnamIndicKeyboard.schemes.get(id);
 
         setupVarnamImportFile();
+    }
 
-        getActivity().getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                status.setVisibility(View.INVISIBLE);
-            }
-        });
+    @Override
+    public void onStop() {
+        super.onStop();
+        learnThread.stop();
+        status.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -84,7 +86,8 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
                         learnFromFile(uri);
                     }
                 };
-                new Thread(runnable).start();
+                learnThread = new Thread(runnable);
+                learnThread.start();
             }
         }
     }
@@ -103,8 +106,7 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
             progressBar.post(new Runnable() {
                 @Override
                 public void run() {
-                    progressBar.setIndeterminate(false);
-                    progressBar.setProgress(100);
+                    progressBar.setIndeterminate(true);
                     log(getString(R.string.varnam_import_running));
                 }
             });
