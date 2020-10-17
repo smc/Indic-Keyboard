@@ -29,6 +29,7 @@ import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Toast;
 
 import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.event.Event;
@@ -2531,7 +2532,12 @@ public final class InputLogic {
     }
 
     public void enableVarnam (String scheme, Context context) {
-        varnam = VarnamIndicKeyboard.makeVarnam(scheme, context);
+        try {
+            varnam = VarnamIndicKeyboard.makeVarnam(scheme, context);
+        } catch (Exception e) {
+            Log.e("VarnamException", e.toString());
+            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void setEmojiSearch(Context context) {

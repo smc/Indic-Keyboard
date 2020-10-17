@@ -26,30 +26,25 @@ public class VarnamIndicKeyboard {
      * @param context Android context
      * @return Varnam object (this is not the same object as this class)
      */
-    public static Varnam makeVarnam(String scheme, Context context) {
+    public static Varnam makeVarnam(String scheme, Context context) throws Exception {
         Varnam varnam;
-        try {
-            // More about storage: https://stackoverflow.com/a/29404440/1372424
-            File varnamFolder = new File(context.getExternalFilesDir(null).getPath() + "/varnam", scheme);
 
-            if (!varnamFolder.exists()) {
-                varnamFolder.mkdirs();
-            }
+        // More about storage: https://stackoverflow.com/a/29404440/1372424
+        File varnamFolder = new File(context.getExternalFilesDir(null).getPath() + "/varnam", scheme);
 
-            File vstFile = new File(varnamFolder.getAbsolutePath(), scheme + ".vst");
-            String learningsFile = varnamFolder.getAbsolutePath() + "/" + scheme + ".vst.learnings";
-
-            if (!vstFile.exists()) {
-                throw new Exception(context.getString(R.string.varnam_vst_missing, scheme));
-            }
-
-            varnam = new Varnam(vstFile.getAbsolutePath(), learningsFile);
-            return varnam;
-        } catch (Exception e) {
-            Log.e("VarnamException", e.toString());
-            Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
+        if (!varnamFolder.exists()) {
+            varnamFolder.mkdirs();
         }
-        return null;
+
+        File vstFile = new File(varnamFolder.getAbsolutePath(), scheme + ".vst");
+        String learningsFile = varnamFolder.getAbsolutePath() + "/" + scheme + ".vst.learnings";
+
+        if (!vstFile.exists()) {
+            throw new Exception(context.getString(R.string.varnam_vst_missing, scheme));
+        }
+
+        varnam = new Varnam(vstFile.getAbsolutePath(), learningsFile);
+        return varnam;
     }
 
     public static class Scheme {
