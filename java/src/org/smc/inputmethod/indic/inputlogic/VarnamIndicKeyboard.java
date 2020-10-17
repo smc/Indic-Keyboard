@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class VarnamIndicKeyboard {
     /**
@@ -69,4 +70,24 @@ public class VarnamIndicKeyboard {
         put("varnam-ml", new Scheme("ml", "ml", "Malayalam", "", "0.1", "Navaneeth KN"));
         put("varnam-ta", new Scheme("ta", "ta", "Tamil", "", "0.1", "Navaneeth KN/Kumaran Venkataraman"));
     }};
+
+    public static HashMap<String, Scheme> getInstalledSchemes(Context context) {
+        HashMap<String, Scheme> installedSchemes = new HashMap<String, Scheme>();
+        for (Map.Entry<String, Scheme> entry : schemes.entrySet()) {
+            String keyboardID = entry.getKey();
+            Scheme scheme = entry.getValue();
+
+            try {
+                makeVarnam(scheme.id, context);
+                installedSchemes.put(keyboardID, scheme);
+            } catch (Exception e) {
+                Log.d("VarnamIndicKeyboard", keyboardID + " is not installed.");
+            }
+        }
+        return installedSchemes;
+    }
+
+    public static boolean isSchemeInstalled(String keyboardID, Context context) {
+        return getInstalledSchemes(context).containsKey(keyboardID);
+    }
 }

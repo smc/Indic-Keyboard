@@ -41,6 +41,7 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
     private static int PICK_VARNAM_CORPUS_FILE = 1;
 
     private VarnamIndicKeyboard.Scheme scheme;
+    private boolean installed = false; // Whether VST is available to use
 
     private LinearLayout status;
     private ProgressBar progressBar;
@@ -58,6 +59,7 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
 
         String id = getArguments().getString("id");
         scheme = VarnamIndicKeyboard.schemes.get(id);
+        installed = VarnamIndicKeyboard.isSchemeInstalled(id, getContext());
 
         setupVarnamImportFile();
     }
@@ -65,7 +67,9 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
     @Override
     public void onStop() {
         super.onStop();
-        learnThread.stop();
+        if (learnThread != null) {
+            learnThread.stop();
+        }
         status.setVisibility(View.INVISIBLE);
     }
 
@@ -140,6 +144,12 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
 
     private void setupVarnamImportFile() {
         Preference filePicker = findPreference("pref_varnam_import_file");
+
+        if (!installed) {
+            filePicker.setEnabled(false);
+            return;
+        }
+
         filePicker.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {

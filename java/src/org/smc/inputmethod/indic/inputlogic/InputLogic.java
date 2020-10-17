@@ -25,6 +25,7 @@ import android.text.TextUtils;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.SuggestionSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.inputmethod.CorrectionInfo;
@@ -2531,12 +2532,14 @@ public final class InputLogic {
         varnam = null;
     }
 
-    public void enableVarnam (String scheme, Context context) {
+    public void enableVarnam (String scheme, Context context) throws Exception {
         try {
             varnam = VarnamIndicKeyboard.makeVarnam(scheme, context);
         } catch (Exception e) {
             Log.e("VarnamException", e.toString());
-            Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
+            Toast toast = Toast.makeText(context, e.toString(), Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+            toast.show();
         }
     }
 

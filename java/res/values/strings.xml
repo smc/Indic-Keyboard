@@ -609,8 +609,8 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
 
     <string name="pref_varnam_category_import">Import Words</string>
     <string name="pref_varnam_import_file">Import From File</string>
-    <string name="pref_varnam_category_enabled">Enabled Languages</string>
-    <string name="pref_varnam_category_disabled">Available Languages</string>
+    <string name="pref_varnam_category_enabled">Installed Languages</string>
+    <string name="pref_varnam_category_disabled">Disabled Languages</string>
     <string name="varnam_import_running">Importing... This might take some time.</string>
     <string name="varnam_import_completed">Import completed.</string>
     <string name="varnam_import_status">Total words: %2$d. Failed words: %2$d</string>
