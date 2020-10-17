@@ -1507,56 +1507,8 @@ public final class InputLogic {
             return;
         }
 
-        if (varnam != null) {
-            final String typedWordString = mWordComposer.getTypedWord();
-            ArrayList<SuggestedWordInfo> suggestedWords = new ArrayList<SuggestedWordInfo>();
-
-            try {
-                List<Word> words = varnam.transliterate(typedWordString);
-
-                final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
-                        typedWordString,
-                        "" /* prevWordsContext */,
-                        0,
-                        SuggestedWordInfo.KIND_TYPED,
-                        Dictionary.DICTIONARY_USER_TYPED,
-                        SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                        SuggestedWordInfo.NOT_A_CONFIDENCE);
-                suggestedWords.add(typedWordInfo);
-
-                for (int i = 0;i < words.size(); i++) {
-                    Log.d("varnam", words.get(i).getText() + "-" + words.get(i).getConfidence());
-                    final SuggestedWordInfo wordInfo = new SuggestedWordInfo(
-                            words.get(i).getText(),
-                            "" /* prevWordsContext */,
-                            words.get(i).getConfidence(),
-                            SuggestedWordInfo.KIND_COMPLETION,
-                            Dictionary.DICTIONARY_RESUMED,
-                            SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                            SuggestedWordInfo.NOT_A_CONFIDENCE);
-                    suggestedWords.add(wordInfo);
-                }
-
-                if (words.size() > 0) {
-                    mSuggestionStripViewAccessor.showSuggestionStrip(new SuggestedWords(
-                            suggestedWords,
-                            null,
-                            null,
-                            true,
-                            true,
-                            false,
-                            SuggestedWords.INPUT_STYLE_NONE,
-                            SuggestedWords.NOT_A_SEQUENCE_NUMBER
-                    ));
-                }
-            } catch (VarnamException e) {
-                Log.e("VarnamException", e.toString());
-            }
-            return;
-        }
-
         // Check if we have a suggestion engine attached.
-        if (!settingsValues.needsToLookupSuggestions()) {
+        if (!settingsValues.needsToLookupSuggestions() && varnam == null) {
             if (mWordComposer.isComposingWord()) {
                 Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not "
                         + "requested!");
@@ -1619,7 +1571,7 @@ public final class InputLogic {
         // HACK: We may want to special-case some apps that exhibit bad behavior in case of
         // recorrection. This is a temporary, stopgap measure that will be removed later.
         // TODO: remove this.
-        if (settingsValues.isBrokenByRecorrection()
+        if ((settingsValues.isBrokenByRecorrection()
         // Recorrection is not supported in languages without spaces because we don't know
         // how to segment them yet.
                 || !settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
@@ -1632,7 +1584,11 @@ public final class InputLogic {
         // If the cursor is not touching a word, or if there is a selection, return right away.
                 || mConnection.hasSelection()
         // If we don't know the cursor location, return.
-                || mConnection.getExpectedSelectionStart() < 0) {
+                || mConnection.getExpectedSelectionStart() < 0
+            )
+        // Varnam requires editing inside words to correct them
+                && varnam == null
+        ) {
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             return;
         }
@@ -2379,6 +2335,49 @@ public final class InputLogic {
                 SuggestedWords.INPUT_STYLE_NONE,
                 SuggestedWords.INDEX_OF_AUTO_CORRECTION
             ));
+        } else if (varnam != null) {
+            final String typedWordString = mWordComposer.getTypedWord();
+            ArrayList<SuggestedWordInfo> suggestedWords = new ArrayList<SuggestedWordInfo>();
+
+            try {
+                List<Word> words = varnam.transliterate(typedWordString);
+
+                final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
+                        typedWordString,
+                        "" /* prevWordsContext */,
+                        SuggestedWordInfo.MAX_SCORE,
+                        SuggestedWordInfo.KIND_TYPED,
+                        Dictionary.DICTIONARY_USER_TYPED,
+                        SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                        SuggestedWordInfo.NOT_A_CONFIDENCE);
+                suggestedWords.add(0, typedWordInfo);
+
+                for (int i = 0;i < words.size(); i++) {
+                    Log.d("varnam", words.get(i).getText() + "-" + words.get(i).getConfidence());
+                    final SuggestedWordInfo wordInfo = new SuggestedWordInfo(
+                            words.get(i).getText(),
+                            "" /* prevWordsContext */,
+                            words.get(i).getConfidence(),
+                            SuggestedWordInfo.KIND_COMPLETION,
+                            Dictionary.DICTIONARY_RESUMED,
+                            SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                            SuggestedWordInfo.NOT_A_CONFIDENCE);
+                    suggestedWords.add(wordInfo);
+                }
+
+                callback.onGetSuggestedWords(new SuggestedWords(
+                        suggestedWords,
+                        null,
+                        typedWordInfo,
+                        true,
+                        true,
+                        false,
+                        SuggestedWords.INPUT_STYLE_NONE,
+                        SuggestedWords.NOT_A_SEQUENCE_NUMBER
+                ));
+            } catch (VarnamException e) {
+                Log.e("VarnamException", e.toString());
+            }
         } else {
             mWordComposer.adviseCapitalizedModeBeforeFetchingSuggestions(
                     getActualCapsMode(settingsValues, keyboardShiftMode));
