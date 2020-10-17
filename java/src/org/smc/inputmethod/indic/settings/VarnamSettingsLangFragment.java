@@ -68,7 +68,7 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
     public void onStop() {
         super.onStop();
         if (learnThread != null) {
-            learnThread.stop();
+            learnThread.interrupt();
         }
         status.setVisibility(View.INVISIBLE);
     }
