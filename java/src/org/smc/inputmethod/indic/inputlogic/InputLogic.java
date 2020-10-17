@@ -2493,16 +2493,30 @@ public final class InputLogic {
     public void enableTransliteration(String transliterationMethod, Context context) {
         InputMethod im;
         try {
-            im = InputMethod.fromName(transliterationMethod, context);
+            if (transliterationMethod.substring(0, 7).equals("varnam-")) {
+                String schemeID = transliterationMethod.substring(7);
+                Log.d("IndicKeyboard", "varnam input method");
+                enableVarnam(schemeID, context);
+
+                VarnamIndicKeyboard.Scheme scheme = VarnamIndicKeyboard.schemes.get(transliterationMethod);
+                im = new InputMethod(
+                        transliterationMethod,
+                        scheme.name,
+                        scheme.description,
+                        scheme.author,
+                        scheme.version,
+                        1,
+                        60,
+                        new ArrayList<InputMethod.InputPattern>()
+                );
+            } else {
+                im = InputMethod.fromName(transliterationMethod, context);
+            }
+
             mWordComposer.setTransliterationMethod(im);
             mConnection.setTransliterationMethod(im);
-            isTransliteration = true;
 
-            if (transliterationMethod.substring(0, 7).equals("varnam-")) {
-                String scheme = transliterationMethod.substring(7);
-                Log.d("IndicKeyboard", "varnam input method");
-                enableVarnam(scheme, context);
-            }
+            isTransliteration = true;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
