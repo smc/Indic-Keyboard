@@ -54,6 +54,7 @@ import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.RecapitalizeStatus;
+import com.android.inputmethod.latin.utils.ScriptUtils;
 import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.TextRange;
 import com.varnamproject.varnam.Varnam;
@@ -1502,7 +1503,7 @@ public final class InputLogic {
 
         Log.w("IndicKeyboard", "performUpdateSuggestionStripSync");
 
-        if (!mWordComposer.isComposingWord() && !settingsValues.mBigramPredictionEnabled) {
+        if (!mWordComposer.isComposingWord() && !settingsValues.mBigramPredictionEnabled && varnam == null) {
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             return;
         }
@@ -1523,7 +1524,13 @@ public final class InputLogic {
                 new OnGetSuggestedWordsCallback() {
                     @Override
                     public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
-                        final String typedWordString = mWordComposer.getTypedWord();
+                        String typedWord;
+                        if (varnam == null) {
+                            typedWord = mWordComposer.getTypedWord();
+                        } else {
+                            typedWord = getWordAtCursor(settingsValues, ScriptUtils.SCRIPT_LATIN);
+                        }
+                        final String typedWordString = typedWord;
                         final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
                                 typedWordString, "" /* prevWordsContext */,
                                 SuggestedWordInfo.MAX_SCORE,
@@ -1546,7 +1553,6 @@ public final class InputLogic {
         final SuggestedWords suggestedWords = holder.get(null,
                 Constants.GET_SUGGESTED_WORDS_TIMEOUT);
         if (suggestedWords != null) {
-            Log.d("varnam", suggestedWords.getWord(0) + suggestedWords.getWord(1));
             mSuggestionStripViewAccessor.showSuggestionStrip(suggestedWords);
         }
         if (DebugFlags.DEBUG_ENABLED) {
@@ -1613,8 +1619,9 @@ public final class InputLogic {
         // we just do not resume because it's safer.
         final int numberOfCharsInWordBeforeCursor = range.getNumberOfCharsInWordBeforeCursor();
         if (numberOfCharsInWordBeforeCursor > expectedCursorPosition) return;
-        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<>();
         final String typedWordString = range.mWord.toString();
+
+        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<>();
         final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(typedWordString,
                 "" /* prevWordsContext */, SuggestedWords.MAX_SUGGESTIONS + 1,
                 SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
@@ -2346,7 +2353,7 @@ public final class InputLogic {
                 SuggestedWords.INDEX_OF_AUTO_CORRECTION
             ));
         } else if (varnam != null) {
-            final String typedWordString = mWordComposer.getTypedWord();
+            final String typedWordString = getWordAtCursor(settingsValues, ScriptUtils.SCRIPT_LATIN);
             ArrayList<SuggestedWordInfo> suggestedWords = new ArrayList<SuggestedWordInfo>();
 
             final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
@@ -2377,6 +2384,20 @@ public final class InputLogic {
                     SuggestedWords.INPUT_STYLE_NONE,
                     SuggestedWords.INDEX_OF_AUTO_CORRECTION
             ));
+        } else {
+            mWordComposer.adviseCapitalizedModeBeforeFetchingSuggestions(
+                    getActualCapsMode(settingsValues, keyboardShiftMode));
+            mSuggest.getSuggestedWords(mWordComposer,
+                    getNgramContextFromNthPreviousWordForSuggestion(
+                            settingsValues.mSpacingAndPunctuations,
+                            // Get the word on which we should search the bigrams. If we are composing
+                            // a word, it's whatever is *before* the half-committed word in the buffer,
+                            // hence 2; if we aren't, we should just skip whitespace if any, so 1.
+                            mWordComposer.isComposingWord() ? 2 : 1),
+                    keyboard,
+                    new SettingsValuesForSuggestion(settingsValues.mBlockPotentiallyOffensive),
+                    settingsValues.mAutoCorrectionEnabledPerUserSettings,
+                    inputStyle, sequenceNumber, callback);
         }
     }
 
