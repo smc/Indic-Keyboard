@@ -86,6 +86,22 @@ public final class Varnam {
     return learnStatus;
   }
 
+  /**
+   * Import a varnam exported/trained file
+   * @param path
+   * @param callback
+   * @return
+   * @throws VarnamException
+   */
+  public void importFromFile(String path) throws VarnamException {
+    VarnamLibrary library = VarnamLibrary.INSTANCE;
+
+    int status = library.varnam_import_learnings_from_file(handle, path);
+    if (status != 0) {
+      throw new VarnamException(library.varnam_get_last_error(handle));
+    }
+  }
+
   public String getVstFile() {
     return vstFile;
   }

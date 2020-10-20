@@ -14,6 +14,22 @@
         <Preference
             app:key="pref_varnam_import_file"
             app:title="@string/pref_varnam_import_file"
+            app:summary="@string/pref_varnam_import_file_summary"
+            app:iconSpaceReserved="false"/>
+        <Preference
+            app:key="pref_varnam_import_pack"
+            app:title="@string/pref_varnam_import_pack"
+            app:summary="@string/pref_varnam_import_pack_summary"
+            app:iconSpaceReserved="false"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:layout_height="wrap_content"
+        app:title="@string/pref_varnam_category_export"
+        app:iconSpaceReserved="false">
+        <Preference
+            app:key="pref_varnam_export_pack"
+            app:title="@string/pref_varnam_export_pack"
+            app:summary="@string/pref_varnam_export_pack_summary"
             app:iconSpaceReserved="false"/>
     </PreferenceCategory>
 </androidx.preference.PreferenceScreen>

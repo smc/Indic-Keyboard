@@ -26,8 +26,9 @@ public interface VarnamLibrary extends Library {
   interface LearnCallback extends Callback {
     void invoke(Pointer handle, String word, int status_code, Pointer object);
   }
-
   int varnam_learn_from_file(Pointer handle, String path, Varnam.LearnStatus status, LearnCallback callback, Pointer object);
+
+  int varnam_import_learnings_from_file(Pointer handle, String path);
 
   int varnam_config(Pointer handle, int type, Object... args);
   

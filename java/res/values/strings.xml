@@ -609,6 +609,14 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
 
     <string name="pref_varnam_category_import">Import Words</string>
     <string name="pref_varnam_import_file">Import From File</string>
+    <string name="pref_varnam_import_file_summary">Import the language words from any kind of text file</string>
+    <string name="pref_varnam_import_pack">Import Pack File</string>
+    <string name="pref_varnam_import_pack_summary">Import words from a Varnam pack file</string>
+
+    <string name="pref_varnam_category_export">Export Words</string>
+    <string name="pref_varnam_export_pack">Export Pack File</string>
+    <string name="pref_varnam_export_pack_summary">Export words from Varnam</string>
+
     <string name="pref_varnam_category_enabled">Installed Languages</string>
     <string name="pref_varnam_category_disabled">Disabled Languages</string>
     <string name="varnam_import_copy">Copying file... (%1$s)</string>
