@@ -1546,6 +1546,7 @@ public final class InputLogic {
         final SuggestedWords suggestedWords = holder.get(null,
                 Constants.GET_SUGGESTED_WORDS_TIMEOUT);
         if (suggestedWords != null) {
+            Log.d("varnam", suggestedWords.getWord(0) + suggestedWords.getWord(1));
             mSuggestionStripViewAccessor.showSuggestionStrip(suggestedWords);
         }
         if (DebugFlags.DEBUG_ENABLED) {
@@ -1571,7 +1572,7 @@ public final class InputLogic {
         // HACK: We may want to special-case some apps that exhibit bad behavior in case of
         // recorrection. This is a temporary, stopgap measure that will be removed later.
         // TODO: remove this.
-        if ((settingsValues.isBrokenByRecorrection()
+        if (settingsValues.isBrokenByRecorrection()
         // Recorrection is not supported in languages without spaces because we don't know
         // how to segment them yet.
                 || !settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
@@ -1584,11 +1585,7 @@ public final class InputLogic {
         // If the cursor is not touching a word, or if there is a selection, return right away.
                 || mConnection.hasSelection()
         // If we don't know the cursor location, return.
-                || mConnection.getExpectedSelectionStart() < 0
-            )
-        // Varnam requires editing inside words to correct them
-                && varnam == null
-        ) {
+                || mConnection.getExpectedSelectionStart() < 0) {
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             return;
         }
@@ -1624,6 +1621,19 @@ public final class InputLogic {
                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
                 SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
         suggestions.add(typedWordInfo);
+
+        if (varnam != null) {
+            suggestions.addAll(getVarnamSuggestions(typedWordString));
+
+            final SuggestedWords suggestedWords = new SuggestedWords(suggestions,
+                    null /* rawSuggestions */, typedWordInfo, false /* typedWordValid */,
+                    false /* willAutoCorrect */, false /* isObsoleteSuggestions */,
+                    SuggestedWords.INPUT_STYLE_RECORRECTION, SuggestedWords.NOT_A_SEQUENCE_NUMBER);
+
+            doShowSuggestionsAndClearAutoCorrectionIndicator(suggestedWords);
+            return;
+        }
+
         if (!isResumableWord(settingsValues, typedWordString)) {
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             return;
@@ -2339,59 +2349,34 @@ public final class InputLogic {
             final String typedWordString = mWordComposer.getTypedWord();
             ArrayList<SuggestedWordInfo> suggestedWords = new ArrayList<SuggestedWordInfo>();
 
-            try {
-                List<Word> words = varnam.transliterate(typedWordString);
+            final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
+                    typedWordString,
+                    "" /* prevWordsContext */,
+                    SuggestedWordInfo.MAX_SCORE,
+                    SuggestedWordInfo.KIND_TYPED,
+                    Dictionary.DICTIONARY_USER_TYPED,
+                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                    SuggestedWordInfo.NOT_A_CONFIDENCE);
+            suggestedWords.add(0, typedWordInfo);
 
-                final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
-                        typedWordString,
-                        "" /* prevWordsContext */,
-                        SuggestedWordInfo.MAX_SCORE,
-                        SuggestedWordInfo.KIND_TYPED,
-                        Dictionary.DICTIONARY_USER_TYPED,
-                        SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                        SuggestedWordInfo.NOT_A_CONFIDENCE);
-                suggestedWords.add(0, typedWordInfo);
+            suggestedWords.addAll(getVarnamSuggestions(typedWordString));
 
-                for (int i = 0;i < words.size(); i++) {
-                    Log.d("varnam", words.get(i).getText() + "-" + words.get(i).getConfidence());
-                    final SuggestedWordInfo wordInfo = new SuggestedWordInfo(
-                            words.get(i).getText(),
-                            "" /* prevWordsContext */,
-                            words.get(i).getConfidence(),
-                            SuggestedWordInfo.KIND_COMPLETION,
-                            Dictionary.DICTIONARY_RESUMED,
-                            SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                            SuggestedWordInfo.NOT_A_CONFIDENCE);
-                    suggestedWords.add(wordInfo);
-                }
-
-                callback.onGetSuggestedWords(new SuggestedWords(
-                        suggestedWords,
-                        null,
-                        typedWordInfo,
-                        true,
-                        true,
-                        false,
-                        SuggestedWords.INPUT_STYLE_NONE,
-                        SuggestedWords.NOT_A_SEQUENCE_NUMBER
-                ));
-            } catch (VarnamException e) {
-                Log.e("VarnamException", e.toString());
+            // If there's only suggestion result from Varnam, add the input as a result
+            // Otherwise the suggestion strip will only show the one transliterated result
+            if (suggestedWords.size() == 2) {
+                suggestedWords.add(2, typedWordInfo);
             }
-        } else {
-            mWordComposer.adviseCapitalizedModeBeforeFetchingSuggestions(
-                    getActualCapsMode(settingsValues, keyboardShiftMode));
-            mSuggest.getSuggestedWords(mWordComposer,
-                    getNgramContextFromNthPreviousWordForSuggestion(
-                            settingsValues.mSpacingAndPunctuations,
-                            // Get the word on which we should search the bigrams. If we are composing
-                            // a word, it's whatever is *before* the half-committed word in the buffer,
-                            // hence 2; if we aren't, we should just skip whitespace if any, so 1.
-                            mWordComposer.isComposingWord() ? 2 : 1),
-                    keyboard,
-                    new SettingsValuesForSuggestion(settingsValues.mBlockPotentiallyOffensive),
-                    settingsValues.mAutoCorrectionEnabledPerUserSettings,
-                    inputStyle, sequenceNumber, callback);
+
+            callback.onGetSuggestedWords(new SuggestedWords(
+                    suggestedWords,
+                    null,
+                    typedWordInfo,
+                    true,
+                    true,
+                    false,
+                    SuggestedWords.INPUT_STYLE_NONE,
+                    SuggestedWords.INDEX_OF_AUTO_CORRECTION
+            ));
         }
     }
 
@@ -2540,6 +2525,28 @@ public final class InputLogic {
             toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
             toast.show();
         }
+    }
+
+    public ArrayList<SuggestedWordInfo> getVarnamSuggestions(String word) {
+        ArrayList<SuggestedWordInfo> suggestedWords = new ArrayList<>();
+        try {
+            List<Word> words = varnam.transliterate(word);
+            for (int i = 0; i < words.size(); i++) {
+                Log.d("varnam", words.get(i).getText() + "-" + words.get(i).getConfidence());
+                final SuggestedWordInfo wordInfo = new SuggestedWordInfo(
+                        words.get(i).getText(),
+                        "" /* prevWordsContext */,
+                        words.get(i).getConfidence(),
+                        SuggestedWordInfo.KIND_COMPLETION,
+                        Dictionary.DICTIONARY_RESUMED,
+                        SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                        SuggestedWordInfo.NOT_A_CONFIDENCE);
+                suggestedWords.add(wordInfo);
+            }
+        } catch (VarnamException e) {
+            Log.e("VarnamException", e.toString());
+        }
+        return suggestedWords;
     }
 
     public void setEmojiSearch(Context context) {
