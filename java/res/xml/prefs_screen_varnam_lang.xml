@@ -17,9 +17,9 @@
             app:summary="@string/pref_varnam_import_file_summary"
             app:iconSpaceReserved="false"/>
         <Preference
-            app:key="pref_varnam_import_pack"
-            app:title="@string/pref_varnam_import_pack"
-            app:summary="@string/pref_varnam_import_pack_summary"
+            app:key="pref_varnam_import_trained"
+            app:title="@string/pref_varnam_import_trained"
+            app:summary="@string/pref_varnam_import_trained_summary"
             app:iconSpaceReserved="false"/>
     </PreferenceCategory>
     <PreferenceCategory
@@ -27,9 +27,9 @@
         app:title="@string/pref_varnam_category_export"
         app:iconSpaceReserved="false">
         <Preference
-            app:key="pref_varnam_export_pack"
-            app:title="@string/pref_varnam_export_pack"
-            app:summary="@string/pref_varnam_export_pack_summary"
+            app:key="pref_varnam_export_trained"
+            app:title="@string/pref_varnam_export_trained"
+            app:summary="@string/pref_varnam_export_trained_summary"
             app:iconSpaceReserved="false"/>
     </PreferenceCategory>
 </androidx.preference.PreferenceScreen>

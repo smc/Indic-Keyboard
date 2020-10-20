@@ -30,6 +30,13 @@ public interface VarnamLibrary extends Library {
 
   int varnam_import_learnings_from_file(Pointer handle, String path);
 
+  int VARNAM_EXPORT_WORDS = 0;
+  int VARNAM_EXPORT_FULL = 1;
+  interface ExportCallback extends Callback {
+    void invoke(int total_words, int total_processed, String current_word);
+  }
+  int varnam_export_words(Pointer handle, int words_per_file, String dirPath, int export_type, ExportCallback callback);
+
   int varnam_config(Pointer handle, int type, Object... args);
   
   // varray related functions

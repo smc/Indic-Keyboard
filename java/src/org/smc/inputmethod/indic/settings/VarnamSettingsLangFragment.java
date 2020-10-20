@@ -5,35 +5,41 @@
 
 package org.smc.inputmethod.indic.settings;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.android.inputmethod.latin.R;
 import com.varnamproject.varnam.Varnam;
+import com.varnamproject.varnam.VarnamLibrary;
 
 import org.smc.inputmethod.indic.inputlogic.VarnamIndicKeyboard;
 import org.xml.sax.InputSource;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
-import java.nio.file.Files;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -45,7 +51,8 @@ import java.util.zip.GZIPInputStream;
  */
 public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
     private static int PICK_VARNAM_CORPUS_FILE = 1;
-    private static int PICK_VARNAM_PACK_FILE = 2;
+    private static int PICK_VARNAM_TRAINED_FILE = 2;
+    private static int PICK_VARNAM_TRAINED_EXPORT_DIR = 3;
 
     private VarnamIndicKeyboard.Scheme scheme;
     private boolean installed = false; // Whether VST is available to use
@@ -69,7 +76,8 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
         installed = VarnamIndicKeyboard.isSchemeInstalled(id, getContext());
 
         setupVarnamImportFile();
-        setupVarnamImportPack();
+        setupVarnamImportTrained();
+        setupVarnamExportTrained();
     }
 
     @Override
@@ -101,7 +109,7 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
                 learnThread = new Thread(runnable);
                 learnThread.start();
             }
-        } else if (requestCode == PICK_VARNAM_PACK_FILE && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == PICK_VARNAM_TRAINED_FILE && resultCode == Activity.RESULT_OK) {
             if (resultData != null) {
                 final Uri uri = resultData.getData();
 
@@ -114,6 +122,25 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
                     @Override
                     public void run() {
                         importFromFile(uri);
+                    }
+                };
+                learnThread = new Thread(runnable);
+                learnThread.start();
+            }
+        } else if (requestCode == PICK_VARNAM_TRAINED_EXPORT_DIR && resultCode == Activity.RESULT_OK) {
+            if (resultData != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                final Uri uri = resultData.getData();
+                final String path = FileUtil.getFullPathFromTreeUri(uri, getContext());
+
+                status.setVisibility(View.VISIBLE);
+                progressBar.setIndeterminate(true);
+                logTextView.setText("");
+                log(getString(R.string.varnam_export_begin, path));
+
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        exportTrained(path);
                     }
                 };
                 learnThread = new Thread(runnable);
@@ -193,7 +220,7 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
                 }
             });
 
-            Log.d("Varnam", "Pack file : " + path);
+            Log.d("Varnam", "Trained file : " + path);
             varnam.importFromFile(path);
 
             progressBar.post(new Runnable() {
@@ -206,6 +233,50 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
             });
         } catch (Exception e) {
             Log.e("VarnamLearn", e.getMessage());
+
+            final Exception err = e;
+            progressBar.post(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setIndeterminate(false);
+                    progressBar.setProgress(50);
+                    log(err.getMessage());
+                }
+            });
+        }
+    }
+
+    private void exportTrained(String path) {
+        try {
+            Varnam varnam = VarnamIndicKeyboard.makeVarnam(scheme.id, getContext());
+
+            progressBar.post(new Runnable() {
+                @Override
+                public void run() {
+                    progressBar.setIndeterminate(true);
+                    log(getString(R.string.varnam_export_running));
+                }
+            });
+
+            Log.d("Varnam", "Export directory: " + path);
+            Log.d("Varnam", varnam.transliterate("aaaa").get(0).getText());
+            varnam.exportFull(path, new VarnamLibrary.ExportCallback() {
+                @Override
+                public void invoke(int total_words, final int total_processed, String current_word) {
+                    final int progress = (int) ((float) total_processed / total_words * 100);
+                    progressBar.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressBar.setIndeterminate(false);
+                            progressBar.setProgress(progress);
+                        }
+                    });
+                }
+            });
+
+            log(getString(R.string.varnam_export_completed));
+        } catch (Exception e) {
+            Log.e("VarnamExport", e.getMessage());
 
             final Exception err = e;
             progressBar.post(new Runnable() {
@@ -247,8 +318,8 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
         });
     }
 
-    private void setupVarnamImportPack() {
-        Preference filePicker = findPreference("pref_varnam_import_pack");
+    private void setupVarnamImportTrained() {
+        Preference filePicker = findPreference("pref_varnam_import_trained");
 
         if (!installed) {
             filePicker.setEnabled(false);
@@ -269,7 +340,28 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
                     intent.putExtra("CONTENT_TYPE", "*/*");
                 }
 
-                startActivityForResult(intent, PICK_VARNAM_PACK_FILE);
+                startActivityForResult(intent, PICK_VARNAM_TRAINED_FILE);
+                return true;
+            }
+        });
+    }
+
+    private void setupVarnamExportTrained() {
+        Preference dirPicker = findPreference("pref_varnam_export_trained");
+
+        // Directory picker is not available in older Android version
+        if (!installed || Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            dirPicker.setEnabled(false);
+            return;
+        }
+
+        dirPicker.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = null;
+                intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+
+                startActivityForResult(intent, PICK_VARNAM_TRAINED_EXPORT_DIR);
                 return true;
             }
         });

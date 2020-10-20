@@ -89,7 +89,6 @@ public final class Varnam {
   /**
    * Import a varnam exported/trained file
    * @param path
-   * @param callback
    * @return
    * @throws VarnamException
    */
@@ -99,6 +98,21 @@ public final class Varnam {
     int status = library.varnam_import_learnings_from_file(handle, path);
     if (status != 0) {
       throw new VarnamException(library.varnam_get_last_error(handle));
+    }
+  }
+
+  /**
+   * Export words to a folder
+   * @param dirPath
+   * @param callback
+   * @throws VarnamException
+   */
+  public void exportFull(String dirPath, VarnamLibrary.ExportCallback callback) throws VarnamException {
+    VarnamLibrary library = VarnamLibrary.INSTANCE;
+
+    int status = library.varnam_export_words(handle, 30000, dirPath, VarnamLibrary.VARNAM_EXPORT_FULL, callback);
+    if (status != 0) {
+      throw new VarnamException(status + ": " + library.varnam_get_last_error(handle));
     }
   }
 
