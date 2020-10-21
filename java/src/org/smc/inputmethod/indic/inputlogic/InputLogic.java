@@ -1544,13 +1544,14 @@ public final class InputLogic {
                         final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
                                 typedWordString, "" /* prevWordsContext */,
                                 SuggestedWordInfo.MAX_SCORE,
-                                SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
+                                SuggestedWordInfo.KIND_TYPED,
+                                Dictionary.DICTIONARY_USER_TYPED,
                                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
                                 SuggestedWordInfo.NOT_A_CONFIDENCE);
                         // Show new suggestions if we have at least one. Otherwise keep the old
                         // suggestions with the new typed word. Exception: if the length of the
                         // typed word is <= 1 (after a deletion typically) we clear old suggestions.
-                        if (suggestedWords.size() > 1 || typedWordString.length() <= 1) {
+                        if (suggestedWords.size() >= 1 || typedWordString.length() <= 1) {
                             holder.set(suggestedWords);
                         } else {
                             holder.set(retrieveOlderSuggestions(typedWordInfo, mSuggestedWords));
@@ -1632,21 +1633,31 @@ public final class InputLogic {
         if (numberOfCharsInWordBeforeCursor > expectedCursorPosition) return;
         final String typedWordString = range.mWord.toString();
 
-        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<>();
-        final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(typedWordString,
-                "" /* prevWordsContext */, SuggestedWords.MAX_SUGGESTIONS + 1,
-                SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
-                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
-        suggestions.add(typedWordInfo);
-
         if (!isResumableWord(settingsValues, typedWordString)) {
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             return;
         }
 
+        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<>();
+        final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
+                typedWordString,
+                "" /* prevWordsContext */,
+                SuggestedWordInfo.MAX_SCORE,
+                SuggestedWordInfo.KIND_TYPED,
+                Dictionary.DICTIONARY_USER_TYPED,
+                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
+        suggestions.add(typedWordInfo);
+
         if (varnam != null) {
             suggestions.addAll(getVarnamSuggestions(typedWordString));
+
+            // TODO do this better, make suggestion strip show the input & the word always
+            // If there's only one suggestion result from Varnam, add the input as a result
+            // Otherwise the suggestion strip will only show the one transliterated result
+            if (suggestions.size() == 2) {
+                suggestions.add(2, typedWordInfo);
+            }
         } else {
             int i = 0;
             for (final SuggestionSpan span : range.getSuggestionSpansAtWord()) {
@@ -2372,7 +2383,8 @@ public final class InputLogic {
 
             suggestedWords.addAll(getVarnamSuggestions(typedWordString));
 
-            // If there's only suggestion result from Varnam, add the input as a result
+            // TODO do this better, make suggestion strip show the input & the word always
+            // If there's only one suggestion result from Varnam, add the input as a result
             // Otherwise the suggestion strip will only show the one transliterated result
             if (suggestedWords.size() == 2) {
                 suggestedWords.add(2, typedWordInfo);
