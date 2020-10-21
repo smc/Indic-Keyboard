@@ -294,6 +294,7 @@ public final class InputLogic {
     public InputTransaction onPickSuggestionManually(final SettingsValues settingsValues,
             final SuggestedWordInfo suggestionInfo, final int keyboardShiftState,
             final int currentKeyboardScriptId, final LatinIME.UIHandler handler) {
+
         final SuggestedWords suggestedWords = mSuggestedWords;
         final String suggestion = suggestionInfo.mWord;
         // If this is a punctuation picked from the suggestion strip, pass it to onCodeInput
@@ -843,6 +844,9 @@ public final class InputLogic {
             insertAutomaticSpaceIfOptionsAndTextAllow(settingsValues);
         }
 
+        // For varnam
+        boolean wasCursorFrontOrMiddle = false;
+
         if (mWordComposer.isCursorFrontOrMiddleOfComposingWord()) {
             Log.d("IndicKeyboard", "InputLogic: isCursorFrontOrMiddleOfComposingWord");
             // If we are in the middle of a recorrection, we need to commit the recorrection
@@ -851,8 +855,9 @@ public final class InputLogic {
             unlearnWord(mWordComposer.getTypedWord(), inputTransaction.mSettingsValues,
                     Constants.EVENT_BACKSPACE);
             resetEntireInputState(mConnection.getExpectedSelectionStart(),
-                    mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
+                    mConnection.getExpectedSelectionEnd(), varnam == null /* clearSuggestionStrip */);
             isComposingWord = false;
+            wasCursorFrontOrMiddle = true;
         }
         // We want to find out whether to start composing a new word with this character. If so,
         // we need to reset the composing state and switch isComposingWord. The order of the
@@ -904,7 +909,11 @@ public final class InputLogic {
                 sendKeyCodePoint(settingsValues, codePoint, isTransliteration);
             }
         }
-        inputTransaction.setRequiresUpdateSuggestions();
+        if (varnam != null && wasCursorFrontOrMiddle) {
+            restartSuggestionsOnWordTouchedByCursor(settingsValues, true, ScriptUtils.SCRIPT_LATIN);
+        } else {
+            inputTransaction.setRequiresUpdateSuggestions();
+        }
     }
 
     /**
@@ -1048,7 +1057,7 @@ public final class InputLogic {
             unlearnWord(mWordComposer.getTypedWord(), inputTransaction.mSettingsValues,
                     Constants.EVENT_BACKSPACE);
             resetEntireInputState(mConnection.getExpectedSelectionStart(),
-                    mConnection.getExpectedSelectionEnd(), true /* clearSuggestionStrip */);
+                    mConnection.getExpectedSelectionEnd(), varnam == null /* clearSuggestionStrip */);
             // When we exit this if-clause, mWordComposer.isComposingWord() will return false.
         }
         if (mWordComposer.isComposingWord()) {
@@ -1215,13 +1224,14 @@ public final class InputLogic {
             }
             if (mConnection.hasSlowInputConnection()) {
                 mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
-            } else if (inputTransaction.mSettingsValues.isSuggestionsEnabledPerUserSettings()
+            } else if (varnam != null || (
+                    inputTransaction.mSettingsValues.isSuggestionsEnabledPerUserSettings()
                     && inputTransaction.mSettingsValues.mSpacingAndPunctuations
                             .mCurrentLanguageHasSpaces
                     && !mConnection.isCursorFollowedByWordCharacter(
-                            inputTransaction.mSettingsValues.mSpacingAndPunctuations)) {
-                restartSuggestionsOnWordTouchedByCursor(inputTransaction.mSettingsValues,
-                        false /* forStartInput */, currentKeyboardScriptId);
+                            inputTransaction.mSettingsValues.mSpacingAndPunctuations)
+            )) {
+                restartSuggestionsOnWordTouchedByCursor(inputTransaction.mSettingsValues,false, currentKeyboardScriptId);
             }
         }
     }
@@ -1574,7 +1584,7 @@ public final class InputLogic {
             final boolean forStartInput,
             // TODO: remove this argument, put it into settingsValues
             final int currentKeyboardScriptId) {
-        Log.d("IndicKeyboard", "InputLogidc: restartSuggestionsOnWordTouchedByCursor");
+        Log.d("IndicKeyboard", "InputLogic: restartSuggestionsOnWordTouchedByCursor");
         // HACK: We may want to special-case some apps that exhibit bad behavior in case of
         // recorrection. This is a temporary, stopgap measure that will be removed later.
         // TODO: remove this.
@@ -1603,6 +1613,7 @@ public final class InputLogic {
             mLatinIME.mHandler.postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_RECORRECTION);
             return;
         }
+
         final TextRange range = mConnection.getWordRangeAtCursor(
                 settingsValues.mSpacingAndPunctuations, currentKeyboardScriptId, isTransliteration);
         if (null == range) return; // Happens if we don't have an input connection at all
@@ -1629,33 +1640,26 @@ public final class InputLogic {
                 SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
         suggestions.add(typedWordInfo);
 
-        if (varnam != null) {
-            suggestions.addAll(getVarnamSuggestions(typedWordString));
-
-            final SuggestedWords suggestedWords = new SuggestedWords(suggestions,
-                    null /* rawSuggestions */, typedWordInfo, false /* typedWordValid */,
-                    false /* willAutoCorrect */, false /* isObsoleteSuggestions */,
-                    SuggestedWords.INPUT_STYLE_RECORRECTION, SuggestedWords.NOT_A_SEQUENCE_NUMBER);
-
-            doShowSuggestionsAndClearAutoCorrectionIndicator(suggestedWords);
-            return;
-        }
-
         if (!isResumableWord(settingsValues, typedWordString)) {
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             return;
         }
-        int i = 0;
-        for (final SuggestionSpan span : range.getSuggestionSpansAtWord()) {
-            for (final String s : span.getSuggestions()) {
-                ++i;
-                if (!TextUtils.equals(s, typedWordString)) {
-                    suggestions.add(new SuggestedWordInfo(s,
-                            "" /* prevWordsContext */, SuggestedWords.MAX_SUGGESTIONS - i,
-                            SuggestedWordInfo.KIND_RESUMED, Dictionary.DICTIONARY_RESUMED,
-                            SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                            SuggestedWordInfo.NOT_A_CONFIDENCE
-                                    /* autoCommitFirstWordConfidence */));
+
+        if (varnam != null) {
+            suggestions.addAll(getVarnamSuggestions(typedWordString));
+        } else {
+            int i = 0;
+            for (final SuggestionSpan span : range.getSuggestionSpansAtWord()) {
+                for (final String s : span.getSuggestions()) {
+                    ++i;
+                    if (!TextUtils.equals(s, typedWordString)) {
+                        suggestions.add(new SuggestedWordInfo(s,
+                                "" /* prevWordsContext */, SuggestedWords.MAX_SUGGESTIONS - i,
+                                SuggestedWordInfo.KIND_RESUMED, Dictionary.DICTIONARY_RESUMED,
+                                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                                SuggestedWordInfo.NOT_A_CONFIDENCE
+                                /* autoCommitFirstWordConfidence */));
+                    }
                 }
             }
         }
@@ -2513,7 +2517,7 @@ public final class InputLogic {
                         scheme.author,
                         scheme.version,
                         1,
-                        60,
+                        3,
                         new ArrayList<InputMethod.InputPattern>()
                 );
             } else {
