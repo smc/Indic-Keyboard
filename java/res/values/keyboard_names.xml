@@ -28,7 +28,6 @@
     <string name="keyboard_name_ml_lalitha">മലയാളം</string>
     <string name="keyboard_name_ml_transliteration">മലയാളം - ലിപ്യന്തരണം</string>
     <string name="keyboard_name_ml_swanalekha">മലയാളം - സ്വനലേഖ</string>
-    <string name="keyboard_name_ml_varnam">മലയാളം - വർണ്ണം</string>
     <string name="keyboard_name_mni_inscript">মৈতৈলোন্</string>
     <string name="keyboard_name_mnw">Mon</string>
     <string name="keyboard_name_mr_transliteration">मराठी - अक्षरांतरण</string>
@@ -60,4 +59,13 @@
     <string name="keyboard_name_te_transliteration">తెలుగు - లిప్యంతరీకరణ</string>
     <string name="keyboard_name_ur_navees">اردو</string>
     <string name="keyboard_name_ur_transliteration">اردو - Transliteration</string>
+
+    <!-- Varnam -->
+    <string name="keyboard_name_bn_varnam">বাংলা - Varnam</string>
+    <string name="keyboard_name_ka_varnam">ಕನ್ನಡ - Varnam</string>
+    <string name="keyboard_name_gu_varnam">ગુજરાતી - Varnam</string>
+    <string name="keyboard_name_hi_varnam">हिन्दी - Varnam</string>
+    <string name="keyboard_name_ml_varnam">മലയാളം - Varnam</string>
+    <string name="keyboard_name_ta_varnam">தமிழ் - Varnam</string>
+    <string name="keyboard_name_te_varnam">తెలుగు - Varnam</string>
 </resources>

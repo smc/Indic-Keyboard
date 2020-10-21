@@ -191,11 +191,6 @@
             android:imeSubtypeLocale="ml_IN"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=ml-swanalekha" />
-    <subtype android:icon="@drawable/ic_ime_switcher_dark"
-            android:label="@string/keyboard_name_ml_varnam"
-            android:imeSubtypeLocale="ml_IN"
-            android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=varnam-ml" />
 
     <!-- Manipuri/Meithei -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
@@ -372,4 +367,41 @@
             android:imeSubtypeLocale="ur_IN"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=ur-transliteration" />
+
+    <!-- Varnam -->
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+        android:label="@string/keyboard_name_bn_varnam"
+        android:imeSubtypeLocale="bn_IN"
+        android:imeSubtypeMode="keyboard"
+        android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=varnam-bn" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+        android:label="@string/keyboard_name_ka_varnam"
+        android:imeSubtypeLocale="ka_IN"
+        android:imeSubtypeMode="keyboard"
+        android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=varnam-ka" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+        android:label="@string/keyboard_name_hi_varnam"
+        android:imeSubtypeLocale="hi_IN"
+        android:imeSubtypeMode="keyboard"
+        android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=varnam-hi" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+        android:label="@string/keyboard_name_gu_varnam"
+        android:imeSubtypeLocale="gu_IN"
+        android:imeSubtypeMode="keyboard"
+        android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=varnam-gu" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+        android:label="@string/keyboard_name_ml_varnam"
+        android:imeSubtypeLocale="ml_IN"
+        android:imeSubtypeMode="keyboard"
+        android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=varnam-ml" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+        android:label="@string/keyboard_name_ta_varnam"
+        android:imeSubtypeLocale="ta_IN"
+        android:imeSubtypeMode="keyboard"
+        android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=varnam-ta" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+        android:label="@string/keyboard_name_te_varnam"
+        android:imeSubtypeLocale="te_IN"
+        android:imeSubtypeMode="keyboard"
+        android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=varnam-te" />
 </input-method>

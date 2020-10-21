@@ -67,8 +67,14 @@ public class VarnamIndicKeyboard {
     }
 
     public static final HashMap<String, Scheme> schemes = new HashMap<String, Scheme>() {{
-        put("varnam-ml", new Scheme("ml", "ml", "Malayalam", "", "0.1", "Navaneeth KN"));
-        put("varnam-ta", new Scheme("ta", "ta", "Tamil", "", "0.1", "Navaneeth KN/Kumaran Venkataraman"));
+        // TODO get author, version value from VST file if available
+        put("varnam-bn", new Scheme("bn", "bn", "Bangla", "", "0.1", ""));
+        put("varnam-ka", new Scheme("kn", "kn", "Kannada", "", "0.1", ""));
+        put("varnam-gu", new Scheme("gu", "gu", "Gujarati", "", "0.1", ""));
+        put("varnam-hi", new Scheme("hi", "hi", "Hindi", "", "0.1", ""));
+        put("varnam-ml", new Scheme("ml", "ml", "Malayalam", "", "0.1", ""));
+        put("varnam-ta", new Scheme("ta", "ta", "Tamil", "", "0.1", ""));
+        put("varnam-te", new Scheme("te", "te", "Telugu", "", "0.1", ""));
     }};
 
     public static HashMap<String, Scheme> getInstalledSchemes(Context context) {
