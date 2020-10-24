@@ -5,23 +5,18 @@
 
 package org.smc.inputmethod.indic.settings;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.ContentUris;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -35,11 +30,14 @@ import org.xml.sax.InputSource;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
+import java.util.ArrayList;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -50,9 +48,12 @@ import java.util.zip.GZIPInputStream;
  * - Import words
  */
 public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
-    private static int PICK_VARNAM_CORPUS_FILE = 1;
-    private static int PICK_VARNAM_TRAINED_FILE = 2;
-    private static int PICK_VARNAM_TRAINED_EXPORT_DIR = 3;
+    private static String TAG = "VarnamSettings";
+
+    private static int PICK_VARNAM_PACK_APP = 1;
+    private static int PICK_VARNAM_CORPUS_FILE = 2;
+    private static int PICK_VARNAM_TRAINED_FILE = 3;
+    private static int PICK_VARNAM_TRAINED_EXPORT_DIR = 4;
 
     private VarnamIndicKeyboard.Scheme scheme;
     private boolean installed = false; // Whether VST is available to use
@@ -75,6 +76,7 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
         scheme = VarnamIndicKeyboard.schemes.get(id);
         installed = VarnamIndicKeyboard.isSchemeInstalled(id, getContext());
 
+        setupVarnamPackAppInstall();
         setupVarnamImportFile();
         setupVarnamImportTrained();
         setupVarnamExportTrained();
@@ -91,7 +93,57 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-        if (requestCode == PICK_VARNAM_CORPUS_FILE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == PICK_VARNAM_PACK_APP && resultCode == Activity.RESULT_OK) {
+            // get array list
+            ArrayList<Uri> uriArrayList = resultData.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+            final ArrayList<Uri> packURIs = new ArrayList<>();
+
+            if (uriArrayList != null) {
+                for (int i = 0; i < uriArrayList.size(); i++) {
+                    // Get the file's content URI
+                    Uri uri = uriArrayList.get(i);
+                    String fileName = uri.getLastPathSegment();
+                    try {
+                        Log.i(TAG, "URI: " + uri.toString() + " fileName: " + fileName);
+
+                        if (fileName.equals(scheme.id + ".vst")) {
+                            AssetFileDescriptor afd = getContext().getContentResolver().openAssetFileDescriptor(uri, "r");
+
+                            // Create dest filename and copy
+                            File varnamFolder = VarnamIndicKeyboard.getVarnamFolder(scheme.id, getContext());
+                            File vstFile = new File(varnamFolder.getAbsolutePath(), scheme.id + ".vst");
+
+                            FileChannel sourceChannel = new FileInputStream(afd.getFileDescriptor()).getChannel();
+                            FileChannel destinationChannel = new FileOutputStream(vstFile).getChannel();
+
+                            sourceChannel.transferTo(afd.getStartOffset(), afd.getLength(), destinationChannel);
+                        } else if (!fileName.equals("packs.json")) {
+                            packURIs.add(uri);
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, Log.getStackTraceString(e));
+                        // Break loop at first exception
+                        break;
+                    }
+                }
+                status.setVisibility(View.VISIBLE);
+                progressBar.setIndeterminate(true);
+                logTextView.setText("");
+
+                Runnable runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        for (int i = 0; i < packURIs.size(); i++) {
+                            // Get the file's content URI
+                            Uri uri = packURIs.get(i);
+                            importFromFile(uri, i + 1, packURIs.size());
+                        }
+                    }
+                };
+                learnThread = new Thread(runnable);
+                learnThread.start();
+            }
+        } else if (requestCode == PICK_VARNAM_CORPUS_FILE && resultCode == Activity.RESULT_OK) {
             if (resultData != null) {
                 final Uri uri = resultData.getData();
 
@@ -121,7 +173,7 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
                 Runnable runnable = new Runnable() {
                     @Override
                     public void run() {
-                        importFromFile(uri);
+                        importFromFile(uri, 1, 1);
                     }
                 };
                 learnThread = new Thread(runnable);
@@ -146,6 +198,8 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
                 learnThread = new Thread(runnable);
                 learnThread.start();
             }
+        } else {
+            Log.e(TAG, "Activity returned fail");
         }
     }
 
@@ -199,7 +253,7 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
      * Import a pack/trained/varnam exported file
      * @param uri
      */
-    private void importFromFile(Uri uri) {
+    private void importFromFile(Uri uri, final int index, final int total) {
         try {
             // We're copying file to avoid asking external storage permission to read file
             // TODO better/alternate way to do this ?
@@ -216,7 +270,7 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
                 @Override
                 public void run() {
                     progressBar.setIndeterminate(true);
-                    log(getString(R.string.varnam_import_running));
+                    log(getString(R.string.varnam_import_running, index, total));
                 }
             });
 
@@ -288,6 +342,32 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
                 }
             });
         }
+    }
+
+    /**
+     * Shows a Install Language pack button at the top if lang not available
+     * Otherwise, shows an update button
+     * Thanks user207064 https://stackoverflow.com/a/31586010/1372424
+     * Licensed under CC-BY-SA 3.0
+     */
+    private void setupVarnamPackAppInstall() {
+        Preference packInstallButton = findPreference("pref_varnam_import_pack");
+
+        packInstallButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent mRequestFileIntent = new Intent(Intent.ACTION_PICK);
+                mRequestFileIntent.setPackage("org.smc.inputmethod.varnam." + scheme.id);
+                mRequestFileIntent.setType("application/octet-stream");
+                try {
+                    startActivityForResult(mRequestFileIntent, PICK_VARNAM_PACK_APP);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), getString(R.string.varnam_pack_app_unavailable, scheme.name), Toast.LENGTH_LONG).show();
+                }
+                return true;
+            }
+        });
     }
 
     private void setupVarnamImportFile() {

@@ -30,12 +30,7 @@ public class VarnamIndicKeyboard {
     public static Varnam makeVarnam(String scheme, Context context) throws Exception {
         Varnam varnam;
 
-        // More about storage: https://stackoverflow.com/a/29404440/1372424
-        File varnamFolder = new File(context.getExternalFilesDir(null).getPath() + "/varnam", scheme);
-
-        if (!varnamFolder.exists()) {
-            varnamFolder.mkdirs();
-        }
+        File varnamFolder = getVarnamFolder(scheme, context);
 
         File vstFile = new File(varnamFolder.getAbsolutePath(), scheme + ".vst");
         String learningsFile = varnamFolder.getAbsolutePath() + "/" + scheme + ".vst.learnings";
@@ -46,6 +41,16 @@ public class VarnamIndicKeyboard {
 
         varnam = new Varnam(vstFile.getAbsolutePath(), learningsFile);
         return varnam;
+    }
+
+    public static File getVarnamFolder(String scheme, Context context) {
+        // More about storage: https://stackoverflow.com/a/29404440/1372424
+        File varnamFolder = new File(context.getExternalFilesDir(null).getPath() + "/varnam", scheme);
+
+        if (!varnamFolder.exists()) {
+            varnamFolder.mkdirs();
+        }
+        return varnamFolder;
     }
 
     public static class Scheme {

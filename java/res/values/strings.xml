@@ -607,6 +607,13 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
     <string name="delete_swipe_summary">Perform a swipe from the delete key to select and remove bigger portions of text at once</string>
     <string name="space_trackpad_summary">Swipe on the spacebar to move the cursor</string>
 
+    <string name="pref_varnam_category_pack">Language Pack</string>
+    <string name="pref_varnam_install_pack">Install Language Pack App</string>
+    <string name="pref_varnam_install_pack_summary">Install language pack app to setup this language</string>
+    <string name="varnam_pack_app_unavailable">Install Varnam %1$s Language Pack app first</string>
+    <string name="pref_varnam_import_pack">Import Language Pack</string>
+    <string name="pref_varnam_import_pack_summary">After an install or update of the language pack app, this import must be done.</string>
+
     <string name="pref_varnam_category_import">Import Words</string>
     <string name="pref_varnam_import_file">Import From File</string>
     <string name="pref_varnam_import_file_summary">Import the language words from any kind of text file</string>
@@ -621,7 +628,7 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
     <string name="pref_varnam_category_disabled">Disabled Languages</string>
 
     <string name="varnam_import_copy">Copying file... (%1$s)</string>
-    <string name="varnam_import_running">Importing... This might take some time.</string>
+    <string name="varnam_import_running">Importing (%1$d/%2$d)... This might take some time.</string>
     <string name="varnam_import_completed">Import completed.</string>
     <string name="varnam_import_status">Total words: %2$d. Failed words: %2$d</string>
 
