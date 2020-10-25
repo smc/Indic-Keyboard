@@ -166,7 +166,12 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
                             importFromFile(uri, i + 1, packURIs.size());
                         }
                         installed = true;
-                        setups();
+                        progressBar.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                setups();
+                            }
+                        });
                     }
                 };
                 learnThread = new Thread(runnable);
@@ -416,8 +421,8 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
     private void setupVarnamImportFile() {
         Preference filePicker = findPreference("pref_varnam_import_file");
 
+        filePicker.setEnabled(installed);
         if (!installed) {
-            filePicker.setEnabled(false);
             return;
         }
 
@@ -444,8 +449,8 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
     private void setupVarnamImportTrained() {
         Preference filePicker = findPreference("pref_varnam_import_trained");
 
+        filePicker.setEnabled(installed);
         if (!installed) {
-            filePicker.setEnabled(false);
             return;
         }
 
@@ -477,6 +482,7 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
             dirPicker.setEnabled(false);
             return;
         }
+        dirPicker.setEnabled(true);
 
         dirPicker.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
