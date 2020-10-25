@@ -115,7 +115,8 @@
         <activity
             android:label="@string/settings_screen_varnam"
             android:name="org.smc.inputmethod.indic.settings.VarnamSettingsActivity"
-            android:theme="@style/platformSettingsTheme" />
+            android:theme="@style/platformSettingsTheme"
+            android:screenOrientation="portrait" />
 
         <activity android:name="org.smc.inputmethod.indic.spellcheck.SpellCheckerSettingsActivity"
                   android:theme="@style/platformSettingsTheme"

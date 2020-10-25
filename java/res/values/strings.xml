@@ -628,6 +628,7 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
     <string name="pref_varnam_category_disabled">Disabled Languages</string>
 
     <string name="varnam_import_copy">Copying file... (%1$s)</string>
+    <string name="varnam_import_vst">Importing %1$s Symbol Table</string>
     <string name="varnam_import_running">Importing (%1$d/%2$d)... This might take some time.</string>
     <string name="varnam_import_completed">Import completed.</string>
     <string name="varnam_import_status">Total words: %2$d. Failed words: %2$d</string>

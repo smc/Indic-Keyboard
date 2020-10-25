@@ -6,6 +6,7 @@
 package org.smc.inputmethod.indic.settings;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -19,6 +20,7 @@ public class VarnamSettingsActivity extends FragmentActivity implements Preferen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.varnam);
+        findViewById(R.id.varnam_import_file_status).setVisibility(View.INVISIBLE);
     }
 
     @Override

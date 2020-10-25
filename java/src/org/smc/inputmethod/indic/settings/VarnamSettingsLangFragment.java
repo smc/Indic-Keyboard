@@ -18,6 +18,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
@@ -65,7 +67,7 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
     private Thread learnThread;
 
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+    public void onCreatePreferences(@Nullable Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.prefs_screen_varnam_lang);
 
         status = getActivity().findViewById(R.id.varnam_import_file_status);
@@ -80,6 +82,22 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
         setupVarnamImportFile();
         setupVarnamImportTrained();
         setupVarnamExportTrained();
+
+        if (savedInstanceState != null) {
+            int statusVisibility = savedInstanceState.getInt("statusVisibility");
+            if (status != null) {
+                status.setVisibility(statusVisibility);
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        // Save UI state changes to the savedInstanceState.
+        // This bundle will be passed to onCreate if the process is
+        // killed and restarted.
+        savedInstanceState.putInt("statusVisibility", status.getVisibility());
     }
 
     @Override
@@ -87,8 +105,9 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
         super.onStop();
         if (learnThread != null) {
             learnThread.interrupt();
+            learnThread = null;
+            status.setVisibility(View.INVISIBLE);
         }
-        status.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -107,6 +126,9 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
                         Log.i(TAG, "URI: " + uri.toString() + " fileName: " + fileName);
 
                         if (fileName.equals(scheme.id + ".vst")) {
+                            logTextView.setText("");
+                            log(getString(R.string.varnam_import_vst, scheme.name));
+
                             AssetFileDescriptor afd = getContext().getContentResolver().openAssetFileDescriptor(uri, "r");
 
                             // Create dest filename and copy
@@ -128,12 +150,14 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
                 }
                 status.setVisibility(View.VISIBLE);
                 progressBar.setIndeterminate(true);
-                logTextView.setText("");
 
                 Runnable runnable = new Runnable() {
                     @Override
                     public void run() {
                         for (int i = 0; i < packURIs.size(); i++) {
+                            if (Thread.currentThread().isInterrupted()) {
+                                return;
+                            }
                             // Get the file's content URI
                             Uri uri = packURIs.get(i);
                             importFromFile(uri, i + 1, packURIs.size());
@@ -357,7 +381,7 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Intent mRequestFileIntent = new Intent(Intent.ACTION_PICK);
-                mRequestFileIntent.setPackage("org.smc.inputmethod.varnam." + scheme.id);
+                mRequestFileIntent.setPackage("com.varnamproject.pack." + scheme.id);
                 mRequestFileIntent.setType("application/octet-stream");
                 try {
                     startActivityForResult(mRequestFileIntent, PICK_VARNAM_PACK_APP);
