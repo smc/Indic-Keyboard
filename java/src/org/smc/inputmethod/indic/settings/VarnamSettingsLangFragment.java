@@ -399,13 +399,29 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
      * Licensed under CC-BY-SA 3.0
      */
     private void setupVarnamPackAppInstall() {
-        Preference packInstallButton = findPreference("pref_varnam_import_pack");
+        final String packAppID = "com.varnamproject.pack." + scheme.id;
 
+        Preference packInstallButton = findPreference("pref_varnam_install_pack");
         packInstallButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Intent mRequestFileIntent = new Intent(Intent.ACTION_PICK);
                 mRequestFileIntent.setPackage("com.varnamproject.pack." + scheme.id);
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packAppID)));
+                } catch (android.content.ActivityNotFoundException anfe) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + packAppID)));
+                }
+                return true;
+            }
+        });
+
+        Preference packImportButton = findPreference("pref_varnam_import_pack");
+        packImportButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent mRequestFileIntent = new Intent(Intent.ACTION_PICK);
+                mRequestFileIntent.setPackage(packAppID);
                 mRequestFileIntent.setType("application/octet-stream");
                 try {
                     startActivityForResult(mRequestFileIntent, PICK_VARNAM_PACK_APP);
