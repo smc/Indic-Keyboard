@@ -778,7 +778,8 @@ public final class InputLogic {
         final int codePoint = event.mCodePoint;
         mSpaceState = SpaceState.NONE;
         if (inputTransaction.mSettingsValues.isWordSeparator(codePoint)
-                || Character.getType(codePoint) == Character.OTHER_SYMBOL) {
+                || Character.getType(codePoint) == Character.OTHER_SYMBOL
+                || Character.getType(codePoint) == Character.MIN_VALUE) {
             handleSeparatorEvent(event, inputTransaction, handler);
         } else {
             if (SpaceState.PHANTOM == inputTransaction.mSpaceState) {
