@@ -21,6 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.Preference;
+import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.android.inputmethod.latin.R;
@@ -78,10 +79,10 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
         scheme = VarnamIndicKeyboard.schemes.get(id);
         installed = VarnamIndicKeyboard.isSchemeInstalled(id, getContext());
 
-        setupVarnamPackAppInstall();
-        setupVarnamImportFile();
-        setupVarnamImportTrained();
-        setupVarnamExportTrained();
+        PreferenceCategory packCategory = findPreference("pref_varnam_category_pack");
+        packCategory.setTitle(getString(R.string.pref_varnam_category_pack, scheme.name));
+
+        setups();
 
         if (savedInstanceState != null) {
             int statusVisibility = savedInstanceState.getInt("statusVisibility");
@@ -106,6 +107,7 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
         if (learnThread != null) {
             learnThread.interrupt();
             learnThread = null;
+            logTextView.setText("");
             status.setVisibility(View.INVISIBLE);
         }
     }
@@ -113,6 +115,7 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
         if (requestCode == PICK_VARNAM_PACK_APP && resultCode == Activity.RESULT_OK) {
+            // TODO allow user to pick individual packs to import
             // get array list
             ArrayList<Uri> uriArrayList = resultData.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
             final ArrayList<Uri> packURIs = new ArrayList<>();
@@ -162,6 +165,8 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
                             Uri uri = packURIs.get(i);
                             importFromFile(uri, i + 1, packURIs.size());
                         }
+                        installed = true;
+                        setups();
                     }
                 };
                 learnThread = new Thread(runnable);
@@ -235,7 +240,7 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
         try {
             // We're copying file to avoid asking external storage permission to read file
             // TODO better/alternate way to do this ?
-            String path = copyUriAndGetPath(uri);
+            final String path = copyUriAndGetPath(uri);
             Varnam varnam = VarnamIndicKeyboard.makeVarnam(scheme.id, getContext());
 
             progressBar.post(new Runnable() {
@@ -252,8 +257,12 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
             progressBar.post(new Runnable() {
                 @Override
                 public void run() {
+                    log("Removing cached file.");
+                    new File(path).delete();
+
                     progressBar.setIndeterminate(false);
                     progressBar.setProgress(100);
+
                     log(getString(R.string.varnam_import_completed));
                     log(getString(R.string.varnam_import_status, status.total_words, status.failed));
                 }
@@ -281,7 +290,7 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
         try {
             // We're copying file to avoid asking external storage permission to read file
             // TODO better/alternate way to do this ?
-            String path = copyUriAndGetPath(uri);
+            final String path = copyUriAndGetPath(uri);
             Varnam varnam = VarnamIndicKeyboard.makeVarnam(scheme.id, getContext());
 
             if (isGZipFile(path)) {
@@ -304,6 +313,9 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
             progressBar.post(new Runnable() {
                 @Override
                 public void run() {
+                    log("Removing cached file.");
+                    new File(path).delete();
+
                     progressBar.setIndeterminate(false);
                     progressBar.setProgress(100);
                     log(getString(R.string.varnam_import_completed));
@@ -366,6 +378,13 @@ public final class VarnamSettingsLangFragment extends PreferenceFragmentCompat {
                 }
             });
         }
+    }
+
+    private void setups() {
+        setupVarnamPackAppInstall();
+        setupVarnamImportFile();
+        setupVarnamImportTrained();
+        setupVarnamExportTrained();
     }
 
     /**

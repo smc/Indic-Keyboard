@@ -9,6 +9,7 @@
     app:key="screen_varnam_lang">
     <PreferenceCategory
         android:layout_height="wrap_content"
+        app:key="pref_varnam_category_pack"
         app:title="@string/pref_varnam_category_pack"
         app:iconSpaceReserved="false">
         <Preference

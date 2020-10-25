@@ -607,8 +607,8 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
     <string name="delete_swipe_summary">Perform a swipe from the delete key to select and remove bigger portions of text at once</string>
     <string name="space_trackpad_summary">Swipe on the spacebar to move the cursor</string>
 
-    <string name="pref_varnam_category_pack">Language Pack</string>
-    <string name="pref_varnam_install_pack">Install Language Pack App</string>
+    <string name="pref_varnam_category_pack">%1$s Language Pack</string>
+    <string name="pref_varnam_install_pack">Install Language Pack</string>
     <string name="pref_varnam_install_pack_summary">Install language pack app to setup this language</string>
     <string name="varnam_pack_app_unavailable">Install Varnam %1$s Language Pack app first</string>
     <string name="pref_varnam_import_pack">Import Language Pack</string>
