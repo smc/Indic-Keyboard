@@ -54,6 +54,7 @@ public final class KeyboardIconsSet {
     public static final String NAME_SHORTCUT_KEY = "shortcut_key";
     public static final String NAME_INCOGNITO_KEY = "incognito_key";
     public static final String NAME_SHORTCUT_KEY_DISABLED = "shortcut_key_disabled";
+    public static final String NAME_MORE_KEY = "more_key";
     public static final String NAME_LANGUAGE_SWITCH_KEY = "language_switch_key";
     public static final String NAME_ZWNJ_KEY = "zwnj_key";
     public static final String NAME_ZWJ_KEY = "zwj_key";
@@ -82,6 +83,7 @@ public final class KeyboardIconsSet {
         NAME_TAB_KEY,                     R.styleable.Keyboard_iconTabKey,
         NAME_SHORTCUT_KEY,                R.styleable.Keyboard_iconShortcutKey,
         NAME_INCOGNITO_KEY,               R.styleable.Keyboard_iconIncognitoKey,
+        NAME_MORE_KEY,                    R.styleable.Keyboard_iconMoreKey,
         NAME_SPACE_KEY_FOR_NUMBER_LAYOUT, R.styleable.Keyboard_iconSpaceKeyForNumberLayout,
         NAME_SHIFT_KEY_SHIFTED,           R.styleable.Keyboard_iconShiftKeyShifted,
         NAME_SHORTCUT_KEY_DISABLED,       R.styleable.Keyboard_iconShortcutKeyDisabled,

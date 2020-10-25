@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import androidx.core.view.ViewCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -70,6 +71,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private final ImageButton mVoiceKey;
     private final ImageButton mBackToKeyboardKey;
     private final ImageButton mIncognitoIcon;
+    private final ImageButton mMoreKey;
     private final View mImportantNoticeStrip;
     MainKeyboardView mMainKeyboardView;
 
@@ -146,6 +148,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mBackToKeyboardKey = (ImageButton)findViewById(R.id.suggestions_strip_back_to_keyboard_key);
         mVoiceKey = (ImageButton)findViewById(R.id.suggestions_strip_voice_key);
         mIncognitoIcon = findViewById(R.id.suggestions_strip_incognito_icon);
+        mMoreKey = (ImageButton)findViewById(R.id.suggestions_strip_more_key);
         mImportantNoticeStrip = findViewById(R.id.important_notice_strip);
         mStripVisibilityGroup = new StripVisibilityGroup(this, mSuggestionsStrip,
                 mImportantNoticeStrip);
@@ -181,12 +184,16 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         final TypedArray keyboardAttr = context.obtainStyledAttributes(attrs,
                 R.styleable.Keyboard, defStyle, R.style.SuggestionStripView);
         final Drawable iconVoice = keyboardAttr.getDrawable(R.styleable.Keyboard_iconShortcutKey);
+        final Drawable iconMore = keyboardAttr.getDrawable(R.styleable.Keyboard_iconMoreKey);
         final Drawable iconBackToKeyboard = keyboardAttr.getDrawable(R.styleable.Keyboard_iconBackToKeyboardKey);
         final Drawable iconIncognito = keyboardAttr.getDrawable(R.styleable.Keyboard_iconIncognitoKey);
         keyboardAttr.recycle();
 
         mVoiceKey.setImageDrawable(iconVoice);
         mVoiceKey.setOnClickListener(this);
+
+        mMoreKey.setImageDrawable(iconMore);
+        mMoreKey.setOnClickListener(this);
 
         mBackToKeyboardKey.setImageDrawable(iconBackToKeyboard);
         mBackToKeyboardKey.setOnClickListener(this);
@@ -477,6 +484,14 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             mListener.onCodeInput(Constants.CODE_SHORTCUT,
                     Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE,
                     false /* isKeyRepeat */);
+            return;
+        }
+        if (view == mMoreKey) {
+            if (isShowingMoreSuggestionPanel()) {
+                mMoreSuggestionsView.dismissMoreKeysPanel();
+            } else {
+                showMoreSuggestions();
+            }
             return;
         }
 
