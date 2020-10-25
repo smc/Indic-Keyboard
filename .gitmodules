@@ -13,4 +13,4 @@
 [submodule "native/libvarnam"]
 	path = native/libvarnam
 	url = git@github.com:subins2000/libvarnam.git
-	branch = "disable-pthread-dl"
+	branch = "merge-all-mychanges"
