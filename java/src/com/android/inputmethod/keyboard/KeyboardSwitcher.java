@@ -307,6 +307,11 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mEmojiPalettesView.setVisibility(View.VISIBLE);
     }
 
+    public void setEmojiSearch() {
+        setAlphabetKeyboard();
+        mLatinIME.setEmojiSearch();
+    }
+
     public enum KeyboardSwitchState {
         HIDDEN(-1),
         SYMBOLS_SHIFTED(KeyboardId.ELEMENT_SYMBOLS_SHIFTED),

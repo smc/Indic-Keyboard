@@ -50,6 +50,7 @@ public final class KeyboardState {
         public void setAlphabetShiftLockedKeyboard();
         public void setAlphabetShiftLockShiftedKeyboard();
         public void setEmojiKeyboard();
+        public void setEmojiSearch();
         public void setSymbolsKeyboard();
         public void setSymbolsShiftedKeyboard();
 
@@ -348,6 +349,10 @@ public final class KeyboardState {
         mPrevMainKeyboardWasShiftLocked = mAlphabetShiftState.isShiftLocked();
         mAlphabetShiftState.setShiftLocked(false);
         mSwitchActions.setEmojiKeyboard();
+    }
+
+    private void setEmojiSearch() {
+        mSwitchActions.setEmojiSearch();
     }
 
     public void onPressKey(final int code, final boolean isSinglePointer, final int autoCapsFlags,
@@ -671,6 +676,8 @@ public final class KeyboardState {
             setEmojiKeyboard();
         } else if (code == Constants.CODE_ALPHA_FROM_EMOJI) {
             setAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
+        } else if (code == Constants.CODE_EMOJI_SEARCH) {
+            setEmojiSearch();
         }
     }
 

@@ -78,6 +78,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
     private ImageButton mDeleteKey;
     private TextView mAlphabetKeyLeft;
+    private TextView mSearchKeyLeft;
     private TextView mAlphabetKeyRight;
     private View mSpacebar;
     // TODO: Remove this workaround.
@@ -217,6 +218,13 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         mAlphabetKeyLeft.setTag(Constants.CODE_ALPHA_FROM_EMOJI);
         mAlphabetKeyLeft.setOnTouchListener(this);
         mAlphabetKeyLeft.setOnClickListener(this);
+
+        mSearchKeyLeft = (TextView)findViewById(R.id.emoji_keyboard_search_left);
+        mSearchKeyLeft.setBackgroundResource(mFunctionalKeyBackgroundId);
+        mSearchKeyLeft.setTag(Constants.CODE_EMOJI_SEARCH);
+        mSearchKeyLeft.setOnTouchListener(this);
+        mSearchKeyLeft.setOnClickListener(this);
+
         mAlphabetKeyRight = (TextView)findViewById(R.id.emoji_keyboard_alphabet_right);
         mAlphabetKeyRight.setBackgroundResource(mFunctionalKeyBackgroundId);
         mAlphabetKeyRight.setTag(Constants.CODE_ALPHA_FROM_EMOJI);
@@ -389,6 +397,12 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         setupAlphabetKey(mAlphabetKeyRight, switchToAlphaLabel, params);
         mEmojiPager.setAdapter(mEmojiPalettesAdapter);
         mEmojiPager.setCurrentItem(mCurrentPagerPosition);
+
+        // TODO use an icon ?
+        mSearchKeyLeft.setText("🔍");
+        mSearchKeyLeft.setTextColor(params.mFunctionalTextColor);
+        mSearchKeyLeft.setTextSize(TypedValue.COMPLEX_UNIT_PX, params.mLabelSize);
+        mSearchKeyLeft.setTypeface(params.mTypeface);
     }
 
     public void stopEmojiPalettes() {

@@ -38,7 +38,6 @@ import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.LastComposedWord;
-import org.smc.inputmethod.indic.LatinIME;
 import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.RichInputConnection;
 import com.android.inputmethod.latin.Suggest;
@@ -50,15 +49,18 @@ import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.InputPointers;
 import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.define.DebugFlags;
-import org.smc.inputmethod.indic.settings.SettingsValues;
-import org.smc.inputmethod.indic.settings.SettingsValuesForSuggestion;
-import org.smc.inputmethod.indic.settings.SpacingAndPunctuations;
-import org.smc.inputmethod.indic.suggestions.SuggestionStripViewAccessor;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.RecapitalizeStatus;
 import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.TextRange;
+
+import org.smc.ime.InputMethod;
+import org.smc.inputmethod.indic.LatinIME;
+import org.smc.inputmethod.indic.settings.SettingsValues;
+import org.smc.inputmethod.indic.settings.SettingsValuesForSuggestion;
+import org.smc.inputmethod.indic.settings.SpacingAndPunctuations;
+import org.smc.inputmethod.indic.suggestions.SuggestionStripViewAccessor;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -66,8 +68,6 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
-
-import org.smc.ime.InputMethod;
 /**
  * This class manages the input logic.
  */
@@ -113,6 +113,9 @@ public final class InputLogic {
 
     private boolean isIndic;
     private boolean isTransliteration;
+
+    private boolean isEmoji;
+    private EmojiSearch emojiSearch;
 
     /**
      * Create a new instance of the input logic.
@@ -710,6 +713,8 @@ public final class InputLogic {
                 // Shift + Enter is treated as a functional key but it results in adding a new
                 // line, so that does affect the contents of the editor.
                 inputTransaction.setDidAffectContents();
+                break;
+            case Constants.CODE_EMOJI_SEARCH:
                 break;
             default:
                 throw new RuntimeException("Unknown key code : " + event.mKeyCode);
@@ -2271,19 +2276,47 @@ public final class InputLogic {
     public void getSuggestedWords(final SettingsValues settingsValues,
             final Keyboard keyboard, final int keyboardShiftMode, final int inputStyle,
             final int sequenceNumber, final OnGetSuggestedWordsCallback callback) {
-        mWordComposer.adviseCapitalizedModeBeforeFetchingSuggestions(
-                getActualCapsMode(settingsValues, keyboardShiftMode));
-        mSuggest.getSuggestedWords(mWordComposer,
-                getNgramContextFromNthPreviousWordForSuggestion(
-                        settingsValues.mSpacingAndPunctuations,
-                        // Get the word on which we should search the bigrams. If we are composing
-                        // a word, it's whatever is *before* the half-committed word in the buffer,
-                        // hence 2; if we aren't, we should just skip whitespace if any, so 1.
-                        mWordComposer.isComposingWord() ? 2 : 1),
-                keyboard,
-                new SettingsValuesForSuggestion(settingsValues.mBlockPotentiallyOffensive),
-                settingsValues.mAutoCorrectionEnabledPerUserSettings,
-                inputStyle, sequenceNumber, callback);
+        if (isEmoji) {
+            final String typedWordString = mWordComposer.getTypedWord();
+            final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
+                    typedWordString,
+                    "" /* prevWordsContext */,
+                    SuggestedWordInfo.MAX_SCORE,
+                    SuggestedWordInfo.KIND_TYPED,
+                    Dictionary.DICTIONARY_USER_TYPED,
+                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                    SuggestedWordInfo.NOT_A_CONFIDENCE);
+
+            ArrayList<SuggestedWordInfo> suggestedEmojis = emojiSearch.search(typedWordString);
+            if (suggestedEmojis.size() > 0) {
+                callback.onGetSuggestedWords(new SuggestedWords(
+                        suggestedEmojis,
+                        null,
+                        typedWordInfo,
+                        false,
+                        true,
+                        false,
+                        SuggestedWords.INPUT_STYLE_NONE,
+                        SuggestedWords.INDEX_OF_AUTO_CORRECTION
+                ));
+            } else {
+                mLatinIME.setNeutralSuggestionStrip();
+            }
+        } else {
+            mWordComposer.adviseCapitalizedModeBeforeFetchingSuggestions(
+                    getActualCapsMode(settingsValues, keyboardShiftMode));
+            mSuggest.getSuggestedWords(mWordComposer,
+                    getNgramContextFromNthPreviousWordForSuggestion(
+                            settingsValues.mSpacingAndPunctuations,
+                            // Get the word on which we should search the bigrams. If we are composing
+                            // a word, it's whatever is *before* the half-committed word in the buffer,
+                            // hence 2; if we aren't, we should just skip whitespace if any, so 1.
+                            mWordComposer.isComposingWord() ? 2 : 1),
+                    keyboard,
+                    new SettingsValuesForSuggestion(settingsValues.mBlockPotentiallyOffensive),
+                    settingsValues.mAutoCorrectionEnabledPerUserSettings,
+                    inputStyle, sequenceNumber, callback);
+        }
     }
 
     /**
@@ -2399,5 +2432,12 @@ public final class InputLogic {
         mWordComposer.setTransliterationMethod(null);
         mConnection.setTransliterationMethod(null);
         isTransliteration = false;
+    }
+
+    public void setEmojiSearch(Context context) {
+        if (emojiSearch == null) {
+            emojiSearch = new EmojiSearch(context);
+        }
+        isEmoji = true;
     }
 }
