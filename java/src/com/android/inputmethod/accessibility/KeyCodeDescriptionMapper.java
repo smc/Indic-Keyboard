@@ -68,6 +68,7 @@ final class KeyCodeDescriptionMapper {
         mKeyCodeMap.put(Constants.CODE_ACTION_PREVIOUS,
                 R.string.spoken_description_action_previous);
         mKeyCodeMap.put(Constants.CODE_EMOJI, R.string.spoken_description_emoji);
+        mKeyCodeMap.put(Constants.CODE_EMOJI_SEARCH, R.string.spoken_description_emoji_search);
         // Because the upper-case and lower-case mappings of the following letters is depending on
         // the locale, the upper case descriptions should be defined here. The lower case
         // descriptions are handled in {@link #getSpokenLetterDescriptionId(Context,int)}.

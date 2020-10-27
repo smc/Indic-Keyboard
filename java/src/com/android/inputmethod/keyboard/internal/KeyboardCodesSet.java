@@ -51,6 +51,7 @@ public final class KeyboardCodesSet {
         "key_shift_enter",
         "key_language_switch",
         "key_emoji",
+        "key_emoji_search",
         "key_alpha_from_emoji",
         "key_unspecified",
     };
@@ -71,6 +72,7 @@ public final class KeyboardCodesSet {
         Constants.CODE_SHIFT_ENTER,
         Constants.CODE_LANGUAGE_SWITCH,
         Constants.CODE_EMOJI,
+        Constants.CODE_EMOJI_SEARCH,
         Constants.CODE_ALPHA_FROM_EMOJI,
         Constants.CODE_UNSPECIFIED,
     };
