@@ -1513,7 +1513,7 @@ public final class InputLogic {
 
         Log.w("IndicKeyboard", "performUpdateSuggestionStripSync");
 
-        if (!mWordComposer.isComposingWord() && !settingsValues.mBigramPredictionEnabled && varnam == null) {
+        if (!mWordComposer.isComposingWord() && (!settingsValues.mBigramPredictionEnabled || varnam != null)) {
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             return;
         }
