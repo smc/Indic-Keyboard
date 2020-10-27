@@ -51,6 +51,7 @@ public final class KeyboardState {
         public void setAlphabetShiftLockShiftedKeyboard();
         public void setEmojiKeyboard();
         public void setEmojiSearch();
+        public void unsetEmojiSearch();
         public void setSymbolsKeyboard();
         public void setSymbolsShiftedKeyboard();
 
@@ -86,6 +87,7 @@ public final class KeyboardState {
     // symbols, and emoji mode.
     private boolean mIsAlphabetMode;
     private boolean mIsEmojiMode;
+    private boolean mIsEmojiSearchMode;
     private AlphabetShiftState mAlphabetShiftState = new AlphabetShiftState();
     private boolean mIsSymbolShifted;
     private boolean mPrevMainKeyboardWasShiftLocked;
@@ -352,7 +354,13 @@ public final class KeyboardState {
     }
 
     private void setEmojiSearch() {
+        mIsEmojiSearchMode = true;
         mSwitchActions.setEmojiSearch();
+    }
+
+    private void unsetEmojiSearch() {
+        mIsEmojiSearchMode = false;
+        mSwitchActions.unsetEmojiSearch();
     }
 
     public void onPressKey(final int code, final boolean isSinglePointer, final int autoCapsFlags,
@@ -673,7 +681,11 @@ public final class KeyboardState {
         if (Constants.isLetterCode(code)) {
             updateAlphabetShiftState(autoCapsFlags, recapitalizeMode);
         } else if (code == Constants.CODE_EMOJI) {
-            setEmojiKeyboard();
+            if (mIsEmojiSearchMode) {
+                unsetEmojiSearch();
+            } else {
+                setEmojiKeyboard();
+            }
         } else if (code == Constants.CODE_ALPHA_FROM_EMOJI) {
             setAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
         } else if (code == Constants.CODE_EMOJI_SEARCH) {

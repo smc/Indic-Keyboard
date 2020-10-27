@@ -21,6 +21,7 @@ import java.util.Map;
 
 public class EmojiSearch {
     private static String TAG = "EmojiSearch";
+
     private Context mContext;
     private HashMap<String, String> dict;
 
@@ -75,10 +76,11 @@ public class EmojiSearch {
                         name.substring(0, 13).equals("spoken_emoji_") &&
                         !name.equals("spoken_emoji_unknown")
                 ) {
-                    Log.d("Emoji", name);
-                    description = mContext.getString(field.getInt(field));
+                    description = mContext.getString(field.getInt(field))
+                            .toLowerCase()
+                            .replaceAll("[^a-zA-Z0-9]","") /* remove all non alphanumeric chars */;
                     dict.put(
-                            description.toLowerCase(),
+                            description,
                             name.substring(13) /* codepoints */
                     );
                 }

@@ -2288,20 +2288,22 @@ public final class InputLogic {
                     SuggestedWordInfo.NOT_A_CONFIDENCE);
 
             ArrayList<SuggestedWordInfo> suggestedEmojis = emojiSearch.search(typedWordString);
-            if (suggestedEmojis.size() > 0) {
-                callback.onGetSuggestedWords(new SuggestedWords(
-                        suggestedEmojis,
-                        null,
-                        typedWordInfo,
-                        false,
-                        true,
-                        false,
-                        SuggestedWords.INPUT_STYLE_NONE,
-                        SuggestedWords.INDEX_OF_AUTO_CORRECTION
-                ));
-            } else {
-                mLatinIME.setNeutralSuggestionStrip();
+
+            if (suggestedEmojis.size() == 0) {
+                // A minimum one suggestion is needed
+                suggestedEmojis.add(0, typedWordInfo);
             }
+
+            callback.onGetSuggestedWords(new SuggestedWords(
+                suggestedEmojis,
+                null,
+                typedWordInfo,
+                false,
+                true,
+                false,
+                SuggestedWords.INPUT_STYLE_NONE,
+                SuggestedWords.INDEX_OF_AUTO_CORRECTION
+            ));
         } else {
             mWordComposer.adviseCapitalizedModeBeforeFetchingSuggestions(
                     getActualCapsMode(settingsValues, keyboardShiftMode));
@@ -2439,5 +2441,10 @@ public final class InputLogic {
             emojiSearch = new EmojiSearch(context);
         }
         isEmoji = true;
+    }
+
+    public void unsetEmojiSearch() {
+        isEmoji = false;
+        mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
     }
 }

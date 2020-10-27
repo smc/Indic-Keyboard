@@ -2039,4 +2039,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void setEmojiSearch() {
         mInputLogic.setEmojiSearch(getApplicationContext());
     }
+
+    public void unsetEmojiSearch() {
+        mInputLogic.unsetEmojiSearch();
+    }
 }
