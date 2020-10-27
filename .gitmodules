@@ -12,8 +12,8 @@
 	url = https://android.googlesource.com/platform/frameworks/opt/inputmethodcommon
 [submodule "native/libvarnam"]
 	path = native/libvarnam
-	url = git@github.com:subins2000/libvarnam.git
-	branch = "merge-all-mychanges"
+	url = https://gitlab.com/indicproject/varnam/libvarnam.git
+	branch = "indic-keyboard"
 [submodule "libvarnam-java"]
 	path = libvarnam-java
 	url = https://gitlab.com/indicproject/varnam/libvarnam-java.git
