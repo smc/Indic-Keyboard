@@ -35,7 +35,7 @@
         <item name="iconTabKey">@drawable/sym_keyboard_tab_lxx_light</item>
         <item name="iconBackToKeyboardKey">@drawable/sym_keyboard_back_lxx_light</item>
         <item name="iconShortcutKey">@drawable/sym_keyboard_voice_lxx_light</item>
-        <item name="iconMoreKey">@drawable/sym_keyboard_more_lxx_light</item>
+        <item name="iconMoreSuggestionsKey">@drawable/sym_keyboard_more_lxx_light</item>
         <item name="iconSpaceKeyForNumberLayout">@drawable/sym_keyboard_space_lxx_light</item>
         <item name="iconShiftKeyShifted">@drawable/sym_keyboard_shift_locked_lxx_light</item>
         <item name="iconShortcutKeyDisabled">@drawable/sym_keyboard_voice_off_lxx_light</item>
