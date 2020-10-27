@@ -14,3 +14,6 @@
 	path = native/libvarnam
 	url = git@github.com:subins2000/libvarnam.git
 	branch = "merge-all-mychanges"
+[submodule "libvarnam-java"]
+	path = libvarnam-java
+	url = https://gitlab.com/indicproject/varnam/libvarnam-java.git

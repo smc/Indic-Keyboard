@@ -65,7 +65,7 @@ android {
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['../java-overridable/src', 'src', '../common/src', '../inputmethodcommon/java']
+            java.srcDirs = ['../java-overridable/src', 'src', '../common/src', '../inputmethodcommon/java', '../libvarnam-java/src']
             jniLibs.srcDirs = ['jniLibs']
             resources.srcDirs = ['src']
             aidl.srcDirs = ['src']
