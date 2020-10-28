@@ -98,7 +98,7 @@
             android:hapticFeedbackEnabled="false"
             android:soundEffectsEnabled="false" />
         <!-- TODO: Implement KeyView and replace this. -->
-        <TextView
+        <ImageButton
             android:id="@+id/emoji_keyboard_search_left"
             android:layout_width="0dip"
             android:layout_weight="0.15"

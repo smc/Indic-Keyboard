@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
 import android.util.AttributeSet;
@@ -78,7 +79,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
     private ImageButton mDeleteKey;
     private TextView mAlphabetKeyLeft;
-    private TextView mSearchKeyLeft;
+    private ImageButton mSearchKeyLeft;
     private TextView mAlphabetKeyRight;
     private View mSpacebar;
     // TODO: Remove this workaround.
@@ -219,7 +220,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         mAlphabetKeyLeft.setOnTouchListener(this);
         mAlphabetKeyLeft.setOnClickListener(this);
 
-        mSearchKeyLeft = (TextView)findViewById(R.id.emoji_keyboard_search_left);
+        mSearchKeyLeft = (ImageButton)findViewById(R.id.emoji_keyboard_search_left);
         mSearchKeyLeft.setBackgroundResource(mFunctionalKeyBackgroundId);
         mSearchKeyLeft.setTag(Constants.CODE_EMOJI_SEARCH);
         mSearchKeyLeft.setOnTouchListener(this);
@@ -391,18 +392,16 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             // TODO: Remove this workaround to place the spacebar icon.
             mSpacebarIcon.setBackgroundResource(spacebarResId);
         }
+        final int searchIconResId = iconSet.getIconResourceId(KeyboardIconsSet.NAME_SEARCH_KEY);
+        if (searchIconResId != 0) {
+            mSearchKeyLeft.setImageResource(searchIconResId);
+        }
         final KeyDrawParams params = new KeyDrawParams();
         params.updateParams(mEmojiLayoutParams.getActionBarHeight(), keyVisualAttr);
         setupAlphabetKey(mAlphabetKeyLeft, switchToAlphaLabel, params);
         setupAlphabetKey(mAlphabetKeyRight, switchToAlphaLabel, params);
         mEmojiPager.setAdapter(mEmojiPalettesAdapter);
         mEmojiPager.setCurrentItem(mCurrentPagerPosition);
-
-        // TODO use an icon ?
-        mSearchKeyLeft.setText("🔍");
-        mSearchKeyLeft.setTextColor(params.mFunctionalTextColor);
-        mSearchKeyLeft.setTextSize(TypedValue.COMPLEX_UNIT_PX, params.mLabelSize);
-        mSearchKeyLeft.setTypeface(params.mTypeface);
     }
 
     public void stopEmojiPalettes() {
