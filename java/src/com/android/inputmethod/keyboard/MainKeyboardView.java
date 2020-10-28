@@ -847,6 +847,8 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
             if (fitsTextIntoWidth(width, fullText, paint)) {
                 return fullText;
             }
+        } else if (mLanguageOnSpacebarFormatType == LanguageOnSpacebarUtils.FORMAT_TYPE_EMOJI) {
+            return "😄🔍";
         }
 
         final String middleText = subtype.getMiddleDisplayName();

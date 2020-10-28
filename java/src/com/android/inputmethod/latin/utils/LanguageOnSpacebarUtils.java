@@ -33,6 +33,7 @@ public final class LanguageOnSpacebarUtils {
     public static final int FORMAT_TYPE_NONE = 0;
     public static final int FORMAT_TYPE_LANGUAGE_ONLY = 1;
     public static final int FORMAT_TYPE_FULL_LOCALE = 2;
+    public static final int FORMAT_TYPE_EMOJI = 3;
 
     private static List<InputMethodSubtype> sEnabledSubtypes = Collections.emptyList();
     private static boolean sIsSystemLanguageSameAsInputLanguage;

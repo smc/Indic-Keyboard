@@ -57,6 +57,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private RichInputMethodManager mRichImm;
     private boolean mIsHardwareAcceleratedDrawingEnabled;
 
+    private boolean isEmojiSearch = false;
+
     private KeyboardState mState;
 
     private KeyboardLayoutSet mKeyboardLayoutSet;
@@ -169,8 +171,13 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         keyboardView.updateShortcutKey(mRichImm.isShortcutImeReady());
         final boolean subtypeChanged = (oldKeyboard == null)
                 || !newKeyboard.mId.mSubtype.equals(oldKeyboard.mId.mSubtype);
-        final int languageOnSpacebarFormatType = LanguageOnSpacebarUtils
-                .getLanguageOnSpacebarFormatType(newKeyboard.mId.mSubtype);
+        int languageOnSpacebarFormatType;
+        if (isEmojiSearch) {
+            languageOnSpacebarFormatType = LanguageOnSpacebarUtils.FORMAT_TYPE_EMOJI;
+        } else {
+            languageOnSpacebarFormatType = LanguageOnSpacebarUtils
+                    .getLanguageOnSpacebarFormatType(newKeyboard.mId.mSubtype);
+        }
         final boolean hasMultipleEnabledIMEsOrSubtypes = mRichImm
                 .hasMultipleEnabledIMEsOrSubtypes(true /* shouldIncludeAuxiliarySubtypes */);
         keyboardView.startDisplayLanguageOnSpacebar(subtypeChanged, languageOnSpacebarFormatType,
@@ -308,11 +315,13 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void setEmojiSearch() {
+        isEmojiSearch = true;
         setAlphabetKeyboard();
         mLatinIME.setEmojiSearch();
     }
 
     public void unsetEmojiSearch() {
+        isEmojiSearch = false;
         setAlphabetKeyboard();
         mLatinIME.unsetEmojiSearch();
     }
