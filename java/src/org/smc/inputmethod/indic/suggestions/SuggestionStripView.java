@@ -68,8 +68,11 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     private final ViewGroup mSuggestionsStrip;
     private final ImageButton mVoiceKey;
+    private final ImageButton mBackToKeyboardKey;
     private final View mImportantNoticeStrip;
     MainKeyboardView mMainKeyboardView;
+
+    private boolean isEmojiSearch = false;
 
     private final View mMoreSuggestionsContainer;
     private final MoreSuggestionsView mMoreSuggestionsView;
@@ -139,6 +142,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         inflater.inflate(R.layout.suggestions_strip, this);
 
         mSuggestionsStrip = (ViewGroup)findViewById(R.id.suggestions_strip);
+        mBackToKeyboardKey = (ImageButton)findViewById(R.id.suggestions_strip_back_to_keyboard_key);
         mVoiceKey = (ImageButton)findViewById(R.id.suggestions_strip_voice_key);
         mImportantNoticeStrip = findViewById(R.id.important_notice_strip);
         mStripVisibilityGroup = new StripVisibilityGroup(this, mSuggestionsStrip,
@@ -175,9 +179,14 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         final TypedArray keyboardAttr = context.obtainStyledAttributes(attrs,
                 R.styleable.Keyboard, defStyle, R.style.SuggestionStripView);
         final Drawable iconVoice = keyboardAttr.getDrawable(R.styleable.Keyboard_iconShortcutKey);
+        final Drawable iconBackToKeyboard = keyboardAttr.getDrawable(R.styleable.Keyboard_iconBackToKeyboardKey);
         keyboardAttr.recycle();
+
         mVoiceKey.setImageDrawable(iconVoice);
         mVoiceKey.setOnClickListener(this);
+
+        mBackToKeyboardKey.setImageDrawable(iconBackToKeyboard);
+        mBackToKeyboardKey.setOnClickListener(this);
     }
 
     /**
@@ -192,8 +201,11 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     public void updateVisibility(final boolean shouldBeVisible, final boolean isFullscreenMode) {
         final int visibility = shouldBeVisible ? VISIBLE : (isFullscreenMode ? GONE : INVISIBLE);
         setVisibility(visibility);
-        final SettingsValues currentSettingsValues = Settings.getInstance().getCurrent();
-        mVoiceKey.setVisibility(currentSettingsValues.mShowsVoiceInputKey ? VISIBLE : INVISIBLE);
+
+        if (!isEmojiSearch) {
+            final SettingsValues currentSettingsValues = Settings.getInstance().getCurrent();
+            mVoiceKey.setVisibility(currentSettingsValues.mShowsVoiceInputKey ? VISIBLE : INVISIBLE);
+        }
     }
 
     public void setSuggestions(final SuggestedWords suggestedWords, final boolean isRtlLanguage) {
@@ -450,6 +462,12 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             mListener.showImportantNoticeContents();
             return;
         }
+        if (view == mBackToKeyboardKey) {
+            mListener.onCodeInput(Constants.CODE_BACK_TO_KEYBOARD,
+                    Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE,
+                    false /* isKeyRepeat */);
+            return;
+        }
         if (view == mVoiceKey) {
             mListener.onCodeInput(Constants.CODE_SHORTCUT,
                     Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE,
@@ -484,5 +502,18 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         if (oldw <= 0 && w > 0) {
             maybeShowImportantNoticeTitle();
         }
+    }
+
+    public void setEmojiSearch() {
+        isEmojiSearch = true;
+        mVoiceKey.setVisibility(GONE);
+        mBackToKeyboardKey.setVisibility(VISIBLE);
+    }
+
+    public void unsetEmojiSearch() {
+        isEmojiSearch = false;
+        mBackToKeyboardKey.setVisibility(GONE);
+        final SettingsValues currentSettingsValues = Settings.getInstance().getCurrent();
+        mVoiceKey.setVisibility(currentSettingsValues.mShowsVoiceInputKey ? VISIBLE : INVISIBLE);
     }
 }

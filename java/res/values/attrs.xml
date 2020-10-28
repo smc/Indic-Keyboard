@@ -272,6 +272,7 @@
         <attr name="iconDoneKey" format="reference" />
         <attr name="iconPreviousKey" format="reference" />
         <attr name="iconTabKey" format="reference" />
+        <attr name="iconBackToKeyboardKey" format="reference" />
         <attr name="iconShortcutKey" format="reference" />
         <attr name="iconSpaceKeyForNumberLayout" format="reference" />
         <attr name="iconShiftKeyShifted" format="reference" />

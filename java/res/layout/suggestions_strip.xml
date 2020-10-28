@@ -22,6 +22,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Provide audio and haptic feedback by ourselves based on the keyboard settings.
          We just need to ignore the system's audio and haptic feedback settings. -->
+    <ImageButton
+        android:id="@+id/suggestions_strip_back_to_keyboard_key"
+        android:layout_width="@dimen/config_suggestions_strip_edge_key_width"
+        android:layout_height="fill_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/spoken_description_back"
+        android:visibility="gone"
+        style="?attr/suggestionWordStyle" />
     <LinearLayout
         android:id="@+id/suggestions_strip"
         android:orientation="horizontal"

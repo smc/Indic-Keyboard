@@ -692,6 +692,8 @@ public final class KeyboardState {
             setAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
         } else if (code == Constants.CODE_EMOJI_SEARCH) {
             setEmojiSearch();
+        } else if (code == Constants.CODE_BACK_TO_KEYBOARD) {
+            unsetEmojiSearch();
         }
     }
 

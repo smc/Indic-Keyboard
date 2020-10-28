@@ -716,6 +716,8 @@ public final class InputLogic {
                 break;
             case Constants.CODE_EMOJI_SEARCH:
                 break;
+            case Constants.CODE_BACK_TO_KEYBOARD:
+                break;
             default:
                 throw new RuntimeException("Unknown key code : " + event.mKeyCode);
         }
