@@ -909,7 +909,7 @@ public final class InputLogic {
                 sendKeyCodePoint(settingsValues, codePoint, isTransliteration);
             }
         }
-        if (varnam != null && wasCursorFrontOrMiddle) {
+        if ((varnam != null || isEmoji) && wasCursorFrontOrMiddle) {
             restartSuggestionsOnWordTouchedByCursor(settingsValues, true, ScriptUtils.SCRIPT_LATIN);
         } else {
             inputTransaction.setRequiresUpdateSuggestions();
@@ -1513,13 +1513,13 @@ public final class InputLogic {
 
         Log.w("IndicKeyboard", "performUpdateSuggestionStripSync");
 
-        if (!mWordComposer.isComposingWord() && (!settingsValues.mBigramPredictionEnabled || varnam != null)) {
+        if (!mWordComposer.isComposingWord() && (!settingsValues.mBigramPredictionEnabled || varnam != null || isEmoji)) {
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             return;
         }
 
         // Check if we have a suggestion engine attached.
-        if (!settingsValues.needsToLookupSuggestions() && varnam == null) {
+        if (!settingsValues.needsToLookupSuggestions() && varnam == null && !isEmoji) {
             if (mWordComposer.isComposingWord()) {
                 Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not "
                         + "requested!");
@@ -1535,7 +1535,7 @@ public final class InputLogic {
                     @Override
                     public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
                         String typedWord;
-                        if (varnam == null) {
+                        if (varnam == null || isEmoji) {
                             typedWord = mWordComposer.getTypedWord();
                         } else {
                             typedWord = getWordAtCursor(settingsValues, ScriptUtils.SCRIPT_LATIN);
@@ -1551,7 +1551,7 @@ public final class InputLogic {
                         // Show new suggestions if we have at least one. Otherwise keep the old
                         // suggestions with the new typed word. Exception: if the length of the
                         // typed word is <= 1 (after a deletion typically) we clear old suggestions.
-                        if (suggestedWords.size() >= 1 || typedWordString.length() <= 1) {
+                        if (suggestedWords.size() > 1 || typedWordString.length() <= 1) {
                             holder.set(suggestedWords);
                         } else {
                             holder.set(retrieveOlderSuggestions(typedWordInfo, mSuggestedWords));
@@ -1649,7 +1649,16 @@ public final class InputLogic {
                 SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
         suggestions.add(typedWordInfo);
 
-        if (varnam != null) {
+        if (isEmoji) {
+            ArrayList<SuggestedWordInfo> suggestedEmojis = emojiSearch.search(typedWordString);
+
+            if (suggestedEmojis.size() == 0) {
+                // A minimum of one suggestion is needed, otherwise IndexOutOfBoundsException
+                suggestions.add(0, typedWordInfo);
+            } else {
+                suggestions.addAll(suggestedEmojis);
+            }
+        } else if (varnam != null) {
             suggestions.addAll(getVarnamSuggestions(typedWordString));
 
             // TODO do this better, make suggestion strip show the input & the word always
@@ -1699,10 +1708,16 @@ public final class InputLogic {
             // them, and make willAutoCorrect false. We make typedWordValid false, because the
             // color of the word in the suggestion strip changes according to this parameter,
             // and false gives the correct color.
-            final SuggestedWords suggestedWords = new SuggestedWords(suggestions,
-                    null /* rawSuggestions */, typedWordInfo, false /* typedWordValid */,
-                    false /* willAutoCorrect */, false /* isObsoleteSuggestions */,
-                    SuggestedWords.INPUT_STYLE_RECORRECTION, SuggestedWords.NOT_A_SEQUENCE_NUMBER);
+            final SuggestedWords suggestedWords = new SuggestedWords(
+                    suggestions,
+                    null /* rawSuggestions */,
+                    typedWordInfo,
+                    false /* typedWordValid */,
+                    false /* willAutoCorrect */,
+                    false /* isObsoleteSuggestions */,
+                    SuggestedWords.INPUT_STYLE_RECORRECTION,
+                    SuggestedWords.NOT_A_SEQUENCE_NUMBER
+            );
             doShowSuggestionsAndClearAutoCorrectionIndicator(suggestedWords);
         }
     }
@@ -2339,7 +2354,7 @@ public final class InputLogic {
             final Keyboard keyboard, final int keyboardShiftMode, final int inputStyle,
             final int sequenceNumber, final OnGetSuggestedWordsCallback callback) {
         if (isEmoji) {
-            final String typedWordString = mWordComposer.getTypedWord();
+            final String typedWordString = getWordAtCursor(settingsValues, ScriptUtils.SCRIPT_LATIN);
             final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
                     typedWordString,
                     "" /* prevWordsContext */,
