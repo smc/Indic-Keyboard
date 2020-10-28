@@ -2045,4 +2045,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInputLogic.unsetEmojiSearch();
         mSuggestionStripView.unsetEmojiSearch();
     }
+
+    public void addEmojiToRecentKeys(String emoji) {
+        Settings.addEmojiToRecentKeys(PreferenceManager.getDefaultSharedPreferences(getBaseContext()), emoji);
+        mKeyboardSwitcher.refreshRecentEmojis();
+    }
 }

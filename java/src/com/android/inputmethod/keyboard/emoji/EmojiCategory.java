@@ -201,9 +201,7 @@ final class EmojiCategory {
         }
         addShownCategoryId(EmojiCategory.ID_EMOTICONS);
 
-        DynamicGridKeyboard recentsKbd =
-                getKeyboard(EmojiCategory.ID_RECENTS, 0 /* categoryPageId */);
-        recentsKbd.loadRecentKeys(mCategoryKeyboardMap.values());
+        DynamicGridKeyboard recentsKbd = loadRecentKeys();
 
         mCurrentCategoryId = Settings.readLastShownEmojiCategoryId(mPrefs, defaultCategoryId);
         Log.i(TAG, "Last Emoji category id is " + mCurrentCategoryId);
@@ -216,6 +214,13 @@ final class EmojiCategory {
             Log.i(TAG, "No recent emojis found, starting in category " + defaultCategoryId);
             mCurrentCategoryId = defaultCategoryId;
         }
+    }
+
+    public DynamicGridKeyboard loadRecentKeys() {
+        DynamicGridKeyboard recentsKbd =
+                getKeyboard(EmojiCategory.ID_RECENTS, 0 /* categoryPageId */);
+        recentsKbd.loadRecentKeys(mCategoryKeyboardMap.values());
+        return recentsKbd;
     }
 
     private void addShownCategoryId(final int categoryId) {

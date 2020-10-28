@@ -31,11 +31,13 @@ import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
+import com.android.inputmethod.latin.utils.JsonUtils;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.RunInLocale;
 import com.android.inputmethod.latin.utils.StatsUtils;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
@@ -440,6 +442,28 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static String readEmojiRecentKeys(final SharedPreferences prefs) {
         return prefs.getString(PREF_EMOJI_RECENT_KEYS, "");
+    }
+
+    /**
+     * Add an emoji to recent emojis list
+     * @param prefs
+     * @param emoji
+     */
+    public static void addEmojiToRecentKeys(final SharedPreferences prefs, String emoji) {
+        Object toInsert = emoji;
+        if (emoji.codePointCount(0, emoji.length()) == 1) {
+            toInsert = emoji.codePointAt(0);
+        }
+
+        final String str = readEmojiRecentKeys(prefs);
+        final List<Object> keys = JsonUtils.jsonStrToList(str);
+        if (keys.contains(toInsert)) {
+            return;
+        }
+
+        keys.add(toInsert);
+        final String jsonStr = JsonUtils.listToJsonStr(keys);
+        writeEmojiRecentKeys(prefs, jsonStr);
     }
 
     public static void writeLastTypedEmojiCategoryPageId(
