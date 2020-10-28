@@ -308,6 +308,7 @@ public final class KeyboardState {
         mSwitchActions.setAlphabetKeyboard();
         mIsAlphabetMode = true;
         mIsEmojiMode = false;
+        mIsEmojiSearchMode = false;
         mIsSymbolShifted = false;
         mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
         mSwitchState = SWITCH_STATE_ALPHA;
@@ -320,6 +321,7 @@ public final class KeyboardState {
         }
         mSwitchActions.setSymbolsKeyboard();
         mIsAlphabetMode = false;
+        mIsEmojiSearchMode = false;
         mIsSymbolShifted = false;
         mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
         // Reset alphabet shift state.
