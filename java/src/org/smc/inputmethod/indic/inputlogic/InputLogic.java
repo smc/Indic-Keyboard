@@ -855,7 +855,7 @@ public final class InputLogic {
             unlearnWord(mWordComposer.getTypedWord(), inputTransaction.mSettingsValues,
                     Constants.EVENT_BACKSPACE);
             resetEntireInputState(mConnection.getExpectedSelectionStart(),
-                    mConnection.getExpectedSelectionEnd(), varnam == null /* clearSuggestionStrip */);
+                    mConnection.getExpectedSelectionEnd(), varnam == null && !isEmoji /* clearSuggestionStrip */);
             isComposingWord = false;
             wasCursorFrontOrMiddle = true;
         }
@@ -1647,18 +1647,34 @@ public final class InputLogic {
                 Dictionary.DICTIONARY_USER_TYPED,
                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
                 SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
-        suggestions.add(typedWordInfo);
+
+        final SuggestedWordInfo emptyWordInfo = new SuggestedWordInfo(
+                "",
+                "" /* prevWordsContext */,
+                SuggestedWordInfo.MAX_SCORE,
+                SuggestedWordInfo.KIND_TYPED,
+                Dictionary.DICTIONARY_USER_TYPED,
+                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                SuggestedWordInfo.NOT_A_CONFIDENCE);
 
         if (isEmoji) {
             ArrayList<SuggestedWordInfo> suggestedEmojis = emojiSearch.search(typedWordString);
 
             if (suggestedEmojis.size() == 0) {
-                // A minimum of one suggestion is needed, otherwise IndexOutOfBoundsException
-                suggestions.add(0, typedWordInfo);
-            } else {
-                suggestions.addAll(suggestedEmojis);
+                mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+                return;
+            }
+            suggestions.addAll(suggestedEmojis);
+
+            if (suggestions.size() <= 2) {
+                // 3 suggestions are needed in the strip to show when there are only 2 or less suggestions
+                // TODO remove this need
+                for (int i = suggestions.size();i <= 2; i++) {
+                    suggestions.add(i, emptyWordInfo);
+                }
             }
         } else if (varnam != null) {
+            suggestions.add(typedWordInfo);
             suggestions.addAll(getVarnamSuggestions(typedWordString));
 
             // TODO do this better, make suggestion strip show the input & the word always
@@ -1668,6 +1684,7 @@ public final class InputLogic {
                 suggestions.add(2, typedWordInfo);
             }
         } else {
+            suggestions.add(typedWordInfo);
             int i = 0;
             for (final SuggestionSpan span : range.getSuggestionSpansAtWord()) {
                 for (final String s : span.getSuggestions()) {
@@ -2376,6 +2393,12 @@ public final class InputLogic {
                 // A minimum of two suggestion is needed, otherwise IndexOutOfBoundsException
                 suggestedEmojis.add(0, emptyWordInfo);
                 suggestedEmojis.add(1, emptyWordInfo);
+            } else if (suggestedEmojis.size() <= 2) {
+                // 3 suggestions are needed in the strip to show when there are only 2 or less suggestions
+                // TODO remove this need
+                for (int i = suggestedEmojis.size();i <= 2; i++) {
+                    suggestedEmojis.add(i, emptyWordInfo);
+                }
             }
 
             callback.onGetSuggestedWords(new SuggestedWords(
