@@ -2290,8 +2290,9 @@ public final class InputLogic {
             ArrayList<SuggestedWordInfo> suggestedEmojis = emojiSearch.search(typedWordString);
 
             if (suggestedEmojis.size() == 0) {
-                // A minimum one suggestion is needed
+                // A minimum of two suggestion is needed, otherwise IndexOutOfBoundsException
                 suggestedEmojis.add(0, typedWordInfo);
+                suggestedEmojis.add(1, typedWordInfo);
             }
 
             callback.onGetSuggestedWords(new SuggestedWords(
