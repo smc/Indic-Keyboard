@@ -169,6 +169,7 @@ final class DynamicGridKeyboard extends Keyboard {
     public void loadRecentKeys(final Collection<DynamicGridKeyboard> keyboards) {
         final String str = Settings.readEmojiRecentKeys(mPrefs);
         final List<Object> keys = JsonUtils.jsonStrToList(str);
+        Log.d(TAG, str);
         for (final Object o : keys) {
             final Key key;
             if (o instanceof Integer) {

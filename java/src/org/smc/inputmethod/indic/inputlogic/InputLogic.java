@@ -1527,7 +1527,7 @@ public final class InputLogic {
                         // typed word is <= 1 (after a deletion typically) we clear old suggestions.
                         if (suggestedWords.size() > 1 || typedWordString.length() <= 1) {
                             holder.set(suggestedWords);
-                        } else {
+                        } else if (!isEmoji) {
                             holder.set(retrieveOlderSuggestions(typedWordInfo, mSuggestedWords));
                         }
                     }
@@ -2280,6 +2280,12 @@ public final class InputLogic {
         // strings.
         mLastComposedWord = mWordComposer.commitWord(commitType,
                 chosenWordWithSuggestions, separatorString, ngramContext);
+
+        if (isEmoji) {
+            // add emoji to recents
+            mLatinIME.addEmojiToRecentKeys(chosenWord);
+        }
+
         if (DebugFlags.DEBUG_ENABLED) {
             long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
             Log.d(TAG, "commitChosenWord() : " + runTimeMillis + " ms to run "
@@ -2324,9 +2330,8 @@ public final class InputLogic {
             final Keyboard keyboard, final int keyboardShiftMode, final int inputStyle,
             final int sequenceNumber, final OnGetSuggestedWordsCallback callback) {
         if (isEmoji) {
-            final String typedWordString = getWordAtCursor(settingsValues, ScriptUtils.SCRIPT_LATIN);
-            final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
-                    typedWordString,
+            final SuggestedWordInfo emptyWordInfo = new SuggestedWordInfo(
+                    "",
                     "" /* prevWordsContext */,
                     SuggestedWordInfo.MAX_SCORE,
                     SuggestedWordInfo.KIND_TYPED,
@@ -2334,18 +2339,19 @@ public final class InputLogic {
                     SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
                     SuggestedWordInfo.NOT_A_CONFIDENCE);
 
+            final String typedWordString = getWordAtCursor(settingsValues, ScriptUtils.SCRIPT_LATIN);
             ArrayList<SuggestedWordInfo> suggestedEmojis = emojiSearch.search(typedWordString);
 
             if (suggestedEmojis.size() == 0) {
                 // A minimum of two suggestion is needed, otherwise IndexOutOfBoundsException
-                suggestedEmojis.add(0, typedWordInfo);
-                suggestedEmojis.add(1, typedWordInfo);
+                suggestedEmojis.add(0, emptyWordInfo);
+                suggestedEmojis.add(1, emptyWordInfo);
             }
 
             callback.onGetSuggestedWords(new SuggestedWords(
                 suggestedEmojis,
                 null,
-                typedWordInfo,
+                emptyWordInfo,
                 false,
                 true,
                 false,

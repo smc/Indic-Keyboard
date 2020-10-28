@@ -95,7 +95,7 @@ public class EmojiSearch {
      * @param codepoints Codepoints separated by underscore
      * @return
      */
-    private String getEmojiFromCodepoints(String codepoints) {
+    public static String getEmojiFromCodepoints(String codepoints) {
         StringBuilder result = new StringBuilder();
         for (String codepoint: codepoints.split("_")) {
             result.append(StringUtils.newSingleCodePointString(Integer.parseInt(codepoint, 16)));

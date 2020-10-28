@@ -521,4 +521,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         }
         return mKeyboardLayoutSet.getScriptId();
     }
+
+    public void refreshRecentEmojis() {
+        mEmojiPalettesView.refreshRecentEmojis();
+    }
 }

@@ -496,4 +496,11 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             v.setBackgroundColor(Color.TRANSPARENT);
         }
     }
+
+    /**
+     * Reload the recent emojis view list
+     */
+    public void refreshRecentEmojis() {
+        mEmojiCategory.loadRecentKeys();
+    }
 }
