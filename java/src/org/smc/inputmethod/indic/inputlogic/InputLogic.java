@@ -1527,7 +1527,7 @@ public final class InputLogic {
                         // typed word is <= 1 (after a deletion typically) we clear old suggestions.
                         if (suggestedWords.size() > 1 || typedWordString.length() <= 1) {
                             holder.set(suggestedWords);
-                        } else if (!isEmoji) {
+                        } else if (!isEmoji /* emoji search suggestions won't have typed word in it */) {
                             holder.set(retrieveOlderSuggestions(typedWordInfo, mSuggestedWords));
                         }
                     }
@@ -1539,6 +1539,8 @@ public final class InputLogic {
                 Constants.GET_SUGGESTED_WORDS_TIMEOUT);
         if (suggestedWords != null) {
             mSuggestionStripViewAccessor.showSuggestionStrip(suggestedWords);
+        } else {
+            mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
         }
         if (DebugFlags.DEBUG_ENABLED) {
             long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
@@ -1627,15 +1629,6 @@ public final class InputLogic {
                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
                 SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
 
-        final SuggestedWordInfo emptyWordInfo = new SuggestedWordInfo(
-                "",
-                "" /* prevWordsContext */,
-                SuggestedWordInfo.MAX_SCORE,
-                SuggestedWordInfo.KIND_TYPED,
-                Dictionary.DICTIONARY_USER_TYPED,
-                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                SuggestedWordInfo.NOT_A_CONFIDENCE);
-
         if (isEmoji) {
             ArrayList<SuggestedWordInfo> suggestedEmojis = emojiSearch.search(typedWordString);
 
@@ -1644,14 +1637,6 @@ public final class InputLogic {
                 return;
             }
             suggestions.addAll(suggestedEmojis);
-
-            if (suggestions.size() <= 2) {
-                // 3 suggestions are needed in the strip to show when there are only 2 or less suggestions
-                // TODO remove this need
-                for (int i = suggestions.size();i <= 2; i++) {
-                    suggestions.add(i, emptyWordInfo);
-                }
-            }
         } else {
             suggestions.add(typedWordInfo);
             int i = 0;
@@ -1679,7 +1664,7 @@ public final class InputLogic {
         }
         mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
                 expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor());
-        if (suggestions.size() <= 1) {
+        if (suggestions.size() <= 1 && !isEmoji /* emoji search won't have typed word in suggestions list */) {
             // If there weren't any suggestion spans on this word, suggestions#size() will be 1
             // if shouldIncludeResumedWordInSuggestions is true, 0 otherwise. In this case, we
             // have no useful suggestions, so we will try to compute some for it instead.
@@ -2358,18 +2343,6 @@ public final class InputLogic {
             final String typedWordString = getWordAtCursor(settingsValues, ScriptUtils.SCRIPT_LATIN);
             ArrayList<SuggestedWordInfo> suggestedEmojis = emojiSearch.search(typedWordString);
 
-            if (suggestedEmojis.size() == 0) {
-                // A minimum of two suggestion is needed, otherwise IndexOutOfBoundsException
-                suggestedEmojis.add(0, emptyWordInfo);
-                suggestedEmojis.add(1, emptyWordInfo);
-            } else if (suggestedEmojis.size() <= 2) {
-                // 3 suggestions are needed in the strip to show when there are only 2 or less suggestions
-                // TODO remove this need
-                for (int i = suggestedEmojis.size();i <= 2; i++) {
-                    suggestedEmojis.add(i, emptyWordInfo);
-                }
-            }
-
             callback.onGetSuggestedWords(new SuggestedWords(
                 suggestedEmojis,
                 null,
@@ -2377,7 +2350,7 @@ public final class InputLogic {
                 false,
                 true,
                 false,
-                SuggestedWords.INPUT_STYLE_NONE,
+                SuggestedWords.INPUT_STYLE_PREDICTION,
                 SuggestedWords.INDEX_OF_AUTO_CORRECTION
             ));
         } else {
