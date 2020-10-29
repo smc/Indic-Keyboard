@@ -57,6 +57,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private RichInputMethodManager mRichImm;
     private boolean mIsHardwareAcceleratedDrawingEnabled;
 
+    private boolean isEmojiSearchToggle = false;
     private boolean isEmojiSearch = false;
 
     private KeyboardState mState;
@@ -172,7 +173,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         final boolean subtypeChanged = (oldKeyboard == null)
                 || !newKeyboard.mId.mSubtype.equals(oldKeyboard.mId.mSubtype);
         int languageOnSpacebarFormatType;
-        if (isEmojiSearch) {
+        if (isEmojiSearchToggle) {
             languageOnSpacebarFormatType = LanguageOnSpacebarUtils.FORMAT_TYPE_EMOJI;
         } else {
             languageOnSpacebarFormatType = LanguageOnSpacebarUtils
@@ -294,6 +295,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mMainKeyboardFrame.setVisibility(visibility);
         mEmojiPalettesView.setVisibility(View.GONE);
         mEmojiPalettesView.stopEmojiPalettes();
+        unsetEmojiSearch();
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
@@ -315,13 +317,16 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     }
 
     public void setEmojiSearch() {
-        isEmojiSearch = true;
+        isEmojiSearchToggle = true; // only used for setting the emoji search text on spacebar
         setAlphabetKeyboard();
         mLatinIME.setEmojiSearch();
+        isEmojiSearch = true;
     }
 
     public void unsetEmojiSearch() {
+        if (!isEmojiSearch) return;
         isEmojiSearch = false;
+        isEmojiSearchToggle = false;
         setAlphabetKeyboard();
         mLatinIME.unsetEmojiSearch();
     }
