@@ -20,6 +20,7 @@
 <!--
     These Emoji symbols are unsupported by TTS.
     TODO: Remove this file when TTS/TalkBack support these Emoji symbols.
+    WARNING: The new emoji search uses this file, consider reimplemnting this for that before removal
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
      <!-- Spoken description for Unicode code point U+00A9: "©" COPYRIGHT SIGN -->
