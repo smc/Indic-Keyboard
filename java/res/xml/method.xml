@@ -378,7 +378,7 @@
         android:label="@string/keyboard_name_ka_varnam"
         android:imeSubtypeLocale="ka_IN"
         android:imeSubtypeMode="keyboard"
-        android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=varnam-ka" />
+        android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=varnam-kn" />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
         android:label="@string/keyboard_name_hi_varnam"
         android:imeSubtypeLocale="hi_IN"
