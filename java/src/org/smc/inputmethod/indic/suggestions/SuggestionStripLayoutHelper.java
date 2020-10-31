@@ -37,6 +37,7 @@ import android.text.style.CharacterStyle;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -354,15 +355,24 @@ final class SuggestionStripLayoutHelper {
                     (PunctuationSuggestions)suggestedWords, stripView);
         }
 
+        boolean isFirstSuggestionTypedWord = false;
+        if (suggestedWords.size() > 0) {
+            isFirstSuggestionTypedWord =
+                    suggestedWords.getInfo(0).getKind() == SuggestedWordInfo.KIND_TYPED;
+        }
+
         final int wordCountToShow = suggestedWords.getWordCountToShow(
                 Settings.getInstance().getCurrent().mShouldShowLxxSuggestionUi);
         final int startIndexOfMoreSuggestions = setupWordViewsAndReturnStartIndexOfMoreSuggestions(
                 suggestedWords, mSuggestionsCountInStrip);
         final TextView centerWordView = mWordViews.get(mCenterPositionInStrip);
         final int stripWidth = stripView.getWidth();
-        final int centerWidth = getSuggestionWidth(mCenterPositionInStrip, stripWidth);
-        if (wordCountToShow == 1 || getTextScaleX(centerWordView.getText(), centerWidth,
-                centerWordView.getPaint()) < MIN_TEXT_XSCALE) {
+        final int centerWidth = getSuggestionWidth(mCenterPositionInStrip, stripWidth, mSuggestionsCountInStrip);
+        if (
+                (wordCountToShow == 1 || getTextScaleX(centerWordView.getText(), centerWidth,
+                centerWordView.getPaint()) < MIN_TEXT_XSCALE) &&
+                wordCountToShow != 2 && !isFirstSuggestionTypedWord
+        ) {
             // Layout only the most relevant suggested word at the center of the suggestion strip
             // by consolidating all slots in the strip.
             final int countInStrip = 1;
@@ -376,8 +386,15 @@ final class SuggestionStripLayoutHelper {
             final Integer lastIndex = (Integer)centerWordView.getTag();
             return (lastIndex == null ? 0 : lastIndex) + 1;
         }
+        int countInStrip = mSuggestionsCountInStrip;
 
-        final int countInStrip = mSuggestionsCountInStrip;
+        // This is for varnam
+        // If there's only 2 suggestions, show them both and hide 3rd because it's empty
+        // This is helpful when making long words
+        if (isFirstSuggestionTypedWord && wordCountToShow == 2) {
+            countInStrip = 2;
+        }
+
         mMoreSuggestionsAvailable = (wordCountToShow > countInStrip);
         @SuppressWarnings("unused")
         int x = 0;
@@ -389,11 +406,14 @@ final class SuggestionStripLayoutHelper {
                 x += divider.getMeasuredWidth();
             }
 
-            final int width = getSuggestionWidth(positionInStrip, stripWidth);
+            final int width = getSuggestionWidth(positionInStrip, stripWidth, countInStrip);
+
             final TextView wordView = layoutWord(context, positionInStrip, width);
             stripView.addView(wordView);
-            setLayoutWeight(wordView, getSuggestionWeight(positionInStrip),
+
+            setLayoutWeight(wordView, getSuggestionWeight(positionInStrip, countInStrip),
                     ViewGroup.LayoutParams.MATCH_PARENT);
+
             x += wordView.getMeasuredWidth();
 
             if (SuggestionStripView.DBG) {
@@ -467,19 +487,29 @@ final class SuggestionStripLayoutHelper {
                 debugInfoView, x - infoWidth, y, infoWidth, debugInfoView.getMeasuredHeight());
     }
 
-    private int getSuggestionWidth(final int positionInStrip, final int maxWidth) {
-        final int paddings = mPadding * mSuggestionsCountInStrip;
-        final int dividers = mDividerWidth * (mSuggestionsCountInStrip - 1);
+    private int getSuggestionWidth(final int positionInStrip, final int maxWidth, final int countInStrip) {
+        final int paddings = mPadding * countInStrip;
+        final int dividers = mDividerWidth * (countInStrip - 1);
         final int availableWidth = maxWidth - paddings - dividers;
-        return (int)(availableWidth * getSuggestionWeight(positionInStrip));
+        return (int)(availableWidth * getSuggestionWeight(positionInStrip, countInStrip));
     }
 
-    private float getSuggestionWeight(final int positionInStrip) {
-        if (positionInStrip == mCenterPositionInStrip) {
-            return mCenterSuggestionWeight;
+    private float getSuggestionWeight(final int positionInStrip, final int countInStrip) {
+        if (countInStrip == 2) {
+            // For only 2 suggestions, 20% width for typed word, 80% for word in making
+            // Usecase is in varnam where the 2nd suggestion might be a long word in making
+            if (positionInStrip == 0) {
+                return 0.2f;
+            } else {
+                return 0.8f;
+            }
+        } else {
+            if (positionInStrip == mCenterPositionInStrip) {
+                return mCenterSuggestionWeight;
+            }
+            // TODO: Revisit this for cases of 5 or more suggestions
+            return (1.0f - mCenterSuggestionWeight) / (countInStrip - 1);
         }
-        // TODO: Revisit this for cases of 5 or more suggestions
-        return (1.0f - mCenterSuggestionWeight) / (mSuggestionsCountInStrip - 1);
     }
 
     private int setupWordViewsAndReturnStartIndexOfMoreSuggestions(
