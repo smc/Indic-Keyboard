@@ -1713,6 +1713,9 @@ public final class InputLogic {
                     SuggestedWords.INPUT_STYLE_RECORRECTION,
                     SuggestedWords.NOT_A_SEQUENCE_NUMBER
             );
+            if (!isEmoji && varnam != null) {
+                suggestedWords.setVarnam(true);
+            }
             doShowSuggestionsAndClearAutoCorrectionIndicator(suggestedWords);
         }
     }
@@ -2379,7 +2382,7 @@ public final class InputLogic {
             ));
         } else if (varnam != null) {
             final String typedWordString = getWordAtCursor(settingsValues, ScriptUtils.SCRIPT_LATIN);
-            ArrayList<SuggestedWordInfo> suggestedWords = new ArrayList<SuggestedWordInfo>();
+            ArrayList<SuggestedWordInfo> suggestedWordsList = new ArrayList<SuggestedWordInfo>();
 
             final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
                     typedWordString,
@@ -2389,12 +2392,12 @@ public final class InputLogic {
                     Dictionary.DICTIONARY_USER_TYPED,
                     SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
                     SuggestedWordInfo.NOT_A_CONFIDENCE);
-            suggestedWords.add(0, typedWordInfo);
+            suggestedWordsList.add(0, typedWordInfo);
 
-            suggestedWords.addAll(getVarnamSuggestions(typedWordString));
+            suggestedWordsList.addAll(getVarnamSuggestions(typedWordString));
 
-            callback.onGetSuggestedWords(new SuggestedWords(
-                    suggestedWords,
+            SuggestedWords suggestedWords = new SuggestedWords(
+                    suggestedWordsList,
                     null,
                     typedWordInfo,
                     true,
@@ -2402,7 +2405,10 @@ public final class InputLogic {
                     false,
                     SuggestedWords.INPUT_STYLE_PREDICTION,
                     SuggestedWords.INDEX_OF_AUTO_CORRECTION
-            ));
+            );
+            suggestedWords.setVarnam(true);
+
+            callback.onGetSuggestedWords(suggestedWords);
         } else {
             mWordComposer.adviseCapitalizedModeBeforeFetchingSuggestions(
                     getActualCapsMode(settingsValues, keyboardShiftMode));

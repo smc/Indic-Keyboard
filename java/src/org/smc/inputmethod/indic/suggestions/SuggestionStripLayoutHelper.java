@@ -76,6 +76,7 @@ final class SuggestionStripLayoutHelper {
     public final float mMinMoreSuggestionsWidth;
     public final int mMoreSuggestionsBottomGap;
     private boolean mMoreSuggestionsAvailable;
+    private boolean mIsVarnam = false;
 
     // The index of these {@link ArrayList} is the position in the suggestion strip. The indices
     // increase towards the right for LTR scripts and the left for RTL scripts, starting with 0.
@@ -238,7 +239,8 @@ final class SuggestionStripLayoutHelper {
         final boolean shouldOmitTypedWord = shouldOmitTypedWord(suggestedWords.mInputStyle,
                 settingsValues.mGestureFloatingPreviewTextEnabled,
                 settingsValues.mShouldShowLxxSuggestionUi);
-        return getPositionInSuggestionStrip(indexInSuggestedWords, suggestedWords.mWillAutoCorrect,
+        return getPositionInSuggestionStrip(indexInSuggestedWords,
+                suggestedWords.isVarnam() || suggestedWords.mWillAutoCorrect,
                 settingsValues.mShouldShowLxxSuggestionUi && shouldOmitTypedWord,
                 mCenterPositionInStrip, mTypedWordPositionWhenAutocorrect);
     }
@@ -355,6 +357,8 @@ final class SuggestionStripLayoutHelper {
                     (PunctuationSuggestions)suggestedWords, stripView);
         }
 
+        mIsVarnam = suggestedWords.isVarnam();
+
         boolean isFirstSuggestionTypedWord = false;
         if (suggestedWords.size() > 0) {
             isFirstSuggestionTypedWord =
@@ -388,10 +392,9 @@ final class SuggestionStripLayoutHelper {
         }
         int countInStrip = mSuggestionsCountInStrip;
 
-        // This is for varnam
         // If there's only 2 suggestions, show them both and hide 3rd because it's empty
         // This is helpful when making long words
-        if (isFirstSuggestionTypedWord && wordCountToShow == 2) {
+        if (isFirstSuggestionTypedWord && suggestedWords.size() == 2) {
             countInStrip = 2;
         }
 
@@ -495,13 +498,20 @@ final class SuggestionStripLayoutHelper {
     }
 
     private float getSuggestionWeight(final int positionInStrip, final int countInStrip) {
-        if (countInStrip == 2) {
-            // For only 2 suggestions, 20% width for typed word, 80% for word in making
-            // Usecase is in varnam where the 2nd suggestion might be a long word in making
+        if (mIsVarnam) {
+            if (countInStrip == 2) {
+                // For only 2 suggestions, 20% width for typed word, 80% for word in making
+                // Usecase is when the 2nd suggestion might be a long word in making
+                if (positionInStrip == 0) {
+                    return 0.2f;
+                } else {
+                    return 0.8f;
+                }
+            }
             if (positionInStrip == 0) {
                 return 0.2f;
             } else {
-                return 0.8f;
+                return 0.4f;
             }
         } else {
             if (positionInStrip == mCenterPositionInStrip) {
