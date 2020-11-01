@@ -47,7 +47,7 @@ public class EmojiSearch {
             description = entry.getKey();
             if (description.contains(query)) {
                 final SuggestedWords.SuggestedWordInfo emojiInfo = new SuggestedWords.SuggestedWordInfo(
-                        getEmojiFromCodepoints(entry.getValue()),
+                        getStringFromCodepoints(entry.getValue()),
                         "" /* prevWordsContext */,
                         description.length() - query.length(),
                         SuggestedWords.SuggestedWordInfo.KIND_COMPLETION,
@@ -58,6 +58,18 @@ public class EmojiSearch {
             }
         }
         return suggestedEmojis;
+    }
+
+    public String getDescription(String emoji) {
+        emoji = getCodepointsFromString(emoji);
+        String codepoint;
+        for (Map.Entry<String, String> entry : dict.entrySet()) {
+            codepoint = entry.getValue();
+            if (codepoint.equals(emoji)) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     private void makeDict() {
@@ -92,14 +104,34 @@ public class EmojiSearch {
 
     /**
      * Get emoji string from codepoint
-     * @param codepoints Codepoints separated by underscore
-     * @return
+     * @param codepoints Codepoints (hexa) separated by underscore
+     * @return emoji text
      */
-    public static String getEmojiFromCodepoints(String codepoints) {
+    public static String getStringFromCodepoints(String codepoints) {
         StringBuilder result = new StringBuilder();
         for (String codepoint: codepoints.split("_")) {
             result.append(StringUtils.newSingleCodePointString(Integer.parseInt(codepoint, 16)));
         }
         return result.toString();
+    }
+
+    /**
+     * Get codepoints separated by _ from a string
+     * @param str String
+     * @return Codepoints (hexa) separated by underscore
+     */
+    public static String getCodepointsFromString(String str) {
+        StringBuilder codepoints = new StringBuilder();
+        final int length = str.length();
+        for (int offset = 0; offset < length; ) {
+            final int codepoint = str.codePointAt(offset);
+            final String hexa = Integer.toHexString(codepoint);
+
+            if (!codepoints.toString().equals("")) codepoints.append("_");
+            codepoints.append(hexa.toUpperCase());
+
+            offset += Character.charCount(codepoint);
+        }
+        return codepoints.toString();
     }
 }
