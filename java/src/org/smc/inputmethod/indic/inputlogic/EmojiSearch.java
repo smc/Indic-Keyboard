@@ -21,9 +21,9 @@ import java.util.Map;
 
 public class EmojiSearch {
     private static String TAG = "EmojiSearch";
+    private static HashMap<String, String> dict;
 
     private Context mContext;
-    private HashMap<String, String> dict;
 
     public EmojiSearch(Context context) {
         mContext = context;
@@ -73,8 +73,11 @@ public class EmojiSearch {
     }
 
     private void makeDict() {
-        // TODO move strings-emoji-description.xml to a RAW file and read direct
+        if (dict != null) return;
+
+        // TODO move strings-emoji-description.xml to a dictionary and read direct
         Log.d(TAG, "making emoji dictionary");
+
         // Make emoji dictionary
         Field[] fields = R.string.class.getDeclaredFields();
         dict = new HashMap<>();
