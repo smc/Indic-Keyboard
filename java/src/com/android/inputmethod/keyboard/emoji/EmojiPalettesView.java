@@ -375,9 +375,13 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     }
 
     public void onHoldKey(final Key key) {
-        String description = emojiSearch.getDescription(key.getLabel());
-        if (description != null) {
-            Toast.makeText(getContext(), description, Toast.LENGTH_SHORT).show();
+        if (mEmojiCategory.isInRecentTab()) {
+            mEmojiPalettesAdapter.removeRecentKey(key);
+        } else {
+            String description = emojiSearch.getDescription(key.getLabel());
+            if (description != null) {
+                Toast.makeText(getContext(), description, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
