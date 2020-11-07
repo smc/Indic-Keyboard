@@ -54,6 +54,8 @@ public class SuggestedWords {
             false /* typedWordValid */, false /* willAutoCorrect */,
             false /* isObsoleteSuggestions */, INPUT_STYLE_NONE, NOT_A_SEQUENCE_NUMBER);
 
+    private boolean isVarnam = false;
+
     @Nullable
     public final SuggestedWordInfo mTypedWordInfo;
     public final boolean mTypedWordValid;
@@ -87,6 +89,14 @@ public class SuggestedWords {
         mInputStyle = inputStyle;
         mSequenceNumber = sequenceNumber;
         mTypedWordInfo = typedWordInfo;
+    }
+
+    public void setVarnam(boolean state) {
+        isVarnam = state;
+    }
+
+    public boolean isVarnam() {
+        return isVarnam;
     }
 
     public boolean isEmpty() {

@@ -21,9 +21,9 @@ import java.util.Map;
 
 public class EmojiSearch {
     private static String TAG = "EmojiSearch";
+    private static HashMap<String, String> dict;
 
     private Context mContext;
-    private HashMap<String, String> dict;
 
     public EmojiSearch(Context context) {
         mContext = context;
@@ -47,7 +47,7 @@ public class EmojiSearch {
             description = entry.getKey();
             if (description.contains(query)) {
                 final SuggestedWords.SuggestedWordInfo emojiInfo = new SuggestedWords.SuggestedWordInfo(
-                        getEmojiFromCodepoints(entry.getValue()),
+                        getStringFromCodepoints(entry.getValue()),
                         "" /* prevWordsContext */,
                         description.length() - query.length(),
                         SuggestedWords.SuggestedWordInfo.KIND_COMPLETION,
@@ -60,9 +60,24 @@ public class EmojiSearch {
         return suggestedEmojis;
     }
 
+    public String getDescription(String emoji) {
+        emoji = getCodepointsFromString(emoji);
+        String codepoint;
+        for (Map.Entry<String, String> entry : dict.entrySet()) {
+            codepoint = entry.getValue();
+            if (codepoint.equals(emoji)) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
     private void makeDict() {
-        // TODO move strings-emoji-description.xml to a RAW file and read direct
+        if (dict != null) return;
+
+        // TODO move strings-emoji-description.xml to a dictionary and read direct
         Log.d(TAG, "making emoji dictionary");
+
         // Make emoji dictionary
         Field[] fields = R.string.class.getDeclaredFields();
         dict = new HashMap<>();
@@ -92,14 +107,34 @@ public class EmojiSearch {
 
     /**
      * Get emoji string from codepoint
-     * @param codepoints Codepoints separated by underscore
-     * @return
+     * @param codepoints Codepoints (hexa) separated by underscore
+     * @return emoji text
      */
-    public static String getEmojiFromCodepoints(String codepoints) {
+    public static String getStringFromCodepoints(String codepoints) {
         StringBuilder result = new StringBuilder();
         for (String codepoint: codepoints.split("_")) {
             result.append(StringUtils.newSingleCodePointString(Integer.parseInt(codepoint, 16)));
         }
         return result.toString();
+    }
+
+    /**
+     * Get codepoints separated by _ from a string
+     * @param str String
+     * @return Codepoints (hexa) separated by underscore
+     */
+    public static String getCodepointsFromString(String str) {
+        StringBuilder codepoints = new StringBuilder();
+        final int length = str.length();
+        for (int offset = 0; offset < length; ) {
+            final int codepoint = str.codePointAt(offset);
+            final String hexa = Integer.toHexString(codepoint);
+
+            if (!codepoints.toString().equals("")) codepoints.append("_");
+            codepoints.append(hexa.toUpperCase());
+
+            offset += Character.charCount(codepoint);
+        }
+        return codepoints.toString();
     }
 }

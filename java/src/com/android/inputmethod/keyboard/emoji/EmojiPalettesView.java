@@ -38,6 +38,7 @@ import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabWidget;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
@@ -51,6 +52,8 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.utils.ResourceUtils;
+
+import org.smc.inputmethod.indic.inputlogic.EmojiSearch;
 
 /**
  * View class to implement Emoji palettes.
@@ -77,6 +80,8 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     private final EmojiLayoutParams mEmojiLayoutParams;
     private final DeleteKeyOnTouchListener mDeleteKeyOnTouchListener;
 
+    private EmojiSearch emojiSearch;
+
     private ImageButton mDeleteKey;
     private TextView mAlphabetKeyLeft;
     private ImageButton mSearchKeyLeft;
@@ -99,6 +104,9 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
     public EmojiPalettesView(final Context context, final AttributeSet attrs, final int defStyle) {
         super(context, attrs, defStyle);
+
+        emojiSearch = new EmojiSearch(context);
+
         final TypedArray keyboardViewAttr = context.obtainStyledAttributes(attrs,
                 R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
         final int keyBackgroundId = keyboardViewAttr.getResourceId(
@@ -364,6 +372,17 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
                     false /* isKeyRepeat */);
         }
         mKeyboardActionListener.onReleaseKey(code, false /* withSliding */);
+    }
+
+    public void onHoldKey(final Key key) {
+        if (mEmojiCategory.isInRecentTab()) {
+            mEmojiPalettesAdapter.removeRecentKey(key);
+        } else {
+            String description = emojiSearch.getDescription(key.getLabel());
+            if (description != null) {
+                Toast.makeText(getContext(), description, Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     public void setHardwareAcceleratedDrawingEnabled(final boolean enabled) {

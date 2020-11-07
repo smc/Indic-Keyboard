@@ -99,6 +99,14 @@ final class DynamicGridKeyboard extends Keyboard {
         addKey(usedKey, false);
     }
 
+    public void removeKey(final Key key) {
+        synchronized (mLock) {
+            mCachedGridKeys = null;
+            mGridKeys.remove(key);
+            updateCoords();
+        }
+    }
+
     private void addKey(final Key usedKey, final boolean addFirst) {
         if (usedKey == null) {
             return;
@@ -117,15 +125,19 @@ final class DynamicGridKeyboard extends Keyboard {
             while (mGridKeys.size() > mMaxKeyCount) {
                 mGridKeys.removeLast();
             }
-            int index = 0;
-            for (final GridKey gridKey : mGridKeys) {
-                final int keyX0 = getKeyX0(index);
-                final int keyY0 = getKeyY0(index);
-                final int keyX1 = getKeyX1(index);
-                final int keyY1 = getKeyY1(index);
-                gridKey.updateCoordinates(keyX0, keyY0, keyX1, keyY1);
-                index++;
-            }
+            updateCoords();
+        }
+    }
+
+    private void updateCoords() {
+        int index = 0;
+        for (final GridKey gridKey : mGridKeys) {
+            final int keyX0 = getKeyX0(index);
+            final int keyY0 = getKeyY0(index);
+            final int keyX1 = getKeyX1(index);
+            final int keyY1 = getKeyY1(index);
+            gridKey.updateCoordinates(keyX0, keyY0, keyX1, keyY1);
+            index++;
         }
     }
 

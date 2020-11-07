@@ -67,6 +67,10 @@ final class EmojiPalettesAdapter extends PagerAdapter {
         }
     }
 
+    public void removeRecentKey(final Key key) {
+        mRecentsKeyboard.removeKey(key);
+    }
+
     public void onPageScrolled() {
         releaseCurrentKey(false /* withKeyRegistering */);
     }
