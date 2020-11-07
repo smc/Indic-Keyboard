@@ -72,6 +72,24 @@ public class EmojiSearch {
         return null;
     }
 
+    private static String toTitleCase(String input) {
+        StringBuilder titleCase = new StringBuilder(input.length());
+        boolean nextTitleCase = true;
+
+        for (char c : input.toCharArray()) {
+            if (Character.isSpaceChar(c)) {
+                nextTitleCase = true;
+            } else if (nextTitleCase) {
+                c = Character.toTitleCase(c);
+                nextTitleCase = false;
+            }
+
+            titleCase.append(c);
+        }
+
+        return titleCase.toString();
+    }
+
     private void makeDict() {
         if (dict != null) return;
 
@@ -93,9 +111,9 @@ public class EmojiSearch {
                 ) {
                     description = mContext.getString(field.getInt(field))
                             .toLowerCase()
-                            .replaceAll("[^a-zA-Z0-9]","") /* remove all non alphanumeric chars */;
+                            .replaceAll("[^a-zA-Z0-9]"," ") /* remove all non alphanumeric chars */;
                     dict.put(
-                            description,
+                            toTitleCase(description),
                             name.substring(13) /* codepoints */
                     );
                 }
@@ -135,6 +153,7 @@ public class EmojiSearch {
 
             offset += Character.charCount(codepoint);
         }
+
         return codepoints.toString();
     }
 }
