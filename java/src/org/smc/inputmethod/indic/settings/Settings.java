@@ -450,6 +450,10 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
      * @param emoji
      */
     public static void addEmojiToRecentKeys(final SharedPreferences prefs, String emoji) {
+        if (emoji == null || emoji.length() == 0) {
+          return;
+        }
+
         Object toInsert = emoji;
         if (emoji.codePointCount(0, emoji.length()) == 1) {
             toInsert = emoji.codePointAt(0);
