@@ -19,13 +19,13 @@
     xmlns:latin="http://schemas.android.com/apk/res-auto"
     android:key="english_ime_settings">
     <PreferenceScreen
-        android:fragment="org.smc.inputmethod.indic.settings.PreferencesSettingsFragment"
-        android:title="@string/settings_screen_preferences"
-        android:key="screen_preferences" />
-    <PreferenceScreen
         android:fragment="org.smc.inputmethod.indic.settings.ThemeSettingsFragment"
         android:key="screen_theme"
         android:title="@string/settings_screen_theme" />
+    <PreferenceScreen
+        android:fragment="org.smc.inputmethod.indic.settings.PreferencesSettingsFragment"
+        android:title="@string/settings_screen_preferences"
+        android:key="screen_preferences" />
     <!--
     <PreferenceScreen
         android:fragment="org.smc.inputmethod.indic.settings.GestureSettingsFragment"

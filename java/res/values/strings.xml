@@ -45,7 +45,7 @@
     <!-- Settings screen title for gesture typing preferences [CHAR_LIMIT=33] -->
     <string name="settings_screen_gesture">Gesture Typing</string>
     <!-- Settings screen title for text correction options [CHAR_LIMIT=33] -->
-    <string name="settings_screen_correction">Text correction</string>
+    <string name="settings_screen_correction">Text</string>
     <!-- Settings screen title for varnam settings [CHAR LIMIT=33] -->
     <string name="settings_screen_varnam">Varnam</string>
     <!-- Settings screen title for advanced settings [CHAR LIMIT=33] -->
@@ -150,7 +150,7 @@
     <string name="main_dictionary">Main dictionary</string>
 
     <!-- Option to enable showing suggestions -->
-    <string name="prefs_show_suggestions">Show correction suggestions</string>
+    <string name="prefs_show_suggestions">Show suggestions</string>
     <!-- Description for show suggestions -->
     <string name="prefs_show_suggestions_summary">Display suggested words while typing</string>
 
