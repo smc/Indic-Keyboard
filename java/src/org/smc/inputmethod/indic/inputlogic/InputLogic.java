@@ -2310,8 +2310,12 @@ public final class InputLogic {
                 chosenWordWithSuggestions, separatorString, ngramContext);
 
         if (isEmoji) {
-            // add emoji to recents
-            mLatinIME.addEmojiToRecentKeys(chosenWord);
+            ArrayList<SuggestedWordInfo> suggestedEmojis = emojiSearch.search(chosenWord);
+
+            if (suggestedEmojis.size() > 0) {
+                // add emoji to recents
+                mLatinIME.addEmojiToRecentKeys(chosenWord);
+            }
         }
 
         if (DebugFlags.DEBUG_ENABLED) {
