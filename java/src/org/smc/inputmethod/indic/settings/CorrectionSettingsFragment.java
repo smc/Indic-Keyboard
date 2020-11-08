@@ -93,6 +93,17 @@ public final class CorrectionSettingsFragment extends SubScreenFragment
 
         mUseContactsPreference = (SwitchPreference) findPreference(Settings.PREF_KEY_USE_CONTACTS_DICT);
         turnOffUseContactsIfNoPermission();
+
+
+        // TODO rewriting entire deprecated PreferenceScreen with the new androidx will remove this
+        findPreference("screen_varnam").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent myIntent = new Intent(getActivity(), VarnamSettingsActivity.class);
+                getActivity().startActivity(myIntent);
+                return true;
+            }
+        });
     }
 
     private void overwriteUserDictionaryPreference(final Preference userDictionaryPreference) {

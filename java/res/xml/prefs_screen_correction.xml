@@ -22,9 +22,18 @@
     <PreferenceCategory android:title="Dictionary">
         <PreferenceScreen
             android:key="edit_personal_dictionary"
-            android:title="@string/edit_personal_dictionary">
+            android:title="@string/edit_personal_dictionary"
+            android:summary="Words saved by you">
             <intent android:action="android.settings.USER_DICTIONARY_SETTINGS" />
         </PreferenceScreen>
+        <Preference
+            android:title="@string/settings_screen_varnam"
+            android:summary="Configure language packs for Varnam keyboard"
+            android:key="screen_varnam">
+            <intent
+                android:targetPackage="org.smc.inputmethod.indic.settings"
+                android:targetClass="org.smc.inputmethod.indic.settings.VarnamSettingsActivity" />
+        </Preference>
     </PreferenceCategory>
 
 
