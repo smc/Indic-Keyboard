@@ -92,9 +92,6 @@ public class RichInputMethodManager {
     }
 
     private void initInternal(final Context context) {
-        if (isInitialized()) {
-            return;
-        }
         mImmWrapper = new InputMethodManagerCompatWrapper(context);
         mContext = context;
         mInputMethodInfoCache = new InputMethodInfoCache(
