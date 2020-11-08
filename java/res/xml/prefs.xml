@@ -26,12 +26,10 @@
         android:fragment="org.smc.inputmethod.indic.settings.PreferencesSettingsFragment"
         android:title="@string/settings_screen_preferences"
         android:key="screen_preferences" />
-    <!--
     <PreferenceScreen
         android:fragment="org.smc.inputmethod.indic.settings.GestureSettingsFragment"
         android:title="@string/settings_screen_gesture"
         android:key="screen_gesture" />
-    -->
     <PreferenceScreen
         android:fragment="org.smc.inputmethod.indic.settings.CorrectionSettingsFragment"
         android:title="@string/settings_screen_correction"
