@@ -66,7 +66,7 @@ public class EmojiSearch {
         for (Map.Entry<String, String> entry : dict.entrySet()) {
             codepoint = entry.getValue();
             if (codepoint.equals(emoji)) {
-                return entry.getKey();
+                return toTitleCase(entry.getKey());
             }
         }
         return null;
@@ -113,7 +113,7 @@ public class EmojiSearch {
                             .toLowerCase()
                             .replaceAll("[^a-zA-Z0-9]"," ") /* remove all non alphanumeric chars */;
                     dict.put(
-                            toTitleCase(description),
+                            description,
                             name.substring(13) /* codepoints */
                     );
                 }
