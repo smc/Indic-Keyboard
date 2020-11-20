@@ -625,6 +625,47 @@ public final class KeyboardTextsTable {
         /* keylabel_to_symbol */ "?\u0967\u0968\u0969",
     };
 
+    /* Locale gu_IN: GUJARATI (India) */
+    private static final String[] TEXTS_gu_IN = {
+        // Label for "switch to alphabetic" key.
+        // U+0915: "ક" GUJARATI LETTER KA
+        // U+0916: "ખ" GUJARATI LETTER KHA
+        // U+0917: "ગ" GUJARATI LETTER GA
+        /* keylabel_to_alpha */ "\u0A95\u0A96\u0A97",
+        /* additional_morekeys_symbols_1 */ "1",
+        /* additional_morekeys_symbols_2 */ "2",
+        /* additional_morekeys_symbols_3 */ "3",
+        /* additional_morekeys_symbols_4 */ "4",
+        /* additional_morekeys_symbols_5 */ "5",
+        /* additional_morekeys_symbols_6 */ "6",
+        /* additional_morekeys_symbols_7 */ "7",
+        /* additional_morekeys_symbols_8 */ "8",
+        /* additional_morekeys_symbols_9 */ "9",
+        /* additional_morekeys_symbols_0 */ "0",
+        // U+0967: "૧" GUJARATI DIGIT ONE
+        /* keyspec_symbols_1 */ "\u0AE7",
+        // U+0968: "૨" GUJARATI DIGIT TWO
+        /* keyspec_symbols_2 */ "\u0AE8",
+        // U+0969: "૩" GUJARATI DIGIT THREE
+        /* keyspec_symbols_3 */ "\u0AE9",
+        // U+096A: "૪" GUJARATI DIGIT FOUR
+        /* keyspec_symbols_4 */ "\u0AEA",
+        // U+096B: "૫" GUJARATI DIGIT FIVE
+        /* keyspec_symbols_5 */ "\u0AEB",
+        // U+096C: "૬" GUJARATI DIGIT SIX
+        /* keyspec_symbols_6 */ "\u0AEC",
+        // U+096D: "૭" GUJARATI DIGIT SEVEN
+        /* keyspec_symbols_7 */ "\u0AED",
+        // U+096E: "८" GUJARATI DIGIT EIGHT
+        /* keyspec_symbols_8 */ "\u0AEE",
+        // U+096F: "૯" GUJARATI DIGIT NINE
+        /* keyspec_symbols_9 */ "\u0AEF",
+        // U+0966: "૦" GUJARATI DIGIT ZERO
+        /* keyspec_symbols_0 */ "\u0AE6",
+        // Label for "switch to symbols" key.
+        /* keylabel_to_symbol */ "?\u0AE7\u0AE8\u0AE9",
+    };
+
     /* Locale kn_IN: Kannada (India) */
     private static final String[] TEXTS_kn_IN = {
         /* keylabel_to_alpha */ "\u0C85",
