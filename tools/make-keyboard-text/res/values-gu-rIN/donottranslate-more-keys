@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright © 2013-2021 Jishnu Mohan
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Label for "switch to alphabetic" key.
+         U+0A95: "ક" GUJARATI LETTER KA
+         U+0A96: "ખ" GUJARATI LETTER KHA
+         U+0A97: "ગ" GUJARATI LETTER GA -->
+    <string name="keylabel_to_alpha">&#x0A95;&#x0A96;&#x0A97;</string>
+    <!-- U+0AE7: "૧" GUJARATI DIGIT ONE -->
+    <string name="keyspec_symbols_1">&#x0AE7;</string>
+    <!-- U+0AE8: "૨" GUJARATI DIGIT TWO -->
+    <string name="keyspec_symbols_2">&#x0AE8;</string>
+    <!-- U+0AE9: "૩" GUJARATI DIGIT THREE -->
+    <string name="keyspec_symbols_3">&#x0AE9;</string>
+    <!-- U+0AEA: "૪" GUJARATI DIGIT FOUR -->
+    <string name="keyspec_symbols_4">&#x0AEA;</string>
+    <!-- U+0AEB: "૫" GUJARATI DIGIT FIVE -->
+    <string name="keyspec_symbols_5">&#x0AEB;</string>
+    <!-- U+0AEC: "૬" GUJARATI DIGIT SIX -->
+    <string name="keyspec_symbols_6">&#x0AEC;</string>
+    <!-- U+0AED: "૭" GUJARATI DIGIT SEVEN -->
+    <string name="keyspec_symbols_7">&#x0AED;</string>
+    <!-- U+0AEE: "૮" GUJARATI DIGIT EIGHT -->
+    <string name="keyspec_symbols_8">&#x0AEE;</string>
+    <!-- U+0AEF: "૯" GUJARATI DIGIT NINE -->
+    <string name="keyspec_symbols_9">&#x0AEF;</string>
+    <!-- U+0AE6: "૦" GUJARATI DIGIT ZERO -->
+    <string name="keyspec_symbols_0">&#x0AE6;</string>
+    <!-- Label for "switch to symbols" key. -->
+    <string name="keylabel_to_symbol">?&#x0AE7;&#x0AE8;&#x0AE9;</string>
+    <string name="additional_morekeys_symbols_1">1</string>
+    <string name="additional_morekeys_symbols_2">2</string>
+    <string name="additional_morekeys_symbols_3">3</string>
+    <string name="additional_morekeys_symbols_4">4</string>
+    <string name="additional_morekeys_symbols_5">5</string>
+    <string name="additional_morekeys_symbols_6">6</string>
+    <string name="additional_morekeys_symbols_7">7</string>
+    <string name="additional_morekeys_symbols_8">8</string>
+    <string name="additional_morekeys_symbols_9">9</string>
+    <string name="additional_morekeys_symbols_0">0</string>
+    <!-- U+20B9: "₹" INDIAN RUPEE SIGN -->
+    <string name="keyspec_currency">&#x20B9;</string>
+    <!-- U+0964: "." GUJARATI . -->
+    <string name="keyspec_period">&#x0ABC;</string>
+    <string name="keyspec_tablet_period">&#x0ABC;</string>
+    <string name="morekeys_period">"!autoColumnOrder!9,\\,,.,?,!,#,),(,/,;,',@,:,-,\",+,\\%,&amp;"</string>
+    <string name="morekeys_tablet_period">"!autoColumnOrder!8,\\,,.,',#,),(,/,;,@,:,-,\",+,\\%,&amp;"</string>
+</resources>
