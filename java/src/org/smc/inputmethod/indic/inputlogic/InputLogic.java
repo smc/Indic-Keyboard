@@ -1469,7 +1469,7 @@ public final class InputLogic {
             Log.d(TAG, "performUpdateSuggestionStripSync()");
         }
 
-        if (!mWordComposer.isComposingWord() && (!settingsValues.mBigramPredictionEnabled || isEmoji)) {
+        if (!mWordComposer.isComposingWord() && !(settingsValues.mBigramPredictionEnabled || isEmoji)) {
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             return;
         }
