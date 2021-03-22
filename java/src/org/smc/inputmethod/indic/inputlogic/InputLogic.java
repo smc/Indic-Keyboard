@@ -2323,6 +2323,14 @@ public final class InputLogic {
             final String typedWordString = getWordAtCursor(settingsValues, ScriptUtils.SCRIPT_LATIN);
             ArrayList<SuggestedWordInfo> suggestedEmojis = emojiSearch.search(typedWordString);
 
+            // Emoji search suggestions won't have typed word in it.
+            // Suggestions need at least 2 elements including typed word,
+            // otherwise exception happens
+            if (suggestedEmojis.size() == 1) {
+                // So add the same emoji again
+                suggestedEmojis.add(suggestedEmojis.get(0));
+            }
+
             callback.onGetSuggestedWords(new SuggestedWords(
                 suggestedEmojis,
                 null,
