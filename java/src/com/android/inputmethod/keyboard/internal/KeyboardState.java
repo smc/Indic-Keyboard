@@ -43,6 +43,7 @@ public final class KeyboardState {
 
     public interface SwitchActions {
         public static final boolean DEBUG_ACTION = false;
+        public boolean isEmojiSearch = false;
 
         public void setAlphabetKeyboard();
         public void setAlphabetManualShiftedKeyboard();
@@ -51,7 +52,7 @@ public final class KeyboardState {
         public void setAlphabetShiftLockShiftedKeyboard();
         public void setEmojiKeyboard();
         public void setEmojiSearch();
-        public void unsetEmojiSearch();
+        public void unsetEmojiSearch(boolean switchBack);
         public void setSymbolsKeyboard();
         public void setSymbolsShiftedKeyboard();
 
@@ -87,7 +88,6 @@ public final class KeyboardState {
     // symbols, and emoji mode.
     private boolean mIsAlphabetMode;
     private boolean mIsEmojiMode;
-    private boolean mIsEmojiSearchMode;
     private AlphabetShiftState mAlphabetShiftState = new AlphabetShiftState();
     private boolean mIsSymbolShifted;
     private boolean mPrevMainKeyboardWasShiftLocked;
@@ -308,7 +308,6 @@ public final class KeyboardState {
         mSwitchActions.setAlphabetKeyboard();
         mIsAlphabetMode = true;
         mIsEmojiMode = false;
-        mIsEmojiSearchMode = false;
         mIsSymbolShifted = false;
         mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
         mSwitchState = SWITCH_STATE_ALPHA;
@@ -352,16 +351,6 @@ public final class KeyboardState {
         mPrevMainKeyboardWasShiftLocked = mAlphabetShiftState.isShiftLocked();
         mAlphabetShiftState.setShiftLocked(false);
         mSwitchActions.setEmojiKeyboard();
-    }
-
-    private void setEmojiSearch() {
-        mIsEmojiSearchMode = true;
-        mSwitchActions.setEmojiSearch();
-    }
-
-    private void unsetEmojiSearch() {
-        mIsEmojiSearchMode = false;
-        mSwitchActions.unsetEmojiSearch();
     }
 
     public void onPressKey(final int code, final boolean isSinglePointer, final int autoCapsFlags,
@@ -682,17 +671,13 @@ public final class KeyboardState {
         if (Constants.isLetterCode(code)) {
             updateAlphabetShiftState(autoCapsFlags, recapitalizeMode);
         } else if (code == Constants.CODE_EMOJI) {
-            if (mIsEmojiSearchMode) {
-                unsetEmojiSearch();
-            } else {
-                setEmojiKeyboard();
-            }
+            setEmojiKeyboard();
         } else if (code == Constants.CODE_ALPHA_FROM_EMOJI) {
             setAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
         } else if (code == Constants.CODE_EMOJI_SEARCH) {
-            setEmojiSearch();
+            mSwitchActions.setEmojiSearch();
         } else if (code == Constants.CODE_BACK_TO_KEYBOARD) {
-            unsetEmojiSearch();
+            mSwitchActions.unsetEmojiSearch(true);
         }
     }
 

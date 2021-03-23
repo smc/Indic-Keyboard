@@ -16,10 +16,6 @@
 
 package org.smc.inputmethod.indic;
 
-import static com.android.inputmethod.latin.common.Constants.ImeOption.FORCE_ASCII;
-import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE;
-import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE_COMPAT;
-
 import android.Manifest.permission;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -39,7 +35,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.InputType;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
@@ -88,14 +83,7 @@ import com.android.inputmethod.latin.common.CoordinateUtils;
 import com.android.inputmethod.latin.common.InputPointers;
 import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.define.ProductionFlags;
-import org.smc.inputmethod.indic.inputlogic.InputLogic;
 import com.android.inputmethod.latin.permissions.PermissionsManager;
-import org.smc.inputmethod.indic.personalization.PersonalizationHelper;
-import org.smc.inputmethod.indic.settings.Settings;
-import org.smc.inputmethod.indic.settings.SettingsActivity;
-import org.smc.inputmethod.indic.settings.SettingsValues;
-import org.smc.inputmethod.indic.suggestions.SuggestionStripView;
-import org.smc.inputmethod.indic.suggestions.SuggestionStripViewAccessor;
 import com.android.inputmethod.latin.touchinputconsumer.GestureConsumer;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
 import com.android.inputmethod.latin.utils.DialogUtils;
@@ -108,6 +96,14 @@ import com.android.inputmethod.latin.utils.StatsUtilsManager;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 
+import org.smc.inputmethod.indic.inputlogic.InputLogic;
+import org.smc.inputmethod.indic.personalization.PersonalizationHelper;
+import org.smc.inputmethod.indic.settings.Settings;
+import org.smc.inputmethod.indic.settings.SettingsActivity;
+import org.smc.inputmethod.indic.settings.SettingsValues;
+import org.smc.inputmethod.indic.suggestions.SuggestionStripView;
+import org.smc.inputmethod.indic.suggestions.SuggestionStripViewAccessor;
+
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -116,6 +112,10 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
+
+import static com.android.inputmethod.latin.common.Constants.ImeOption.FORCE_ASCII;
+import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE;
+import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROPHONE_COMPAT;
 
 /**
  * Input method implementation for Qwerty'ish keyboard.
@@ -878,6 +878,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mSettings.getCurrent());
         checkForTransliteration();
         loadKeyboard();
+
+        if (mKeyboardSwitcher.isEmojiSearchToggle) {
+            // This subtype change (layout change) is for emoji search.
+            // So start emoji search state
+            setEmojiSearch();
+        } else if (mKeyboardSwitcher.isEmojiSearch) {
+            // Subtype changed during emoji search state (language toggle button click).
+            // So unset emoji search state without switch back cause currently this keyboard is what
+            // user intended to use.
+            mKeyboardSwitcher.unsetEmojiSearch(false);
+        }
     }
 
     void onStartInputInternal(final EditorInfo editorInfo, final boolean restarting) {
@@ -2036,18 +2047,41 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
+    /**
+     * Emoji search toggling is called by KeyboardSwitcher.
+     * Workflow :
+     *  1. User clicks emoji search button
+     *  2. Set isEmojiSearchToggle = true
+     *  3. If the keyboard layout is not English qwerty,
+     *      3.1. Switch to en_US qwerty
+     *      3.2. goto-step 5 (called by onCurrentInputMethodSubtypeChanged)
+     *  4. If it is English qwerty
+     *      4.1. goto-step 5 (called by KeyboardSwitcher)
+     *  5. (THIS FUNCTION)
+     *      5.1. Ask suggestion strip & InputLogic to switch to emoji search state
+     *      5.2. Set isEmojiSearchToggle = false
+     *      5.3. Set isEmojiSearch = true (we're finally in emoji search mode)
+     *
+     * Step 1-4 is done by KeyboardSwitcher with help from KeyboardState
+     */
     public void setEmojiSearch() {
         mInputLogic.setEmojiSearch(getApplicationContext());
-        mSuggestionStripView.setEmojiSearch();
-        mInputLogic.disableTransliteration();
         mInputLogic.disableTransliteration();
         mInputLogic.setIndic(false);
+        mSuggestionStripView.setEmojiSearch();
+
+        mKeyboardSwitcher.isEmojiSearchToggle = false; // Successfully made current keyboard emoji search. No toggle needed anymore
+        mKeyboardSwitcher.isEmojiSearch = true; // Currently in emoji search state
     }
 
+    /**
+     * Emoji search untoggling is done in 2 ways:
+     *  1. By clicking back button. Called by KeyboardState & Keyboard Switcher
+     *  2. By clicking language toggle button. Called by onCurrentInputMethodSubtypeChanged
+     */
     public void unsetEmojiSearch() {
         mInputLogic.unsetEmojiSearch();
         mSuggestionStripView.unsetEmojiSearch();
-        checkForTransliteration();
     }
 
     public void addEmojiToRecentKeys(String emoji) {
