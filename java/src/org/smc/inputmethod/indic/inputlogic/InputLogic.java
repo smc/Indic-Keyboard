@@ -2046,7 +2046,7 @@ public final class InputLogic {
     private void sendKeyCodePoint(final SettingsValues settingsValues, final int codePoint, boolean transliteration) {
         // TODO: Remove this special handling of digit letters.
         // For backward compatibility. See {@link InputMethodService#sendKeyChar(char)}.
-        if (codePoint >= '0' && codePoint <= '9') {
+        if (!isIndic && codePoint >= '0' && codePoint <= '9') {
             sendDownUpKeyEvent(codePoint - '0' + KeyEvent.KEYCODE_0);
             return;
         }
