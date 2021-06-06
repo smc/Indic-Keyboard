@@ -61,6 +61,7 @@ import org.smc.inputmethod.indic.settings.SettingsValues;
 import org.smc.inputmethod.indic.settings.SettingsValuesForSuggestion;
 import org.smc.inputmethod.indic.settings.SpacingAndPunctuations;
 import org.smc.inputmethod.indic.suggestions.SuggestionStripViewAccessor;
+import com.android.inputmethod.latin.utils.ScriptUtils;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -1561,7 +1562,7 @@ public final class InputLogic {
             final boolean forStartInput,
             // TODO: remove this argument, put it into settingsValues
             final int currentKeyboardScriptId) {
-        Log.d("IndicKeyboard", "InputLogidc: restartSuggestionsOnWordTouchedByCursor");
+        Log.d("IndicKeyboard", "InputLogic: restartSuggestionsOnWordTouchedByCursor");
         // HACK: We may want to special-case some apps that exhibit bad behavior in case of
         // recorrection. This is a temporary, stopgap measure that will be removed later.
         // TODO: remove this.
@@ -1606,14 +1607,8 @@ public final class InputLogic {
         // we just do not resume because it's safer.
         final int numberOfCharsInWordBeforeCursor = range.getNumberOfCharsInWordBeforeCursor();
         if (numberOfCharsInWordBeforeCursor > expectedCursorPosition) return;
-        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<>();
         final String typedWordString = range.mWord.toString();
-        final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(typedWordString,
-                "" /* prevWordsContext */, SuggestedWords.MAX_SUGGESTIONS + 1,
-                SuggestedWordInfo.KIND_TYPED, Dictionary.DICTIONARY_USER_TYPED,
-                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
-        suggestions.add(typedWordInfo);
+
         if (!isResumableWord(settingsValues, typedWordString)) {
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             return;
