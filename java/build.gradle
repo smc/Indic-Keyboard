@@ -3,14 +3,14 @@ project.ext.set("archivesBaseName", "IndicKeyboard");
 allprojects {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 }
 
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.2.1'
@@ -33,13 +33,13 @@ ext.versionCodeOffsets = ['arm64-v8a': 1, 'armeabi-v7a': 0, 'x86': 2, 'x86_64': 
 import com.android.build.OutputFile
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '29.0.2'
+    compileSdkVersion 30
+    buildToolsVersion '30.0.2'
 
     defaultConfig {
         applicationId "org.smc.inputmethod.indic"
         minSdkVersion 14
-        targetSdkVersion 28
+        targetSdkVersion 30
         versionCode 60
         versionName "3.3-beta1"
     }
