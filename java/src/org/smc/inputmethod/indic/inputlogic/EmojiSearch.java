@@ -111,7 +111,7 @@ public class EmojiSearch {
                 ) {
                     description = mContext.getString(field.getInt(field))
                             .toLowerCase()
-                            .replaceAll("[^a-zA-Z0-9]"," ") /* remove all non alphanumeric chars */;
+                            .replaceAll("[^a-zA-Z0-9]","") /* remove all non alphanumeric chars */;
                     dict.put(
                             description,
                             name.substring(13) /* codepoints */
