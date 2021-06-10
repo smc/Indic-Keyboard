@@ -1408,17 +1408,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onMovePointer(int steps) {
-        if (steps < 0) {
-            int availableCharacters = getCurrentInputConnection().getTextBeforeCursor(64, 0).length();
-            steps = availableCharacters < -steps ? -availableCharacters : steps;
-        }
-        else if (steps > 0) {
-            int availableCharacters = getCurrentInputConnection().getTextAfterCursor(64, 0).length();
-            steps = availableCharacters < steps ? availableCharacters : steps;
-        } else return;
-
-        int newPosition = mInputLogic.mConnection.mExpectedSelStart + steps;
-        getCurrentInputConnection().setSelection(newPosition, newPosition);
+        for (; steps < 0; steps++)
+            mInputLogic.sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT);
+        for (; steps > 0; steps--)
+            mInputLogic.sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT);
     }
 
     @Override
