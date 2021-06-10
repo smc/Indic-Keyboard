@@ -84,8 +84,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
     private ImageButton mDeleteKey;
     private TextView mAlphabetKeyLeft;
-    private ImageButton mSearchKeyLeft;
-    private TextView mAlphabetKeyRight;
+    private ImageButton mSearchKey;
     private View mSpacebar;
     // TODO: Remove this workaround.
     private View mSpacebarIcon;
@@ -215,7 +214,6 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         mDeleteKey.setTag(Constants.CODE_DELETE);
         mDeleteKey.setOnTouchListener(mDeleteKeyOnTouchListener);
 
-        // {@link #mAlphabetKeyLeft}, {@link #mAlphabetKeyRight, and spaceKey depend on
         // {@link View.OnClickListener} as well as {@link View.OnTouchListener}.
         // {@link View.OnTouchListener} is used as the trigger of key-press, while
         // {@link View.OnClickListener} is used as the trigger of key-release which does not occur
@@ -228,17 +226,11 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         mAlphabetKeyLeft.setOnTouchListener(this);
         mAlphabetKeyLeft.setOnClickListener(this);
 
-        mSearchKeyLeft = (ImageButton)findViewById(R.id.emoji_keyboard_search_left);
-        mSearchKeyLeft.setBackgroundResource(mFunctionalKeyBackgroundId);
-        mSearchKeyLeft.setTag(Constants.CODE_EMOJI_SEARCH);
-        mSearchKeyLeft.setOnTouchListener(this);
-        mSearchKeyLeft.setOnClickListener(this);
+        mSearchKey = (ImageButton)findViewById(R.id.emoji_keyboard_search);
+        mSearchKey.setTag(Constants.CODE_EMOJI_SEARCH);
+        mSearchKey.setOnTouchListener(this);
+        mSearchKey.setOnClickListener(this);
 
-        mAlphabetKeyRight = (TextView)findViewById(R.id.emoji_keyboard_alphabet_right);
-        mAlphabetKeyRight.setBackgroundResource(mFunctionalKeyBackgroundId);
-        mAlphabetKeyRight.setTag(Constants.CODE_ALPHA_FROM_EMOJI);
-        mAlphabetKeyRight.setOnTouchListener(this);
-        mAlphabetKeyRight.setOnClickListener(this);
         mSpacebar = findViewById(R.id.emoji_keyboard_space);
         mSpacebar.setBackgroundResource(mSpacebarBackgroundId);
         mSpacebar.setTag(Constants.CODE_SPACE);
@@ -413,12 +405,11 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         }
         final int searchIconResId = iconSet.getIconResourceId(KeyboardIconsSet.NAME_SEARCH_KEY);
         if (searchIconResId != 0) {
-            mSearchKeyLeft.setImageResource(searchIconResId);
+            mSearchKey.setImageResource(searchIconResId);
         }
         final KeyDrawParams params = new KeyDrawParams();
         params.updateParams(mEmojiLayoutParams.getActionBarHeight(), keyVisualAttr);
         setupAlphabetKey(mAlphabetKeyLeft, switchToAlphaLabel, params);
-        setupAlphabetKey(mAlphabetKeyRight, switchToAlphaLabel, params);
         mEmojiPager.setAdapter(mEmojiPalettesAdapter);
         mEmojiPager.setCurrentItem(mCurrentPagerPosition);
     }

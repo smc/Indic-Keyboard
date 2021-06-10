@@ -58,18 +58,17 @@
                     android:visibility="gone" />
             </FrameLayout>
         </TabHost>
-        <include layout="@layout/suggestion_divider" />
-        <!-- TODO: Implement KeyView and replace this. -->
-        <!-- Provide audio and haptic feedback by ourselves based on the keyboard settings.
-             We just need to ignore the system's audio and haptic feedback settings. -->
+
         <ImageButton
-            android:id="@+id/emoji_keyboard_delete"
+            android:id="@+id/emoji_keyboard_search"
             android:layout_width="0dip"
             android:layout_weight="12.5"
             android:layout_height="match_parent"
             android:hapticFeedbackEnabled="false"
             android:soundEffectsEnabled="false"
-            android:contentDescription="@string/spoken_description_delete" />
+            style="?attr/suggestionWordStyle"
+            android:contentDescription="@string/spoken_description_search" />
+
     </LinearLayout>
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/emoji_keyboard_pager"
@@ -91,15 +90,6 @@
              We just need to ignore the system's audio and haptic feedback settings. -->
         <TextView
             android:id="@+id/emoji_keyboard_alphabet_left"
-            android:layout_width="0dip"
-            android:layout_weight="0.15"
-            android:gravity="center"
-            android:layout_height="match_parent"
-            android:hapticFeedbackEnabled="false"
-            android:soundEffectsEnabled="false" />
-        <!-- TODO: Implement KeyView and replace this. -->
-        <ImageButton
-            android:id="@+id/emoji_keyboard_search_left"
             android:layout_width="0dip"
             android:layout_weight="0.15"
             android:gravity="center"
@@ -128,13 +118,14 @@
         <!-- TODO: Implement KeyView and replace this. -->
         <!-- Provide audio and haptic feedback by ourselves based on the keyboard settings.
              We just need to ignore the system's audio and haptic feedback settings. -->
-        <TextView
-            android:id="@+id/emoji_keyboard_alphabet_right"
+        <ImageButton
+            android:id="@+id/emoji_keyboard_delete"
             android:layout_width="0dip"
             android:layout_weight="0.15"
             android:gravity="center"
             android:layout_height="match_parent"
             android:hapticFeedbackEnabled="false"
-            android:soundEffectsEnabled="false" />
+            android:soundEffectsEnabled="false"
+            android:contentDescription="@string/spoken_description_delete" />
     </LinearLayout>
 </com.android.inputmethod.keyboard.emoji.EmojiPalettesView>
