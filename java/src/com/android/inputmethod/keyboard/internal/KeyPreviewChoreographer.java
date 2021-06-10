@@ -68,7 +68,7 @@ public final class KeyPreviewChoreographer {
         return mShowingKeyPreviewViews.containsKey(key);
     }
 
-    public void dismissKeyPreview(final Key key, final boolean withAnimation) {
+    public void dismissKeyPreview(final Key key) {
         if (key == null) {
             return;
         }
@@ -76,19 +76,8 @@ public final class KeyPreviewChoreographer {
         if (keyPreviewView == null) {
             return;
         }
-        final Object tag = keyPreviewView.getTag();
-        if (withAnimation) {
-            if (tag instanceof KeyPreviewAnimators) {
-                final KeyPreviewAnimators animators = (KeyPreviewAnimators)tag;
-                animators.startDismiss();
-                return;
-            }
-        }
         // Dismiss preview without animation.
         mShowingKeyPreviewViews.remove(key);
-        if (tag instanceof Animator) {
-            ((Animator)tag).cancel();
-        }
         keyPreviewView.setTag(null);
         keyPreviewView.setVisibility(View.INVISIBLE);
         mFreeKeyPreviewViews.add(keyPreviewView);
@@ -96,11 +85,11 @@ public final class KeyPreviewChoreographer {
 
     public void placeAndShowKeyPreview(final Key key, final KeyboardIconsSet iconsSet,
             final KeyDrawParams drawParams, final int keyboardViewWidth, final int[] keyboardOrigin,
-            final ViewGroup placerView, final boolean withAnimation) {
+            final ViewGroup placerView) {
         final KeyPreviewView keyPreviewView = getKeyPreviewView(key, placerView);
         placeKeyPreview(
                 key, keyPreviewView, iconsSet, drawParams, keyboardViewWidth, keyboardOrigin);
-        showKeyPreview(key, keyPreviewView, withAnimation);
+        showKeyPreview(key, keyPreviewView);
     }
 
     private void placeKeyPreview(final Key key, final KeyPreviewView keyPreviewView,
@@ -141,69 +130,8 @@ public final class KeyPreviewChoreographer {
         keyPreviewView.setPivotY(previewHeight);
     }
 
-    void showKeyPreview(final Key key, final KeyPreviewView keyPreviewView,
-            final boolean withAnimation) {
-        if (!withAnimation) {
-            keyPreviewView.setVisibility(View.VISIBLE);
-            mShowingKeyPreviewViews.put(key, keyPreviewView);
-            return;
-        }
-
-        // Show preview with animation.
-        final Animator showUpAnimator = createShowUpAnimator(key, keyPreviewView);
-        final Animator dismissAnimator = createDismissAnimator(key, keyPreviewView);
-        final KeyPreviewAnimators animators = new KeyPreviewAnimators(
-                showUpAnimator, dismissAnimator);
-        keyPreviewView.setTag(animators);
-        animators.startShowUp();
-    }
-
-    public Animator createShowUpAnimator(final Key key, final KeyPreviewView keyPreviewView) {
-        final Animator showUpAnimator = mParams.createShowUpAnimator(keyPreviewView);
-        showUpAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(final Animator animator) {
-                showKeyPreview(key, keyPreviewView, false /* withAnimation */);
-            }
-        });
-        return showUpAnimator;
-    }
-
-    private Animator createDismissAnimator(final Key key, final KeyPreviewView keyPreviewView) {
-        final Animator dismissAnimator = mParams.createDismissAnimator(keyPreviewView);
-        dismissAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(final Animator animator) {
-                dismissKeyPreview(key, false /* withAnimation */);
-            }
-        });
-        return dismissAnimator;
-    }
-
-    private static class KeyPreviewAnimators extends AnimatorListenerAdapter {
-        private final Animator mShowUpAnimator;
-        private final Animator mDismissAnimator;
-
-        public KeyPreviewAnimators(final Animator showUpAnimator, final Animator dismissAnimator) {
-            mShowUpAnimator = showUpAnimator;
-            mDismissAnimator = dismissAnimator;
-        }
-
-        public void startShowUp() {
-            mShowUpAnimator.start();
-        }
-
-        public void startDismiss() {
-            if (mShowUpAnimator.isRunning()) {
-                mShowUpAnimator.addListener(this);
-                return;
-            }
-            mDismissAnimator.start();
-        }
-
-        @Override
-        public void onAnimationEnd(final Animator animator) {
-            mDismissAnimator.start();
-        }
+    void showKeyPreview(final Key key, final KeyPreviewView keyPreviewView) {
+        keyPreviewView.setVisibility(View.VISIBLE);
+        mShowingKeyPreviewViews.put(key, keyPreviewView);
     }
 }
