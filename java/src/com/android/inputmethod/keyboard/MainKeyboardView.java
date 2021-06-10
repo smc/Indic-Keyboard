@@ -414,8 +414,8 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
      * @param previewEnabled whether or not to enable the key feedback preview
      * @param delay the delay after which the preview is dismissed
      */
-    public void setKeyPreviewPopupEnabled(final boolean previewEnabled, final int delay) {
-        mKeyPreviewDrawParams.setPopupEnabled(previewEnabled, delay);
+    public void setKeyPreviewPopupEnabled(final boolean previewEnabled) {
+        mKeyPreviewDrawParams.setPopupEnabled(previewEnabled);
     }
 
     /**
@@ -508,10 +508,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
     private void dismissKeyPreview(@Nonnull final Key key) {
         if (isHardwareAccelerated()) {
             mKeyPreviewChoreographer.dismissKeyPreview(key);
-            return;
         }
-        // TODO: Implement preference option to control key preview method and duration.
-        mTimerHandler.postDismissKeyPreview(key, mKeyPreviewDrawParams.getLingerTimeout());
     }
 
     public void setSlidingKeyInputPreviewEnabled(final boolean enabled) {
