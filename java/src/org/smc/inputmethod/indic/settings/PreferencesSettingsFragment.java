@@ -115,7 +115,7 @@ public final class PreferencesSettingsFragment extends SubScreenFragment {
             }
 
             private int getPercentageFromValue(final float floatValue) {
-                return (int)(floatValue * PERCENTAGE_FLOAT);
+                return Math.round(floatValue * PERCENTAGE_FLOAT);
             }
 
             @Override
