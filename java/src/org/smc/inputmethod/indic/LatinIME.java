@@ -2035,6 +2035,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             } else {
                 window.setNavigationBarColor(color);
             }
+            final View view = window.getDecorView();
+            int flags = View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+            view.setSystemUiVisibility(flags);
         }
     }
 
