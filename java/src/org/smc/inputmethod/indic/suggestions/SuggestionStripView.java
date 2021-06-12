@@ -211,11 +211,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     public void updateVisibility(final boolean shouldBeVisible, final boolean isFullscreenMode) {
         final int visibility = shouldBeVisible ? VISIBLE : (isFullscreenMode ? GONE : INVISIBLE);
         setVisibility(visibility);
-
-        final SettingsValues currentSettingsValues = Settings.getInstance().getCurrent();
         if (!isEmojiSearch) {
-            mVoiceKey.setVisibility(currentSettingsValues.mShowsVoiceInputKey ? VISIBLE : INVISIBLE);
-            mIncognitoIcon.setVisibility(currentSettingsValues.mIncognitoModeEnabled ? VISIBLE : INVISIBLE);
+            updateLeftIcon();
         }
     }
 
@@ -540,8 +537,17 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     public void unsetEmojiSearch() {
         isEmojiSearch = false;
         mBackToKeyboardKey.setVisibility(GONE);
+        updateLeftIcon();
+    }
+
+    private void updateLeftIcon() {
         final SettingsValues currentSettingsValues = Settings.getInstance().getCurrent();
-        mVoiceKey.setVisibility(currentSettingsValues.mShowsVoiceInputKey ? VISIBLE : INVISIBLE);
-        mIncognitoIcon.setVisibility(currentSettingsValues.mIncognitoModeEnabled ? VISIBLE : INVISIBLE);
+        if (currentSettingsValues.mIncognitoModeEnabled) {
+            mVoiceKey.setVisibility(INVISIBLE);
+            mIncognitoIcon.setVisibility(VISIBLE);
+        } else {
+            mVoiceKey.setVisibility(currentSettingsValues.mShowsVoiceInputKey ? VISIBLE : INVISIBLE);
+            mIncognitoIcon.setVisibility(INVISIBLE);
+        }
     }
 }
