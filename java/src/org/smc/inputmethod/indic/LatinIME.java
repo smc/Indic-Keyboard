@@ -2058,12 +2058,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     public void setEmojiSearch() {
         mInputLogic.setEmojiSearch(getApplicationContext());
-        mInputLogic.disableTransliteration();
-        mInputLogic.setIndic(false);
         mSuggestionStripView.setEmojiSearch();
-
-        mKeyboardSwitcher.isEmojiSearchToggle = false; // Successfully made current keyboard emoji search. No toggle needed anymore
-        mKeyboardSwitcher.isEmojiSearch = true; // Currently in emoji search state
     }
 
     /**

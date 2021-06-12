@@ -327,6 +327,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
             // It's qwerty english. No layout change needed.
             setAlphabetKeyboard();
             mLatinIME.setEmojiSearch();
+            isEmojiSearchToggle = false; // Successfully made current keyboard emoji search. No toggle needed anymore
+            isEmojiSearch = true; // Currently in emoji search state
         } else {
             mLatinIME.switchLanguage(
                 mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet("en_US", "qwerty")
