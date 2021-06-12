@@ -35,6 +35,7 @@ import com.android.inputmethod.latin.InputView;
 import org.smc.inputmethod.indic.LatinIME;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
+import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.define.ProductionFlags;
 import org.smc.inputmethod.indic.settings.Settings;
@@ -44,6 +45,7 @@ import com.android.inputmethod.latin.utils.LanguageOnSpacebarUtils;
 import com.android.inputmethod.latin.utils.RecapitalizeStatus;
 import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.ScriptUtils;
+import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
 import javax.annotation.Nonnull;
 
@@ -58,7 +60,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private RichInputMethodManager mRichImm;
     private boolean mIsHardwareAcceleratedDrawingEnabled;
 
-    public boolean isEmojiSearchToggle = false;
     public boolean isEmojiSearch = false; // This is toggled to true by LatinIME
     private InputMethodSubtype prevIMS; // Previous keyboard layout
 
@@ -174,7 +175,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         final boolean subtypeChanged = (oldKeyboard == null)
                 || !newKeyboard.mId.mSubtype.equals(oldKeyboard.mId.mSubtype);
         int languageOnSpacebarFormatType;
-        if (isEmojiSearchToggle || isEmojiSearch) {
+        if (isEmojiSearch) {
             languageOnSpacebarFormatType = LanguageOnSpacebarUtils.FORMAT_TYPE_EMOJI;
         } else {
             languageOnSpacebarFormatType = LanguageOnSpacebarUtils
@@ -318,22 +319,16 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     public void setEmojiSearch() {
         prevIMS = mRichImm.getCurrentSubtype().getRawSubtype();
-
-        // Used for setting the emoji search text on spacebar.
-        // Used for enabling emoji view after keyboard layout change.
-        isEmojiSearchToggle = true;
-
-        if (prevIMS.getLocale().equals("en_US")) {
+        isEmojiSearch = true;
+        if (prevIMS.getLocale().equals(SubtypeLocaleUtils.DEFAULT_LANGUAGE)) {
             // It's qwerty english. No layout change needed.
             setAlphabetKeyboard();
-            mLatinIME.setEmojiSearch();
-            isEmojiSearchToggle = false; // Successfully made current keyboard emoji search. No toggle needed anymore
-            isEmojiSearch = true; // Currently in emoji search state
         } else {
             mLatinIME.switchLanguage(
-                mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet("en_US", "qwerty")
+                mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(SubtypeLocaleUtils.DEFAULT_LANGUAGE, SubtypeLocaleUtils.QWERTY)
             );
         }
+        mLatinIME.setEmojiSearch();
     }
 
     /**
@@ -347,7 +342,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mLatinIME.unsetEmojiSearch();
 
         isEmojiSearch = false;
-        isEmojiSearchToggle = false;
 
         if (switchBack && !prevIMS.getLocale().equals("en_US")) {
             // Switch back to previous keyboard layout

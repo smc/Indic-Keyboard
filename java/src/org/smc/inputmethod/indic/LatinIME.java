@@ -770,6 +770,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onDestroy() {
+        mKeyboardSwitcher.unsetEmojiSearch(false);
         mDictionaryFacilitator.closeDictionaries();
         mSettings.onDestroy();
         unregisterReceiver(mHideSoftInputReceiver);
@@ -879,14 +880,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         checkForTransliteration();
         loadKeyboard();
 
-        if (mKeyboardSwitcher.isEmojiSearchToggle) {
-            // This subtype change (layout change) is for emoji search.
-            // So start emoji search state
-            setEmojiSearch();
-        } else if (mKeyboardSwitcher.isEmojiSearch) {
-            // Subtype changed during emoji search state (language toggle button click).
-            // So unset emoji search state without switch back cause currently this keyboard is what
-            // user intended to use.
+        if (mKeyboardSwitcher.isEmojiSearch && !subtype.getLocale().equals(SubtypeLocaleUtils.DEFAULT_LANGUAGE)) {
             mKeyboardSwitcher.unsetEmojiSearch(false);
         }
     }
@@ -2039,33 +2033,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    /**
-     * Emoji search toggling is called by KeyboardSwitcher.
-     * Workflow :
-     *  1. User clicks emoji search button
-     *  2. Set isEmojiSearchToggle = true
-     *  3. If the keyboard layout is not English qwerty,
-     *      3.1. Switch to en_US qwerty
-     *      3.2. goto-step 5 (called by onCurrentInputMethodSubtypeChanged)
-     *  4. If it is English qwerty
-     *      4.1. goto-step 5 (called by KeyboardSwitcher)
-     *  5. (THIS FUNCTION)
-     *      5.1. Ask suggestion strip & InputLogic to switch to emoji search state
-     *      5.2. Set isEmojiSearchToggle = false
-     *      5.3. Set isEmojiSearch = true (we're finally in emoji search mode)
-     *
-     * Step 1-4 is done by KeyboardSwitcher with help from KeyboardState
-     */
     public void setEmojiSearch() {
         mInputLogic.setEmojiSearch(getApplicationContext());
         mSuggestionStripView.setEmojiSearch();
     }
 
-    /**
-     * Emoji search untoggling is done in 2 ways:
-     *  1. By clicking back button. Called by KeyboardState & Keyboard Switcher
-     *  2. By clicking language toggle button. Called by onCurrentInputMethodSubtypeChanged
-     */
     public void unsetEmojiSearch() {
         mInputLogic.unsetEmojiSearch();
         mSuggestionStripView.unsetEmojiSearch();
