@@ -117,6 +117,6 @@ Akshy contributed in layout bug fixes and in tooling.
 
 Some icons from from FontAwesome, they are in [Creative Commons Attribution 4.0 International license](https://fontawesome.com/license)
 
-Also thank [LineageOS](https://review.lineageos.org/c/LineageOS/android_packages_inputmethods_LatinIME/) and [Openboard](https://github.com/dslul/openboard/), some changes are taken/adopted from these keyboards
+Also thank [LineageOS](https://review.lineageos.org/c/LineageOS/android_packages_inputmethods_LatinIME/), [Openboard](https://github.com/dslul/openboard/), and [Simple-Keyboard](https://github.com/rkkr/simple-keyboard) some changes are taken/adopted from these keyboards
 
 ## TODO
