@@ -25,6 +25,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodSubtype;
 import android.view.textservice.SuggestionsInfo;
 
+import com.android.inputmethod.compat.PreferenceManagerCompat;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
@@ -95,7 +96,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         super.onCreate();
         mRecommendedThreshold = Float.parseFloat(
                 getString(R.string.spellchecker_recommended_threshold_value));
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences prefs = PreferenceManagerCompat.getDeviceSharedPreferences(this);
         prefs.registerOnSharedPreferenceChangeListener(this);
         onSharedPreferenceChanged(prefs, PREF_USE_CONTACTS_KEY);
     }

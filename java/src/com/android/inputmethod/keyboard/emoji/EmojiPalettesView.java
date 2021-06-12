@@ -42,6 +42,7 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.inputmethod.compat.PreferenceManagerCompat;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
@@ -127,7 +128,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         final KeyboardLayoutSet layoutSet = builder.build();
         final TypedArray emojiPalettesViewAttr = context.obtainStyledAttributes(attrs,
                 R.styleable.EmojiPalettesView, defStyle, R.style.EmojiPalettesView);
-        mEmojiCategory = new EmojiCategory(PreferenceManager.getDefaultSharedPreferences(context),
+        mEmojiCategory = new EmojiCategory(PreferenceManagerCompat.getDeviceSharedPreferences(context),
                 res, layoutSet, emojiPalettesViewAttr);
         mCategoryIndicatorEnabled = emojiPalettesViewAttr.getBoolean(
                 R.styleable.EmojiPalettesView_categoryIndicatorEnabled, false);

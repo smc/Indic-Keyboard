@@ -56,6 +56,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.BuildCompatUtils;
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
+import com.android.inputmethod.compat.PreferenceManagerCompat;
 import com.android.inputmethod.compat.ViewOutlineProviderCompatUtils;
 import com.android.inputmethod.compat.ViewOutlineProviderCompatUtils.InsetsUpdater;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
@@ -602,7 +603,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onCreate() {
         Settings.init(this);
-        DebugFlags.init(PreferenceManager.getDefaultSharedPreferences(this));
+        DebugFlags.init(PreferenceManagerCompat.getDeviceSharedPreferences(this));
         RichInputMethodManager.init(this);
         mRichImm = RichInputMethodManager.getInstance();
         KeyboardSwitcher.init(this);
@@ -2052,7 +2053,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     public void addEmojiToRecentKeys(String emoji) {
-        Settings.addEmojiToRecentKeys(PreferenceManager.getDefaultSharedPreferences(getBaseContext()), emoji);
+        Settings.addEmojiToRecentKeys(PreferenceManagerCompat.getDeviceSharedPreferences(getBaseContext()), emoji);
         mKeyboardSwitcher.refreshRecentEmojis();
     }
 }

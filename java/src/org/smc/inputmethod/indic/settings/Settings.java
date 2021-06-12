@@ -26,6 +26,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.android.inputmethod.compat.BuildCompatUtils;
+import com.android.inputmethod.compat.PreferenceManagerCompat;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.R;
@@ -154,7 +155,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     private void onCreate(final Context context) {
         mContext = context;
         mRes = context.getResources();
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        mPrefs = PreferenceManagerCompat.getDeviceSharedPreferences(context);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
         upgradeAutocorrectionSettings(mPrefs, mRes);
     }

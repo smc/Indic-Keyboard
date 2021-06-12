@@ -38,6 +38,7 @@ import android.view.ViewGroup;
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.MainKeyboardAccessibilityDelegate;
 import com.android.inputmethod.annotations.ExternallyReferenced;
+import com.android.inputmethod.compat.PreferenceManagerCompat;
 import com.android.inputmethod.keyboard.internal.DrawingPreviewPlacerView;
 import com.android.inputmethod.keyboard.internal.DrawingProxy;
 import com.android.inputmethod.keyboard.internal.GestureFloatingTextDrawingPreview;
@@ -197,7 +198,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
 
         PointerTracker.init(mainKeyboardViewAttr, mTimerHandler, this /* DrawingProxy */);
 
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        final SharedPreferences prefs = PreferenceManagerCompat.getDeviceSharedPreferences(context);
         final boolean forceNonDistinctMultitouch = prefs.getBoolean(
                 DebugSettings.PREF_FORCE_NON_DISTINCT_MULTITOUCH, false);
         final boolean hasDistinctMultitouch = context.getPackageManager()

@@ -31,6 +31,7 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
+import com.android.inputmethod.compat.PreferenceManagerCompat;
 import com.android.inputmethod.dictionarypack.DictionaryPackConstants;
 import com.android.inputmethod.dictionarypack.DownloadManagerWrapper;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
@@ -148,7 +149,7 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
         if (Log.isLoggable(TAG, Log.INFO)) {
             Log.i(TAG, "toggleAppIcon() : FLAG_SYSTEM = " + isSystemApp);
         }
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        final SharedPreferences prefs = PreferenceManagerCompat.getDeviceSharedPreferences(context);
         context.getPackageManager().setComponentEnabledSetting(
                 new ComponentName(context, SetupActivity.class),
                 Settings.readShowSetupWizardIcon(prefs, context)

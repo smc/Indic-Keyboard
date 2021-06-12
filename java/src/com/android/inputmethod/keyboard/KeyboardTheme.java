@@ -24,6 +24,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.android.inputmethod.compat.BuildCompatUtils;
+import com.android.inputmethod.compat.PreferenceManagerCompat;
 import com.android.inputmethod.latin.R;
 
 import java.util.ArrayList;
@@ -179,7 +180,7 @@ public final class KeyboardTheme implements Comparable<KeyboardTheme> {
     }
 
     public static KeyboardTheme getKeyboardTheme(final Context context) {
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        final SharedPreferences prefs = PreferenceManagerCompat.getDeviceSharedPreferences(context);
         final KeyboardTheme[] availableThemeArray = getAvailableThemeArray(context);
         return getKeyboardTheme(prefs, BuildCompatUtils.EFFECTIVE_SDK_INT, availableThemeArray);
     }

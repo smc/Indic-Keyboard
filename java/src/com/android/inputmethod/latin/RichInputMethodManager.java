@@ -34,6 +34,8 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
 import org.smc.inputmethod.indic.settings.Settings;
+
+import com.android.inputmethod.compat.PreferenceManagerCompat;
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import com.android.inputmethod.latin.utils.LanguageOnSpacebarUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -108,7 +110,7 @@ public class RichInputMethodManager {
     }
 
     public InputMethodSubtype[] getAdditionalSubtypes() {
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        final SharedPreferences prefs = PreferenceManagerCompat.getDeviceSharedPreferences(mContext);
         final String prefAdditionalSubtypes = Settings.readPrefAdditionalSubtypes(
                 prefs, mContext.getResources());
         return AdditionalSubtypeUtils.createAdditionalSubtypesArray(prefAdditionalSubtypes);

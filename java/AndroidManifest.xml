@@ -53,6 +53,7 @@
         <!-- Services -->
         <service android:name="org.smc.inputmethod.indic.LatinIME"
                 android:label="@string/english_ime_name"
+                android:directBootAware="true"
                 android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
