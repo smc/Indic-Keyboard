@@ -18,6 +18,8 @@ package com.android.inputmethod.keyboard.emoji;
 
 import android.content.res.Resources;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
+
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -60,7 +62,7 @@ final class EmojiLayoutParams {
         mEmojiKeyboardHeight = mEmojiPagerHeight - mEmojiPagerBottomMargin - 1;
     }
 
-    public void setPagerProperties(final ViewPager vp) {
+    public void setPagerProperties(final ViewPager2 vp) {
         final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) vp.getLayoutParams();
         lp.height = mEmojiKeyboardHeight;
         lp.bottomMargin = mEmojiPagerBottomMargin;
