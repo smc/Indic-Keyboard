@@ -25,7 +25,11 @@ import android.util.Log;
 public class PreferenceManagerCompat {
     public static Context getDeviceContext(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return context.createDeviceProtectedStorageContext();
+            final Context deviceContext = context.createDeviceProtectedStorageContext();
+            if (!deviceContext.moveSharedPreferencesFrom(context, PreferenceManager.getDefaultSharedPreferencesName(context))) {
+                Log.w("Indic Keyboard", "Failed to migrate shared preferences.");
+            }
+            return deviceContext;
         }
 
         return context;
