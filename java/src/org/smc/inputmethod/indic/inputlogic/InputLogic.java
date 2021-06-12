@@ -2477,6 +2477,7 @@ public final class InputLogic {
         if (emojiSearch == null) {
             emojiSearch = new EmojiSearch(context);
         }
+        mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
         isEmoji = true;
     }
 
