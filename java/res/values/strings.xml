@@ -137,7 +137,7 @@
     <!-- Option to enable emoji key -->
     <string name="emoji_switch_key">Emoji switch key</string>
     <!-- Description for option to enable emoji key -->
-    <string name="emoji_switch_key_summary">Always show emoji key beside spacebar. When this is enabled, language switch key cannot be shown.</string>
+    <string name="emoji_switch_key_summary">Always show emoji key beside spacebar.</string>
 
     <!-- Option to enable auto capitalization of sentences -->
     <string name="auto_cap">Auto-capitalization</string>

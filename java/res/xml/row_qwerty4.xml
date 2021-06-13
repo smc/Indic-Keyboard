@@ -32,8 +32,16 @@
         <include
             latin:keyXPos="25%p"
             latin:keyboardLayout="@xml/key_space_5kw" />
-        <include
-            latin:keyboardLayout="@xml/key_period" />
+        <switch>
+            <case latin:emojiSwitchKeyEnabled="true">
+                <Key latin:keyStyle="emojiKeyStyle"
+                    latin:moreKeys="!text/keyspec_period" />
+            </case>
+            <default>
+                <include
+                    latin:keyboardLayout="@xml/key_period" />
+            </default>
+        </switch>
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyWidth="fillRight" />
