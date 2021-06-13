@@ -111,6 +111,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             "pref_show_emoji_switch_key";
     private static final String PREF_SHOW_NUMBER_ROW =
             "pref_show_number_row";
+    public static final String PREF_SHOW_HINTS = "pref_show_hints";
 
     private static final String PREF_LAST_USED_PERSONALIZATION_TOKEN =
             "pref_last_used_personalization_token";

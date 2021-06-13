@@ -129,9 +129,14 @@
     <!-- Description for option to enable number row -->
     <string name="number_row_summary">Always show number row</string>
 
-    <!-- Option to enable number row -->
+    <!-- Title of the settings to show key hints -->
+    <string name="show_hints">Show key hints</string>
+    <!-- Description of the settings to show hints -->
+    <string name="show_hints_summary">Show long-press hints</string>
+
+    <!-- Option to enable emoji key -->
     <string name="emoji_switch_key">Emoji switch key</string>
-    <!-- Description for option to enable number row -->
+    <!-- Description for option to enable emoji key -->
     <string name="emoji_switch_key_summary">Always show emoji key beside spacebar. When this is enabled, language switch key cannot be shown.</string>
 
     <!-- Option to enable auto capitalization of sentences -->

@@ -31,6 +31,12 @@
             android:summary="@string/emoji_switch_key_summary"
             android:defaultValue="false"
             android:persistent="true" />
+        <CheckBoxPreference
+            android:key="pref_show_hints"
+            android:title="@string/show_hints"
+            android:summary="@string/show_hints_summary"
+            android:defaultValue="true"
+            android:persistent="true" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_category_layout">
