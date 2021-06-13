@@ -25,6 +25,8 @@ import android.os.Build;
 import android.util.Log;
 import android.util.Pair;
 
+import androidx.core.graphics.PaintCompat;
+
 import com.android.inputmethod.compat.BuildCompatUtils;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -204,15 +206,16 @@ final class EmojiCategory {
         DynamicGridKeyboard recentsKbd = loadRecentKeys();
 
         mCurrentCategoryId = Settings.readLastShownEmojiCategoryId(mPrefs, defaultCategoryId);
-        Log.i(TAG, "Last Emoji category id is " + mCurrentCategoryId);
+        mCurrentCategoryPageId = Settings.readLastShownEmojiCategoryPageId(mPrefs, 0);
         if (!isShownCategoryId(mCurrentCategoryId)) {
-            Log.i(TAG, "Last emoji category " + mCurrentCategoryId +
-                    " is invalid, starting in " + defaultCategoryId);
             mCurrentCategoryId = defaultCategoryId;
         } else if (mCurrentCategoryId == EmojiCategory.ID_RECENTS &&
                 recentsKbd.getSortedKeys().isEmpty()) {
-            Log.i(TAG, "No recent emojis found, starting in category " + defaultCategoryId);
             mCurrentCategoryId = defaultCategoryId;
+        }
+
+        if (mCurrentCategoryPageId >= getCategoryPageCount(mCurrentCategoryId)) {
+            mCurrentCategoryPageId = 0;
         }
     }
 
@@ -287,6 +290,7 @@ final class EmojiCategory {
 
     public void setCurrentCategoryPageId(final int id) {
         mCurrentCategoryPageId = id;
+        Settings.writeLastShownEmojiCategoryPageId(mPrefs, id);
     }
 
     public int getCurrentCategoryPageId() {
@@ -313,14 +317,12 @@ final class EmojiCategory {
     }
 
     // Returns the view pager's page position for the categoryId
-    public int getPageIdFromCategoryId(final int categoryId) {
-        final int lastSavedCategoryPageId =
-                Settings.readLastTypedEmojiCategoryPageId(mPrefs, categoryId);
+    public int getPagerPageIdFromCategoryAndPageId(final int categoryId, final int categoryPageId) {
         int sum = 0;
         for (int i = 0; i < mShownCategories.size(); ++i) {
             final CategoryProperties props = mShownCategories.get(i);
             if (props.mCategoryId == categoryId) {
-                return sum + lastSavedCategoryPageId;
+                return sum + categoryPageId;
             }
             sum += props.mPageCount;
         }
@@ -446,30 +448,12 @@ final class EmojiCategory {
     private static boolean canShowFlagEmoji() {
         Paint paint = new Paint();
         String switzerland = "\uD83C\uDDE8\uD83C\uDDED"; //  U+1F1E8 U+1F1ED Flag for Switzerland
-        try {
-            return paint.hasGlyph(switzerland);
-        } catch (NoSuchMethodError e) {
-            // Compare display width of single-codepoint emoji to width of flag emoji to determine
-            // whether flag is rendered as single glyph or two adjacent regional indicator symbols.
-            float flagWidth = paint.measureText(switzerland);
-            float standardWidth = paint.measureText("\uD83D\uDC27"); //  U+1F427 Penguin
-            return flagWidth < standardWidth * 1.25;
-            // This assumes that a valid glyph for the flag emoji must be less than 1.25 times
-            // the width of the penguin.
-        }
+        return PaintCompat.hasGlyph(paint, switzerland);
     }
 
     private static boolean canShowUnicodeEightEmoji() {
         Paint paint = new Paint();
         String cheese = "\uD83E\uDDC0"; //  U+1F9C0 Cheese wedge
-        try {
-            return paint.hasGlyph(cheese);
-        } catch (NoSuchMethodError e) {
-            float cheeseWidth = paint.measureText(cheese);
-            float tofuWidth = paint.measureText("\uFFFE");
-            return cheeseWidth > tofuWidth;
-            // This assumes that a valid glyph for the cheese wedge must be greater than the width
-            // of the noncharacter.
-        }
+        return PaintCompat.hasGlyph(paint, cheese);
     }
 }
