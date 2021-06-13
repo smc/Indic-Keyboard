@@ -1075,6 +1075,7 @@ public final class KeyboardTextsTable {
         "as_IN"  , TEXTS_as_IN, /*  25/ 33 Assamese (India) */
         "bn_IN"  , TEXTS_bn_IN, /*  25/ 33 Bengali (India) */
         "en"     , TEXTS_en,    /*   8/ 31 English */
+        "gu_IN"  , TEXTS_gu_IN, /*  22/ 22 Gujarati (India) */
         "hi_IN"  , TEXTS_hi_IN, /*  22/ 22 Hindi (India) */
         "kn_IN"  , TEXTS_kn_IN, /*  22/ 22 Kannada (India) */
         "ml_IN"  , TEXTS_ml_IN, /*  11/ 11 Malayalam (India) */
