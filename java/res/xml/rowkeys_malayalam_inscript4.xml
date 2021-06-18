@@ -31,13 +31,14 @@
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <!-- ZWSP -->
             <Key
-                latin:keySpec="&#x200b;"
-                latin:keyHintLabel="ZWS"
+                latin:keySpec="&#x0D7A;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
                 latin:keySpec="&#x0D23;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
-            <Key latin:keySpec="&#x0020;" />
+            <Key
+                latin:keySpec="&#x0D7B;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
                 latin:keySpec="&#x0D34;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
@@ -52,7 +53,7 @@
                 latin:moreKeys="&lt;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="&gt;"
+                latin:keySpec="&#x0D7D;"
                 latin:moreKeys="!fixedColumnOrder!3,&#x203A;,&#x2265;,&#x00BB;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key

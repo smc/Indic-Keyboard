@@ -64,7 +64,7 @@
                 latin:moreKeys="}"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="|"
+                latin:keySpec="&#x0D7C;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </case>
 
