@@ -19,7 +19,8 @@
 -->
 
 <merge xmlns:latin="http://schemas.android.com/apk/res-auto">
-    <include latin:keyboardLayout="@xml/keys_arabic3_left" />
+    <!-- U+0630 : "ذ" ARABIC LETTER THAL -->
+    <Key latin:keySpec="&#x0630;" />
     <!-- U+0621: "ء" ARABIC LETTER HAMZA -->
     <Key latin:keySpec="&#x0621;" />
     <!-- U+0624: "ؤ" ARABIC LETTER WAW WITH HAMZA ABOVE -->
