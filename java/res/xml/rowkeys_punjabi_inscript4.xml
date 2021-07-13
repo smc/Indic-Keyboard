@@ -87,6 +87,7 @@
             <!--x ਜ਼ GURMUKHI LETTER ZA-->
             <Key
                 latin:keySpec="&#x0A5B;"
+                latin:moreKeys="&#x0A74;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--c ਮ GURMUKHI LETTER MA-->
@@ -97,6 +98,7 @@
             <!--v ਨ GURMUKHI LETTER NA-->
             <Key
                 latin:keySpec="&#x0A28;"
+                latin:moreKeys="&#x262C;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--b ਵ GURMUKHI LETTER VA-->
