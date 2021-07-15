@@ -70,13 +70,13 @@
                 latin:keySpec="&#x0CC0;"
                 latin:moreKeys="&#x0C88;"
                 latin:keyHintLabel="&#x0C88;"
-                latin:keyLabelFlags="fontNormal" />
+                latin:keyLabelFlags="fontNormal|autoXScale" />
             <!--  // O: matras, short o, long o -->
             <Key
                 latin:keySpec="&#x0CCB;"
                 latin:moreKeys="&#x0C93;"
                 latin:keyHintLabel="&#x0C93;"
-                latin:keyLabelFlags="fontNormal" />
+                latin:keyLabelFlags="fontNormal|autoXScale" />
             <!--  // O: P: pa, pha -->
             <Key
                 latin:keySpec="&#x0CAB;"
@@ -135,7 +135,7 @@
                 latin:keySpec="&#x0CCA;"
                 latin:moreKeys="&#x0C92;"
                 latin:keyHintLabel="&#x0C92;"
-                latin:keyLabelFlags="fontNormal" />
+                latin:keyLabelFlags="fontNormal|autoXScale" />
             <!--  // O: P: pa, pha -->
             <Key
                 latin:keySpec="&#x0CAA;"

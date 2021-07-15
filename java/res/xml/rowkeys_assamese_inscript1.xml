@@ -27,7 +27,7 @@
             <Key
                 latin:keySpec="&#x0CCA;"
                 latin:moreKeys="`"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
             <Key
                 latin:keySpec="&#x09E7;"
                 latin:moreKeys="1,!text/morekeys_symbols_1"

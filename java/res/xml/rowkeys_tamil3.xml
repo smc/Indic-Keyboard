@@ -42,10 +42,10 @@
                 latin:keyLabelFlags="fontNormal" />
             <Key
                 latin:keySpec="&#x0BC7;"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
             <Key
                 latin:keySpec="&#x0BCC;"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
             <Key
                 latin:keySpec="&#x0B86;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
@@ -66,10 +66,10 @@
                 latin:keyLabelFlags="fontNormal" />
             <Key
                 latin:keySpec="&#x0BC6;"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
             <Key
                 latin:keySpec="&#x0B94;"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
             <Key
                 latin:keySpec="&#x0B85;"
                 latin:keyLabelFlags="fontNormal" />

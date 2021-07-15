@@ -117,7 +117,7 @@
             <Key
                 latin:keySpec="&#x0C2F;"
                 latin:moreKeys="/"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
          </default>
     </switch>
 </merge>

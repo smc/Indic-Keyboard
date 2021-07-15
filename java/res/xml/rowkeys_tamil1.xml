@@ -44,16 +44,16 @@
                 latin:keyLabelFlags="fontNormal" />
             <Key
                 latin:keySpec="&#x0BB2;"
-                latin:keyLabelFlags="fontNormal" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
             <Key
                 latin:keySpec="&#x0B90;"
-                latin:keyLabelFlags="fontNormal" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
             <Key
                 latin:keySpec="&#x0BCB;"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
             <Key
                 latin:keySpec="&#x0BC0;"
-                latin:keyLabelFlags="fontNormal" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
             <Key
                 latin:keySpec="&#x0BC2;"
                 latin:keyLabelFlags="fontNormal" />
@@ -80,16 +80,16 @@
                 latin:keyLabelFlags="fontNormal" />
             <Key
                 latin:keySpec="&#x0BC8;"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
             <Key
                 latin:keySpec="&#x0BCA;"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
             <Key
                 latin:keySpec="&#x0BBF;"
-                latin:keyLabelFlags="fontNormal" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
             <Key
                 latin:keySpec="&#x0BC1;"
-                latin:keyLabelFlags="fontNormal" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|autoXScale" />
          </default>
     </switch>
 </merge>

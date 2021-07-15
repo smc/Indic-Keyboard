@@ -55,7 +55,7 @@
 
             <!--\> ৤  -->
             <Key
-                latin:keySpec="&#x09E4;"
+                latin:keySpec="|"
                 latin:moreKeys="&gt;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
@@ -97,12 +97,10 @@
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keySpec="&#x0CB7;"
-                latin:moreKeys=","
+                latin:keySpec=","
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="&#x0CE5;"
-                latin:moreKeys="."
+                latin:keySpec="."
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--/ য় BENGALI LETTER YYA-->
