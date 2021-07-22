@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Author: Mujeeb Cpy <mujeebcpy@gmail.com>
+** Copyright © 2021-2022 Mujeeb Cpy, Swathanthra Malayalam Computing (SMC)
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto" >
+    <!-- U+0D4A: "ൊ" MALAYALAM VOWEL SIGN O
+         U+0D12  "ഒ"  MALAYALAM LETTER O
+         U+0D14: "ഔ" MALAYALAM LETTER AU
+         U+0D57: "ൗ" MALAYALAM AU LENGTH MARK
+          -->
+    <Key
+        latin:keySpec="&#x0D4A;"
+        latin:moreKeys="&#x0D12;,&#x0D57;,&#x0D14;"
+        latin:keyHintLabel="&#x0D14;" />
+    <!-- U+0D48: "ൈ" MALAYALAM VOWEL SIGN AI
+         U+0D10: "ഐ" MALAYALAM LETTER AI -->
+    <Key
+        latin:keySpec="&#x0D48;"
+        latin:moreKeys="&#x0D10;,%"
+        latin:keyHintLabel="&#x0D10;" />
+    <!-- U+0D3E: "ാ" MALAYALAM VOWEL SIGN AA
+         U+0D06: "ആ" MALAYALAM LETTER AA -->
+    <Key
+        latin:keySpec="&#x0D3E;"
+        latin:moreKeys="&#x0D06;,%"
+        latin:keyHintLabel="&#x0D06;" />
+    <!-- U+0D40: "ീ" MALAYALAM VOWEL SIGN II
+         U+0D08: "ഈ" MALAYALAM LETTER II -->
+    <Key
+        latin:keySpec="&#x0D40;"
+        latin:moreKeys="&#x0D08;,%"
+        latin:keyHintLabel="&#x0D08;" />
+    <!-- U+0D42: "ൂ" MALAYALAM VOWEL SIGN UU
+         U+0D0A: "ഊ" MALAYALAM LETTER UU -->
+    <Key
+        latin:keySpec="&#x0D42;"
+        latin:moreKeys="&#x0D0A;,%"
+        latin:keyHintLabel="&#x0D0A;" />
+    <!-- U+0D2C: "ബ" MALAYALAM LETTER BA
+         U+0D2D: "ഭ" MALAYALAM LETTER BHA -->
+    <Key
+        latin:keySpec="&#x0D2C;"
+        latin:moreKeys="&#x0D2D;,%"
+        latin:keyHintLabel="&#x0D2D;" />
+    <!-- U+0D39: "ഹ" MALAYALAM LETTER HA
+         U+0D19: "ങ" MALAYALAM LETTER NGA -->
+    <Key
+        latin:keySpec="&#x0D39;"
+        latin:moreKeys="&#x0D19;,%"
+        latin:keyHintLabel="&#x0D19;" />
+    <!-- U+0D17: "ഗ" MALAYALAM LETTER GA
+         U+0D18: "ഘ" MALAYALAM LETTER GHA -->
+    <Key
+        latin:keySpec="&#x0D17;"
+        latin:moreKeys="&#x0D18;,%"
+        latin:keyHintLabel="&#x0D18;" />
+    <!-- U+0D26: "ദ" MALAYALAM VOWEL SIGN EE
+         U+0D27: "ധ" MALAYALAM LETTER EE -->
+    <Key
+        latin:keySpec="&#x0D26;"
+        latin:moreKeys="&#x0D27;,%"
+        latin:keyHintLabel="&#x0D27;" />
+    <!-- U+0D1C: "ജ" MALAYALAM LETTER JA
+         U+0D1D: "ഝ" MALAYALAM LETTER JHA -->
+    <Key
+        latin:keySpec="&#x0D1C;"
+        latin:moreKeys="&#x0D1D;,%"
+        latin:keyHintLabel="&#x0D1D;" />
+    <!-- U+0D21: "ഡ" MALAYALAM VOWEL SIGN OO
+         U+0D22: "ഢ" MALAYALAM LETTER OO
+         U+0D1E: "ഞ" MALAYALAM LETTER NYA -->
+    <Key latin:keySpec="&#x0D21;"
+        latin:moreKeys="&#x0D22;,&#x0D1E;"
+        latin:keyHintLabel="&#x0D22;" />
+</merge>
