@@ -41,8 +41,8 @@ android {
         applicationId "org.smc.inputmethod.indic"
         minSdkVersion 14
         targetSdkVersion 30
-        versionCode 70
-        versionName "3.3"
+        versionCode 75
+        versionName "3.4"
     }
 
     splits {
