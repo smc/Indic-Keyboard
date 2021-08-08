@@ -51,6 +51,9 @@ public final class KeyboardTheme implements Comparable<KeyboardTheme> {
 
     /* package private for testing */
     static final KeyboardTheme[] KEYBOARD_THEMES = {
+        new KeyboardTheme(THEME_ID_LXX_LIGHT_BORDER, "LXXLightBorder", R.style.KeyboardTheme_LXX_Light_Border,
+                // Default theme for LXX.
+                Build.VERSION_CODES.LOLLIPOP),
         new KeyboardTheme(THEME_ID_ICS, "ICS", R.style.KeyboardTheme_ICS,
                 // This has never been selected because we support ICS or later.
                 VERSION_CODES.BASE),
@@ -58,14 +61,10 @@ public final class KeyboardTheme implements Comparable<KeyboardTheme> {
                 // Default theme for ICS, JB, and KLP.
                 VERSION_CODES.ICE_CREAM_SANDWICH),
         new KeyboardTheme(THEME_ID_LXX_LIGHT, "LXXLight", R.style.KeyboardTheme_LXX_Light,
-                // Default theme for LXX.
                 Build.VERSION_CODES.LOLLIPOP),
         new KeyboardTheme(THEME_ID_LXX_DARK, "LXXDark", R.style.KeyboardTheme_LXX_Dark,
                 // This has never been selected as default theme.
                 VERSION_CODES.LOLLIPOP),
-        new KeyboardTheme(THEME_ID_LXX_LIGHT_BORDER, "LXXLightBorder", R.style.KeyboardTheme_LXX_Light_Border,
-                // This has never been selected as default theme.
-                Build.VERSION_CODES.LOLLIPOP),
         new KeyboardTheme(THEME_ID_LXX_DARK_BORDER, "LXXDarkBorder", R.style.KeyboardTheme_LXX_Dark_Border,
                 // This has never been selected as default theme.
                 VERSION_CODES.LOLLIPOP),

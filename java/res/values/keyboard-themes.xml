@@ -31,8 +31,8 @@
     <!-- An element must be a keyboard theme id of
          {@link com.android.inputmethod.keyboard.KeyboardTheme#THEME_ID_ICS} etc. -->
     <integer-array name="keyboard_theme_ids" translatable="false">
-        <item>5</item>
         <item>3</item>
+        <item>5</item>
         <item>4</item>
         <item>6</item>
         <item>7</item>
