@@ -94,44 +94,44 @@ public final class KeyboardTextsTable {
         /*   8:13 */ "additional_morekeys_symbols_8",
         /*   9:13 */ "additional_morekeys_symbols_9",
         /*  10:13 */ "additional_morekeys_symbols_0",
-        /*  11:12 */ "keyspec_currency",
-        /*  12: 9 */ "keyspec_symbols_1",
-        /*  13: 9 */ "keyspec_symbols_2",
-        /*  14: 9 */ "keyspec_symbols_3",
-        /*  15: 9 */ "keyspec_symbols_4",
-        /*  16: 9 */ "keyspec_symbols_5",
-        /*  17: 9 */ "keyspec_symbols_6",
-        /*  18: 9 */ "keyspec_symbols_7",
-        /*  19: 9 */ "keyspec_symbols_8",
-        /*  20: 9 */ "keyspec_symbols_9",
-        /*  21: 9 */ "keyspec_symbols_0",
-        /*  22: 9 */ "keylabel_to_symbol",
-        /*  23: 4 */ "keyspec_comma",
-        /*  24: 3 */ "morekeys_period",
-        /*  25: 2 */ "morekeys_a",
-        /*  26: 2 */ "morekeys_e",
-        /*  27: 2 */ "morekeys_i",
-        /*  28: 2 */ "morekeys_o",
-        /*  29: 2 */ "morekeys_u",
-        /*  30: 2 */ "morekeys_s",
-        /*  31: 2 */ "morekeys_n",
-        /*  32: 2 */ "morekeys_c",
-        /*  33: 2 */ "keyspec_period",
-        /*  34: 2 */ "keyspec_tablet_period",
-        /*  35: 2 */ "morekeys_tablet_period",
-        /*  36: 2 */ "keyspec_symbols_semicolon",
-        /*  37: 1 */ "morekeys_y",
-        /*  38: 1 */ "morekeys_d",
-        /*  39: 1 */ "morekeys_r",
-        /*  40: 1 */ "morekeys_t",
-        /*  41: 1 */ "morekeys_z",
-        /*  42: 1 */ "morekeys_k",
-        /*  43: 1 */ "morekeys_l",
-        /*  44: 1 */ "morekeys_g",
-        /*  45: 1 */ "morekeys_h",
-        /*  46: 1 */ "morekeys_j",
-        /*  47: 1 */ "morekeys_w",
-        /*  48: 1 */ "morekeys_currency_dollar",
+        /*  11:12 */ "keyspec_symbols_1",
+        /*  12:12 */ "keyspec_symbols_2",
+        /*  13:12 */ "keyspec_symbols_3",
+        /*  14:12 */ "keyspec_symbols_4",
+        /*  15:12 */ "keyspec_symbols_5",
+        /*  16:12 */ "keyspec_symbols_6",
+        /*  17:12 */ "keyspec_symbols_7",
+        /*  18:12 */ "keyspec_symbols_8",
+        /*  19:12 */ "keyspec_symbols_9",
+        /*  20:12 */ "keyspec_symbols_0",
+        /*  21:12 */ "keylabel_to_symbol",
+        /*  22: 6 */ "keyspec_currency",
+        /*  23: 4 */ "morekeys_period",
+        /*  24: 3 */ "keyspec_comma",
+        /*  25: 3 */ "keyspec_period",
+        /*  26: 3 */ "keyspec_tablet_period",
+        /*  27: 3 */ "morekeys_tablet_period",
+        /*  28: 2 */ "morekeys_a",
+        /*  29: 2 */ "morekeys_e",
+        /*  30: 2 */ "morekeys_i",
+        /*  31: 2 */ "morekeys_o",
+        /*  32: 2 */ "morekeys_u",
+        /*  33: 2 */ "morekeys_s",
+        /*  34: 2 */ "morekeys_n",
+        /*  35: 2 */ "morekeys_c",
+        /*  36: 1 */ "morekeys_y",
+        /*  37: 1 */ "morekeys_d",
+        /*  38: 1 */ "morekeys_r",
+        /*  39: 1 */ "morekeys_t",
+        /*  40: 1 */ "morekeys_z",
+        /*  41: 1 */ "morekeys_k",
+        /*  42: 1 */ "morekeys_l",
+        /*  43: 1 */ "morekeys_g",
+        /*  44: 1 */ "morekeys_h",
+        /*  45: 1 */ "morekeys_j",
+        /*  46: 1 */ "morekeys_w",
+        /*  47: 1 */ "morekeys_currency_dollar",
+        /*  48: 1 */ "keyspec_symbols_semicolon",
         /*  49: 1 */ "label_go_key",
         /*  50: 1 */ "label_send_key",
         /*  51: 1 */ "label_next_key",
@@ -270,7 +270,6 @@ public final class KeyboardTextsTable {
         /* additional_morekeys_symbols_1 ~ */
         EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
         /* ~ additional_morekeys_symbols_0 */
-        /* keyspec_currency */ "\u20B9",
         /* keyspec_symbols_1 */ "1",
         /* keyspec_symbols_2 */ "2",
         /* keyspec_symbols_3 */ "3",
@@ -283,19 +282,17 @@ public final class KeyboardTextsTable {
         /* keyspec_symbols_0 */ "0",
         // Label for "switch to symbols" key.
         /* keylabel_to_symbol */ "?123",
+        /* keyspec_currency */ "\u20B9",
+        /* morekeys_period */ "!text/morekeys_punctuation",
         // Comma key
         /* keyspec_comma */ ",",
-        /* morekeys_period */ "!text/morekeys_punctuation",
-        /* morekeys_a ~ */
-        EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
-        /* ~ morekeys_c */
         // Period key
         /* keyspec_period */ ".",
         /* keyspec_tablet_period */ ".",
         /* morekeys_tablet_period */ "!text/morekeys_tablet_punctuation",
-        /* keyspec_symbols_semicolon */ ";",
-        /* morekeys_y ~ */
-        EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
+        /* morekeys_a ~ */
+        EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
+        EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY,
         /* ~ morekeys_w */
         // $ - I'm making ₹ as default
         // U+00A2: "¢" CENT SIGN
@@ -304,6 +301,7 @@ public final class KeyboardTextsTable {
         // U+00A5: "¥" YEN SIGN
         // U+20B1: "₱" PESO SIGN
         /* morekeys_currency_dollar */ "$,\u00A2,\u00A3,\u20AC,\u00A5,\u20B1",
+        /* keyspec_symbols_semicolon */ ";",
         /* label_go_key */ "!string/label_go_key",
         /* label_send_key */ "!string/label_send_key",
         /* label_next_key */ "!string/label_next_key",
@@ -476,9 +474,9 @@ public final class KeyboardTextsTable {
         /* keylabel_to_alpha ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null,
-        /* ~ keylabel_to_symbol */
-        /* keyspec_comma */ "\u060C",
+        /* ~ keyspec_currency */
         /* morekeys_period */ "!autoColumnOrder!8,\u064D,\u064B,\u064C,\u0652,\u0651,\u0640,\u061F,\u061B,\u0650,\u064E,\u064F,\u0653,\u0670,\u0656,\u0654,\u0655",
+        /* keyspec_comma */ "\u060C",
     };
 
     /* Locale as_IN: Assamese (India) */
@@ -494,7 +492,6 @@ public final class KeyboardTextsTable {
         /* additional_morekeys_symbols_8 */ "8",
         /* additional_morekeys_symbols_9 */ "9",
         /* additional_morekeys_symbols_0 */ "0",
-        /* keyspec_currency */ null,
         /* keyspec_symbols_1 */ "\u09E7",
         /* keyspec_symbols_2 */ "\u09E8",
         /* keyspec_symbols_3 */ "\u09E9",
@@ -506,24 +503,20 @@ public final class KeyboardTextsTable {
         /* keyspec_symbols_9 */ "\u09EF",
         /* keyspec_symbols_0 */ "\u09E6",
         /* keylabel_to_symbol */ "\u09E7\u09E8\u09E9",
+        /* keyspec_currency */ null,
+        /* morekeys_period */ null,
         /* keyspec_comma */ "\u09CD",
-        /* morekeys_period ~ */
-        null, null, null, null, null, null, null, null, null, null, null, null,
-        /* ~ morekeys_tablet_period */
-        /* keyspec_symbols_semicolon */ "\u0983",
-        /* morekeys_y ~ */
-        null, null, null, null, null, null, null, null, null, null, null,
+        /* keyspec_period ~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null,
         /* ~ morekeys_w */
         /* morekeys_currency_dollar */ "\u09F3",
+        /* keyspec_symbols_semicolon */ "\u0983",
     };
 
-    /* Locale bn_IN: Bengali (India) */
+    /* Locale bn_IN: Bangla (India) */
     private static final String[] TEXTS_bn_IN = {
-        // Label for "switch to alphabetic" key.
-        // U+0995: "क" BENGALI LETTER KA
-        // U+0996: "ख" BENGALI LETTER KHA
-        // U+0997: "ग" BENGALI LETTER GA
-        /* keylabel_to_alpha */ "\u0995\u0996\u0997",
+        /* keylabel_to_alpha */ "\u0985",
         /* additional_morekeys_symbols_1 */ "1",
         /* additional_morekeys_symbols_2 */ "2",
         /* additional_morekeys_symbols_3 */ "3",
@@ -534,8 +527,6 @@ public final class KeyboardTextsTable {
         /* additional_morekeys_symbols_8 */ "8",
         /* additional_morekeys_symbols_9 */ "9",
         /* additional_morekeys_symbols_0 */ "0",
-        // U+20B9: "₹" INDIAN RUPEE SIGN
-        /* keyspec_currency */ "\u20B9",
         /* keyspec_symbols_1 */ "\u09E7",
         /* keyspec_symbols_2 */ "\u09E8",
         /* keyspec_symbols_3 */ "\u09E9",
@@ -547,19 +538,14 @@ public final class KeyboardTextsTable {
         /* keyspec_symbols_9 */ "\u09EF",
         /* keyspec_symbols_0 */ "\u09E6",
         /* keylabel_to_symbol */ "\u09E7\u09E8\u09E9",
-        /* keyspec_comma */ "\u09CD",
-        /* morekeys_period ~ */
-        null, null, null, null, null, null, null, null, null, null, null, null,
-        /* ~ morekeys_tablet_period */
-        /* keyspec_symbols_semicolon */ "\u0983",
     };
 
     /* Locale en: English */
     private static final String[] TEXTS_en = {
         /* keylabel_to_alpha ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null,
-        /* ~ morekeys_period */
+        null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* ~ morekeys_tablet_period */
         // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
         // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
         // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
@@ -621,8 +607,6 @@ public final class KeyboardTextsTable {
         /* additional_morekeys_symbols_8 */ "8",
         /* additional_morekeys_symbols_9 */ "9",
         /* additional_morekeys_symbols_0 */ "0",
-        // U+20B9: "₹" INDIAN RUPEE SIGN
-        /* keyspec_currency */ "\u20B9",
         // U+0AE7: "૧" GUJARATI DIGIT ONE
         /* keyspec_symbols_1 */ "\u0AE7",
         // U+0AE8: "૨" GUJARATI DIGIT TWO
@@ -645,11 +629,10 @@ public final class KeyboardTextsTable {
         /* keyspec_symbols_0 */ "\u0AE6",
         // Label for "switch to symbols" key.
         /* keylabel_to_symbol */ "?\u0AE7\u0AE8\u0AE9",
-        /* keyspec_comma */ null,
+        // U+20B9: "₹" INDIAN RUPEE SIGN
+        /* keyspec_currency */ "\u20B9",
         /* morekeys_period */ "!autoColumnOrder!9,\\,,.,?,!,#,),(,/,;,',@,:,-,\",+,\\%,&",
-        /* morekeys_a ~ */
-        null, null, null, null, null, null, null, null,
-        /* ~ morekeys_c */
+        /* keyspec_comma */ null,
         // U+0964: "." GUJARATI .
         /* keyspec_period */ "\u0ABC",
         /* keyspec_tablet_period */ "\u0ABC",
@@ -673,8 +656,6 @@ public final class KeyboardTextsTable {
         /* additional_morekeys_symbols_8 */ "8",
         /* additional_morekeys_symbols_9 */ "9",
         /* additional_morekeys_symbols_0 */ "0",
-        // U+20B9: "₹" INDIAN RUPEE SIGN
-        /* keyspec_currency */ "\u20B9",
         // U+0967: "१" DEVANAGARI DIGIT ONE
         /* keyspec_symbols_1 */ "\u0967",
         // U+0968: "२" DEVANAGARI DIGIT TWO
@@ -697,29 +678,28 @@ public final class KeyboardTextsTable {
         /* keyspec_symbols_0 */ "\u0966",
         // Label for "switch to symbols" key.
         /* keylabel_to_symbol */ "?\u0967\u0968\u0969",
-        /* keyspec_comma */ null,
+        // U+20B9: "₹" INDIAN RUPEE SIGN
+        /* keyspec_currency */ "\u20B9",
         /* morekeys_period */ "!autoColumnOrder!9,\\,,.,?,!,#,),(,/,;,',@,:,-,\",+,\\%,&",
-        /* morekeys_a ~ */
-        null, null, null, null, null, null, null, null,
-        /* ~ morekeys_c */
+        /* keyspec_comma */ null,
         // U+0964: "।" DEVANAGARI DANDA
         /* keyspec_period */ "\u0964",
         /* keyspec_tablet_period */ "\u0964",
         /* morekeys_tablet_period */ "!autoColumnOrder!8,\\,,.,',#,),(,/,;,@,:,-,\",+,\\%,&",
     };
 
-    /* Locale hi_ZZ: Hindi (ZZ) */
+    /* Locale hi_ZZ: Hindi (Unknown Region) */
     private static final String[] TEXTS_hi_ZZ = {
         /* keylabel_to_alpha ~ */
-        null, null, null, null, null, null, null, null, null, null, null,
-        /* ~ additional_morekeys_symbols_0 */
-        // U+20B9: "₹" INDIAN RUPEE SIGN
-        /* keyspec_currency */ "\u20B9",
-        /* keyspec_symbols_1 ~ */
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null,
-        /* ~ morekeys_currency_dollar */
+        /* ~ keylabel_to_symbol */
+        // U+20B9: "₹" INDIAN RUPEE SIGN
+        /* keyspec_currency */ "\u20B9",
+        /* morekeys_period ~ */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null, null, null, null, null, null,
+        /* ~ keyspec_symbols_semicolon */
         /* label_go_key */ "Go",
         /* label_send_key */ "Send",
         /* label_next_key */ "Next",
@@ -732,42 +712,53 @@ public final class KeyboardTextsTable {
 
     /* Locale kn: Kannada */
     private static final String[] TEXTS_kn = {
-        // Label for "switch to alphabetic" key.
-        // U+0C85: "ಅ" KANNADA LETTER A
-        // U+0C86: "ಆ" KANNADA LETTER AA
-        // U+0C87: "ಇ" KANNADA LETTER I
-        /* keylabel_to_alpha */ "\u0C85\u0C86\u0C87",
-        /* additional_morekeys_symbols_1 */ "\u0CE7",
-        /* additional_morekeys_symbols_2 */ "\u0CE8",
-        /* additional_morekeys_symbols_3 */ "\u0CE9",
-        /* additional_morekeys_symbols_4 */ "\u0CEA",
-        /* additional_morekeys_symbols_5 */ "\u0CEB",
-        /* additional_morekeys_symbols_6 */ "\u0CEC",
-        /* additional_morekeys_symbols_7 */ "\u0CED",
-        /* additional_morekeys_symbols_8 */ "\u0CEE",
-        /* additional_morekeys_symbols_9 */ "\u0CEF",
-        /* additional_morekeys_symbols_0 */ "\u0CE6",
-        // U+20B9: "₹" INDIAN RUPEE SIGN
-        /* keyspec_currency */ "\u20B9",
+        /* keylabel_to_alpha */ "\u0C85",
+        /* additional_morekeys_symbols_1 */ "1",
+        /* additional_morekeys_symbols_2 */ "2",
+        /* additional_morekeys_symbols_3 */ "3",
+        /* additional_morekeys_symbols_4 */ "4",
+        /* additional_morekeys_symbols_5 */ "5",
+        /* additional_morekeys_symbols_6 */ "6",
+        /* additional_morekeys_symbols_7 */ "7",
+        /* additional_morekeys_symbols_8 */ "8",
+        /* additional_morekeys_symbols_9 */ "9",
+        /* additional_morekeys_symbols_0 */ "0",
+        /* keyspec_symbols_1 */ "\u0CE7",
+        /* keyspec_symbols_2 */ "\u0CE8",
+        /* keyspec_symbols_3 */ "\u0CE9",
+        /* keyspec_symbols_4 */ "\u0CEA",
+        /* keyspec_symbols_5 */ "\u0CEB",
+        /* keyspec_symbols_6 */ "\u0CEC",
+        /* keyspec_symbols_7 */ "\u0CED",
+        /* keyspec_symbols_8 */ "\u0CEE",
+        /* keyspec_symbols_9 */ "\u0CEF",
+        /* keyspec_symbols_0 */ "\u0CE6",
+        /* keylabel_to_symbol */ "\u0CE7\u0CE8\u0CE9",
     };
 
     /* Locale ml: Malayalam */
     private static final String[] TEXTS_ml = {
-        // Label for "switch to alphabetic" key.
-        // U+0D05: "അ" MALAYALAM LETTER A
         /* keylabel_to_alpha */ "\u0D05",
+        // U+0966: "൧" MALAYALAM DIGIT ONE
         /* additional_morekeys_symbols_1 */ "\u0D67",
+        // U+0966: "൨" MALAYALAM DIGIT TWO
         /* additional_morekeys_symbols_2 */ "\u0D68",
+        // U+0966: "൩" MALAYALAM DIGIT THREE
         /* additional_morekeys_symbols_3 */ "\u0D69",
+        // U+0966: "൪" MALAYALAM DIGIT FOUR
         /* additional_morekeys_symbols_4 */ "\u0D6A",
+        // U+0966: "൫" MALAYALAM DIGIT FIVE
         /* additional_morekeys_symbols_5 */ "\u0D6B",
+        // U+0966: "൬" MALAYALAM DIGIT SIX
         /* additional_morekeys_symbols_6 */ "\u0D6C",
+        // U+0966: "൭" MALAYALAM DIGIT SEVEN
         /* additional_morekeys_symbols_7 */ "\u0D6D",
+        // U+0966: "൮" MALAYALAM DIGIT EIGHT
         /* additional_morekeys_symbols_8 */ "\u0D6E",
+        // U+0966: "൯" MALAYALAM DIGIT NINE
         /* additional_morekeys_symbols_9 */ "\u0D6F",
+        // U+0966: "൦" MALAYALAM DIGIT ZERO
         /* additional_morekeys_symbols_0 */ "\u0D66",
-        // U+20B9: "₹" INDIAN RUPEE SIGN
-        /* keyspec_currency */ "\u20B9",
     };
 
     /* Locale mr: Marathi */
@@ -787,8 +778,6 @@ public final class KeyboardTextsTable {
         /* additional_morekeys_symbols_8 */ "8",
         /* additional_morekeys_symbols_9 */ "9",
         /* additional_morekeys_symbols_0 */ "0",
-        // U+20B9: "₹" INDIAN RUPEE SIGN
-        /* keyspec_currency */ "\u20B9",
         // U+0967: "१" DEVANAGARI DIGIT ONE
         /* keyspec_symbols_1 */ "\u0967",
         // U+0968: "२" DEVANAGARI DIGIT TWO
@@ -811,6 +800,8 @@ public final class KeyboardTextsTable {
         /* keyspec_symbols_0 */ "\u0966",
         // Label for "switch to symbols" key.
         /* keylabel_to_symbol */ "?\u0967\u0968\u0969",
+        // U+20B9: "₹" INDIAN RUPEE SIGN
+        /* keyspec_currency */ "\u20B9",
     };
 
     /* Locale my: Burmese */
@@ -826,7 +817,6 @@ public final class KeyboardTextsTable {
         /* additional_morekeys_symbols_8 */ "8",
         /* additional_morekeys_symbols_9 */ "9",
         /* additional_morekeys_symbols_0 */ "0",
-        /* keyspec_currency */ null,
         /* keyspec_symbols_1 */ "\u1041",
         /* keyspec_symbols_2 */ "\u1042",
         /* keyspec_symbols_3 */ "\u1043",
@@ -858,7 +848,6 @@ public final class KeyboardTextsTable {
         /* additional_morekeys_symbols_8 */ "8",
         /* additional_morekeys_symbols_9 */ "9",
         /* additional_morekeys_symbols_0 */ "0",
-        /* keyspec_currency */ null,
         // U+0967: "१" DEVANAGARI DIGIT ONE
         /* keyspec_symbols_1 */ "\u0967",
         // U+0968: "२" DEVANAGARI DIGIT TWO
@@ -881,9 +870,17 @@ public final class KeyboardTextsTable {
         /* keyspec_symbols_0 */ "\u0966",
         // Label for "switch to symbols" key.
         /* keylabel_to_symbol */ "?\u0967\u0968\u0969",
+        // U+0930/U+0941/U+002E "रु." NEPALESE RUPEE SIGN
+        /* keyspec_currency */ "\u0930\u0941.",
+        /* morekeys_period */ "!autoColumnOrder!9,.,\\,,?,!,#,),(,/,;,',@,:,-,\",+,\\%,&",
+        /* keyspec_comma */ null,
+        // U+0964: "।" DEVANAGARI DANDA
+        /* keyspec_period */ "\u0964",
+        /* keyspec_tablet_period */ "\u0964",
+        /* morekeys_tablet_period */ "!autoColumnOrder!8,.,\\,,',#,),(,/,;,@,:,-,\",+,\\%,&",
     };
 
-    /* Locale or_IN: Oriya (India) */
+    /* Locale or_IN: Odia (India) */
     private static final String[] TEXTS_or_IN = {
         /* keylabel_to_alpha */ "\u0B05",
         /* additional_morekeys_symbols_1 */ "1",
@@ -896,7 +893,6 @@ public final class KeyboardTextsTable {
         /* additional_morekeys_symbols_8 */ "8",
         /* additional_morekeys_symbols_9 */ "9",
         /* additional_morekeys_symbols_0 */ "0",
-        /* keyspec_currency */ null,
         /* keyspec_symbols_1 */ "\u0B67",
         /* keyspec_symbols_2 */ "\u0B68",
         /* keyspec_symbols_3 */ "\u0B69",
@@ -908,10 +904,12 @@ public final class KeyboardTextsTable {
         /* keyspec_symbols_9 */ "\u0B6F",
         /* keyspec_symbols_0 */ "\u0B66",
         /* keylabel_to_symbol */ "\u0B67\u0B68\u0B69",
+        /* keyspec_currency */ null,
+        /* morekeys_period */ null,
         /* keyspec_comma */ "\u0B3C",
     };
 
-    /* Locale pa_IN: Panjabi (India) */
+    /* Locale pa_IN: Punjabi (India) */
     private static final String[] TEXTS_pa_IN = {
         /* keylabel_to_alpha */ "\u0A05",
         /* additional_morekeys_symbols_1 */ "1",
@@ -924,7 +922,6 @@ public final class KeyboardTextsTable {
         /* additional_morekeys_symbols_8 */ "8",
         /* additional_morekeys_symbols_9 */ "9",
         /* additional_morekeys_symbols_0 */ "0",
-        /* keyspec_currency */ null,
         /* keyspec_symbols_1 */ "\u0A67",
         /* keyspec_symbols_2 */ "\u0A68",
         /* keyspec_symbols_3 */ "\u0A69",
@@ -940,22 +937,38 @@ public final class KeyboardTextsTable {
 
     /* Locale ta_IN: Tamil (India) */
     private static final String[] TEXTS_ta_IN = {
-        // Label for "switch to alphabetic" key.
-        // U+0BA4: "த" TAMIL LETTER TA
-        // U+0BAE/U+0BBF: "மி" TAMIL LETTER MA/TAMIL VOWEL SIGN I
-        // U+0BB4/U+0BCD: "ழ்" TAMIL LETTER LLLA/TAMIL SIGN VIRAMA
-        /* keylabel_to_alpha */ "\u0BA4\u0BAE\u0BBF\u0BB4\u0BCD",
-        /* additional_morekeys_symbols_1 */ "\u0BE7",
-        /* additional_morekeys_symbols_2 */ "\u0BE8",
-        /* additional_morekeys_symbols_3 */ "\u0BE9",
-        /* additional_morekeys_symbols_4 */ "\u0BEA",
-        /* additional_morekeys_symbols_5 */ "\u0BEB",
-        /* additional_morekeys_symbols_6 */ "\u0BEC",
-        /* additional_morekeys_symbols_7 */ "\u0BED",
-        /* additional_morekeys_symbols_8 */ "\u0BEE",
-        /* additional_morekeys_symbols_9 */ "\u0BEF",
-        /* additional_morekeys_symbols_0 */ "\u0BF0",
-        /* keyspec_currency */ "\u20B9",
+        /* keylabel_to_alpha */ "\u0B85",
+        /* additional_morekeys_symbols_1 */ "1",
+        /* additional_morekeys_symbols_2 */ "2",
+        /* additional_morekeys_symbols_3 */ "3",
+        /* additional_morekeys_symbols_4 */ "4",
+        /* additional_morekeys_symbols_5 */ "5",
+        /* additional_morekeys_symbols_6 */ "6",
+        /* additional_morekeys_symbols_7 */ "7",
+        /* additional_morekeys_symbols_8 */ "8",
+        /* additional_morekeys_symbols_9 */ "9",
+        /* additional_morekeys_symbols_0 */ "0",
+        // U+0BE7: "௧" TAMIL DIGIT ONE
+        /* keyspec_symbols_1 */ "\u0BE7",
+        // U+0BE8: "௨" TAMIL DIGIT TWO
+        /* keyspec_symbols_2 */ "\u0BE8",
+        // U+0BE9: "௩" TAMIL DIGIT THREE
+        /* keyspec_symbols_3 */ "\u0BE9",
+        // U+0BEA: "௪" TAMIL DIGIT FOUR
+        /* keyspec_symbols_4 */ "\u0BEA",
+        // U+0BEB: "௫" TAMIL DIGIT FIVE
+        /* keyspec_symbols_5 */ "\u0BEB",
+        // U+0BEC: "௬" TAMIL DIGIT SIX
+        /* keyspec_symbols_6 */ "\u0BEC",
+        // U+0BED: "௭" TAMIL DIGIT SEVEN
+        /* keyspec_symbols_7 */ "\u0BED",
+        // U+0BEE: "௮" TAMIL DIGIT EIGHT
+        /* keyspec_symbols_8 */ "\u0BEE",
+        // U+0BEF: "௯" TAMIL DIGIT NINE
+        /* keyspec_symbols_9 */ "\u0BEF",
+        // U+0BE6: "௦" TAMIL DIGIT ZERO
+        /* keyspec_symbols_0 */ "\u0BE6",
+        /* keylabel_to_symbol */ "\u0BE7\u0BE8\u0BE9",
     };
 
     /* Locale ta_LK: Tamil (Sri Lanka) */
@@ -966,8 +979,9 @@ public final class KeyboardTextsTable {
         // U+0BB4/U+0BCD: "ழ்" TAMIL LETTER LLLA/TAMIL SIGN VIRAMA
         /* keylabel_to_alpha */ "\u0BA4\u0BAE\u0BBF\u0BB4\u0BCD",
         /* additional_morekeys_symbols_1 ~ */
-        null, null, null, null, null, null, null, null, null, null,
-        /* ~ additional_morekeys_symbols_0 */
+        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+        null, null, null, null, null, null,
+        /* ~ keylabel_to_symbol */
         // U+0DBB/U+0DD4: "රු" SINHALA LETTER RAYANNA/SINHALA VOWEL SIGN KETTI PAA-PILLA
         /* keyspec_currency */ "\u0DBB\u0DD4",
     };
@@ -983,30 +997,36 @@ public final class KeyboardTextsTable {
 
     /* Locale te: Telugu */
     private static final String[] TEXTS_te = {
-        // Label for "switch to alphabetic" key.
-        // U+0C05: "అ" TELUGU LETTER A
-        // U+0C06: "ఆ" TELUGU LETTER AA
-        // U+0C07: "ఇ" TELUGU LETTER I
-        /* keylabel_to_alpha */ "\u0C05\u0C06\u0C07",
-        /* additional_morekeys_symbols_1 */ "\u0C67",
-        /* additional_morekeys_symbols_2 */ "\u0C68",
-        /* additional_morekeys_symbols_3 */ "\u0C69",
-        /* additional_morekeys_symbols_4 */ "\u0C6A",
-        /* additional_morekeys_symbols_5 */ "\u0C6B",
-        /* additional_morekeys_symbols_6 */ "\u0C6C",
-        /* additional_morekeys_symbols_7 */ "\u0C6D",
-        /* additional_morekeys_symbols_8 */ "\u0C6E",
-        /* additional_morekeys_symbols_9 */ "\u0C6F",
-        /* additional_morekeys_symbols_0 */ "\u0C66",
-        /* keyspec_currency */ "\u20B9",
+        /* keylabel_to_alpha */ "\u0C05",
+        /* additional_morekeys_symbols_1 */ "1",
+        /* additional_morekeys_symbols_2 */ "2",
+        /* additional_morekeys_symbols_3 */ "3",
+        /* additional_morekeys_symbols_4 */ "4",
+        /* additional_morekeys_symbols_5 */ "5",
+        /* additional_morekeys_symbols_6 */ "6",
+        /* additional_morekeys_symbols_7 */ "7",
+        /* additional_morekeys_symbols_8 */ "8",
+        /* additional_morekeys_symbols_9 */ "9",
+        /* additional_morekeys_symbols_0 */ "0",
+        /* keyspec_symbols_1 */ "\u0C67",
+        /* keyspec_symbols_2 */ "\u0C68",
+        /* keyspec_symbols_3 */ "\u0C69",
+        /* keyspec_symbols_4 */ "\u0C6A",
+        /* keyspec_symbols_5 */ "\u0C6B",
+        /* keyspec_symbols_6 */ "\u0C6C",
+        /* keyspec_symbols_7 */ "\u0C6D",
+        /* keyspec_symbols_8 */ "\u0C6E",
+        /* keyspec_symbols_9 */ "\u0C6F",
+        /* keyspec_symbols_0 */ "\u0C66",
+        /* keylabel_to_symbol */ "\u0C67\u0C68\u0C69",
     };
 
     /* Locale zz: Alphabet */
     private static final String[] TEXTS_zz = {
         /* keylabel_to_alpha ~ */
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null,
-        /* ~ morekeys_period */
+        null, null, null, null, null, null, null, null, null, null, null, null, null,
+        /* ~ morekeys_tablet_period */
         // U+00E0: "à" LATIN SMALL LETTER A WITH GRAVE
         // U+00E1: "á" LATIN SMALL LETTER A WITH ACUTE
         // U+00E2: "â" LATIN SMALL LETTER A WITH CIRCUMFLEX
@@ -1083,9 +1103,6 @@ public final class KeyboardTextsTable {
         // U+010B: "ċ" LATIN SMALL LETTER C WITH DOT ABOVE
         // U+010D: "č" LATIN SMALL LETTER C WITH CARON
         /* morekeys_c */ "\u00E7,\u0107,\u0109,\u010B,\u010D",
-        /* keyspec_period ~ */
-        null, null, null, null,
-        /* ~ keyspec_symbols_semicolon */
         // U+00FD: "ý" LATIN SMALL LETTER Y WITH ACUTE
         // U+0177: "ŷ" LATIN SMALL LETTER Y WITH CIRCUMFLEX
         // U+00FF: "ÿ" LATIN SMALL LETTER Y WITH DIAERESIS
@@ -1135,23 +1152,23 @@ public final class KeyboardTextsTable {
         "DEFAULT", TEXTS_DEFAULT, /* 176/176 DEFAULT */
         "ar"     , TEXTS_ar,    /*   2/ 25 Arabic */
         "as_IN"  , TEXTS_as_IN, /*  25/ 49 Assamese (India) */
-        "bn_IN"  , TEXTS_bn_IN, /*  25/ 37 Bengali (India) */
-        "en"     , TEXTS_en,    /*   8/ 33 English */
-        "gu_IN"  , TEXTS_gu_IN, /*  27/ 36 Gujarati (India) */
-        "hi"     , TEXTS_hi,    /*  27/ 36 Hindi */
-        "hi_ZZ"  , TEXTS_hi_ZZ, /*   9/ 57 Hindi (ZZ) */
-        "kn"     , TEXTS_kn,    /*  12/ 12 Kannada */
-        "ml"     , TEXTS_ml,    /*  12/ 12 Malayalam */
+        "bn_IN"  , TEXTS_bn_IN, /*  22/ 22 Bangla (India) */
+        "en"     , TEXTS_en,    /*   8/ 36 English */
+        "gu_IN"  , TEXTS_gu_IN, /*  27/ 28 Gujarati (India) */
+        "hi"     , TEXTS_hi,    /*  27/ 28 Hindi */
+        "hi_ZZ"  , TEXTS_hi_ZZ, /*   9/ 57 Hindi (Unknown Region) */
+        "kn"     , TEXTS_kn,    /*  22/ 22 Kannada */
+        "ml"     , TEXTS_ml,    /*  11/ 11 Malayalam */
         "mr"     , TEXTS_mr,    /*  23/ 23 Marathi */
-        "my"     , TEXTS_my,    /*  22/ 23 Burmese */
-        "ne"     , TEXTS_ne,    /*  22/ 23 Nepali */
-        "or_IN"  , TEXTS_or_IN, /*  23/ 24 Oriya (India) */
-        "pa_IN"  , TEXTS_pa_IN, /*  22/ 23 Panjabi (India) */
-        "ta_IN"  , TEXTS_ta_IN, /*  13/ 12 Tamil (India) */
-        "ta_LK"  , TEXTS_ta_LK, /*   2/ 12 Tamil (Sri Lanka) */
+        "my"     , TEXTS_my,    /*  22/ 22 Burmese */
+        "ne"     , TEXTS_ne,    /*  27/ 28 Nepali */
+        "or_IN"  , TEXTS_or_IN, /*  23/ 25 Odia (India) */
+        "pa_IN"  , TEXTS_pa_IN, /*  22/ 22 Punjabi (India) */
+        "ta_IN"  , TEXTS_ta_IN, /*  22/ 22 Tamil (India) */
+        "ta_LK"  , TEXTS_ta_LK, /*   2/ 23 Tamil (Sri Lanka) */
         "ta_SG"  , TEXTS_ta_SG, /*   1/  1 Tamil (Singapore) */
-        "te"     , TEXTS_te,    /*  13/ 12 Telugu */
-        "zz"     , TEXTS_zz,    /*  19/ 48 Alphabet */
+        "te"     , TEXTS_te,    /*  22/ 22 Telugu */
+        "zz"     , TEXTS_zz,    /*  19/ 47 Alphabet */
     };
 
     static {
