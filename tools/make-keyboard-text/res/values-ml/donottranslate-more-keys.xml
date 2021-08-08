@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2014, The Android Open Source Project
+** Copyright 2014, Jishnu Mohan <jishnu7@gmail.com>
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -18,19 +18,25 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Label for "switch to alphabetic" key.
-         U+0D05: "അ" MALAYALAM LETTER A -->
+    <!-- U+0966: "൧" MALAYALAM DIGIT ONE -->
+    <string name="additional_morekeys_symbols_1">&#x0D67;</string>
+    <!-- U+0966: "൨" MALAYALAM DIGIT TWO -->
+    <string name="additional_morekeys_symbols_2">&#x0D68;</string>
+    <!-- U+0966: "൩" MALAYALAM DIGIT THREE -->
+    <string name="additional_morekeys_symbols_3">&#x0D69;</string>
+    <!-- U+0966: "൪" MALAYALAM DIGIT FOUR -->
+    <string name="additional_morekeys_symbols_4">&#x0D6A;</string>
+    <!-- U+0966: "൫" MALAYALAM DIGIT FIVE -->
+    <string name="additional_morekeys_symbols_5">&#x0D6B;</string>
+    <!-- U+0966: "൬" MALAYALAM DIGIT SIX -->
+    <string name="additional_morekeys_symbols_6">&#x0D6C;</string>
+    <!-- U+0966: "൭" MALAYALAM DIGIT SEVEN -->
+    <string name="additional_morekeys_symbols_7">&#x0D6D;</string>
+    <!-- U+0966: "൮" MALAYALAM DIGIT EIGHT -->
+    <string name="additional_morekeys_symbols_8">&#x0D6E;</string>
+    <!-- U+0966: "൯" MALAYALAM DIGIT NINE -->
+    <string name="additional_morekeys_symbols_9">&#x0D6F;</string>
+    <!-- U+0966: "൦" MALAYALAM DIGIT ZERO -->
+    <string name="additional_morekeys_symbols_0">&#x0D66;</string>
     <string name="keylabel_to_alpha">&#x0D05;</string>
-    <!-- U+20B9: "₹" INDIAN RUPEE SIGN -->
-    <string name="keyspec_currency">&#x20B9;</string>
-    <string name="additional_morekeys_symbols_1">&#x0d67;</string>
-    <string name="additional_morekeys_symbols_2">&#x0d68;</string>
-    <string name="additional_morekeys_symbols_3">&#x0d69;</string>
-    <string name="additional_morekeys_symbols_4">&#x0d6a;</string>
-    <string name="additional_morekeys_symbols_5">&#x0d6b;</string>
-    <string name="additional_morekeys_symbols_6">&#x0d6c;</string>
-    <string name="additional_morekeys_symbols_7">&#x0d6d;</string>
-    <string name="additional_morekeys_symbols_8">&#x0d6e;</string>
-    <string name="additional_morekeys_symbols_9">&#x0d6f;</string>
-    <string name="additional_morekeys_symbols_0">&#x0d66;</string>
 </resources>
