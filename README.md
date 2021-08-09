@@ -30,7 +30,7 @@ Some phones may not support all the languages listed since the phone's maker shi
 - Hindi Keyboard (हिन्दी)- Inscript, Transliteration
 - Kannada Keyboard (ಕನ್ನಡ) - Phonetic, Inscript, Transliteration (Baraha), Compact, Anysoft)
 - Kashmiri Keyboard (کأشُر) - Inscript, Transliteration
-- Malayalam Keyboard (മലയാളം) - Phonetic, Inscript, Transliteration (Mozhi), Swanalekhaa, Mobile Inscript
+- Malayalam Keyboard (മലയാളം) - Phonetic, Inscript, Transliteration (Mozhi), Swanalekha, Mobile Inscript
 - Manipuri Keyboard / Methei Keyboard (মৈতৈলোন্) - Inscript
 - Maithili Keyboard (मैथिली)  - Inscript
 - Marathi Keyboard (मराठी) - Transliteration
