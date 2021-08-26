@@ -1,0 +1,3 @@
+- Swipe gestures for basic operations
+- New bordered themes
+- UI fix for Inscript layouts

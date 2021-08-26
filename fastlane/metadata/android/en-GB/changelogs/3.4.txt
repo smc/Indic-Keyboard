@@ -1,0 +1,4 @@
+- Updates to Arabic Layout
+- Fixed default theme bug
+- New Mobile Inscript layout for Malayalam
+- Updates to native numerals in several languages and layouts
