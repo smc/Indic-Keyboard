@@ -312,6 +312,18 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
         }
     }
 
+    protected void addUnigramLocked(
+        final String word, final int frequency,
+        final String shortcutTarget, final int shortcutFreq,
+        final boolean isNotAWord, final boolean isBlacklisted, final int timestamp
+    ) {
+        if (!mBinaryDictionary.addUnigramEntry(word, frequency, shortcutTarget, shortcutFreq,
+                false /* isBeginningOfSentence */, isNotAWord, isBlacklisted, timestamp)) {
+            Log.e(TAG, "Cannot add unigram entry. word: " + word);
+        }
+    }
+
+
     /**
      * Dynamically remove the unigram entry from the dictionary.
      */
