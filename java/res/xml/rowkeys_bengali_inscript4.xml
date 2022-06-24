@@ -53,9 +53,9 @@
                 latin:moreKeys="&lt;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <!--\> ৤  -->
+            <!--\> । DEVANAGARI DANDA-->
             <Key
-                latin:keySpec="&#x09E4;"
+                latin:keySpec="&#x0964;"
                 latin:moreKeys="&gt;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
