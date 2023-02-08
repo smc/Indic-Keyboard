@@ -54,7 +54,7 @@
         <service android:name="org.smc.inputmethod.indic.LatinIME"
                 android:label="@string/english_ime_name"
                 android:directBootAware="true"
-                android:exported="false"
+                android:exported="true"
                 android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
@@ -64,7 +64,7 @@
 
         <service android:name="org.smc.inputmethod.indic.spellcheck.AndroidSpellCheckerService"
                  android:label="@string/spell_checker_service_name"
-                 android:exported="false"
+                 android:exported="true"
                  android:permission="android.permission.BIND_TEXT_SERVICE">
             <intent-filter>
                 <action android:name="android.service.textservice.SpellCheckerService" />
@@ -102,7 +102,7 @@
         <activity android:name="org.smc.inputmethod.indic.setup.SetupWizardActivity"
                 android:theme="@style/platformActivityTheme"
                 android:label="@string/english_ime_name"
-                android:exported="false"
+                android:exported="true"
                 android:clearTaskOnLaunch="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -111,7 +111,7 @@
 
         <activity android:name="org.smc.inputmethod.indic.settings.SettingsActivity"
                 android:theme="@style/platformSettingsTheme"
-                android:exported="false"
+                android:exported="true"
                 android:label="@string/english_ime_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -120,7 +120,7 @@
 
         <activity android:name="org.smc.inputmethod.indic.spellcheck.SpellCheckerSettingsActivity"
                   android:theme="@style/platformSettingsTheme"
-                  android:exported="false"
+                  android:exported="true"
                   android:label="@string/android_spell_checker_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -141,7 +141,7 @@
                 android:exported="false" />
 
         <!-- Broadcast receivers -->
-        <receiver android:name="SystemBroadcastReceiver" android:exported="false">
+        <receiver android:name="SystemBroadcastReceiver" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
