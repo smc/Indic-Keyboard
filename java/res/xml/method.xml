@@ -377,4 +377,11 @@
             android:imeSubtypeLocale="ur_IN"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=ur-transliteration" />
+
+    <!-- Varnam -->
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_ml_varnam"
+            android:imeSubtypeLocale="ml_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=varnam-ml" />
 </input-method>

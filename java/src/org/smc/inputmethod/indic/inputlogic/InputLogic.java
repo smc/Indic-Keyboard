@@ -25,10 +25,12 @@ import android.text.TextUtils;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.SuggestionSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Toast;
 
 import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.event.Event;
@@ -39,6 +41,7 @@ import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.LastComposedWord;
 import com.android.inputmethod.latin.NgramContext;
+import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputConnection;
 import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
@@ -52,8 +55,10 @@ import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.latin.utils.AsyncResultHolder;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
 import com.android.inputmethod.latin.utils.RecapitalizeStatus;
+import com.android.inputmethod.latin.utils.ScriptUtils;
 import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.TextRange;
+import com.varnamproject.govarnam.Suggestion;
 
 import org.smc.ime.InputMethod;
 import org.smc.inputmethod.indic.LatinIME;
@@ -61,7 +66,9 @@ import org.smc.inputmethod.indic.settings.SettingsValues;
 import org.smc.inputmethod.indic.settings.SettingsValuesForSuggestion;
 import org.smc.inputmethod.indic.settings.SpacingAndPunctuations;
 import org.smc.inputmethod.indic.suggestions.SuggestionStripViewAccessor;
-import com.android.inputmethod.latin.utils.ScriptUtils;
+import org.smc.inputmethod.indic.varnam.Varnam;
+import org.smc.inputmethod.indic.varnam.VarnamCallback;
+import org.smc.inputmethod.indic.varnam.VarnamIndicKeyboard;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -69,6 +76,7 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
+
 /**
  * This class manages the input logic.
  */
@@ -114,6 +122,11 @@ public final class InputLogic {
 
     private boolean isIndic;
     private boolean isTransliteration;
+    private boolean isVarnam;
+
+    private Varnam varnam;
+    private boolean varnamSettingLearn = true; // Should varnam learn words
+    private int varnamTransliterationTaskID = 0; // For IDying parallel varnam suggestion fetch task
 
     private boolean isEmoji;
     private EmojiSearch emojiSearch;
@@ -832,7 +845,7 @@ public final class InputLogic {
             unlearnWord(mWordComposer.getTypedWord(), inputTransaction.mSettingsValues,
                     Constants.EVENT_BACKSPACE);
             resetEntireInputState(mConnection.getExpectedSelectionStart(),
-                    mConnection.getExpectedSelectionEnd(), !isEmoji /* clearSuggestionStrip */);
+                    mConnection.getExpectedSelectionEnd(), !isVarnam && !isEmoji /* clearSuggestionStrip */);
             isComposingWord = false;
         }
         // We want to find out whether to start composing a new word with this character. If so,
@@ -883,7 +896,7 @@ public final class InputLogic {
                 sendKeyCodePoint(settingsValues, codePoint, isTransliteration);
             }
         }
-        if (isEmoji) {
+        if (isEmoji || isVarnam) {
             restartSuggestionsOnWordTouchedByCursor(settingsValues, true, ScriptUtils.SCRIPT_LATIN);
         } else {
             inputTransaction.setRequiresUpdateSuggestions();
@@ -915,7 +928,8 @@ public final class InputLogic {
         }
         // isComposingWord() may have changed since we stored wasComposing
         if (mWordComposer.isComposingWord()) {
-            if (settingsValues.mAutoCorrectionEnabledPerUserSettings) {
+            // Varnam requires auto correction
+            if (settingsValues.mAutoCorrectionEnabledPerUserSettings || isVarnam) {
                 final String separator = shouldAvoidSendingCode ? LastComposedWord.NOT_A_SEPARATOR
                         : StringUtils.newSingleCodePointString(codePoint);
                 commitCurrentAutoCorrection(settingsValues, separator, handler);
@@ -1196,11 +1210,13 @@ public final class InputLogic {
             }
             if (mConnection.hasSlowInputConnection()) {
                 mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
-            } else if (inputTransaction.mSettingsValues.isSuggestionsEnabledPerUserSettings()
+            } else if (isVarnam || (
+                    inputTransaction.mSettingsValues.isSuggestionsEnabledPerUserSettings()
                     && inputTransaction.mSettingsValues.mSpacingAndPunctuations
                             .mCurrentLanguageHasSpaces
                     && !mConnection.isCursorFollowedByWordCharacter(
-                            inputTransaction.mSettingsValues.mSpacingAndPunctuations)) {
+                            inputTransaction.mSettingsValues.mSpacingAndPunctuations)
+            )) {
                 restartSuggestionsOnWordTouchedByCursor(inputTransaction.mSettingsValues,
                         false /* forStartInput */, currentKeyboardScriptId);
             }
@@ -1245,6 +1261,7 @@ public final class InputLogic {
     }
 
     void unlearnWord(final String word, final SettingsValues settingsValues, final int eventType) {
+        if (isVarnam) return;
         final NgramContext ngramContext = mConnection.getNgramContextFromNthPreviousWord(
             settingsValues.mSpacingAndPunctuations, 2);
         final long timeStampInSeconds = TimeUnit.MILLISECONDS.toSeconds(
@@ -1441,6 +1458,14 @@ public final class InputLogic {
 
     private void performAdditionToUserHistoryDictionary(final SettingsValues settingsValues,
             final String suggestion, @Nonnull final NgramContext ngramContext) {
+        if (TextUtils.isEmpty(suggestion)) return;
+
+        if (isVarnam && varnamSettingLearn) {
+            // For error logging in learn
+            varnam.learn(suggestion);
+            return;
+        }
+
         // If correction is not enabled, we don't add words to the user history dictionary.
         // That's to avoid unintended additions in some sensitive fields, or fields that
         // expect to receive non-words.
@@ -1452,7 +1477,6 @@ public final class InputLogic {
             return;
         }
 
-        if (TextUtils.isEmpty(suggestion)) return;
         final boolean wasAutoCapitalized =
                 mWordComposer.wasAutoCapitalized() && !mWordComposer.isMostlyCaps();
         final int timeStampInSeconds = (int)TimeUnit.MILLISECONDS.toSeconds(
@@ -1467,6 +1491,49 @@ public final class InputLogic {
         if (DebugFlags.DEBUG_ENABLED) {
             startTimeMillis = System.currentTimeMillis();
             Log.d(TAG, "performUpdateSuggestionStripSync()");
+        }
+
+        if (isVarnam) {
+            final String typedWord = mWordComposer.getTypedWord();
+            if (typedWord.isEmpty()) {
+                mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+                return;
+            }
+
+            getVarnamSuggestions(typedWord, new VarnamCallback() {
+                public void onResult(String input, Suggestion[] sugs) {
+                    if (sugs == null || !mWordComposer.getTypedWord().equals(input)) {
+                        return;
+                    }
+
+                    ArrayList<SuggestedWordInfo> suggestedWordsList = new ArrayList<SuggestedWordInfo>();
+
+                    final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
+                            typedWord,
+                            "" /* prevWordsContext */,
+                            SuggestedWordInfo.MAX_SCORE,
+                            SuggestedWordInfo.KIND_TYPED,
+                            Dictionary.DICTIONARY_USER_TYPED,
+                            SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                            SuggestedWordInfo.NOT_A_CONFIDENCE);
+                    suggestedWordsList.add(typedWordInfo);
+
+                    suggestedWordsList.addAll(varnamSugsToSugsWordInfo(sugs));
+
+                    SuggestedWords suggestedWords = new SuggestedWords(
+                            suggestedWordsList,
+                            null,
+                            typedWordInfo,
+                            true,
+                            true,
+                            false,
+                            SuggestedWords.INPUT_STYLE_PREDICTION,
+                            SuggestedWords.INDEX_OF_AUTO_CORRECTION
+                    );
+                    mSuggestionStripViewAccessor.showSuggestionStrip(suggestedWords);
+                }
+            });
+            return;
         }
 
         if (!mWordComposer.isComposingWord() && !(settingsValues.mBigramPredictionEnabled || isEmoji)) {
@@ -1608,31 +1675,34 @@ public final class InputLogic {
                 SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
                 SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
 
-        if (isEmoji) {
-            ArrayList<SuggestedWordInfo> suggestedEmojis = emojiSearch.search(typedWordString);
+        if (!isVarnam) {
+            if (isEmoji) {
+                ArrayList<SuggestedWordInfo> suggestedEmojis = emojiSearch.search(typedWordString);
 
-            if (suggestedEmojis.size() == 0) {
-                mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
-                return;
-            }
-            suggestions.addAll(suggestedEmojis);
-        } else {
-            suggestions.add(typedWordInfo);
-            int i = 0;
-            for (final SuggestionSpan span : range.getSuggestionSpansAtWord()) {
-                for (final String s : span.getSuggestions()) {
-                    ++i;
-                    if (!TextUtils.equals(s, typedWordString)) {
-                        suggestions.add(new SuggestedWordInfo(s,
-                                "" /* prevWordsContext */, SuggestedWords.MAX_SUGGESTIONS - i,
-                                SuggestedWordInfo.KIND_RESUMED, Dictionary.DICTIONARY_RESUMED,
-                                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                                SuggestedWordInfo.NOT_A_CONFIDENCE
-                                /* autoCommitFirstWordConfidence */));
+                if (suggestedEmojis.size() == 0) {
+                    mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+                    return;
+                }
+                suggestions.addAll(suggestedEmojis);
+            } else {
+                suggestions.add(typedWordInfo);
+                int i = 0;
+                for (final SuggestionSpan span : range.getSuggestionSpansAtWord()) {
+                    for (final String s : span.getSuggestions()) {
+                        ++i;
+                        if (!TextUtils.equals(s, typedWordString)) {
+                            suggestions.add(new SuggestedWordInfo(s,
+                                    "" /* prevWordsContext */, SuggestedWords.MAX_SUGGESTIONS - i,
+                                    SuggestedWordInfo.KIND_RESUMED, Dictionary.DICTIONARY_RESUMED,
+                                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                                    SuggestedWordInfo.NOT_A_CONFIDENCE
+                                    /* autoCommitFirstWordConfidence */));
+                        }
                     }
                 }
             }
         }
+
         final int[] codePoints = StringUtils.toCodePointArray(typedWordString);
         mWordComposer.setComposingWord(codePoints,
                 mLatinIME.getCoordinatesForCurrentKeyboard(codePoints));
@@ -1643,6 +1713,19 @@ public final class InputLogic {
         }
         mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
                 expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor());
+
+        if (isVarnam) {
+            getVarnamSuggestions(typedWordString, new VarnamCallback() {
+                public void onResult(String input, Suggestion[] sugs) {
+                    restartSuggestionsOnWordTouchedByCursorUpdateSuggestions(typedWordInfo, varnamSugsToSugsWordInfo(sugs));
+                }
+            });
+        } else {
+            restartSuggestionsOnWordTouchedByCursorUpdateSuggestions(typedWordInfo, suggestions);
+        }
+    }
+
+    public void restartSuggestionsOnWordTouchedByCursorUpdateSuggestions (SuggestedWordInfo typedWordInfo, ArrayList<SuggestedWordInfo> suggestions) {
         if (suggestions.size() <= 1 && !isEmoji /* emoji search won't have typed word in suggestions list */) {
             // If there weren't any suggestion spans on this word, suggestions#size() will be 1
             // if shouldIncludeResumedWordInSuggestions is true, 0 otherwise. In this case, we
@@ -1652,7 +1735,8 @@ public final class InputLogic {
                         @Override
                         public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
                             doShowSuggestionsAndClearAutoCorrectionIndicator(suggestedWords);
-                        }});
+                        }
+                    });
         } else {
             // We found suggestion spans in the word. We'll create the SuggestedWords out of
             // them, and make willAutoCorrect false. We make typedWordValid false, because the
@@ -2457,7 +2541,25 @@ public final class InputLogic {
     public void enableTransliteration(String transliterationMethod, Context context) {
         InputMethod im;
         try {
-            im = InputMethod.fromName(transliterationMethod, context);
+            if (transliterationMethod.substring(0, 7).equals("varnam-")) {
+                String schemeID = transliterationMethod.substring(7);
+                Log.d("varnam", "init varnam input method - " + schemeID);
+                enableVarnam(schemeID, context);
+
+                VarnamIndicKeyboard.Scheme scheme = VarnamIndicKeyboard.schemes.get(transliterationMethod);
+                im = new InputMethod(
+                        transliterationMethod,
+                        scheme.name,
+                        scheme.description,
+                        scheme.author,
+                        scheme.version,
+                        1,
+                        3,
+                        new ArrayList<InputMethod.InputPattern>()
+                );
+            } else {
+                im = InputMethod.fromName(transliterationMethod, context);
+            }
             mWordComposer.setTransliterationMethod(im);
             mConnection.setTransliterationMethod(im);
             isTransliteration = true;
@@ -2467,10 +2569,16 @@ public final class InputLogic {
         }
     }
 
-    public void disableTransliteration() {
+    public void disableTransliteration(Context context) {
         mWordComposer.setTransliterationMethod(null);
         mConnection.setTransliterationMethod(null);
         isTransliteration = false;
+
+        if (isVarnam) {
+            varnam.close(context);
+            isVarnam = false;
+            varnam = null;
+        }
     }
 
     public void setEmojiSearch(Context context) {
@@ -2484,5 +2592,62 @@ public final class InputLogic {
     public void unsetEmojiSearch() {
         isEmoji = false;
         mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+    }
+
+    public void enableVarnam (String schemeID, Context context) {
+        // TODO if varnam app (org.smc.inputmethod.indic.varnam) doesn't exist, show Varnam Setup UI
+        // TODO Varnam Setup UI
+        // Varnam UI is similar to Indic Keyboard getting started
+        // Step 1: Install app
+        // Step 2: Select varnam languages to enable (currently only Malayalam) -> Next
+        // Step 3: Initializing the selected languages using varnam.setupScheme(schemeID) & enable those keyboard layouts in Indic Keyboard (`varnam-schemeID`. Eg: `varnam-ml`)
+        // Finished
+
+        varnam = VarnamIndicKeyboard.makeVarnam(schemeID, context, new VarnamCallback() {
+            @Override
+            public void onResult(boolean settingLearn) {
+                varnam.setDictionarySuggestionsLimit(4);
+                varnam.setTokenizerSuggestionsLimit(4);
+                isVarnam = true;
+                varnamSettingLearn = settingLearn;
+            }
+
+            @Override
+            public void onError(String err) {
+                isVarnam = false;
+                Log.e("varnam-init-error", err);
+                if (err.equals(Varnam.ERROR_VST_MISSING)) {
+                    err = context.getString(R.string.varnam_vst_missing, schemeID);
+                }
+                Toast toast = Toast.makeText(context, err, Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
+                toast.show();
+            }
+        });
+    }
+
+    public void getVarnamSuggestions(String word, VarnamCallback cb) {
+        varnam.cancel(varnamTransliterationTaskID);
+        if (++varnamTransliterationTaskID >= 64) {
+            // Restart ID from 0
+            varnamTransliterationTaskID = 0;
+        }
+        varnam.transliterate(varnamTransliterationTaskID, word, cb);
+    }
+
+    private ArrayList<SuggestedWordInfo> varnamSugsToSugsWordInfo(Suggestion[] sugs) {
+        ArrayList<SuggestedWordInfo> suggestedWords = new ArrayList<SuggestedWordInfo>();
+        for (Suggestion sug : sugs) {
+            final SuggestedWordInfo wordInfo = new SuggestedWordInfo(
+                    sug.Word,
+                    "" /* prevWordsContext */,
+                    sug.Weight,
+                    SuggestedWordInfo.KIND_COMPLETION,
+                    Dictionary.DICTIONARY_RESUMED,
+                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                    SuggestedWordInfo.NOT_A_CONFIDENCE);
+            suggestedWords.add(wordInfo);
+        }
+        return suggestedWords;
     }
 }
