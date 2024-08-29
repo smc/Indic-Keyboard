@@ -19,36 +19,52 @@
     xmlns:latin="http://schemas.android.com/apk/res-auto"
     android:title="@string/settings_screen_advanced"
     android:key="screen_advanced">
-    <!-- TODO: consolidate key preview dismiss delay with the key preview animation parameters. -->
-    <ListPreference
-        android:key="pref_key_preview_popup_dismiss_delay"
-        android:title="@string/key_preview_popup_dismiss_delay" />
-    <org.smc.inputmethod.indic.settings.SeekBarDialogPreference
-        android:key="pref_vibration_duration_settings"
-        android:title="@string/prefs_keypress_vibration_duration_settings"
-        latin:maxValue="@integer/config_max_vibration_duration" />
-    <org.smc.inputmethod.indic.settings.SeekBarDialogPreference
-        android:key="pref_keypress_sound_volume"
-        android:title="@string/prefs_keypress_sound_volume_settings"
-        latin:maxValue="100" /> <!-- percent -->
-    <org.smc.inputmethod.indic.settings.SeekBarDialogPreference
-        android:key="pref_key_longpress_timeout"
-        android:title="@string/prefs_key_longpress_timeout_settings"
-        latin:minValue="@integer/config_min_longpress_timeout"
-        latin:maxValue="@integer/config_max_longpress_timeout"
-        latin:stepValue="@integer/config_longpress_timeout_step" />
-    <CheckBoxPreference
-        android:key="pref_enable_emoji_alt_physical_key"
-        android:title="@string/prefs_enable_emoji_alt_physical_key"
-        android:summary="@string/prefs_enable_emoji_alt_physical_key_summary"
-        android:defaultValue="true"
-        android:persistent="true" />
-    <CheckBoxPreference
-        android:key="pref_show_setup_wizard_icon"
-        android:title="@string/show_setup_wizard_icon"
-        android:summary="@string/show_setup_wizard_icon_summary"
-        android:defaultValue="true"
-        android:persistent="true" />
+    <PreferenceCategory android:title="Extensions">
+      <!-- TODO Show Varnam Pack App install setup screen if it's not installed -->
+      <Preference
+          android:title="@string/settings_screen_varnam"
+          android:summary="@string/settings_screen_varnam_summary"
+          android:key="screen_varnam">
+          <intent
+              android:targetPackage="org.smc.inputmethod.indic.varnam"
+              android:targetClass="org.smc.inputmethod.indic.varnam.MainActivity" />
+      </Preference>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Duration">
+      <!-- TODO: consolidate key preview dismiss delay with the key preview animation parameters. -->
+      <ListPreference
+          android:key="pref_key_preview_popup_dismiss_delay"
+          android:title="@string/key_preview_popup_dismiss_delay" />
+      <org.smc.inputmethod.indic.settings.SeekBarDialogPreference
+          android:key="pref_vibration_duration_settings"
+          android:title="@string/prefs_keypress_vibration_duration_settings"
+          latin:maxValue="@integer/config_max_vibration_duration" />
+      <org.smc.inputmethod.indic.settings.SeekBarDialogPreference
+          android:key="pref_keypress_sound_volume"
+          android:title="@string/prefs_keypress_sound_volume_settings"
+          latin:maxValue="100" /> <!-- percent -->
+      <org.smc.inputmethod.indic.settings.SeekBarDialogPreference
+          android:key="pref_key_longpress_timeout"
+          android:title="@string/prefs_key_longpress_timeout_settings"
+          latin:minValue="@integer/config_min_longpress_timeout"
+          latin:maxValue="@integer/config_max_longpress_timeout"
+          latin:stepValue="@integer/config_longpress_timeout_step" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Keys and Icons">
+      <CheckBoxPreference
+          android:key="pref_enable_emoji_alt_physical_key"
+          android:title="@string/prefs_enable_emoji_alt_physical_key"
+          android:summary="@string/prefs_enable_emoji_alt_physical_key_summary"
+          android:defaultValue="true"
+          android:persistent="true" />
+      <CheckBoxPreference
+          android:key="pref_show_setup_wizard_icon"
+          android:title="@string/show_setup_wizard_icon"
+          android:summary="@string/show_setup_wizard_icon_summary"
+          android:defaultValue="true"
+          android:persistent="true" />
+    </PreferenceCategory>
     <PreferenceScreen
         android:fragment="org.smc.inputmethod.indic.settings.DebugSettingsFragment"
         android:key="screen_debug"
