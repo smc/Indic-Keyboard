@@ -29,7 +29,7 @@ dependencies {
 }
 
 // Used in calculating version code for each APK in splits
-ext.versionCodeOffsets = ['arm64-v8a': 1, 'armeabi-v7a': 0, 'x86': 2, 'x86_64': 3]
+ext.versionCodeOffsets = ['arm64-v8a': 1, 'armeabi-v7a': 0]
 
 android {
     compileSdkVersion 34
@@ -41,8 +41,8 @@ android {
         applicationId "org.smc.inputmethod.indic"
         minSdkVersion 14
         targetSdkVersion 34
-        versionCode 100
-        versionName "3.5.1"
+        versionCode 105
+        versionName "3.6.0"
     }
 
     splits {
@@ -50,7 +50,7 @@ android {
         enable true
         universalApk false
         reset()
-        include "x86", "armeabi-v7a", "arm64-v8a", "x86_64"
+        include "armeabi-v7a", "arm64-v8a"
       }
     }
     sourceSets {
