@@ -2541,7 +2541,7 @@ public final class InputLogic {
     public void enableTransliteration(String transliterationMethod, Context context) {
         InputMethod im;
         try {
-            if (transliterationMethod.substring(0, 7).equals("varnam-")) {
+            if (transliterationMethod.startsWith("varnam-")) {
                 String schemeID = transliterationMethod.substring(7);
                 Log.d("varnam", "init varnam input method - " + schemeID);
                 enableVarnam(schemeID, context);
