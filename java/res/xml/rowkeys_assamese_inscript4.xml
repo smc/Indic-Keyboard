@@ -84,7 +84,10 @@
                 latin:keySpec="&#x09A8;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keySpec="&#x0020;" />
+            <!--v ৱ BENGALI LETTER RA WITH LOWER DIAGONAL-->
+             <Key
+                latin:keySpec="&#x09F1;"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--n ল BENGALI LETTER LA-->
             <Key
