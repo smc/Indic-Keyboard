@@ -13,7 +13,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.5.1'
+        classpath 'com.android.tools.build:gradle:9.2.1'
     }
 }
 
@@ -32,23 +32,22 @@ dependencies {
 ext.versionCodeOffsets = ['arm64-v8a': 1, 'armeabi-v7a': 0]
 
 android {
-    compileSdkVersion 34
-    buildToolsVersion '34.0.0'
-    namespace 'com.android.inputmethod.latin'
+    compileSdk = 36
+    namespace = 'com.android.inputmethod.latin'
 
 
     defaultConfig {
-        applicationId "org.smc.inputmethod.indic"
-        minSdkVersion 14
-        targetSdkVersion 34
-        versionCode 110
-        versionName "3.6.1"
+        applicationId = "org.smc.inputmethod.indic"
+        minSdk = 14
+        targetSdk = 36
+        versionCode = 110
+        versionName = "3.6.1"
     }
 
     splits {
       abi {
-        enable true
-        universalApk false
+        enable = true
+        universalApk = false
         reset()
         include "armeabi-v7a", "arm64-v8a"
       }
@@ -70,32 +69,40 @@ android {
 
     signingConfigs {
         release {
-            storeFile file(String.valueOf(System.getenv("INDIC_KEYSTORE")))
-            storePassword System.getenv("INDIC_KEYSTORE_PASSWORD")
-            keyAlias System.getenv("INDIC_KEY_ALIAS")
-            keyPassword System.getenv("INDIC_KEY_PASSWORD")
+            storeFile = file(String.valueOf(System.getenv("INDIC_KEYSTORE")))
+            storePassword = System.getenv("INDIC_KEYSTORE_PASSWORD")
+            keyAlias = System.getenv("INDIC_KEY_ALIAS")
+            keyPassword = System.getenv("INDIC_KEY_PASSWORD")
         }
     }
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-            signingConfig signingConfigs.release
+            minifyEnabled = false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.txt'
+            signingConfig = signingConfigs.release
         }
     }
     androidResources {
         noCompress '.dict'
     }
     lint {
-        checkReleaseBuilds false
+        checkReleaseBuilds = false
     }
 
-    android.applicationVariants.all { variant ->
-      variant.outputs.each { output ->
-        // Uses a hardcoded lookup instead of loop index because in F-droid build
-        // we overwrite splits and make only one output at a time.
-        output.versionCodeOverride =
-          variant.versionCode + project.ext.versionCodeOffsets.get(output.getFilter(com.android.build.OutputFile.ABI))
-      }
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        variant.outputs.each { output ->
+            // Uses a hardcoded lookup instead of loop index because in F-droid build
+            // we overwrite splits and make only one output at a time.
+            def abiFilter = output.filters.find {
+                it.filterType == com.android.build.api.variant.FilterConfiguration.FilterType.ABI
+            }
+            if (abiFilter != null) {
+                output.versionCode.set(
+                    output.versionCode.get() + project.ext.versionCodeOffsets.get(abiFilter.identifier))
+            }
+        }
     }
 }
