@@ -1,5 +1,3 @@
-project.ext.set("archivesBaseName", "IndicKeyboard")
-
 allprojects {
     repositories {
         google()
@@ -18,6 +16,10 @@ buildscript {
 }
 
 apply plugin: 'com.android.application'
+
+base {
+    archivesName = "IndicKeyboard"
+}
 
 dependencies {
     implementation 'androidx.core:core:1.9.0'
