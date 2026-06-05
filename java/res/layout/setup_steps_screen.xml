@@ -22,6 +22,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <include layout="@layout/setup_steps_title" />
-    <include layout="@layout/setup_steps_cards" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <include layout="@layout/setup_steps_title" />
+            <include layout="@layout/setup_steps_cards" />
+        </LinearLayout>
+    </ScrollView>
+    <TextView
+        android:id="@+id/setup_next"
+        android:text="@string/setup_next_action"
+        android:gravity="end|center_vertical"
+        style="@style/setupStepActionLabelStyleCommon"
+        android:layout_marginTop="@dimen/setup_step_horizontal_line_height" />
 </LinearLayout>

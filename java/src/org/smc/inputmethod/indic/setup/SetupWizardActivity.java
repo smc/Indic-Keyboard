@@ -27,6 +27,11 @@ import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
+import androidx.core.graphics.Insets;
+import androidx.core.view.OnApplyWindowInsetsListener;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
 import com.android.inputmethod.compat.TextViewCompatUtils;
 import com.android.inputmethod.compat.ViewCompatUtils;
 import com.android.inputmethod.latin.R;
@@ -117,6 +122,27 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
 
         setContentView(R.layout.setup_wizard);
         mSetupWizard = findViewById(R.id.setup_wizard);
+
+        // Keep the wizard content, especially the bottom action buttons, clear of the
+        // system bars when the window is laid out edge-to-edge (Android 15 and above).
+        final int basePaddingLeft = mSetupWizard.getPaddingLeft();
+        final int basePaddingTop = mSetupWizard.getPaddingTop();
+        final int basePaddingRight = mSetupWizard.getPaddingRight();
+        final int basePaddingBottom = mSetupWizard.getPaddingBottom();
+        ViewCompat.setOnApplyWindowInsetsListener(mSetupWizard,
+                new OnApplyWindowInsetsListener() {
+            @Override
+            public WindowInsetsCompat onApplyWindowInsets(@Nonnull final View v,
+                    @Nonnull final WindowInsetsCompat insets) {
+                final Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars()
+                        | WindowInsetsCompat.Type.displayCutout());
+                v.setPadding(basePaddingLeft + systemBars.left,
+                        basePaddingTop + systemBars.top,
+                        basePaddingRight + systemBars.right,
+                        basePaddingBottom + systemBars.bottom);
+                return WindowInsetsCompat.CONSUMED;
+            }
+        });
 
         if (savedInstanceState == null) {
             mStepNumber = determineSetupStepNumberFromLauncher();

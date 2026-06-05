@@ -28,5 +28,6 @@
         style="@style/setupStepActionLabelStyleCommon" />
     <view class="org.smc.inputmethod.indic.setup.SetupStartIndicatorView$IndicatorView"
         android:id="@+id/setup_start_indicator"
+        android:layout_gravity="center_vertical"
         style="@style/setupStepStartIndicatorStyle" />
 </merge>

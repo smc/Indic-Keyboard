@@ -41,7 +41,17 @@
         android:layout_height="match_parent"
         android:layout_weight="@integer/setup_body_weight_in_screen"
         android:orientation="vertical">
-        <include layout="@layout/setup_welcome_video" />
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <include layout="@layout/setup_welcome_video" />
+            </LinearLayout>
+        </ScrollView>
         <org.smc.inputmethod.indic.setup.SetupStartIndicatorView
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
