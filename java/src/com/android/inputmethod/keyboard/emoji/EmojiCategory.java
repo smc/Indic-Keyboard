@@ -27,7 +27,6 @@ import android.util.Pair;
 
 import androidx.core.graphics.PaintCompat;
 
-import com.android.inputmethod.compat.BuildCompatUtils;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
@@ -174,32 +173,28 @@ final class EmojiCategory {
                     sCategoryTabIconAttr[i], 0);
         }
 
-        int defaultCategoryId = EmojiCategory.ID_SYMBOLS;
+        final int defaultCategoryId;
         addShownCategoryId(EmojiCategory.ID_RECENTS);
-        if (BuildCompatUtils.EFFECTIVE_SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (canShowUnicodeEightEmoji()) {
-                defaultCategoryId = EmojiCategory.ID_EIGHT_SMILEY_PEOPLE;
-                addShownCategoryId(EmojiCategory.ID_EIGHT_SMILEY_PEOPLE);
-                addShownCategoryId(EmojiCategory.ID_EIGHT_ANIMALS_NATURE);
-                addShownCategoryId(EmojiCategory.ID_EIGHT_FOOD_DRINK);
-                addShownCategoryId(EmojiCategory.ID_EIGHT_TRAVEL_PLACES);
-                addShownCategoryId(EmojiCategory.ID_EIGHT_ACTIVITY);
-                addShownCategoryId(EmojiCategory.ID_EIGHT_OBJECTS);
-                addShownCategoryId(EmojiCategory.ID_EIGHT_SYMBOLS);
-                addShownCategoryId(EmojiCategory.ID_FLAGS); // Exclude combinations without glyphs.
-            } else {
-                defaultCategoryId = EmojiCategory.ID_PEOPLE;
-                addShownCategoryId(EmojiCategory.ID_PEOPLE);
-                addShownCategoryId(EmojiCategory.ID_OBJECTS);
-                addShownCategoryId(EmojiCategory.ID_NATURE);
-                addShownCategoryId(EmojiCategory.ID_PLACES);
-                addShownCategoryId(EmojiCategory.ID_SYMBOLS);
-                if (canShowFlagEmoji()) {
-                    addShownCategoryId(EmojiCategory.ID_FLAGS);
-                }
-            }
+        if (canShowUnicodeEightEmoji()) {
+            defaultCategoryId = EmojiCategory.ID_EIGHT_SMILEY_PEOPLE;
+            addShownCategoryId(EmojiCategory.ID_EIGHT_SMILEY_PEOPLE);
+            addShownCategoryId(EmojiCategory.ID_EIGHT_ANIMALS_NATURE);
+            addShownCategoryId(EmojiCategory.ID_EIGHT_FOOD_DRINK);
+            addShownCategoryId(EmojiCategory.ID_EIGHT_TRAVEL_PLACES);
+            addShownCategoryId(EmojiCategory.ID_EIGHT_ACTIVITY);
+            addShownCategoryId(EmojiCategory.ID_EIGHT_OBJECTS);
+            addShownCategoryId(EmojiCategory.ID_EIGHT_SYMBOLS);
+            addShownCategoryId(EmojiCategory.ID_FLAGS); // Exclude combinations without glyphs.
         } else {
+            defaultCategoryId = EmojiCategory.ID_PEOPLE;
+            addShownCategoryId(EmojiCategory.ID_PEOPLE);
+            addShownCategoryId(EmojiCategory.ID_OBJECTS);
+            addShownCategoryId(EmojiCategory.ID_NATURE);
+            addShownCategoryId(EmojiCategory.ID_PLACES);
             addShownCategoryId(EmojiCategory.ID_SYMBOLS);
+            if (canShowFlagEmoji()) {
+                addShownCategoryId(EmojiCategory.ID_FLAGS);
+            }
         }
         addShownCategoryId(EmojiCategory.ID_EMOTICONS);
 

@@ -22,7 +22,6 @@ import android.os.Build;
 import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
-import com.android.inputmethod.compat.BuildCompatUtils;
 import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.LocaleUtils;
@@ -46,11 +45,8 @@ public class RichInputMethodSubtype {
     private static final HashMap<Locale, Locale> sLocaleMap = initializeLocaleMap();
     private static final HashMap<Locale, Locale> initializeLocaleMap() {
         final HashMap<Locale, Locale> map = new HashMap<>();
-        if (BuildCompatUtils.EFFECTIVE_SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // Locale#forLanguageTag is available on API Level 21+.
-            // TODO: Remove this workaround once when we become able to deal with "sr-Latn".
-            map.put(Locale.forLanguageTag("sr-Latn"), new Locale("sr_ZZ"));
-        }
+        // TODO: Remove this workaround once when we become able to deal with "sr-Latn".
+        map.put(Locale.forLanguageTag("sr-Latn"), new Locale("sr_ZZ"));
         return map;
     }
 

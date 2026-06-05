@@ -27,9 +27,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.common.LocaleUtils;
-import com.android.inputmethod.latin.define.DebugFlags;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -37,21 +35,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public final class SuggestionSpanUtils {
-    // Note that SuggestionSpan.FLAG_AUTO_CORRECTION has been introduced
-    // in API level 15 (Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1).
-    private static final Field FIELD_FLAG_AUTO_CORRECTION = CompatUtils.getField(
-            SuggestionSpan.class, "FLAG_AUTO_CORRECTION");
-    private static final Integer OBJ_FLAG_AUTO_CORRECTION = (Integer) CompatUtils.getFieldValue(
-            null /* receiver */, null /* defaultValue */, FIELD_FLAG_AUTO_CORRECTION);
-
-    static {
-        if (DebugFlags.DEBUG_ENABLED) {
-            if (OBJ_FLAG_AUTO_CORRECTION == null) {
-                throw new RuntimeException("Field is accidentially null.");
-            }
-        }
-    }
-
     private SuggestionSpanUtils() {
         // This utility class is not publicly instantiable.
     }
@@ -59,12 +42,12 @@ public final class SuggestionSpanUtils {
     @UsedForTesting
     public static CharSequence getTextWithAutoCorrectionIndicatorUnderline(
             final Context context, final String text, @Nonnull final Locale locale) {
-        if (TextUtils.isEmpty(text) || OBJ_FLAG_AUTO_CORRECTION == null) {
+        if (TextUtils.isEmpty(text)) {
             return text;
         }
         final Spannable spannable = new SpannableString(text);
         final SuggestionSpan suggestionSpan = new SuggestionSpan(context, locale,
-                new String[] {} /* suggestions */, OBJ_FLAG_AUTO_CORRECTION, null);
+                new String[] {} /* suggestions */, SuggestionSpan.FLAG_AUTO_CORRECTION, null);
         spannable.setSpan(suggestionSpan, 0, text.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE | Spanned.SPAN_COMPOSING);
         return spannable;

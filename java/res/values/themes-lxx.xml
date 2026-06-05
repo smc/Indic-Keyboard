@@ -22,7 +22,9 @@
     <style
         name="InputView.LXX"
         parent="InputView"
-    />
+    >
+        <item name="android:elevation">8dp</item>
+    </style>
     <!-- LXX KeyboardView theme (LXX_Light and LXX_Dark) -->
     <style
         name="KeyboardView.LXX"

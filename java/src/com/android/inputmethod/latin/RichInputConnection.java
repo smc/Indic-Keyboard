@@ -32,7 +32,6 @@ import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 
-import com.android.inputmethod.compat.InputConnectionCompatUtils;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.UnicodeSurrogate;
 import com.android.inputmethod.latin.common.StringUtils;
@@ -1045,27 +1044,6 @@ public final class RichInputConnection implements PrivateCommandPerformer {
     }
 
     /**
-     * Work around a bug that was present before Jelly Bean upon rotation.
-     *
-     * Before Jelly Bean, there is a bug where setComposingRegion and other committing
-     * functions on the input connection get ignored until the cursor moves. This method works
-     * around the bug by wiggling the cursor first, which reactivates the connection and has
-     * the subsequent methods work, then restoring it to its original position.
-     *
-     * On platforms on which this method is not present, this is a no-op.
-     */
-    public void maybeMoveTheCursorAroundAndRestoreToWorkaroundABug() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            if (mExpectedSelStart > 0) {
-                mIC.setSelection(mExpectedSelStart - 1, mExpectedSelStart - 1);
-            } else {
-                mIC.setSelection(mExpectedSelStart + 1, mExpectedSelStart + 1);
-            }
-            mIC.setSelection(mExpectedSelStart, mExpectedSelEnd);
-        }
-    }
-
-    /**
      * Requests the editor to call back {@link InputMethodManager#updateCursorAnchorInfo}.
      * @param enableMonitor {@code true} to request the editor to call back the method whenever the
      * cursor/anchor position is changed.
@@ -1082,8 +1060,9 @@ public final class RichInputConnection implements PrivateCommandPerformer {
         if (!isConnected()) {
             return false;
         }
-        return InputConnectionCompatUtils.requestCursorUpdates(
-                mIC, enableMonitor, requestImmediateCallback);
+        final int cursorUpdateMode = (enableMonitor ? InputConnection.CURSOR_UPDATE_MONITOR : 0)
+                | (requestImmediateCallback ? InputConnection.CURSOR_UPDATE_IMMEDIATE : 0);
+        return mIC.requestCursorUpdates(cursorUpdateMode);
     }
 
     public void deleteSurroundingText(final int beforeLength, final int afterLength) {

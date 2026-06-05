@@ -32,7 +32,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.inputmethod.EditorInfo;
 
-import com.android.inputmethod.compat.SettingsSecureCompatUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.utils.InputTypeUtils;
@@ -131,11 +130,9 @@ public final class AccessibilityUtils {
         if (editorInfo == null) return false;
 
         // The user can optionally force speaking passwords.
-        if (SettingsSecureCompatUtils.ACCESSIBILITY_SPEAK_PASSWORD != null) {
-            final boolean speakPassword = Settings.Secure.getInt(mContext.getContentResolver(),
-                    SettingsSecureCompatUtils.ACCESSIBILITY_SPEAK_PASSWORD, 0) != 0;
-            if (speakPassword) return false;
-        }
+        final boolean speakPassword = Settings.Secure.getInt(mContext.getContentResolver(),
+                Settings.Secure.ACCESSIBILITY_SPEAK_PASSWORD, 0) != 0;
+        if (speakPassword) return false;
 
         // Always speak if the user is listening through headphones.
         if (mAudioManager.isWiredHeadsetOn() || mAudioManager.isBluetoothA2dpOn()) {
@@ -219,13 +216,7 @@ public final class AccessibilityUtils {
         event.setEnabled(true);
         event.getText().add(text);
 
-        // Platforms starting at SDK version 16 (Build.VERSION_CODES.JELLY_BEAN) should use
-        // announce events.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            event.setEventType(AccessibilityEventCompat.TYPE_ANNOUNCEMENT);
-        } else {
-            event.setEventType(AccessibilityEvent.TYPE_VIEW_FOCUSED);
-        }
+        event.setEventType(AccessibilityEventCompat.TYPE_ANNOUNCEMENT);
 
         final ViewParent viewParent = view.getParent();
         if ((viewParent == null) || !(viewParent instanceof ViewGroup)) {

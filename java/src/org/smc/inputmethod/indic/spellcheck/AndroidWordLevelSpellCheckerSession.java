@@ -27,7 +27,6 @@ import android.util.LruCache;
 import android.view.textservice.SuggestionsInfo;
 import android.view.textservice.TextInfo;
 
-import com.android.inputmethod.compat.SuggestionsInfoCompatUtils;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -312,8 +311,7 @@ public abstract class AndroidWordLevelSpellCheckerSession extends Session {
             final int flags =
                     SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO
                     | (result.mHasRecommendedSuggestions
-                            ? SuggestionsInfoCompatUtils
-                                    .getValueOf_RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS()
+                            ? SuggestionsInfo.RESULT_ATTR_HAS_RECOMMENDED_SUGGESTIONS
                             : 0);
             final SuggestionsInfo retval = new SuggestionsInfo(flags, result.mSuggestions);
             mSuggestionsCache.putSuggestionsToCache(text, result.mSuggestions, flags);

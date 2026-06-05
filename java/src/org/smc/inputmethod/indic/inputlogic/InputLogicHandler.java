@@ -20,7 +20,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 
-import com.android.inputmethod.compat.LooperCompatUtils;
 import org.smc.inputmethod.indic.LatinIME;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
@@ -83,7 +82,7 @@ class InputLogicHandler implements Handler.Callback {
     // In unit tests, we create several instances of LatinIME, which results in several instances
     // of InputLogicHandler. To avoid these handlers lingering, we call this.
     public void destroy() {
-        LooperCompatUtils.quitSafely(mNonUIThreadHandler.getLooper());
+        mNonUIThreadHandler.getLooper().quitSafely();
     }
 
     /**

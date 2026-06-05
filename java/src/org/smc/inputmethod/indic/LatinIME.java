@@ -53,9 +53,7 @@ import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.annotations.UsedForTesting;
-import com.android.inputmethod.compat.BuildCompatUtils;
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
-import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.compat.PreferenceManagerCompat;
 import com.android.inputmethod.compat.ViewOutlineProviderCompatUtils;
 import com.android.inputmethod.compat.ViewOutlineProviderCompatUtils.InsetsUpdater;
@@ -595,9 +593,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mSettings = Settings.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mStatsUtilsManager = StatsUtilsManager.getInstance();
-        mIsHardwareAcceleratedDrawingEnabled =
-                InputMethodServiceCompatUtils.enableHardwareAcceleration(this);
-        Log.i(TAG, "Hardware accelerated drawing: " + mIsHardwareAcceleratedDrawingEnabled);
+        // Hardware accelerated drawing is always enabled since API 21.
+        mIsHardwareAcceleratedDrawingEnabled = true;
     }
 
     @Override
@@ -2032,22 +2029,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void setNavigationBarVisibility(final boolean visible) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int color = visible ? Color.BLACK : Color.TRANSPARENT;
-            Window window = getWindow().getWindow();
-            // The window can be shown before the keyboard view is created, e.g. when the system
-            // shows the IME window early on recent Android versions.
-            final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
-            Drawable background = mainKeyboardView != null ? mainKeyboardView.getBackground() : null;
-            if (background instanceof ColorDrawable) {
-                window.setNavigationBarColor(((ColorDrawable) background).getColor());
-            } else {
-                window.setNavigationBarColor(color);
-            }
-            final View view = window.getDecorView();
-            int flags = View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
-            view.setSystemUiVisibility(flags);
+        int color = visible ? Color.BLACK : Color.TRANSPARENT;
+        Window window = getWindow().getWindow();
+        // The window can be shown before the keyboard view is created, e.g. when the system
+        // shows the IME window early on recent Android versions.
+        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        Drawable background = mainKeyboardView != null ? mainKeyboardView.getBackground() : null;
+        if (background instanceof ColorDrawable) {
+            window.setNavigationBarColor(((ColorDrawable) background).getColor());
+        } else {
+            window.setNavigationBarColor(color);
         }
+        final View view = window.getDecorView();
+        int flags = View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+        view.setSystemUiVisibility(flags);
     }
 
     public void setEmojiSearch() {

@@ -1708,9 +1708,6 @@ public final class InputLogic {
                 mLatinIME.getCoordinatesForCurrentKeyboard(codePoints));
         mWordComposer.setCursorPositionWithinWord(
         typedWordString.codePointCount(0, numberOfCharsInWordBeforeCursor));
-        if (forStartInput) {
-            mConnection.maybeMoveTheCursorAroundAndRestoreToWorkaroundABug();
-        }
         mConnection.setComposingRegion(expectedCursorPosition - numberOfCharsInWordBeforeCursor,
                 expectedCursorPosition + range.getNumberOfCharsInWordAfterCursor());
 

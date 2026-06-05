@@ -32,12 +32,7 @@ public class TwoStatePreferenceHelper {
     }
 
     public static void replaceCheckBoxPreferencesBySwitchPreferences(final PreferenceGroup group) {
-        // The keyboard settings keeps using a CheckBoxPreference on KitKat or previous.
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-            return;
-        }
-        // The keyboard settings starts using a SwitchPreference without switch on/off text on
-        // API versions newer than KitKat.
+        // The keyboard settings uses a SwitchPreference without switch on/off text.
         replaceAllCheckBoxPreferencesBySwitchPreferences(group);
     }
 

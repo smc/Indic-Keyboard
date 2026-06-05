@@ -181,12 +181,11 @@ public final class AdditionalSubtypeUtils {
         if (isAsciiCapable) {
             extraValueItems.add(ASCII_CAPABLE);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN &&
-                SubtypeLocaleUtils.isExceptionalLocale(localeString)) {
+        if (SubtypeLocaleUtils.isExceptionalLocale(localeString)) {
             extraValueItems.add(UNTRANSLATABLE_STRING_IN_SUBTYPE_NAME + "=" +
                     SubtypeLocaleUtils.getKeyboardLayoutSetDisplayName(keyboardLayoutSetName));
         }
-        if (isEmojiCapable && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (isEmojiCapable) {
             extraValueItems.add(EMOJI_CAPABLE);
         }
         extraValueItems.add(IS_ADDITIONAL_SUBTYPE);

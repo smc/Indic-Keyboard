@@ -89,9 +89,6 @@ public final class SettingsFragment extends InputMethodSettingsFragment {
     }
 
     private static boolean isUserSetupComplete(final Activity activity) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            return true;
-        }
         return Secure.getInt(activity.getContentResolver(), "user_setup_complete", 0) != 0;
     }
 }

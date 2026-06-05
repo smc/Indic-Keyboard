@@ -25,7 +25,6 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.android.inputmethod.compat.BuildCompatUtils;
 import com.android.inputmethod.compat.PreferenceManagerCompat;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.InputAttributes;
@@ -74,10 +73,8 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
             "pref_key_use_double_space_period";
     public static final String PREF_BLOCK_POTENTIALLY_OFFENSIVE =
             "pref_key_block_potentially_offensive";
-    public static final boolean ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS =
-            BuildCompatUtils.EFFECTIVE_SDK_INT <= Build.VERSION_CODES.KITKAT;
-    public static final boolean SHOULD_SHOW_LXX_SUGGESTION_UI =
-            BuildCompatUtils.EFFECTIVE_SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+    public static final boolean ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS = false;
+    public static final boolean SHOULD_SHOW_LXX_SUGGESTION_UI = true;
     public static final String PREF_SHOW_LANGUAGE_SWITCH_KEY =
             "pref_show_language_switch_key";
     public static final String PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST =
