@@ -48,36 +48,36 @@ import javax.annotation.Nullable;
 /**
  * A view that renders a virtual {@link Keyboard}.
  *
- * @attr ref R.styleable#KeyboardView_keyBackground
- * @attr ref R.styleable#KeyboardView_functionalKeyBackground
- * @attr ref R.styleable#KeyboardView_spacebarBackground
- * @attr ref R.styleable#KeyboardView_spacebarIconWidthRatio
- * @attr ref R.styleable#Keyboard_Key_keyLabelFlags
- * @attr ref R.styleable#KeyboardView_keyHintLetterPadding
- * @attr ref R.styleable#KeyboardView_keyPopupHintLetter
- * @attr ref R.styleable#KeyboardView_keyPopupHintLetterPadding
- * @attr ref R.styleable#KeyboardView_keyShiftedLetterHintPadding
- * @attr ref R.styleable#KeyboardView_keyTextShadowRadius
- * @attr ref R.styleable#KeyboardView_verticalCorrection
- * @attr ref R.styleable#Keyboard_Key_keyTypeface
- * @attr ref R.styleable#Keyboard_Key_keyLetterSize
- * @attr ref R.styleable#Keyboard_Key_keyLabelSize
- * @attr ref R.styleable#Keyboard_Key_keyLargeLetterRatio
- * @attr ref R.styleable#Keyboard_Key_keyLargeLabelRatio
- * @attr ref R.styleable#Keyboard_Key_keyHintLetterRatio
- * @attr ref R.styleable#Keyboard_Key_keyShiftedLetterHintRatio
- * @attr ref R.styleable#Keyboard_Key_keyHintLabelRatio
- * @attr ref R.styleable#Keyboard_Key_keyLabelOffCenterRatio
- * @attr ref R.styleable#Keyboard_Key_keyHintLabelOffCenterRatio
- * @attr ref R.styleable#Keyboard_Key_keyPreviewTextRatio
- * @attr ref R.styleable#Keyboard_Key_keyTextColor
- * @attr ref R.styleable#Keyboard_Key_keyTextColorDisabled
- * @attr ref R.styleable#Keyboard_Key_keyTextShadowColor
- * @attr ref R.styleable#Keyboard_Key_keyHintLetterColor
- * @attr ref R.styleable#Keyboard_Key_keyHintLabelColor
- * @attr ref R.styleable#Keyboard_Key_keyShiftedLetterHintInactivatedColor
- * @attr ref R.styleable#Keyboard_Key_keyShiftedLetterHintActivatedColor
- * @attr ref R.styleable#Keyboard_Key_keyPreviewTextColor
+ * @attr ref android.R.styleable#KeyboardView_keyBackground
+ * @attr ref android.R.styleable#KeyboardView_functionalKeyBackground
+ * @attr ref android.R.styleable#KeyboardView_spacebarBackground
+ * @attr ref android.R.styleable#KeyboardView_spacebarIconWidthRatio
+ * @attr ref android.R.styleable#Keyboard_Key_keyLabelFlags
+ * @attr ref android.R.styleable#KeyboardView_keyHintLetterPadding
+ * @attr ref android.R.styleable#KeyboardView_keyPopupHintLetter
+ * @attr ref android.R.styleable#KeyboardView_keyPopupHintLetterPadding
+ * @attr ref android.R.styleable#KeyboardView_keyShiftedLetterHintPadding
+ * @attr ref android.R.styleable#KeyboardView_keyTextShadowRadius
+ * @attr ref android.R.styleable#KeyboardView_verticalCorrection
+ * @attr ref android.R.styleable#Keyboard_Key_keyTypeface
+ * @attr ref android.R.styleable#Keyboard_Key_keyLetterSize
+ * @attr ref android.R.styleable#Keyboard_Key_keyLabelSize
+ * @attr ref android.R.styleable#Keyboard_Key_keyLargeLetterRatio
+ * @attr ref android.R.styleable#Keyboard_Key_keyLargeLabelRatio
+ * @attr ref android.R.styleable#Keyboard_Key_keyHintLetterRatio
+ * @attr ref android.R.styleable#Keyboard_Key_keyShiftedLetterHintRatio
+ * @attr ref android.R.styleable#Keyboard_Key_keyHintLabelRatio
+ * @attr ref android.R.styleable#Keyboard_Key_keyLabelOffCenterRatio
+ * @attr ref android.R.styleable#Keyboard_Key_keyHintLabelOffCenterRatio
+ * @attr ref android.R.styleable#Keyboard_Key_keyPreviewTextRatio
+ * @attr ref android.R.styleable#Keyboard_Key_keyTextColor
+ * @attr ref android.R.styleable#Keyboard_Key_keyTextColorDisabled
+ * @attr ref android.R.styleable#Keyboard_Key_keyTextShadowColor
+ * @attr ref android.R.styleable#Keyboard_Key_keyHintLetterColor
+ * @attr ref android.R.styleable#Keyboard_Key_keyHintLabelColor
+ * @attr ref android.R.styleable#Keyboard_Key_keyShiftedLetterHintInactivatedColor
+ * @attr ref android.R.styleable#Keyboard_Key_keyShiftedLetterHintActivatedColor
+ * @attr ref android.R.styleable#Keyboard_Key_keyPreviewTextColor
  */
 public class KeyboardView extends View {
     // XML attributes
@@ -102,7 +102,7 @@ public class KeyboardView extends View {
     private static final float MAX_LABEL_RATIO = 0.90f;
 
     // Main keyboard
-    // TODO: Consider having a dummy keyboard object to make this @Nonnull
+    // TODO: Consider having a base keyboard object to make this @Nonnull
     @Nullable
     private Keyboard mKeyboard;
     @Nonnull

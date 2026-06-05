@@ -1,11 +1,17 @@
 # Keep classes and methods that have the @UsedForTesting annotation
--keep @com.android.inputmethod.annotations.UsedForTesting class *
+# TODO(b/373579455): Evaluate if <init> needs to be kept.
+-keep @com.android.inputmethod.annotations.UsedForTesting class * {
+    void <init>();
+}
 -keepclassmembers class * {
     @com.android.inputmethod.annotations.UsedForTesting *;
 }
 
 # Keep classes and methods that have the @ExternallyReferenced annotation
--keep @com.android.inputmethod.annotations.ExternallyReferenced class *
+# TODO(b/373579455): Evaluate if <init> needs to be kept.
+-keep @com.android.inputmethod.annotations.ExternallyReferenced class * {
+    void <init>();
+}
 -keepclassmembers class * {
     @com.android.inputmethod.annotations.ExternallyReferenced *;
 }
@@ -17,11 +23,26 @@
 
 # Keep classes that are used as a parameter type of methods that are also marked as keep
 # to preserve changing those methods' signature.
--keep class com.android.inputmethod.latin.AssetFileAddress
--keep class com.android.inputmethod.latin.Dictionary
--keep class com.android.inputmethod.latin.NgramContext
--keep class com.android.inputmethod.latin.makedict.ProbabilityInfo
--keep class com.android.inputmethod.latin.utils.LanguageModelParam
+# TODO(b/373579455): Evaluate if <init> needs to be kept.
+-keep class com.android.inputmethod.latin.AssetFileAddress {
+    void <init>();
+}
+# TODO(b/373579455): Evaluate if <init> needs to be kept.
+-keep class com.android.inputmethod.latin.Dictionary {
+    void <init>();
+}
+# TODO(b/373579455): Evaluate if <init> needs to be kept.
+-keep class com.android.inputmethod.latin.NgramContext {
+    void <init>();
+}
+# TODO(b/373579455): Evaluate if <init> needs to be kept.
+-keep class com.android.inputmethod.latin.makedict.ProbabilityInfo {
+    void <init>();
+}
+# TODO(b/373579455): Evaluate if <init> needs to be kept.
+-keep class com.android.inputmethod.latin.utils.LanguageModelParam {
+    void <init>();
+}
 
 # TODO: remove once used in code.
 -keep class com.android.inputmethod.keyboard.KeyboardLayout { *; }

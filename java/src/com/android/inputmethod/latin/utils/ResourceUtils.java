@@ -16,13 +16,18 @@
 
 package com.android.inputmethod.latin.utils;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Insets;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.WindowInsets;
+import android.view.WindowManager;
+import android.view.WindowMetrics;
 
 import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.latin.R;
@@ -182,8 +187,20 @@ public final class ResourceUtils {
         return matchedAll;
     }
 
-    public static int getDefaultKeyboardWidth(final Resources res) {
-        final DisplayMetrics dm = res.getDisplayMetrics();
+    public static int getDefaultKeyboardWidth(final Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            // Since Android 15’s edge-to-edge enforcement, window insets should be considered.
+            final WindowManager wm = context.getSystemService(WindowManager.class);
+            final WindowMetrics windowMetrics = wm.getCurrentWindowMetrics();
+            final Insets insets =
+                    windowMetrics
+                            .getWindowInsets()
+                            .getInsetsIgnoringVisibility(
+                                    WindowInsets.Type.systemBars()
+                                            | WindowInsets.Type.displayCutout());
+            return windowMetrics.getBounds().width() - insets.left - insets.right;
+        }
+        final DisplayMetrics dm = context.getResources().getDisplayMetrics();
         return dm.widthPixels;
     }
 

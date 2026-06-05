@@ -27,8 +27,7 @@ include $(CLEAR_VARS)
 
 LATINIME_LOCAL_DIR := ../..
 LATINIME_BASE_SRC_DIR := $(LATINIME_LOCAL_DIR)/java/src/com/android/inputmethod
-LATINIME_BASE_OVERRIDABLE_SRC_DIR := \
-        $(LATINIME_LOCAL_DIR)/java-overridable/src/com/android/inputmethod
+LATINIME_BASE_OVERRIDABLE_SRC_DIR := $(LATINIME_BASE_SRC_DIR)
 MAKEDICT_CORE_SRC_DIR := $(LATINIME_BASE_SRC_DIR)/latin/makedict
 LATINIME_TESTS_SRC_DIR := $(LATINIME_LOCAL_DIR)/tests/src/com/android/inputmethod/latin
 

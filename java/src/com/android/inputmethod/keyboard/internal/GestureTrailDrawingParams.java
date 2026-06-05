@@ -27,11 +27,11 @@ import com.android.inputmethod.latin.R;
  * sampled and interpolated. This class controls how those gesture strokes are displayed as a
  * gesture trail and animated on the screen.
  *
- * @attr ref R.styleable#MainKeyboardView_gestureTrailFadeoutStartDelay
- * @attr ref R.styleable#MainKeyboardView_gestureTrailFadeoutDuration
- * @attr ref R.styleable#MainKeyboardView_gestureTrailUpdateInterval
- * @attr ref R.styleable#MainKeyboardView_gestureTrailColor
- * @attr ref R.styleable#MainKeyboardView_gestureTrailWidth
+ * @attr ref android.R.styleable#MainKeyboardView_gestureTrailFadeoutStartDelay
+ * @attr ref android.R.styleable#MainKeyboardView_gestureTrailFadeoutDuration
+ * @attr ref android.R.styleable#MainKeyboardView_gestureTrailUpdateInterval
+ * @attr ref android.R.styleable#MainKeyboardView_gestureTrailColor
+ * @attr ref android.R.styleable#MainKeyboardView_gestureTrailWidth
  */
 final class GestureTrailDrawingParams {
     private static final int FADEOUT_START_DELAY_FOR_DEBUG = 2000; // millisecond

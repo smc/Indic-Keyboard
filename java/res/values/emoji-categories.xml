@@ -16,7 +16,7 @@
 -->
 
 <resources>
-    <!-- Empty keys are place holders of recent keys keyboard.
+    <!-- Placeholder codeArrays for recents emoji keyboard.
          Do not remove these keys, because they are used as a template. -->
     <array
         name="emoji_recents"

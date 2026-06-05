@@ -23,10 +23,10 @@ import com.android.inputmethod.latin.R;
 /**
  * This class holds parameters to control how a gesture stroke is sampled and drawn on the screen.
  *
- * @attr ref R.styleable#MainKeyboardView_gestureTrailMinSamplingDistance
- * @attr ref R.styleable#MainKeyboardView_gestureTrailMaxInterpolationAngularThreshold
- * @attr ref R.styleable#MainKeyboardView_gestureTrailMaxInterpolationDistanceThreshold
- * @attr ref R.styleable#MainKeyboardView_gestureTrailMaxInterpolationSegments
+ * @attr ref android.R.styleable#MainKeyboardView_gestureTrailMinSamplingDistance
+ * @attr ref android.R.styleable#MainKeyboardView_gestureTrailMaxInterpolationAngularThreshold
+ * @attr ref android.R.styleable#MainKeyboardView_gestureTrailMaxInterpolationDistanceThreshold
+ * @attr ref android.R.styleable#MainKeyboardView_gestureTrailMaxInterpolationSegments
  */
 public final class GestureStrokeDrawingParams {
     public final double mMinSamplingDistance; // in pixel

@@ -124,8 +124,8 @@ dicttool: ## Build tools/dicttool into tools/dicttool/build/dicttool.jar
 		java/src/com/android/inputmethod/latin/utils/BinaryDictionaryUtils.java \
 		java/src/com/android/inputmethod/latin/utils/CombinedFormatUtils.java \
 		java/src/com/android/inputmethod/latin/utils/JniUtils.java \
-		java-overridable/src/com/android/inputmethod/latin/define/DebugFlags.java \
-		java-overridable/src/com/android/inputmethod/latin/define/DecoderSpecificConstants.java \
+		java/src/com/android/inputmethod/latin/define/DebugFlags.java \
+		java/src/com/android/inputmethod/latin/define/DecoderSpecificConstants.java \
 		tests/src/com/android/inputmethod/latin/utils/ByteArrayDictBuffer.java
 	"$(JAVA_HOME)/bin/jar" cfe $(DICTTOOL_JAR) \
 		com.android.inputmethod.latin.dicttool.Dicttool -C $(DICTTOOL_BUILD)/classes .

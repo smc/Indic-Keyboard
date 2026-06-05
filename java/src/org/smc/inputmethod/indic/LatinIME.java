@@ -17,6 +17,7 @@
 package org.smc.inputmethod.indic;
 
 import android.Manifest.permission;
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -166,6 +167,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private View mInputView;
     private InsetsUpdater mInsetsUpdater;
     private SuggestionStripView mSuggestionStripView;
+
+    private Context mDisplayContext;
 
     private RichInputMethodManager mRichImm;
     @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
@@ -603,6 +606,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         DebugFlags.init(PreferenceManagerCompat.getDeviceSharedPreferences(this));
         RichInputMethodManager.init(this);
         mRichImm = RichInputMethodManager.getInstance();
+        mDisplayContext = getDisplayContext();
         KeyboardSwitcher.init(this);
         AudioAndHapticFeedbackManager.init(this);
         AccessibilityUtils.init(this);
@@ -631,21 +635,30 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         final IntentFilter newDictFilter = new IntentFilter();
         newDictFilter.addAction(DictionaryPackConstants.NEW_DICTIONARY_INTENT_ACTION);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            registerReceiver(mDictionaryPackInstallReceiver, newDictFilter, Context.RECEIVER_NOT_EXPORTED);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(mDictionaryPackInstallReceiver, newDictFilter,
+                    Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(mDictionaryPackInstallReceiver, newDictFilter);
         }
 
         final IntentFilter dictDumpFilter = new IntentFilter();
         dictDumpFilter.addAction(DictionaryDumpBroadcastReceiver.DICTIONARY_DUMP_INTENT_ACTION);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            registerReceiver(mDictionaryDumpBroadcastReceiver, dictDumpFilter, Context.RECEIVER_NOT_EXPORTED);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(mDictionaryDumpBroadcastReceiver, dictDumpFilter,
+                    Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(mDictionaryDumpBroadcastReceiver, dictDumpFilter);
         }
 
         final IntentFilter hideSoftInputFilter = new IntentFilter();
         hideSoftInputFilter.addAction(ACTION_HIDE_SOFT_INPUT);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            registerReceiver(mHideSoftInputReceiver, hideSoftInputFilter, PERMISSION_HIDE_SOFT_INPUT,
-                    null, Context.RECEIVER_NOT_EXPORTED /* scheduler */);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(mHideSoftInputReceiver, hideSoftInputFilter,
+                    PERMISSION_HIDE_SOFT_INPUT, null /* scheduler */, Context.RECEIVER_EXPORTED);
+        } else {
+            registerReceiver(mHideSoftInputReceiver, hideSoftInputFilter,
+                    PERMISSION_HIDE_SOFT_INPUT, null /* scheduler */);
         }
 
         StatsUtils.onCreate(mSettings.getCurrent(), mRichImm);
@@ -828,9 +841,40 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
+    public void onInitializeInterface() {
+        mDisplayContext = getDisplayContext();
+        mKeyboardSwitcher.updateKeyboardTheme(mDisplayContext);
+    }
+
+    /**
+     * Returns the context object whose resources are adjusted to match the metrics of the display.
+     *
+     * Note that the context object has to return with re-creating the display context according
+     * the metrics of the display in runtime.
+     *
+     * Starts from {@link android.os.Build.VERSION_CODES#S_V2}, the returning context object has
+     * became to IME context self since it ends up capable of updating its resources internally.
+     *
+     * @see android.content.Context#createDisplayContext(android.view.Display)
+     */
+    private Context getDisplayContext() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2) {
+            // IME context sources is now managed by WindowProviderService from Android 12L.
+            return this;
+        }
+        // An issue in Q that non-activity components Resources / DisplayMetrics in
+        // Context doesn't well updated when the IME window moving to external display.
+        // Currently we do a workaround is to create new display context directly and re-init
+        // keyboard layout with this context.
+        final WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+        return createDisplayContext(wm.getDefaultDisplay());
+    }
+
+    @Override
     public View onCreateInputView() {
         StatsUtils.onCreateInputView();
-        return mKeyboardSwitcher.onCreateInputView(mIsHardwareAcceleratedDrawingEnabled);
+        return mKeyboardSwitcher.onCreateInputView(mDisplayContext,
+                mIsHardwareAcceleratedDrawingEnabled);
     }
 
     @Override
@@ -918,7 +962,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mGestureConsumer = GestureConsumer.NULL_GESTURE_CONSUMER;
         mRichImm.refreshSubtypeCaches();
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
-        switcher.updateKeyboardTheme();
+        switcher.updateKeyboardTheme(mDisplayContext);
         final MainKeyboardView mainKeyboardView = switcher.getMainKeyboardView();
         // If we are starting input in a different text field from before, we'll have to reload
         // settings, so currentSettingsValues can't be final.
@@ -1865,7 +1909,23 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        startActivityOnTheSameDisplay(intent);
+    }
+
+    /**
+     * Starts {@link android.app.Activity} on the same display where the IME is shown.
+     *
+     * @param intent {@link Intent} to be used to start {@link android.app.Activity}.
+     */
+    private void startActivityOnTheSameDisplay(Intent intent) {
+        // Note that WindowManager#getDefaultDisplay() returns the display ID associated with the
+        // Context from which the WindowManager instance was obtained. Therefore the following code
+        // returns the display ID for the window where the IME is shown.
+        final int currentDisplayId = ((WindowManager) getSystemService(Context.WINDOW_SERVICE))
+                .getDefaultDisplay().getDisplayId();
+
+        startActivity(intent,
+                ActivityOptions.makeBasic().setLaunchDisplayId(currentDisplayId).toBundle());
     }
 
     private void showSubtypeSelectorAndSettings() {

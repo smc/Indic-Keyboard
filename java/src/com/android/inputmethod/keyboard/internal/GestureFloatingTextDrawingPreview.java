@@ -35,13 +35,13 @@ import javax.annotation.Nonnull;
  * The class for single gesture preview text. The class for multiple gesture preview text will be
  * derived from it.
  *
- * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextSize
- * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextColor
- * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewTextOffset
- * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewColor
- * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewHorizontalPadding
- * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewVerticalPadding
- * @attr ref R.styleable#KeyboardView_gestureFloatingPreviewRoundRadius
+ * @attr ref android.R.styleable#KeyboardView_gestureFloatingPreviewTextSize
+ * @attr ref android.R.styleable#KeyboardView_gestureFloatingPreviewTextColor
+ * @attr ref android.R.styleable#KeyboardView_gestureFloatingPreviewTextOffset
+ * @attr ref android.R.styleable#KeyboardView_gestureFloatingPreviewColor
+ * @attr ref android.R.styleable#KeyboardView_gestureFloatingPreviewHorizontalPadding
+ * @attr ref android.R.styleable#KeyboardView_gestureFloatingPreviewVerticalPadding
+ * @attr ref android.R.styleable#KeyboardView_gestureFloatingPreviewRoundRadius
  */
 public class GestureFloatingTextDrawingPreview extends AbstractDrawingPreview {
     protected static final class GesturePreviewTextParams {

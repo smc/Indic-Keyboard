@@ -31,7 +31,7 @@ class BinaryDictionaryShortcutIterator {
               mPos(shortcutStructurePolicy->getStartPos(shortcutPos)),
               mHasNextShortcutTarget(shortcutPos != NOT_A_DICT_POS) {}
 
-    BinaryDictionaryShortcutIterator(const BinaryDictionaryShortcutIterator &&shortcutIterator)
+    BinaryDictionaryShortcutIterator(const BinaryDictionaryShortcutIterator &&shortcutIterator) noexcept
             : mShortcutStructurePolicy(shortcutIterator.mShortcutStructurePolicy),
               mPos(shortcutIterator.mPos),
               mHasNextShortcutTarget(shortcutIterator.mHasNextShortcutTarget) {}
@@ -41,12 +41,12 @@ class BinaryDictionaryShortcutIterator {
     }
 
     // Gets the shortcut target itself as an int string and put it to outTarget, put its length
-    // to outTargetLength, put whether it is whitelist to outIsWhitelist.
+    // to outTargetLength, put whether it is allowlist to outIsAllowed.
     AK_FORCE_INLINE void nextShortcutTarget(
             const int maxDepth, int *const outTarget, int *const outTargetLength,
-            bool *const outIsWhitelist) {
+            bool *const outIsAllowed) {
         mShortcutStructurePolicy->getNextShortcut(maxDepth, outTarget, outTargetLength,
-                outIsWhitelist, &mHasNextShortcutTarget, &mPos);
+                outIsAllowed, &mHasNextShortcutTarget, &mPos);
     }
 
  private:

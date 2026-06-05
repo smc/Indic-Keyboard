@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard.emoji;
 
+import android.content.Context;
 import android.content.res.Resources;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
@@ -39,9 +40,10 @@ final class EmojiLayoutParams {
     private final int mBottomPadding;
     private final int mTopPadding;
 
-    public EmojiLayoutParams(final Resources res) {
+    public EmojiLayoutParams(final Context context) {
+        final Resources res = context.getResources();
         final int defaultKeyboardHeight = ResourceUtils.getDefaultKeyboardHeight(res);
-        final int defaultKeyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
+        final int defaultKeyboardWidth = ResourceUtils.getDefaultKeyboardWidth(context);
         mKeyVerticalGap = (int) res.getFraction(R.fraction.config_key_vertical_gap_holo,
                 defaultKeyboardHeight, defaultKeyboardHeight);
         mBottomPadding = (int) res.getFraction(R.fraction.config_keyboard_bottom_padding_holo,
