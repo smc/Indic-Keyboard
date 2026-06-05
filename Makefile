@@ -1,17 +1,6 @@
 # Makefile for building, installing and running Indic Keyboard.
 #
-# Usage:
-#   make build          - assemble the debug APK
-#   make install        - build and install the debug APK on $(DEVICE)
-#   make run            - install and launch the app
-#   make release        - assemble the release APK (needs INDIC_KEYSTORE* env vars)
-#   make release-install- install the release APK
-#   make uninstall      - remove the app from the device
-#   make clear-data     - clear the app's data on the device
-#   make clean          - gradle clean
-#   make logcat         - stream logcat filtered to the app's process
-#   make build-native   - rebuild libjni_latinime.so with the NDK and copy it into jniLibs
-#   make build-native-x86 - same, for the x86/x86_64 ABIs (not shipped; manual only)
+# Run `make` (or `make help`) to list the available commands.
 #
 # Overridable variables, e.g.:
 #   make build ABI=armeabi-v7a
@@ -34,20 +23,30 @@ GRADLEW     := JAVA_HOME="$(JAVA_HOME)" ./gradlew
 DEBUG_APK   := java/build/outputs/apk/debug/IndicKeyboard-$(ABI)-debug.apk
 RELEASE_APK := java/build/outputs/apk/release/IndicKeyboard-$(ABI)-release.apk
 
-.PHONY: build install run release release-install uninstall clear-data clean logcat build-native build-native-x86 device-check
+.PHONY: help build install run release release-install uninstall clear-data clean logcat build-native build-native-x86 keyboard-text dicttool dictionaries dictionaries-en device-check
 
-build:
+.DEFAULT_GOAL := help
+
+help: ## List available commands
+	@echo "Indic Keyboard - available make commands:"
+	@echo
+	@grep -hE '^[a-zA-Z0-9_-]+:.*## ' $(MAKEFILE_LIST) | \
+		awk 'BEGIN {FS = ":[^#]*## "} {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
+	@echo
+	@echo "Overridable variables: DEVICE=$(DEVICE) ABI=$(ABI) NDK_VERSION=$(NDK_VERSION)"
+
+build: ## Assemble the debug APK
 	cd java && $(GRADLEW) assembleDebug
 
-install: build device-check
+install: build device-check ## Build and install the debug APK on the device (DEVICE=<serial>)
 	$(ADB) install -r $(DEBUG_APK)
 
-run: install
+run: install ## Install and launch the app
 	$(ADB) shell monkey -p $(PKG) -c android.intent.category.LAUNCHER 1
 
 # Signing config comes from the environment:
 #   INDIC_KEYSTORE, INDIC_KEYSTORE_PASSWORD, INDIC_KEY_ALIAS, INDIC_KEY_PASSWORD
-release:
+release: ## Assemble the release APK (needs INDIC_KEYSTORE* env vars)
 	@test -n "$$INDIC_KEYSTORE" -a -f "$$INDIC_KEYSTORE" || { \
 		echo "Release signing not configured."; \
 		echo "Export INDIC_KEYSTORE (path to keystore), INDIC_KEYSTORE_PASSWORD,"; \
@@ -55,19 +54,19 @@ release:
 		exit 1; }
 	cd java && $(GRADLEW) assembleRelease
 
-release-install: release device-check
+release-install: release device-check ## Build and install the release APK
 	$(ADB) install -r $(RELEASE_APK)
 
-uninstall: device-check
+uninstall: device-check ## Remove the app from the device
 	$(ADB) uninstall $(PKG)
 
-clear-data: device-check
+clear-data: device-check ## Clear the app's data on the device
 	$(ADB) shell pm clear $(PKG)
 
-clean:
+clean: ## Clean the gradle build
 	cd java && $(GRADLEW) clean
 
-logcat: device-check
+logcat: device-check ## Stream logcat filtered to the app's process
 	@pid=$$($(ADB) shell pidof -s $(PKG) | tr -d '\r'); \
 	test -n "$$pid" || { echo "$(PKG) is not running. Launch it first: make run"; exit 1; }; \
 	echo "Streaming logcat for $(PKG) (pid $$pid). Ctrl-C to stop."; \
@@ -77,7 +76,7 @@ logcat: device-check
 #   make build-native ABI="armeabi-v7a arm64-v8a"
 #   make build-native ABI=all
 build-native: ABI_LIST = $(if $(filter all,$(ABI)),armeabi-v7a arm64-v8a,$(ABI))
-build-native:
+build-native: ## Rebuild libjni_latinime.so with the NDK (ABI=<list>|all) and copy into jniLibs
 	@test -x "$(NDK_HOME)/ndk-build" || { \
 		echo "NDK not found at $(NDK_HOME)."; \
 		echo "Download it from https://github.com/android/ndk/wiki and pass NDK_HOME=<path>."; \
@@ -90,8 +89,74 @@ build-native:
 
 # x86/x86_64 are not shipped (not in the splits block of java/build.gradle),
 # so they are only built when triggered manually.
-build-native-x86:
+build-native-x86: ## Build the x86/x86_64 native libs (not shipped; manual only)
 	$(MAKE) build-native ABI="x86 x86_64"
+
+KBD_TEXT_DIR        := tools/make-keyboard-text
+KBD_TEXT_TABLE      := java/src/com/android/inputmethod/keyboard/internal/KeyboardTextsTable.java
+
+DICTTOOL_BUILD := tools/dicttool/build
+DICTTOOL_JAR   := $(DICTTOOL_BUILD)/dicttool.jar
+# Comes from the gradle cache; populated by any app build.
+JSR305_JAR      = $(shell find $(HOME)/.gradle/caches/modules-2 -name "jsr305-3.0.2.jar" 2>/dev/null | head -1)
+DICTTOOL_RUN    = "$(JAVA_HOME)/bin/java" -cp "$(DICTTOOL_JAR):$(JSR305_JAR)" \
+		com.android.inputmethod.latin.dicttool.Dicttool
+
+# Test sources (tools/dicttool/tests, the 'test' command) are not built; they
+# predate the fork's shortcut removal and no longer compile.
+dicttool: ## Build tools/dicttool into tools/dicttool/build/dicttool.jar
+	@test -n "$(JSR305_JAR)" || { \
+		echo "jsr305 jar not found in the gradle cache. Run 'make build' once first."; exit 1; }
+	rm -rf $(DICTTOOL_BUILD)/classes && mkdir -p $(DICTTOOL_BUILD)/classes
+	"$(JAVA_HOME)/bin/javac" -nowarn -cp "$(JSR305_JAR)" \
+		-d $(DICTTOOL_BUILD)/classes \
+		$$(find tools/dicttool/src tools/dicttool/compat \
+			java/src/com/android/inputmethod/latin/makedict \
+			tests/src/com/android/inputmethod/latin/makedict \
+			common/src -name "*.java" \
+			-not -path "*/dicttool/Test.java" -not -path "*/compat/android/test/*") \
+		java/src/com/android/inputmethod/latin/BinaryDictionary.java \
+		java/src/com/android/inputmethod/latin/DicTraverseSession.java \
+		java/src/com/android/inputmethod/latin/Dictionary.java \
+		java/src/com/android/inputmethod/latin/NgramContext.java \
+		java/src/com/android/inputmethod/latin/SuggestedWords.java \
+		java/src/org/smc/inputmethod/indic/settings/SettingsValuesForSuggestion.java \
+		java/src/com/android/inputmethod/latin/utils/BinaryDictionaryUtils.java \
+		java/src/com/android/inputmethod/latin/utils/CombinedFormatUtils.java \
+		java/src/com/android/inputmethod/latin/utils/JniUtils.java \
+		java-overridable/src/com/android/inputmethod/latin/define/DebugFlags.java \
+		java-overridable/src/com/android/inputmethod/latin/define/DecoderSpecificConstants.java \
+		tests/src/com/android/inputmethod/latin/utils/ByteArrayDictBuffer.java
+	"$(JAVA_HOME)/bin/jar" cfe $(DICTTOOL_JAR) \
+		com.android.inputmethod.latin.dicttool.Dicttool -C $(DICTTOOL_BUILD)/classes .
+	@echo "Built $(DICTTOOL_JAR)"
+
+dictionaries: dicttool ## Regenerate java/res/raw/main_<lang>.dict from dictionaries-indic/*.combined
+	@for f in dictionaries-indic/*_wordlist.combined; do \
+		lang=$$(basename $$f); lang=$${lang%%_*}; \
+		echo "==> java/res/raw/main_$$lang.dict"; \
+		$(DICTTOOL_RUN) makedict -s $$f -d java/res/raw/main_$$lang.dict >/dev/null || exit 1; \
+	done
+	@echo "Done. Note: main_en.dict is NOT regenerated by default; see 'make dictionaries-en'."
+
+# The checked-in main_en.dict contains bigram (next-word prediction) data built
+# from a richer AOSP-internal wordlist. dictionaries/en_US_wordlist.combined.gz
+# has no bigrams, so regenerating from it produces a smaller, less capable
+# dictionary. Only run this if you know that is what you want.
+dictionaries-en: dicttool ## Regenerate main_en.dict from dictionaries/ (WARNING: loses bigram data)
+	gunzip -c dictionaries/en_US_wordlist.combined.gz > $(DICTTOOL_BUILD)/en_US_wordlist.combined
+	$(DICTTOOL_RUN) makedict -s $(DICTTOOL_BUILD)/en_US_wordlist.combined \
+		-d java/res/raw/main_en.dict
+
+keyboard-text: ## Regenerate KeyboardTextsTable.java from tools/make-keyboard-text/res
+	cd $(KBD_TEXT_DIR)/src && \
+	"$(JAVA_HOME)/bin/javac" com/android/inputmethod/keyboard/tools/*.java && \
+	"$(JAVA_HOME)/bin/jar" cmf ../etc/manifest.txt makekeyboardtext.jar ./ ../res/ && \
+	"$(JAVA_HOME)/bin/java" -jar makekeyboardtext.jar -java out && \
+	mv out/res/src/com/android/inputmethod/keyboard/internal/KeyboardTextsTable.java \
+		../../../$(KBD_TEXT_TABLE) && \
+	rm -rf out makekeyboardtext.jar com/android/inputmethod/keyboard/tools/*.class
+	@echo "Regenerated $(KBD_TEXT_TABLE)"
 
 device-check:
 	@$(ADB) get-state >/dev/null 2>&1 || { \
