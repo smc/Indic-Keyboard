@@ -2035,8 +2035,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int color = visible ? Color.BLACK : Color.TRANSPARENT;
             Window window = getWindow().getWindow();
+            // The window can be shown before the keyboard view is created, e.g. when the system
+            // shows the IME window early on recent Android versions.
             final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
-            Drawable background = mainKeyboardView.getBackground();
+            Drawable background = mainKeyboardView != null ? mainKeyboardView.getBackground() : null;
             if (background instanceof ColorDrawable) {
                 window.setNavigationBarColor(((ColorDrawable) background).getColor());
             } else {
