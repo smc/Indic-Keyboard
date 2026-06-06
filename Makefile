@@ -26,7 +26,7 @@ GRADLEW     := JAVA_HOME="$(JAVA_HOME)" ./gradlew
 DEBUG_APK   := java/build/outputs/apk/debug/IndicKeyboard-$(ABI)-debug.apk
 RELEASE_APK := java/build/outputs/apk/release/IndicKeyboard-$(ABI)-release.apk
 
-.PHONY: help build install run release release-install uninstall clear-data clean logcat build-native build-native-x86 keyboard-text dicttool dictionaries dictionaries-en device-check
+.PHONY: help build install run emulator emulator-install emulator-run release release-install uninstall clear-data clean logcat build-native build-native-x86 keyboard-text dicttool dictionaries dictionaries-en device-check
 
 .DEFAULT_GOAL := help
 
@@ -46,6 +46,32 @@ install: build device-check ## Build and install the debug APK on the device (DE
 
 run: install ## Install and launch the app
 	$(ADB) shell monkey -p $(PKG) -c android.intent.category.LAUNCHER 1
+
+emulator: ## Boot the AVD emulator (if not already running) and wait for it (AVD=<name>)
+	@if $(ADB_BASE) -s emulator-5554 get-state >/dev/null 2>&1; then \
+		echo "emulator-5554 already running."; \
+	else \
+		echo "Booting $(AVD)..."; \
+		"$(ANDROID_SDK)/emulator/emulator" -avd $(AVD) -no-boot-anim >/dev/null 2>&1 & \
+		echo "Waiting for boot..."; \
+		$(ADB_BASE) -s emulator-5554 wait-for-device; \
+		until [ "$$($(ADB_BASE) -s emulator-5554 shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" = "1" ]; do \
+			sleep 2; \
+		done; \
+		echo "$(AVD) booted."; \
+	fi
+	@# AVDs ship with a hardware keyboard, which hides the on-screen keyboard. Force it
+	@# to show so this IME is actually visible when a text field is focused.
+	@$(ADB_BASE) -s emulator-5554 shell settings put secure show_ime_with_hard_keyboard 1
+
+emulator-install: emulator ## Boot the emulator and install the debug APK on it
+	$(MAKE) install DEVICE=emulator-5554
+
+emulator-run: emulator ## Boot the emulator, install and make Indic Keyboard the active IME
+	$(MAKE) install DEVICE=emulator-5554
+	$(ADB_BASE) -s emulator-5554 shell ime enable $(PKG)/.LatinIME
+	$(ADB_BASE) -s emulator-5554 shell ime set $(PKG)/.LatinIME
+	@echo "Indic Keyboard is now the active IME. Focus a text field to see it."
 
 # Signing config comes from the environment:
 #   INDIC_KEYSTORE, INDIC_KEYSTORE_PASSWORD, INDIC_KEY_ALIAS, INDIC_KEY_PASSWORD
