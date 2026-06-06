@@ -19,7 +19,7 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="morekeys_period">"!autoColumnOrder!8,&#x064d;,&#x064b;,&#x064c;,&#x0652;,&#x0651;,&#x0640;,&#x061f;,&#x061b;,&#x0650;,&#x064e;,&#x064f;,&#x0653;,&#x0670;,&#x0656;,&#x0654;,&#x0655;"</string>
+    <string name="morekeys_period">"!autoColumnOrder!8,&#x0650;,&#x064e;,&#x064f;,&#x0652;,&#x0651;,&#x0640;,&#x061f;,&#x061b;,&#x064d;,&#x064b;,&#x064c;,&#x0653;,&#x0670;,&#x0656;,&#x0654;,&#x0655;"</string>
     <string name="keyspec_comma">&#x060c;</string>
 
 </resources>

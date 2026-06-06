@@ -475,7 +475,7 @@ public final class KeyboardTextsTable {
         null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
         null, null, null, null, null, null, null, null,
         /* ~ keyspec_currency */
-        /* morekeys_period */ "!autoColumnOrder!8,\u064D,\u064B,\u064C,\u0652,\u0651,\u0640,\u061F,\u061B,\u0650,\u064E,\u064F,\u0653,\u0670,\u0656,\u0654,\u0655",
+        /* morekeys_period */ "!autoColumnOrder!8,\u0650,\u064E,\u064F,\u0652,\u0651,\u0640,\u061F,\u061B,\u064D,\u064B,\u064C,\u0653,\u0670,\u0656,\u0654,\u0655",
         /* keyspec_comma */ "\u060C",
     };
 

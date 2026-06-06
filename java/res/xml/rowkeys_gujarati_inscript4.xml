@@ -105,9 +105,9 @@
             <Key
                 latin:keySpec=","
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
-
+            <!-- । Devanagari Danda (Used as Full stop) -->
             <Key
-                latin:keySpec="."
+                latin:keySpec="&#x0964;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--/ ય GUJARATI LETTER YA-->

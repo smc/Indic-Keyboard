@@ -94,6 +94,7 @@ LOCAL_SDK_VERSION := 14
 LOCAL_NDK_STL_VARIANT := c++_static
 LOCAL_CFLAGS := -Wall -Werror
 LOCAL_LDFLAGS += -ldl
+LOCAL_LDFLAGS += -Wl,--build-id=none
 
 include $(BUILD_SHARED_LIBRARY)
 #################### Clean up the tmp vars

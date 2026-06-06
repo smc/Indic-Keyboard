@@ -99,6 +99,11 @@
             <Key
                 latin:keySpec="&#x0AAE;"
                 latin:keyLabelFlags="fontNormal" />
-        </default>
+
+            <!--. । Devanagari Danda (Used as Full stop) -->
+             <Key
+              latin:keySpec="&#x0964;"
+              latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+      </default>
     </switch>
 </merge>
