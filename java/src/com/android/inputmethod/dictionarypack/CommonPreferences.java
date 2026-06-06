@@ -19,11 +19,15 @@ package com.android.inputmethod.dictionarypack;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.android.inputmethod.compat.PreferenceManagerCompat;
+
 public final class CommonPreferences {
     private static final String COMMON_PREFERENCES_NAME = "LatinImeDictPrefs";
 
     public static SharedPreferences getCommonPreferences(final Context context) {
-        return context.getSharedPreferences(COMMON_PREFERENCES_NAME, 0);
+        // Device protected storage so that this stays accessible in direct boot mode.
+        return PreferenceManagerCompat.getDeviceSharedPreferences(
+                context, COMMON_PREFERENCES_NAME, 0);
     }
 
     public static void enable(final SharedPreferences pref, final String id) {

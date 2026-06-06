@@ -21,6 +21,7 @@ import android.content.SharedPreferences;
 import android.content.res.AssetFileDescriptor;
 import android.util.Log;
 
+import com.android.inputmethod.compat.PreferenceManagerCompat;
 import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.define.DecoderSpecificConstants;
 import com.android.inputmethod.latin.makedict.DictionaryHeader;
@@ -116,9 +117,10 @@ final public class BinaryDictionaryGetter {
     private static final class DictPackSettings {
         final SharedPreferences mDictPreferences;
         public DictPackSettings(final Context context) {
+            // Device protected storage so that this stays accessible in direct boot mode.
             mDictPreferences = null == context ? null
-                    : context.getSharedPreferences(COMMON_PREFERENCES_NAME,
-                            Context.MODE_MULTI_PROCESS);
+                    : PreferenceManagerCompat.getDeviceSharedPreferences(context,
+                            COMMON_PREFERENCES_NAME, Context.MODE_MULTI_PROCESS);
         }
         public boolean isWordListActive(final String dictId) {
             if (null == mDictPreferences) {

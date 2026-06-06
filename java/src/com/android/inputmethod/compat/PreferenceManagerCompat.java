@@ -38,4 +38,21 @@ public class PreferenceManagerCompat {
     public static SharedPreferences getDeviceSharedPreferences(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(getDeviceContext(context));
     }
+
+    /**
+     * Returns the named shared preferences backed by device protected storage, so they stay
+     * accessible while the device is locked (direct boot, e.g. typing the password on the
+     * keyguard). Migrates an existing credential protected file of the same name first.
+     */
+    public static SharedPreferences getDeviceSharedPreferences(Context context, String name,
+            int mode) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            final Context deviceContext = context.createDeviceProtectedStorageContext();
+            if (!deviceContext.moveSharedPreferencesFrom(context, name)) {
+                Log.w("Indic Keyboard", "Failed to migrate shared preferences: " + name);
+            }
+            return deviceContext.getSharedPreferences(name, mode);
+        }
+        return context.getSharedPreferences(name, mode);
+    }
 }

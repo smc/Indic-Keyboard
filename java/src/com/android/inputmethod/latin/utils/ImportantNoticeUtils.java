@@ -25,6 +25,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.compat.PreferenceManagerCompat;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.permissions.PermissionsUtil;
 import org.smc.inputmethod.indic.settings.SettingsValues;
@@ -71,7 +72,10 @@ public final class ImportantNoticeUtils {
 
     @UsedForTesting
     static SharedPreferences getImportantNoticePreferences(final Context context) {
-        return context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        // Device protected storage: this is reached from the keyguard (direct boot) where
+        // credential protected storage is still locked.
+        return PreferenceManagerCompat.getDeviceSharedPreferences(
+                context, PREFERENCE_NAME, Context.MODE_PRIVATE);
     }
 
     @UsedForTesting
