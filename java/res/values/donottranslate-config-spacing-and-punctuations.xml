@@ -20,17 +20,34 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- TODO: these settings depend on the language. They should be put either in the dictionary
          header, or in the subtype maybe? -->
+    <!-- Full stops / terminators of the supported scripts that are referenced below. Listed here
+         once so the &#x....; escapes in the strings are easy to read:
+           U+0964  &#x0964;  DEVANAGARI DANDA            full stop (Devanagari, Bengali, Gujarati, Gurmukhi, Odia ...)
+           U+0965  &#x0965;  DEVANAGARI DOUBLE DANDA     verse / strong full stop
+           U+06D4  &#x06D4;  ARABIC FULL STOP            full stop (Urdu)
+           U+061F  &#x061F;  ARABIC QUESTION MARK        question terminator (Urdu)
+           U+104A  &#x104A;  MYANMAR SIGN LITTLE SECTION clause separator, comma-like (Burmese)
+           U+104B  &#x104B;  MYANMAR SIGN SECTION        sentence end (Burmese)
+           U+1C7E  &#x1C7E;  OL CHIKI PUNCTUATION MUCAAD full stop (Santali)
+           U+1C7F  &#x1C7F;  OL CHIKI PUNCTUATION DOUBLE MUCAAD  strong full stop (Santali) -->
     <!-- Symbols that are suggested between words -->
     <string name="suggested_punctuations">!,?,\\,,:,;,\",(,),\',-,/,@,_</string>
     <!-- Symbols that are normally preceded by a space (used to add an auto-space before these) -->
     <string name="symbols_preceded_by_space">([{&amp;</string>
-    <!-- Symbols that are normally followed by a space (used to add an auto-space after these) -->
-    <string name="symbols_followed_by_space">.,;:!?)]}&amp;</string>
+    <!-- Symbols that are normally followed by a space (used to add an auto-space after these).
+         Trailing entities are the supported-script stops from the legend above:
+         danda U+0964, double danda U+0965, Arabic full stop U+06D4, Arabic question mark U+061F,
+         Myanmar little section U+104A, Myanmar section U+104B, Ol Chiki mucaad U+1C7E / U+1C7F. -->
+    <string name="symbols_followed_by_space">.,;:!?)]}&amp;&#x0964;&#x0965;&#x06D4;&#x061F;&#x104A;&#x104B;&#x1C7E;&#x1C7F;</string>
     <!-- Symbols that behave like a single punctuation when typed next to each other -->
     <string name="symbols_clustering_together"></string>
     <!-- Symbols that separate words -->
     <!-- Don't remove the enclosing double quotes, they protect whitespace (not just U+0020) -->
-    <string name="symbols_word_separators">"&#x0009;&#x0020;&#x000A;&#x00A0;&#x0964;&#0965;"()[]{}*&amp;&lt;&gt;+=|.,;:!?/_\"</string>
+    <!-- Inside the quotes: U+0009 tab, U+0020 space, U+000A line feed, U+00A0 no-break space,
+         then the supported-script stops from the legend above (danda U+0964, double danda
+         U+0965, Arabic full stop U+06D4, Arabic question mark U+061F, Myanmar little section
+         U+104A, Myanmar section U+104B, Ol Chiki mucaad U+1C7E / U+1C7F). -->
+    <string name="symbols_word_separators">"&#x0009;&#x0020;&#x000A;&#x00A0;&#x0964;&#x0965;&#x06D4;&#x061F;&#x104A;&#x104B;&#x1C7E;&#x1C7F;"()[]{}*&amp;&lt;&gt;+=|.,;:!?/_\"</string>
     <!-- Word connectors -->
     <string name="symbols_word_connectors">\'-</string>
     <!-- The sentence separator code point, for capitalization and auto-insertion -->
@@ -39,8 +56,12 @@
     <!-- The abbreviation marker code point -->
     <!-- U+002E: "." FULL STOP   ; 2Eh = 46d -->
     <integer name="abbreviation_marker">46</integer>
-    <!-- Symbols that terminate sentences and require capitalization on the next char -->
-    <string name="symbols_sentence_terminators">.?!</string>
+    <!-- Symbols that terminate sentences and require capitalization on the next char.
+         Adds the supported-script sentence enders from the legend above: danda U+0964, double
+         danda U+0965, Arabic full stop U+06D4, Arabic question mark U+061F, Myanmar section
+         U+104B, Ol Chiki mucaad U+1C7E / U+1C7F. The Myanmar little section U+104A is
+         clause-level (comma-like) so it is intentionally NOT a sentence terminator here. -->
+    <string name="symbols_sentence_terminators">.?!&#x0964;&#x0965;&#x06D4;&#x061F;&#x104B;&#x1C7E;&#x1C7F;</string>
     <!-- Whether this language uses spaces between words -->
     <bool name="current_language_has_spaces">true</bool>
 </resources>

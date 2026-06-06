@@ -986,7 +986,7 @@ public final class InputLogic {
                 sendKeyCodePoint(settingsValues, codePoint, false);
             }
         } else {
-            if ((SpaceState.PHANTOM == inputTransaction.mSpaceState
+            if (((SpaceState.PHANTOM == inputTransaction.mSpaceState || wasComposingWord)
                     && settingsValues.isUsuallyFollowedBySpace(codePoint))
                     || (Constants.CODE_DOUBLE_QUOTE == codePoint
                             && isInsideDoubleQuoteOrAfterDigit)) {
