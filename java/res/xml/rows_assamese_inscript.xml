@@ -41,7 +41,7 @@
     <Row latin:keyWidth="7.692%p" >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="11.538%p"
+            latin:keyWidth="15.384%p"
             latin:visualInsetsRight="1%p" />
         <include latin:keyboardLayout="@xml/rowkeys_assamese_inscript4" />
         <Key
