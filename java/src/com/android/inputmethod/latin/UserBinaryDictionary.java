@@ -22,6 +22,7 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.UserDictionary.Words;
 import android.text.TextUtils;
 import android.util.Log;
@@ -47,7 +48,31 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     private static final int HISTORICAL_DEFAULT_USER_DICTIONARY_FREQUENCY = 250;
     private static final int LATINIME_DEFAULT_USER_DICTIONARY_FREQUENCY = 160;
 
-    private static final String[] PROJECTION_QUERY = new String[] {Words.WORD, Words.FREQUENCY};
+    // Shortcut frequency is 0~15, with 15 = whitelist. We don't want user dictionary entries
+    // to auto-correct, so we set this to the highest frequency that won't, i.e. 14.
+    private static final int USER_DICT_SHORTCUT_FREQUENCY = 14;
+
+    /**
+     * AOSP v6 removed personal dictionary shortcut feature from this code block.
+     * Backported that feature from v5.1.1
+     * https://cs.android.com/android/platform/superproject/+/android-5.1.1_r9:packages/inputmethods/LatinIME/java/src/com/android/inputmethod/latin/UserBinaryDictionary.java
+     */
+    private static final String[] PROJECTION_QUERY;
+    static {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            PROJECTION_QUERY = new String[] {
+                    Words.WORD,
+                    Words.SHORTCUT,
+                    Words.FREQUENCY,
+            };
+        } else {
+            PROJECTION_QUERY = new String[] {
+                    Words.WORD,
+                    Words.FREQUENCY,
+            };
+        }
+    }
+
 
     private static final String NAME = "userunigram";
 
@@ -194,12 +219,15 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
     }
 
     private void addWordsLocked(final Cursor cursor) {
+        final boolean hasShortcutColumn = Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
         if (cursor == null) return;
         if (cursor.moveToFirst()) {
             final int indexWord = cursor.getColumnIndex(Words.WORD);
+            final int indexShortcut = hasShortcutColumn ? cursor.getColumnIndex(Words.SHORTCUT) : 0;
             final int indexFrequency = cursor.getColumnIndex(Words.FREQUENCY);
             while (!cursor.isAfterLast()) {
                 final String word = cursor.getString(indexWord);
+                final String shortcut = hasShortcutColumn ? cursor.getString(indexShortcut) : null;
                 final int frequency = cursor.getInt(indexFrequency);
                 final int adjustedFrequency = scaleFrequencyFromDefaultToLatinIme(frequency);
                 // Safeguard against adding really long words.
@@ -208,6 +236,13 @@ public class UserBinaryDictionary extends ExpandableBinaryDictionary {
                     addUnigramLocked(word, adjustedFrequency, false /* isNotAWord */,
                             false /* isPossiblyOffensive */,
                             BinaryDictionary.NOT_A_VALID_TIMESTAMP);
+
+                    if (shortcut != null && shortcut.length() <= MAX_WORD_LENGTH) {
+                        runGCIfRequiredLocked(true /* mindsBlockByGC */);
+                        addUnigramLocked(shortcut, adjustedFrequency, word,
+                                USER_DICT_SHORTCUT_FREQUENCY, true /* isNotAWord */,
+                                false /* isBlacklisted */, BinaryDictionary.NOT_A_VALID_TIMESTAMP);
+                    }
                 }
                 cursor.moveToNext();
             }
