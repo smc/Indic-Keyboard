@@ -80,31 +80,10 @@
         latin:keyActionFlags="isRepeatable|noKeyPreview"
         latin:backgroundType="functional" />
     <!-- emojiKeyStyle must be defined before including @xml/key_syles_enter. -->
-    <switch>
-        <case latin:keyboardTheme="ICS|KLP|LXXDarkBorder|AMOLEDBorder">
-            <key-style
-                latin:styleName="emojiKeyStyle"
-                latin:keySpec="!icon/emoji_action_key|!code/key_emoji"
-                latin:keyActionFlags="noKeyPreview"
-                latin:backgroundType="functional" />
-        </case>
-        <case latin:keyboardTheme="LXXLightBorder">
-            <key-style
-                latin:styleName="emojiKeyStyle"
-                latin:keySpec="!icon/emoji_action_key|!code/key_emoji"
-                latin:keyActionFlags="noKeyPreview"
-                latin:backgroundType="action" />
-        </case>
-        <!-- keyboardTheme="LXXLight|LXXDark" -->
-        <default>
-            <key-style
-                latin:styleName="emojiKeyStyle"
-                latin:keySpec="!icon/emoji_action_key|!code/key_emoji"
-                latin:keyLabelFlags="keepBackgroundAspectRatio"
-                latin:keyActionFlags="noKeyPreview"
-                latin:backgroundType="action" />
-        </default>
-    </switch>
+    <key-style
+        latin:styleName="emojiKeyStyle"
+        latin:keySpec="!icon/emoji_action_key|!code/key_emoji"
+        latin:keyActionFlags="noKeyPreview" />
     <include
         latin:keyboardLayout="@xml/key_styles_enter" />
     <!-- TODO: Currently there is no way to specify icon alignment per theme. -->

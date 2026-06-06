@@ -159,14 +159,13 @@
         >
             <key-style
                 latin:styleName="navigateMoreKeysStyle"
-                latin:parentStyle="navigateEmojiPreviousMoreKeysStyle" />
+                latin:parentStyle="navigatePreviousMoreKeysStyle" />
         </case>
         <case
             latin:imeAction="actionNext"
         >
             <key-style
-                latin:styleName="navigateMoreKeysStyle"
-                latin:parentStyle="navigateEmojiMoreKeysStyle" />
+                latin:styleName="navigateMoreKeysStyle" />
         </case>
         <case
             latin:imeAction="actionPrevious"
@@ -174,14 +173,13 @@
         >
             <key-style
                 latin:styleName="navigateMoreKeysStyle"
-                latin:parentStyle="navigateEmojiNextMoreKeysStyle" />
+                latin:parentStyle="navigateNextMoreKeysStyle" />
         </case>
         <case
             latin:imeAction="actionPrevious"
         >
             <key-style
-                latin:styleName="navigateMoreKeysStyle"
-                latin:parentStyle="navigateEmojiMoreKeysStyle" />
+                latin:styleName="navigateMoreKeysStyle" />
         </case>
         <case
             latin:navigateNext="true"
@@ -189,26 +187,25 @@
         >
             <key-style
                 latin:styleName="navigateMoreKeysStyle"
-                latin:parentStyle="navigateEmojiPreviousNextMoreKeysStyle" />
+                latin:parentStyle="navigatePreviousNextMoreKeysStyle" />
         </case>
         <case
             latin:navigateNext="true"
         >
             <key-style
                 latin:styleName="navigateMoreKeysStyle"
-                latin:parentStyle="navigateEmojiNextMoreKeysStyle" />
+                latin:parentStyle="navigateNextMoreKeysStyle" />
         </case>
         <case
             latin:navigatePrevious="true"
         >
             <key-style
                 latin:styleName="navigateMoreKeysStyle"
-                latin:parentStyle="navigateEmojiPreviousMoreKeysStyle" />
+                latin:parentStyle="navigatePreviousMoreKeysStyle" />
         </case>
         <default>
             <key-style
-                latin:styleName="navigateMoreKeysStyle"
-                latin:parentStyle="navigateEmojiMoreKeysStyle" />
+                latin:styleName="navigateMoreKeysStyle" />
         </default>
     </switch>
     <!-- Enter key style -->
