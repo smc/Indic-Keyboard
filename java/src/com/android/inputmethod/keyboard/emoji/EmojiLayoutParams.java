@@ -73,7 +73,8 @@ final class EmojiLayoutParams {
 
     public void setCategoryPageIdViewProperties(final View v) {
         final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) v.getLayoutParams();
-        lp.height = mEmojiCategoryPageIdViewHeight;
+        lp.width = mEmojiCategoryPageIdViewHeight;
+        lp.height = mEmojiKeyboardHeight;
         v.setLayoutParams(lp);
     }
 

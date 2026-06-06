@@ -23,7 +23,6 @@ import android.util.AttributeSet;
 import android.view.View;
 
 public final class EmojiCategoryPageIndicatorView extends View {
-    private static final float BOTTOM_MARGIN_RATIO = 1.0f;
     private final Paint mPaint = new Paint();
     private int mCategoryPageSize = 0;
     private int mCurrentCategoryPageId = 0;
@@ -60,11 +59,11 @@ public final class EmojiCategoryPageIndicatorView extends View {
         }
         final float height = getHeight();
         final float width = getWidth();
-        final float unitWidth = width / mCategoryPageSize;
-        final float left = unitWidth * mCurrentCategoryPageId + mOffset * unitWidth;
-        final float top = 0.0f;
-        final float right = left + unitWidth;
-        final float bottom = height * BOTTOM_MARGIN_RATIO;
+        final float unitHeight = height / mCategoryPageSize;
+        final float top = unitHeight * mCurrentCategoryPageId + mOffset * unitHeight;
+        final float left = 0.0f;
+        final float bottom = top + unitHeight;
+        final float right = width;
         canvas.drawRect(left, top, right, bottom, mPaint);
     }
 }
