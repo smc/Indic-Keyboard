@@ -917,6 +917,23 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 return insets;
             }
         });
+        // Replacing the input view (e.g. on theme change) while the keyboard is showing does
+        // not trigger a fresh inset dispatch on its own, so request one once it is attached.
+        if (inputView.isAttachedToWindow()) {
+            inputView.requestApplyInsets();
+        } else {
+            inputView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(final View v) {
+                    v.removeOnAttachStateChangeListener(this);
+                    v.requestApplyInsets();
+                }
+                @Override
+                public void onViewDetachedFromWindow(final View v) {
+                    v.removeOnAttachStateChangeListener(this);
+                }
+            });
+        }
     }
 
     @Override
