@@ -47,6 +47,12 @@ public class SpaceState {
     // Phantom spaces happen when a user chooses a word from the suggestion strip. In this state,
     // non-separators insert a space before they get inserted.
     public static final int PHANTOM = 4;
+    // Auto space: a real, visible space that was inserted automatically right after a word was
+    // committed (suggestion pick, gesture, or auto-correction). Unlike a phantom space it is
+    // already present in the text, so the user can see it immediately; unlike a (user-typed) weak
+    // space it is removed again if the next input is punctuation that does not want a preceding
+    // space, or when input finishes. This makes the auto-inserted space predictable.
+    public static final int AUTO = 5;
 
     private SpaceState() {
         // This class is not publicly instantiable.

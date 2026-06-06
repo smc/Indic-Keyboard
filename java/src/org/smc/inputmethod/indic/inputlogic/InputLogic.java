@@ -93,6 +93,7 @@ public final class InputLogic {
     // TODO : make all these fields private as soon as possible.
     // Current space state of the input method. This can be any of the above constants.
     private int mSpaceState;
+    private boolean mAutoSpacePending;
     // Never null
     public SuggestedWords mSuggestedWords = SuggestedWords.getEmptyInstance();
     public final Suggest mSuggest;
@@ -173,6 +174,7 @@ public final class InputLogic {
         resetComposingState(true /* alsoResetLastComposedWord */);
         mDeleteCount = 0;
         mSpaceState = SpaceState.NONE;
+        mAutoSpacePending = false;
         mRecapitalizeStatus.disable(); // Do not perform recapitalize until the cursor is moved once
         mCurrentlyPressedHardwareKeys.clear();
         mSuggestedWords = SuggestedWords.getEmptyInstance();
@@ -223,6 +225,7 @@ public final class InputLogic {
      * Clean up the input logic after input is finished.
      */
     public void finishInput() {
+        stripDanglingAutoSpace();
         if (mWordComposer.isComposingWord()) {
             mConnection.finishComposingText();
             StatsUtils.onWordCommitUserTyped(
@@ -343,11 +346,11 @@ public final class InputLogic {
 
         commitChosenWord(settingsValues, suggestion, LastComposedWord.COMMIT_TYPE_MANUAL_PICK,
                 LastComposedWord.NOT_A_SEPARATOR);
+        commitSpaceAfterWord(settingsValues);
         mConnection.endBatchEdit();
         // Don't allow cancellation of manual pick
         mLastComposedWord.deactivate();
         // Space state must be updated before calling updateShiftState
-        mSpaceState = SpaceState.PHANTOM;
         inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
 
         // If we're not showing the "Touch again to save", then update the suggestion strip.
@@ -790,6 +793,7 @@ public final class InputLogic {
             final LatinIME.UIHandler handler) {
         final int codePoint = event.mCodePoint;
         mSpaceState = SpaceState.NONE;
+        mAutoSpacePending = false;
         if (inputTransaction.mSettingsValues.isWordSeparator(codePoint)
                 || Character.getType(codePoint) == Character.OTHER_SYMBOL
                 || Character.getType(codePoint) == Character.MIN_VALUE) {
@@ -986,25 +990,17 @@ public final class InputLogic {
                 sendKeyCodePoint(settingsValues, codePoint, false);
             }
         } else {
-            if (((SpaceState.PHANTOM == inputTransaction.mSpaceState || wasComposingWord)
-                    && settingsValues.isUsuallyFollowedBySpace(codePoint))
+            final boolean autoSpaceFollows =
+                    ((SpaceState.PHANTOM == inputTransaction.mSpaceState || wasComposingWord)
+                            && settingsValues.isUsuallyFollowedBySpace(codePoint))
                     || (Constants.CODE_DOUBLE_QUOTE == codePoint
-                            && isInsideDoubleQuoteOrAfterDigit)) {
-                // If we are in phantom space state, and the user presses a separator, we want to
-                // stay in phantom space state so that the next keypress has a chance to add the
-                // space. For example, if I type "Good dat", pick "day" from the suggestion strip
-                // then insert a comma and go on to typing the next word, I want the space to be
-                // inserted automatically before the next word, the same way it is when I don't
-                // input the comma. A double quote behaves like it's usually followed by space if
-                // we're inside a double quote.
-                // The case is a little different if the separator is a space stripper. Such a
-                // separator does not normally need a space on the right (that's the difference
-                // between swappers and strippers), so we should not stay in phantom space state if
-                // the separator is a stripper. Hence the additional test above.
-                mSpaceState = SpaceState.PHANTOM;
-            }
+                            && isInsideDoubleQuoteOrAfterDigit);
 
             sendKeyCodePoint(settingsValues, codePoint, false);
+
+            if (autoSpaceFollows) {
+                commitSpaceAfterWord(settingsValues);
+            }
 
             // Set punctuation right away. onUpdateSelection will fire but tests whether it is
             // already displayed or not, so it's okay.
@@ -1022,6 +1018,7 @@ public final class InputLogic {
     private void handleBackspaceEvent(final Event event, final InputTransaction inputTransaction,
             final int currentKeyboardScriptId) {
         mSpaceState = SpaceState.NONE;
+        mAutoSpacePending = false;
         mDeleteCount++;
 
         // In many cases after backspace, we need to update the shift state. Normally we need
@@ -1295,6 +1292,7 @@ public final class InputLogic {
         mConnection.deleteTextBeforeCursor(1);
         final String text = event.getTextToCommit() + " ";
         mConnection.commitText(text, 1);
+        mAutoSpacePending = true;
         inputTransaction.requireShiftUpdate(InputTransaction.SHIFT_UPDATE_NOW);
         return true;
     }
@@ -1314,9 +1312,10 @@ public final class InputLogic {
             mConnection.removeTrailingSpace();
             return false;
         }
-        if ((SpaceState.WEAK == inputTransaction.mSpaceState
-                || SpaceState.SWAP_PUNCTUATION == inputTransaction.mSpaceState)
-                && isFromSuggestionStrip) {
+        if ((SpaceState.AUTO == inputTransaction.mSpaceState)
+                || ((SpaceState.WEAK == inputTransaction.mSpaceState
+                        || SpaceState.SWAP_PUNCTUATION == inputTransaction.mSpaceState)
+                        && isFromSuggestionStrip)) {
             if (inputTransaction.mSettingsValues.isUsuallyPrecededBySpace(codePoint)) {
                 return false;
             }
@@ -2159,6 +2158,30 @@ public final class InputLogic {
                 && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
                 && !mConnection.textBeforeCursorLooksLikeURL()) {
             sendKeyCodePoint(settingsValues, Constants.CODE_SPACE, false);
+        }
+    }
+
+    private void commitSpaceAfterWord(final SettingsValues settingsValues) {
+        if (settingsValues.shouldInsertSpacesAutomatically()
+                && settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
+                && !mConnection.textBeforeCursorLooksLikeURL()) {
+            sendKeyCodePoint(settingsValues, Constants.CODE_SPACE, false);
+            mSpaceState = SpaceState.AUTO;
+            mAutoSpacePending = true;
+        } else {
+            mSpaceState = SpaceState.NONE;
+            mAutoSpacePending = false;
+        }
+    }
+
+    private void stripDanglingAutoSpace() {
+        if (mAutoSpacePending && mConnection.isConnected()
+                && TextUtils.isEmpty(mConnection.getTextAfterCursor(1, 0))) {
+            mConnection.removeTrailingSpace();
+        }
+        mAutoSpacePending = false;
+        if (SpaceState.AUTO == mSpaceState) {
+            mSpaceState = SpaceState.NONE;
         }
     }
 
