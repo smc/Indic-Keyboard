@@ -68,6 +68,7 @@
 
         <default>
             <Key latin:keySpec="&#x0020;" />
+            <Key latin:keySpec="&#x0020;" />
 
             <!--x ং BENGALI SIGN ANUSVARA-->
             <Key
@@ -84,9 +85,8 @@
                 latin:keySpec="&#x09A8;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keySpec="&#x0020;" />
             <!--b ৱ BENGALI LETTER RA WITH LOWER DIAGONAL-->
-             <Key
+            <Key
                 latin:keySpec="&#x09F1;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 

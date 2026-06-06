@@ -84,7 +84,7 @@
                 latin:keySpec="&#x09A8;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <!--y ব BENGALI LETTER BA-->
+            <!--b ব BENGALI LETTER BA-->
             <Key
                 latin:keySpec="&#x09AC;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
