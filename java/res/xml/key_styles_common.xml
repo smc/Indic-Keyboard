@@ -82,7 +82,8 @@
     <!-- emojiKeyStyle must be defined before including @xml/key_syles_enter. -->
     <key-style
         latin:styleName="emojiKeyStyle"
-        latin:keySpec="!icon/emoji_action_key|!code/key_emoji"
+        latin:keySpec="&#x263A;&#xFE0E;|!code/key_emoji"
+        latin:keyLabelFlags="fontNormal|followKeyLetterRatio"
         latin:keyActionFlags="noKeyPreview" />
     <include
         latin:keyboardLayout="@xml/key_styles_enter" />
