@@ -23,7 +23,7 @@
             android:key="pref_show_number_row"
             android:title="@string/number_row"
             android:summary="@string/number_row_summary"
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:persistent="true" />
         <CheckBoxPreference
             android:key="pref_show_hints"
