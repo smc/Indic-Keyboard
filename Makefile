@@ -13,12 +13,15 @@ ANDROID_SDK := $(HOME)/Library/Android/sdk
 JAVA_HOME   := /Applications/Android Studio.app/Contents/jbr/Contents/Home
 NDK_VERSION := 29.0.14206865
 NDK_HOME    := $(ANDROID_SDK)/ndk/$(NDK_VERSION)
-DEVICE      ?= emulator-5554
+# DEVICE is optional: when unset, adb talks to the single connected device.
+# Set it (make install DEVICE=<serial>) when more than one device is attached.
+DEVICE      ?=
 ABI         ?= arm64-v8a
 AVD         ?= Pixel_10_Pro_XL
 
 PKG         := org.smc.inputmethod.indic
-ADB         := $(ANDROID_SDK)/platform-tools/adb -s $(DEVICE)
+ADB_BASE    := $(ANDROID_SDK)/platform-tools/adb
+ADB          = $(ADB_BASE)$(if $(DEVICE), -s $(DEVICE))
 GRADLEW     := JAVA_HOME="$(JAVA_HOME)" ./gradlew
 DEBUG_APK   := java/build/outputs/apk/debug/IndicKeyboard-$(ABI)-debug.apk
 RELEASE_APK := java/build/outputs/apk/release/IndicKeyboard-$(ABI)-release.apk
@@ -33,7 +36,7 @@ help: ## List available commands
 	@grep -hE '^[a-zA-Z0-9_-]+:.*## ' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":[^#]*## "} {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
 	@echo
-	@echo "Overridable variables: DEVICE=$(DEVICE) ABI=$(ABI) NDK_VERSION=$(NDK_VERSION)"
+	@echo "Overridable variables: DEVICE=$(if $(DEVICE),$(DEVICE),(auto)) ABI=$(ABI) NDK_VERSION=$(NDK_VERSION)"
 
 build: ## Assemble the debug APK
 	cd java && $(GRADLEW) assembleDebug
@@ -160,7 +163,12 @@ keyboard-text: ## Regenerate KeyboardTextsTable.java from tools/make-keyboard-te
 
 device-check:
 	@$(ADB) get-state >/dev/null 2>&1 || { \
-		echo "Device '$(DEVICE)' not connected."; \
-		echo "Start the emulator with: $(ANDROID_SDK)/emulator/emulator -avd $(AVD)"; \
-		echo "Or pass DEVICE=<serial> (see 'adb devices')."; \
+		if [ -n "$(DEVICE)" ]; then \
+			echo "Device '$(DEVICE)' not connected:"; \
+		else \
+			echo "No single usable device found:"; \
+		fi; \
+		$(ADB_BASE) devices; \
+		echo "Connect a device, start the emulator ($(ANDROID_SDK)/emulator/emulator -avd $(AVD)),"; \
+		echo "or pass DEVICE=<serial> when more than one device is attached."; \
 		exit 1; }
