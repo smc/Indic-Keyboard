@@ -30,12 +30,30 @@ import java.util.ArrayList;
 
 public final class DrawingPreviewPlacerView extends RelativeLayout {
     private final int[] mKeyboardViewOrigin = CoordinateUtils.newInstance();
+    private int mKeyboardViewWidth;
+    private int mKeyboardViewHeight;
+    private boolean mScrimVisible;
+    private int mScrimColor;
+    private final Paint mScrimPaint = new Paint();
 
     private final ArrayList<AbstractDrawingPreview> mPreviews = new ArrayList<>();
 
     public DrawingPreviewPlacerView(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         setWillNotDraw(false);
+        // Let an elevated more-keys panel cast its shadow past the panel's own bounds instead of
+        // being clipped to them.
+        setClipChildren(false);
+        setClipToPadding(false);
+    }
+
+    public void setScrim(final boolean visible, final int color) {
+        if (mScrimVisible == visible && mScrimColor == color) {
+            return;
+        }
+        mScrimVisible = visible;
+        mScrimColor = color;
+        invalidate();
     }
 
     public void setHardwareAcceleratedDrawingEnabled(final boolean enabled) {
@@ -54,6 +72,8 @@ public final class DrawingPreviewPlacerView extends RelativeLayout {
     public void setKeyboardViewGeometry(final int[] originCoords, final int width,
             final int height) {
         CoordinateUtils.copy(mKeyboardViewOrigin, originCoords);
+        mKeyboardViewWidth = width;
+        mKeyboardViewHeight = height;
         final int count = mPreviews.size();
         for (int i = 0; i < count; i++) {
             mPreviews.get(i).setKeyboardViewGeometry(originCoords, width, height);
@@ -79,6 +99,10 @@ public final class DrawingPreviewPlacerView extends RelativeLayout {
         final int originX = CoordinateUtils.x(mKeyboardViewOrigin);
         final int originY = CoordinateUtils.y(mKeyboardViewOrigin);
         canvas.translate(originX, originY);
+        if (mScrimVisible) {
+            mScrimPaint.setColor(mScrimColor);
+            canvas.drawRect(0, 0, mKeyboardViewWidth, mKeyboardViewHeight, mScrimPaint);
+        }
         final int count = mPreviews.size();
         for (int i = 0; i < count; i++) {
             mPreviews.get(i).drawPreview(canvas);

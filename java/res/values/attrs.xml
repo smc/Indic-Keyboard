@@ -131,6 +131,7 @@
         <attr name="keyPreviewOffset" format="dimension" />
         <!-- Height of the key press feedback popup. -->
         <attr name="keyPreviewHeight" format="dimension" />
+        <attr name="keyPreviewElevation" format="dimension" />
         <!-- TODO: consolidate key preview linger timeout with the key preview animation parameters. -->
         <!-- Delay after key releasing and key press feedback dismissing in millisecond -->
         <attr name="keyPreviewLingerTimeout" format="integer" />
@@ -202,6 +203,8 @@
         <attr name="keyFocusedTextColor" format="color" />
         <!-- Highlight that slides between keys as focus moves (drawn behind the labels). -->
         <attr name="keyHoverHighlight" format="reference" />
+        <!-- Circular panel background used when the panel holds a single key. -->
+        <attr name="keySingleBackground" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="EmojiPalettesView">

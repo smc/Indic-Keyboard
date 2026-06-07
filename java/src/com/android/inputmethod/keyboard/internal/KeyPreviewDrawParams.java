@@ -32,6 +32,7 @@ public final class KeyPreviewDrawParams {
     public final int mPreviewOffset;
     public final int mPreviewHeight;
     public final int mPreviewBackgroundResId;
+    public final float mPreviewElevation;
     private final int mShowUpAnimatorResId;
     private final int mDismissAnimatorResId;
     private boolean mHasCustomAnimationParams;
@@ -75,6 +76,8 @@ public final class KeyPreviewDrawParams {
                 R.styleable.MainKeyboardView_keyPreviewHeight, 0);
         mPreviewBackgroundResId = mainKeyboardViewAttr.getResourceId(
                 R.styleable.MainKeyboardView_keyPreviewBackground, 0);
+        mPreviewElevation = mainKeyboardViewAttr.getDimension(
+                R.styleable.MainKeyboardView_keyPreviewElevation, 0.0f);
         mShowUpAnimatorResId = mainKeyboardViewAttr.getResourceId(
                 R.styleable.MainKeyboardView_keyPreviewShowUpAnimator, 0);
         mDismissAnimatorResId = mainKeyboardViewAttr.getResourceId(

@@ -301,7 +301,8 @@ public final class MoreKeysKeyboard extends Keyboard {
                         + (key.hasLabelsInMoreKeys()
                                 ? mParams.mDefaultKeyWidth * LABEL_PADDING_RATIO : 0.0f);
                 keyWidth = getMaxKeyWidth(key, mParams.mDefaultKeyWidth, padding, paintToMeasure);
-                rowHeight = keyboard.mMostCommonKeyHeight;
+                rowHeight = keyboard.mMoreKeysTemplate == R.xml.kbd_more_keys_keyboard_template_md3
+                        ? mParams.mDefaultRowHeight : keyboard.mMostCommonKeyHeight;
             }
             final int dividerWidth;
             if (key.needsDividersInMoreKeys()) {

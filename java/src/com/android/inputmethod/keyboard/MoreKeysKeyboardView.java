@@ -28,7 +28,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.PathInterpolator;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.MoreKeysKeyboardAccessibilityDelegate;
@@ -36,7 +35,6 @@ import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.CoordinateUtils;
-import com.android.inputmethod.latin.utils.TypefaceUtils;
 
 /**
  * A view that renders a virtual {@link MoreKeysKeyboard}. It handles rendering of keys and
@@ -48,10 +46,16 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     private final Drawable mDivider;
     private final int mKeyFocusedTextColor;
     private final Drawable mHoverHighlight;
+    private final Drawable mSingleKeyBackground;
+    private final Drawable mPanelBackground;
+    private final Rect mBackgroundPadding = new Rect();
+    private boolean mIsSingleKey;
     private static final float HOVER_ACTIVE_SCALE = 1.06f;
-    private static final long HOVER_MOVE_DURATION_MS = 130L;
+    private static final float HOVER_FOLLOW = 0.35f;
     private float mHoverCenterX;
     private float mHoverCenterY;
+    private float mHoverTargetX;
+    private float mHoverTargetY;
     private int mHoverRadius;
     private boolean mHoverVisible;
     private ValueAnimator mHoverAnimator;
@@ -84,7 +88,11 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
                 R.styleable.MoreKeysKeyboardView_keyFocusedTextColor, 0);
         mHoverHighlight = moreKeysKeyboardViewAttr.getDrawable(
                 R.styleable.MoreKeysKeyboardView_keyHoverHighlight);
+        mSingleKeyBackground = moreKeysKeyboardViewAttr.getDrawable(
+                R.styleable.MoreKeysKeyboardView_keySingleBackground);
+        mPanelBackground = getBackground();
         moreKeysKeyboardViewAttr.recycle();
+        setLayerType(LAYER_TYPE_NONE, null);
         mKeyDetector = new MoreKeysDetector(getResources().getDimension(
                 R.dimen.config_more_keys_keyboard_slide_allowance));
     }
@@ -119,12 +127,10 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
                 if (icon != null) {
                     icon.setColorFilter(mKeyFocusedTextColor, PorterDuff.Mode.SRC_IN);
                 }
-                final float dy = focusedLabelVerticalCorrection(key, paint, params);
                 final float cx = key.getDrawWidth() * 0.5f;
                 final float cy = key.getHeight() * 0.5f;
                 canvas.save();
                 canvas.scale(HOVER_ACTIVE_SCALE, HOVER_ACTIVE_SCALE, cx, cy);
-                canvas.translate(0.0f, dy);
                 super.onDrawKeyTopVisuals(key, canvas, paint, params);
                 canvas.restore();
                 if (icon != null) {
@@ -133,9 +139,9 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
                 params.mTextColor = textColor;
                 params.mFunctionalTextColor = functionalColor;
                 params.mTextInactivatedColor = inactivatedColor;
-                return;
+            } else {
+                super.onDrawKeyTopVisuals(key, canvas, paint, params);
             }
-            super.onDrawKeyTopVisuals(key, canvas, paint, params);
             return;
         }
         final int keyWidth = key.getDrawWidth();
@@ -147,19 +153,6 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         drawIcon(canvas, mDivider, iconX, iconY, iconWidth, iconHeight);
     }
 
-    private static final Rect sLabelBounds = new Rect();
-    private float focusedLabelVerticalCorrection(final Key key, final Paint paint,
-            final KeyDrawParams params) {
-        final String label = key.getLabel();
-        if (label == null) {
-            return 0.0f;
-        }
-        paint.setTypeface(key.selectTypeface(params));
-        paint.setTextSize(key.selectTextSize(params));
-        final float referenceHeight = TypefaceUtils.getReferenceCharHeight(paint);
-        paint.getTextBounds(label, 0, label.length(), sLabelBounds);
-        return -(referenceHeight / 2.0f + (sLabelBounds.top + sLabelBounds.bottom) / 2.0f);
-    }
 
     @Override
     protected void onDraw(final Canvas canvas) {
@@ -197,30 +190,33 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
             return;
         }
         mHoverRadius = Math.round(Math.min(key.getDrawWidth(), key.getHeight()) * 0.5f) - 1;
-        final float targetX = keyCenterX(key);
-        final float targetY = keyCenterY(key);
-        if (mHoverAnimator != null) {
-            mHoverAnimator.cancel();
-        }
+        mHoverTargetX = keyCenterX(key);
+        mHoverTargetY = keyCenterY(key);
         if (!mHoverVisible) {
             mHoverVisible = true;
-            mHoverCenterX = targetX;
-            mHoverCenterY = targetY;
+            mHoverCenterX = mHoverTargetX;
+            mHoverCenterY = mHoverTargetY;
             invalidateAllKeys();
             return;
         }
-        final float startX = mHoverCenterX;
-        final float startY = mHoverCenterY;
-        mHoverAnimator = ValueAnimator.ofFloat(0.0f, 1.0f);
-        mHoverAnimator.setDuration(HOVER_MOVE_DURATION_MS);
-        mHoverAnimator.setInterpolator(new PathInterpolator(0.4f, 0.0f, 0.2f, 1.0f));
-        mHoverAnimator.addUpdateListener(animation -> {
-            final float f = (Float) animation.getAnimatedValue();
-            mHoverCenterX = startX + (targetX - startX) * f;
-            mHoverCenterY = startY + (targetY - startY) * f;
-            invalidateAllKeys();
-        });
-        mHoverAnimator.start();
+        if (mHoverAnimator == null || !mHoverAnimator.isRunning()) {
+            mHoverAnimator = ValueAnimator.ofFloat(0.0f, 1.0f);
+            mHoverAnimator.setRepeatCount(ValueAnimator.INFINITE);
+            mHoverAnimator.setDuration(1000L);
+            mHoverAnimator.addUpdateListener(animation -> {
+                final float dx = mHoverTargetX - mHoverCenterX;
+                final float dy = mHoverTargetY - mHoverCenterY;
+                mHoverCenterX += dx * HOVER_FOLLOW;
+                mHoverCenterY += dy * HOVER_FOLLOW;
+                invalidateAllKeys();
+                if (Math.abs(dx) < 0.75f && Math.abs(dy) < 0.75f) {
+                    mHoverCenterX = mHoverTargetX;
+                    mHoverCenterY = mHoverTargetY;
+                    animation.cancel();
+                }
+            });
+            mHoverAnimator.start();
+        }
     }
 
     private void hideHover() {
@@ -232,9 +228,76 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         invalidateAllKeys();
     }
 
+    private void highlightDefaultKey() {
+        final Key defaultKey = findDefaultKey();
+        if (defaultKey != null) {
+            moveHoverTo(defaultKey);
+        }
+    }
+
+    private Key findDefaultKey() {
+        final Keyboard keyboard = getKeyboard();
+        if (keyboard == null) {
+            return null;
+        }
+        final int x = getDefaultCoordX();
+        Key best = null;
+        for (final Key key : keyboard.getSortedKeys()) {
+            if (key.isSpacer()) {
+                continue;
+            }
+            if (x >= key.getX() && x < key.getX() + key.getWidth()
+                    && (best == null || key.getY() > best.getY())) {
+                best = key;
+            }
+        }
+        return best;
+    }
+
+    private static int countContentKeys(final Keyboard keyboard) {
+        int count = 0;
+        for (final Key key : keyboard.getSortedKeys()) {
+            if (!key.isSpacer()) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private void applyPanelBackground(final Keyboard keyboard) {
+        if (mSingleKeyBackground == null || keyboard == null) {
+            return;
+        }
+        mIsSingleKey = countContentKeys(keyboard) == 1;
+        final Drawable background = mIsSingleKey ? mSingleKeyBackground : mPanelBackground;
+        setBackground(background);
+        if (background == null || !background.getPadding(mBackgroundPadding)) {
+            mBackgroundPadding.set(0, 0, 0, 0);
+        }
+        int left = mBackgroundPadding.left;
+        int top = mBackgroundPadding.top;
+        int right = mBackgroundPadding.right;
+        int bottom = mBackgroundPadding.bottom;
+        if (mIsSingleKey) {
+            final int width = keyboard.mOccupiedWidth + left + right;
+            final int height = keyboard.mOccupiedHeight + top + bottom;
+            if (height > width) {
+                final int extra = height - width;
+                left += extra / 2;
+                right += extra - extra / 2;
+            } else if (width > height) {
+                final int extra = width - height;
+                top += extra / 2;
+                bottom += extra - extra / 2;
+            }
+        }
+        setPadding(left, top, right, bottom);
+    }
+
     @Override
     public void setKeyboard(final Keyboard keyboard) {
         super.setKeyboard(keyboard);
+        applyPanelBackground(keyboard);
         mKeyDetector.setKeyboard(
                 keyboard, -getPaddingLeft(), -getPaddingTop() + getVerticalCorrection());
         if (AccessibilityUtils.getInstance().isAccessibilityEnabled()) {
@@ -273,6 +336,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         mOriginX = x + container.getPaddingLeft();
         mOriginY = y + container.getPaddingTop();
         controller.onShowMoreKeysPanel(this);
+        highlightDefaultKey();
         final MoreKeysKeyboardAccessibilityDelegate accessibilityDelegate = mAccessibilityDelegate;
         if (accessibilityDelegate != null
                 && AccessibilityUtils.getInstance().isAccessibilityEnabled()) {

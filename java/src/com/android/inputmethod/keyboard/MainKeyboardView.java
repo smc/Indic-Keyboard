@@ -604,7 +604,8 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
             // {@link MoreKeysKeyboardParams#setParameters(int,int,int,int,int,int,boolean,int)}.
             final boolean isSingleMoreKeyWithPreview = mKeyPreviewDrawParams.isPopupEnabled()
                     && !key.noKeyPreview() && moreKeys.length == 1
-                    && mKeyPreviewDrawParams.getVisibleWidth() > 0;
+                    && mKeyPreviewDrawParams.getVisibleWidth() > 0
+                    && getKeyboard().mMoreKeysTemplate != R.xml.kbd_more_keys_keyboard_template_md3;
             final MoreKeysKeyboard.Builder builder = new MoreKeysKeyboard.Builder(
                     getContext(), key, getKeyboard(), isSingleMoreKeyWithPreview,
                     mKeyPreviewDrawParams.getVisibleWidth(),
@@ -635,7 +636,12 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         // aligned with the bottom edge of the visible part of the key preview.
         // {@code mPreviewVisibleOffset} has been set appropriately in
         // {@link KeyboardView#showKeyPreview(PointerTracker)}.
-        final int pointY = key.getY() + mKeyPreviewDrawParams.getVisibleOffset();
+        final boolean isMd3 = getKeyboard().mMoreKeysTemplate
+                == R.xml.kbd_more_keys_keyboard_template_md3;
+        final int pointY = isMd3
+                ? key.getY() - getResources().getDimensionPixelOffset(
+                        R.dimen.config_more_keys_keyboard_offset_md3)
+                : key.getY() + mKeyPreviewDrawParams.getVisibleOffset();
         moreKeysKeyboardView.showMoreKeysPanel(this, this, pointX, pointY, mKeyboardActionListener);
         return moreKeysKeyboardView;
     }
@@ -658,6 +664,11 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         mSlidingKeyInputDrawingPreview.dismissSlidingKeyInputPreview();
         panel.showInParent(mDrawingPreviewPlacerView);
         mMoreKeysPanel = panel;
+        final Keyboard keyboard = getKeyboard();
+        if (keyboard != null
+                && keyboard.mMoreKeysTemplate == R.xml.kbd_more_keys_keyboard_template_md3) {
+            mDrawingPreviewPlacerView.setScrim(true, getContext().getColor(R.color.keyboard_scrim_md3));
+        }
     }
 
     public boolean isShowingMoreKeysPanel() {
@@ -675,6 +686,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
             mMoreKeysPanel.removeFromParent();
             mMoreKeysPanel = null;
         }
+        mDrawingPreviewPlacerView.setScrim(false, 0);
     }
 
     public void startDoubleTapShiftKeyTimer() {

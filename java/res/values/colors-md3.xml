@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="keyboard_scrim_md3">#3D000000</color>
     <color name="md3_light_surface">#F7F2FA</color>
     <color name="md3_light_key">#FFFFFF</color>
     <color name="md3_light_key_pressed">#E8DEF8</color>

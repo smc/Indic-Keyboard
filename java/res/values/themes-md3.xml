@@ -9,9 +9,9 @@
         <item name="keyTextColor">?attr/md3OnSurface</item>
         <item name="keyTextInactivatedColor">?attr/md3OnSurfaceVariant</item>
         <item name="functionalTextColor">?attr/md3OnSurfaceVariant</item>
-        <item name="keyHintLetterColor">?attr/md3OnSurfaceVariant</item>
-        <item name="keyHintLabelColor">?attr/md3OnSurfaceVariant</item>
-        <item name="keyShiftedLetterHintInactivatedColor">?attr/md3OnSurfaceVariant</item>
+        <item name="keyHintLetterColor">@color/md3_hint_letter_color</item>
+        <item name="keyHintLabelColor">@color/md3_hint_letter_color</item>
+        <item name="keyShiftedLetterHintInactivatedColor">@color/md3_hint_letter_color</item>
         <item name="keyShiftedLetterHintActivatedColor">?attr/md3OnSurface</item>
         <item name="keyPreviewTextColor">?attr/md3OnSurface</item>
         <item name="keyPreviewTextRatio">68%</item>
@@ -20,8 +20,9 @@
     <style name="MainKeyboardView.MD3" parent="KeyboardView.MD3">
         <item name="moreKeysKeyboardForActionLayout">@layout/more_keys_keyboard_for_action_lxx</item>
         <item name="keyPreviewBackground">@drawable/md3_key_preview_background</item>
-        <item name="keyPreviewHeight">96dp</item>
-        <item name="keyPreviewOffset">@dimen/config_key_preview_offset_lxx</item>
+        <item name="keyPreviewHeight">68dp</item>
+        <item name="keyPreviewElevation">6dp</item>
+        <item name="keyPreviewOffset">@dimen/config_key_preview_offset_md3</item>
         <item name="keyPreviewShowUpAnimator">@anim/key_preview_show_up_lxx</item>
         <item name="keyPreviewDismissAnimator">@anim/key_preview_dismiss_lxx</item>
         <item name="gestureFloatingPreviewTextColor">?attr/md3OnPrimary</item>
@@ -42,9 +43,11 @@
 
     <style name="MoreKeysKeyboardView.MD3" parent="KeyboardView.MD3">
         <item name="android:background">@drawable/md3_popup_background</item>
+        <item name="android:elevation">6dp</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_popup_md3</item>
         <item name="keyFocusedTextColor">?attr/md3Surface</item>
         <item name="keyHoverHighlight">@drawable/md3_hover_circle</item>
+        <item name="keySingleBackground">@drawable/md3_popup_background_circle</item>
         <item name="divider">@drawable/more_keys_divider</item>
         <item name="keyTypeface">normal</item>
         <item name="verticalCorrection">@dimen/config_more_keys_keyboard_vertical_correction_holo</item>
@@ -52,6 +55,7 @@
 
     <style name="MoreKeysKeyboardView.MD3.Action" parent="MoreKeysKeyboardView.MD3">
         <item name="android:background">@drawable/md3_popup_background</item>
+        <item name="android:elevation">6dp</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_popup_md3</item>
         <item name="divider">@null</item>
         <item name="keyLabelFlags">keepBackgroundAspectRatio</item>
@@ -63,7 +67,7 @@
         <item name="maxMoreSuggestionsRow">@integer/config_max_more_suggestions_row</item>
         <item name="minMoreSuggestionsWidth">@fraction/config_min_more_suggestions_width</item>
         <item name="android:background">?attr/md3Surface</item>
-        <item name="android:src">@null</item>
+        <item name="android:src">@drawable/md3_suggestion_divider</item>
         <item name="suggestionStripOptions">autoCorrectBold|validTypedWordBold</item>
         <item name="colorValidTypedWord">?attr/md3OnSurface</item>
         <item name="colorTypedWord">?attr/md3OnSurface</item>
