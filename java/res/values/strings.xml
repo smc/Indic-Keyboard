@@ -574,6 +574,9 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
     <string name="varnam_vst_missing">Varnam support for "%1$s" not found. Make sure you have installed Varnam Indic Keyboard App.</string>
     <string name="settings_screen_varnam">Varnam</string>
     <string name="settings_screen_varnam_summary">Varnam is an intelligent word-by-word transliterator. You need to have varnam apk installed inorder for this to work.</string>
+    <string name="varnam_not_installed_title">Varnam not installed</string>
+    <string name="varnam_not_installed_message">Install the Varnam Extension for this feature to work.</string>
+    <string name="varnam_not_installed_dismiss">Got it</string>
 
     <!-- Modern setup wizard -->
     <string name="su_welcome_subtitle">Type in 20+ Indian languages. Setup takes just a moment.</string>

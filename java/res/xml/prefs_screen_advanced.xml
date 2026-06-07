@@ -20,15 +20,10 @@
     android:title="@string/settings_screen_advanced"
     android:key="screen_advanced">
     <PreferenceCategory android:title="Extensions">
-      <!-- TODO Show Varnam Pack App install setup screen if it's not installed -->
       <Preference
           android:title="@string/settings_screen_varnam"
           android:summary="@string/settings_screen_varnam_summary"
-          android:key="screen_varnam">
-          <intent
-              android:targetPackage="org.smc.inputmethod.indic.varnam"
-              android:targetClass="org.smc.inputmethod.indic.varnam.MainActivity" />
-      </Preference>
+          android:key="screen_varnam" />
     </PreferenceCategory>
     <PreferenceCategory android:title="Duration">
       <org.smc.inputmethod.indic.settings.SeekBarDialogPreference

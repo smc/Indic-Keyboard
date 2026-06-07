@@ -16,15 +16,21 @@
 
 package org.smc.inputmethod.indic.settings;
 
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.media.AudioManager;
 import android.os.Bundle;
 
+import androidx.preference.Preference;
+
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SystemBroadcastReceiver;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 /**
  * "Advanced" settings sub screen.
@@ -64,7 +70,53 @@ public final class AdvancedSettingsFragment extends SubScreenFragment {
         setupKeypressVibrationDurationSettings();
         setupKeypressSoundVolumeSettings();
         setupKeyLongpressTimeoutSettings();
+        setupVarnamPreference();
         refreshEnablingsOfKeypressSoundAndVibrationSettings();
+    }
+
+    private static final String VARNAM_PACKAGE = "org.smc.inputmethod.indic.varnam";
+    private static final String VARNAM_ACTIVITY = VARNAM_PACKAGE + ".MainActivity";
+
+    private void setupVarnamPreference() {
+        final Preference varnamPref = findPreference("screen_varnam");
+        if (varnamPref == null) {
+            return;
+        }
+        varnamPref.setOnPreferenceClickListener(preference -> {
+            final Context context = getActivity();
+            if (context == null) {
+                return true;
+            }
+            if (isPackageInstalled(context, VARNAM_PACKAGE)) {
+                final Intent intent = new Intent();
+                intent.setClassName(VARNAM_PACKAGE, VARNAM_ACTIVITY);
+                try {
+                    startActivity(intent);
+                } catch (final ActivityNotFoundException e) {
+                    showVarnamInstallDialog(context);
+                }
+            } else {
+                showVarnamInstallDialog(context);
+            }
+            return true;
+        });
+    }
+
+    private static boolean isPackageInstalled(final Context context, final String packageName) {
+        try {
+            context.getPackageManager().getPackageInfo(packageName, 0);
+            return true;
+        } catch (final PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
+    private void showVarnamInstallDialog(final Context context) {
+        new MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.varnam_not_installed_title)
+                .setMessage(R.string.varnam_not_installed_message)
+                .setPositiveButton(R.string.varnam_not_installed_dismiss, null)
+                .show();
     }
 
     @Override
