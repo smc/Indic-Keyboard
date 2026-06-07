@@ -20,25 +20,24 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="KeyboardIcons.Holo">
-        <!-- Keyboard icons -->
-        <item name="iconShiftKey">@drawable/sym_keyboard_shift_holo_dark</item>
-        <item name="iconDeleteKey">@drawable/sym_keyboard_delete_holo_dark</item>
-        <item name="iconSettingsKey">@drawable/sym_keyboard_settings_holo_dark</item>
+        <item name="iconShiftKey">@drawable/ic_kb_sharp_shift</item>
+        <item name="iconDeleteKey">@drawable/ic_kb_sharp_delete</item>
+        <item name="iconSettingsKey">@drawable/ic_kb_sharp_settings</item>
         <item name="iconSpaceKey">@null</item>
-        <item name="iconEnterKey">@drawable/sym_keyboard_return_holo_dark</item>
-        <item name="iconSearchKey">@drawable/sym_keyboard_search_holo_dark</item>
-        <item name="iconTabKey">@drawable/sym_keyboard_tab_holo_dark</item>
-        <item name="iconBackToKeyboardKey">@drawable/sym_keyboard_back_holo_dark</item>
-        <item name="iconShortcutKey">@drawable/sym_keyboard_voice_holo_dark</item>
-        <item name="iconIncognitoKey">@drawable/sym_keyboard_incognito_dark</item>
-        <item name="iconMoreSuggestionsKey">@drawable/sym_keyboard_more_holo_dark</item>
-        <item name="iconSpaceKeyForNumberLayout">@drawable/sym_keyboard_space_holo_dark</item>
-        <item name="iconShiftKeyShifted">@drawable/sym_keyboard_shift_locked_holo_dark</item>
-        <item name="iconShortcutKeyDisabled">@drawable/sym_keyboard_voice_off_holo_dark</item>
-        <item name="iconLanguageSwitchKey">@drawable/sym_keyboard_language_switch_dark</item>
-        <item name="iconZwnjKey">@drawable/sym_keyboard_zwnj_holo_dark</item>
-        <item name="iconZwjKey">@drawable/sym_keyboard_zwj_holo_dark</item>
-        <item name="iconEmojiActionKey">@drawable/sym_keyboard_smiley_holo_dark</item>
-        <item name="iconEmojiNormalKey">@drawable/sym_keyboard_smiley_holo_dark</item>
+        <item name="iconEnterKey">@drawable/ic_kb_sharp_enter</item>
+        <item name="iconSearchKey">@drawable/ic_kb_sharp_search</item>
+        <item name="iconTabKey">@drawable/ic_kb_sharp_tab</item>
+        <item name="iconBackToKeyboardKey">@drawable/ic_kb_sharp_back</item>
+        <item name="iconShortcutKey">@drawable/ic_kb_sharp_mic</item>
+        <item name="iconIncognitoKey">@drawable/ic_kb_sharp_incognito</item>
+        <item name="iconMoreSuggestionsKey">@drawable/ic_kb_sharp_more</item>
+        <item name="iconSpaceKeyForNumberLayout">@drawable/ic_kb_sharp_space</item>
+        <item name="iconShiftKeyShifted">@drawable/ic_kb_sharp_shift_locked</item>
+        <item name="iconShortcutKeyDisabled">@drawable/ic_kb_sharp_mic_off</item>
+        <item name="iconLanguageSwitchKey">@drawable/ic_kb_sharp_language</item>
+        <item name="iconZwnjKey">@drawable/ic_kb_sharp_zwnj</item>
+        <item name="iconZwjKey">@drawable/ic_kb_sharp_zwj</item>
+        <item name="iconEmojiActionKey">@drawable/ic_kb_sharp_emoji</item>
+        <item name="iconEmojiNormalKey">@drawable/ic_kb_sharp_emoji</item>
     </style>
 </resources>
