@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- Shared MD3 styles. Colors come from ?attr/md3* tokens defined per theme below, so the
-         MD3 Light, Dark and Dynamic themes reuse these same styles and key drawables. -->
     <style name="KeyboardView.MD3" parent="KeyboardView.LXX">
         <item name="android:background">?attr/md3Surface</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_md3</item>

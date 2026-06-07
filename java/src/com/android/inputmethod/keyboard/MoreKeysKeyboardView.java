@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -112,6 +113,12 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
                 params.mTextColor = mKeyFocusedTextColor;
                 params.mFunctionalTextColor = mKeyFocusedTextColor;
                 params.mTextInactivatedColor = mKeyFocusedTextColor;
+                final Keyboard keyboard = getKeyboard();
+                final Drawable icon = (keyboard == null) ? null
+                        : key.getIcon(keyboard.mIconsSet, params.mAnimAlpha);
+                if (icon != null) {
+                    icon.setColorFilter(mKeyFocusedTextColor, PorterDuff.Mode.SRC_IN);
+                }
                 final float dy = focusedLabelVerticalCorrection(key, paint, params);
                 final float cx = key.getDrawWidth() * 0.5f;
                 final float cy = key.getHeight() * 0.5f;
@@ -120,6 +127,9 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
                 canvas.translate(0.0f, dy);
                 super.onDrawKeyTopVisuals(key, canvas, paint, params);
                 canvas.restore();
+                if (icon != null) {
+                    icon.clearColorFilter();
+                }
                 params.mTextColor = textColor;
                 params.mFunctionalTextColor = functionalColor;
                 params.mTextInactivatedColor = inactivatedColor;
@@ -153,7 +163,6 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
 
     @Override
     protected void onDraw(final Canvas canvas) {
-        // Draw the sliding highlight under the labels (super draws keys/labels on top).
         if (mHoverVisible && mHoverHighlight != null && mHoverRadius > 0) {
             mHoverHighlight.setBounds(
                     Math.round(mHoverCenterX - mHoverRadius),
