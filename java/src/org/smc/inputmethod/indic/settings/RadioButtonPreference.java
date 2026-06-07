@@ -56,6 +56,7 @@ public class RadioButtonPreference extends Preference {
     public RadioButtonPreference(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         setWidgetLayoutResource(R.layout.radio_button_preference_widget);
+        setIconSpaceReserved(false);
     }
 
     public void setOnRadioButtonClickedListener(final OnRadioButtonClickedListener listener) {

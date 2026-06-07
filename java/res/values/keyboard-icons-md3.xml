@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Material Icons (Round) for the MD3 keyboard themes. The vectors tint themselves via the
+         ?attr/md3* color tokens set on each MD3 theme, so this one icon set serves MD3 Light,
+         Dark and Dynamic. Action-key glyphs (enter/go/search/send/next/previous/done) are tinted
+         md3OnPrimary; the rest md3OnSurfaceVariant. -->
+    <style name="KeyboardIcons.MD3">
+        <item name="iconShiftKey">@drawable/ic_kb_shift</item>
+        <item name="iconDeleteKey">@drawable/ic_kb_delete</item>
+        <item name="iconSettingsKey">@drawable/ic_kb_settings</item>
+        <item name="iconSpaceKey">@null</item>
+        <item name="iconEnterKey">@drawable/ic_kb_enter</item>
+        <item name="iconGoKey">@drawable/ic_kb_go</item>
+        <item name="iconSearchKey">@drawable/ic_kb_search</item>
+        <item name="iconSendKey">@drawable/ic_kb_send</item>
+        <item name="iconNextKey">@drawable/ic_kb_next</item>
+        <item name="iconDoneKey">@drawable/ic_kb_done</item>
+        <item name="iconPreviousKey">@drawable/ic_kb_previous</item>
+        <item name="iconTabKey">@drawable/ic_kb_tab</item>
+        <item name="iconBackToKeyboardKey">@drawable/ic_kb_back</item>
+        <item name="iconShortcutKey">@drawable/ic_kb_mic</item>
+        <item name="iconIncognitoKey">@drawable/ic_kb_incognito</item>
+        <item name="iconMoreSuggestionsKey">@drawable/ic_kb_more</item>
+        <item name="iconSpaceKeyForNumberLayout">@drawable/ic_kb_space</item>
+        <item name="iconShiftKeyShifted">@drawable/ic_kb_shift_locked</item>
+        <item name="iconShortcutKeyDisabled">@drawable/ic_kb_mic_off</item>
+        <item name="iconLanguageSwitchKey">@drawable/ic_kb_language</item>
+        <item name="iconZwnjKey">@drawable/ic_kb_zwnj</item>
+        <item name="iconZwjKey">@drawable/ic_kb_zwj</item>
+        <item name="iconEmojiActionKey">@drawable/ic_kb_emoji_action</item>
+        <item name="iconEmojiNormalKey">@drawable/ic_kb_emoji</item>
+    </style>
+</resources>

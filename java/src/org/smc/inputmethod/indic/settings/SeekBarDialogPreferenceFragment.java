@@ -16,27 +16,29 @@
 
 package org.smc.inputmethod.indic.settings;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.preference.PreferenceDialogFragmentCompat;
 
 import com.android.inputmethod.latin.R;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.slider.Slider;
 
 import org.smc.inputmethod.indic.settings.SeekBarDialogPreference.ValueProxy;
 
 /**
- * Dialog hosting the seek bar for {@link SeekBarDialogPreference}. The data and value logic live
- * on the preference; this fragment only drives the dialog UI (androidx splits the two).
+ * Dialog hosting the Material slider for {@link SeekBarDialogPreference}. The data and value logic
+ * live on the preference; this fragment only drives the dialog UI (androidx splits the two).
  */
-public final class SeekBarDialogPreferenceFragment extends PreferenceDialogFragmentCompat
-        implements SeekBar.OnSeekBarChangeListener {
+public final class SeekBarDialogPreferenceFragment extends PreferenceDialogFragmentCompat {
 
-    private SeekBar mSeekBar;
+    private Slider mSlider;
     private TextView mValueView;
 
     static SeekBarDialogPreferenceFragment newInstance(final String key) {
@@ -51,39 +53,69 @@ public final class SeekBarDialogPreferenceFragment extends PreferenceDialogFragm
         return (SeekBarDialogPreference) getPreference();
     }
 
-    private int getProgressFromValue(final int value) {
-        return value - pref().getMinValue();
-    }
-
-    private int getValueFromProgress(final int progress) {
-        return progress + pref().getMinValue();
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(final Bundle savedInstanceState) {
+        // Build the dialog with MaterialAlertDialogBuilder so it is a true Material 3 dialog
+        // (rounded corners, MD3 buttons/typography) rather than the platform AppCompat dialog.
+        // Passing this fragment as the click listener preserves the base class's positive/negative
+        // result tracking that drives onDialogClosed().
+        final SeekBarDialogPreference pref = pref();
+        final MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(pref.getDialogTitle())
+                .setIcon(pref.getDialogIcon())
+                .setPositiveButton(pref.getPositiveButtonText(), this)
+                .setNegativeButton(pref.getNegativeButtonText(), this);
+        final View contentView = onCreateDialogView(requireContext());
+        if (contentView != null) {
+            onBindDialogView(contentView);
+            builder.setView(contentView);
+        } else {
+            builder.setMessage(pref.getDialogMessage());
+        }
+        onPrepareDialogBuilder(builder);
+        return builder.create();
     }
 
     private int clipValue(final int value) {
         final SeekBarDialogPreference pref = pref();
-        final int clippedValue = Math.min(pref.getMaxValue(),
-                Math.max(pref.getMinValue(), value));
+        final int clipped = Math.min(pref.getMaxValue(), Math.max(pref.getMinValue(), value));
         if (pref.getStepValue() <= 1) {
-            return clippedValue;
+            return clipped;
         }
-        return clippedValue - (clippedValue % pref.getStepValue());
+        return clipped - (clipped % pref.getStepValue());
     }
 
-    private int getClippedValueFromProgress(final int progress) {
-        return clipValue(getValueFromProgress(progress));
+    private int sliderValue() {
+        return clipValue(Math.round(mSlider.getValue()));
     }
 
     @Override
     protected void onBindDialogView(final View view) {
         super.onBindDialogView(view);
-        final ValueProxy proxy = pref().getValueProxy();
-        mSeekBar = (SeekBar) view.findViewById(R.id.seek_bar_dialog_bar);
-        mSeekBar.setMax(pref().getMaxValue() - pref().getMinValue());
-        mSeekBar.setOnSeekBarChangeListener(this);
+        final SeekBarDialogPreference pref = pref();
+        final ValueProxy proxy = pref.getValueProxy();
         mValueView = (TextView) view.findViewById(R.id.seek_bar_dialog_value);
-        final int value = proxy.readValue(pref().getKey());
-        mValueView.setText(proxy.getValueText(value));
-        mSeekBar.setProgress(getProgressFromValue(clipValue(value)));
+        mSlider = (Slider) view.findViewById(R.id.seek_bar_dialog_slider);
+        mSlider.setValueFrom(pref.getMinValue());
+        mSlider.setValueTo(pref.getMaxValue());
+
+        final int rawValue = proxy.readValue(pref.getKey());
+        mValueView.setText(proxy.getValueText(rawValue));
+        mSlider.setValue(clipValue(rawValue));
+        mSlider.setLabelFormatter(value -> proxy.getValueText(clipValue(Math.round(value))));
+
+        mSlider.addOnChangeListener((slider, value, fromUser) ->
+                mValueView.setText(proxy.getValueText(clipValue(Math.round(value)))));
+        mSlider.addOnSliderTouchListener(new Slider.OnSliderTouchListener() {
+            @Override
+            public void onStartTrackingTouch(final Slider slider) {}
+
+            @Override
+            public void onStopTrackingTouch(final Slider slider) {
+                proxy.feedbackValue(sliderValue());
+            }
+        });
     }
 
     @Override
@@ -108,27 +140,8 @@ public final class SeekBarDialogPreferenceFragment extends PreferenceDialogFragm
         }
         final SeekBarDialogPreference pref = pref();
         final ValueProxy proxy = pref.getValueProxy();
-        final String key = pref.getKey();
-        final int value = getClippedValueFromProgress(mSeekBar.getProgress());
+        final int value = sliderValue();
         pref.setSummary(proxy.getValueText(value));
-        proxy.writeValue(value, key);
-    }
-
-    @Override
-    public void onProgressChanged(final SeekBar seekBar, final int progress,
-            final boolean fromUser) {
-        final int value = getClippedValueFromProgress(progress);
-        mValueView.setText(pref().getValueProxy().getValueText(value));
-        if (!fromUser) {
-            mSeekBar.setProgress(getProgressFromValue(value));
-        }
-    }
-
-    @Override
-    public void onStartTrackingTouch(final SeekBar seekBar) {}
-
-    @Override
-    public void onStopTrackingTouch(final SeekBar seekBar) {
-        pref().getValueProxy().feedbackValue(getClippedValueFromProgress(seekBar.getProgress()));
+        proxy.writeValue(value, pref.getKey());
     }
 }

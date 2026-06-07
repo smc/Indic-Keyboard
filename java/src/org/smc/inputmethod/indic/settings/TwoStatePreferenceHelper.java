@@ -21,6 +21,8 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceGroup;
 import androidx.preference.SwitchPreferenceCompat;
 
+import com.android.inputmethod.latin.R;
+
 import java.util.ArrayList;
 
 public class TwoStatePreferenceHelper {
@@ -59,6 +61,8 @@ public class TwoStatePreferenceHelper {
     static void addSwitchPreferenceBasedOnCheckBoxPreference(final CheckBoxPreference checkBox,
             final PreferenceGroup group) {
         final SwitchPreferenceCompat switchPref = new SwitchPreferenceCompat(checkBox.getContext());
+        // Use the Material 3 switch widget instead of the default SwitchCompat.
+        switchPref.setWidgetLayoutResource(R.layout.preference_material_switch);
         switchPref.setTitle(checkBox.getTitle());
         switchPref.setKey(checkBox.getKey());
         switchPref.setOrder(checkBox.getOrder());

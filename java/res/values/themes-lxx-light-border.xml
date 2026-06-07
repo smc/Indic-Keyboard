@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <style name="KeyboardTheme.LXX_Light_Border" parent="KeyboardIcons.LXX_Light">
+    <style name="KeyboardTheme.LXX_Light_Border" parent="KeyboardIcons.MD3">
+        <item name="md3OnSurfaceVariant">@color/key_text_color_lxx_light</item>
+        <item name="md3OnPrimary">@color/key_text_color_lxx_light</item>
         <item name="inputViewStyle">@style/InputView.LXX</item>
         <item name="keyboardStyle">@style/Keyboard.LXX_Light_Border</item>
         <item name="keyboardViewStyle">@style/KeyboardView.LXX_Light_Border</item>
@@ -66,23 +68,23 @@
         <item name="categoryIndicatorEnabled">false</item>
         <item name="categoryPageIndicatorColor">@color/highlight_color_lxx_light</item>
         <item name="categoryPageIndicatorBackground">@color/emoji_tab_page_indicator_background_lxx_light</item>
-        <item name="iconEmojiRecentsTab">@drawable/ic_emoji_recents_lxx_light</item>
-        <item name="iconEmojiCategory1Tab">@drawable/ic_emoji_people_lxx_light</item>
-        <item name="iconEmojiCategory2Tab">@drawable/ic_emoji_objects_lxx_light</item>
-        <item name="iconEmojiCategory3Tab">@drawable/ic_emoji_nature_lxx_light</item>
-        <item name="iconEmojiCategory4Tab">@drawable/ic_emoji_places_lxx_light</item>
-        <item name="iconEmojiCategory5Tab">@drawable/ic_emoji_symbols_lxx_light</item>
-        <item name="iconEmojiCategory6Tab">@drawable/ic_emoji_emoticons_lxx_light</item>
-        <item name="iconEmojiCategory7Tab">@drawable/ic_emoji_flag_lxx_light</item>
-        <item name="iconEmojiCategory8Tab">@drawable/ic_emoji_people_lxx_light</item>
-        <item name="iconEmojiCategory9Tab">@drawable/ic_emoji_nature_lxx_light</item>
-        <item name="iconEmojiCategory10Tab">@drawable/ic_emoji_food_lxx_light</item>
-        <item name="iconEmojiCategory11Tab">@drawable/ic_emoji_places_lxx_light</item>
-        <item name="iconEmojiCategory12Tab">@drawable/ic_emoji_activity_lxx_light</item>
-        <item name="iconEmojiCategory13Tab">@drawable/ic_emoji_objects_lxx_light</item>
-        <item name="iconEmojiCategory14Tab">@drawable/ic_emoji_symbols_lxx_light</item>
-        <item name="iconEmojiCategory15Tab">@drawable/ic_emoji_flag_lxx_light</item>
-        <item name="iconEmojiCategory16Tab">@drawable/ic_emoji_people_lxx_light</item>
+        <item name="iconEmojiRecentsTab">@drawable/ic_kb_tab_recents</item>
+        <item name="iconEmojiCategory1Tab">@drawable/ic_kb_tab_people</item>
+        <item name="iconEmojiCategory2Tab">@drawable/ic_kb_tab_objects</item>
+        <item name="iconEmojiCategory3Tab">@drawable/ic_kb_tab_nature</item>
+        <item name="iconEmojiCategory4Tab">@drawable/ic_kb_tab_places</item>
+        <item name="iconEmojiCategory5Tab">@drawable/ic_kb_tab_symbols</item>
+        <item name="iconEmojiCategory6Tab">@drawable/ic_kb_tab_emoticons</item>
+        <item name="iconEmojiCategory7Tab">@drawable/ic_kb_tab_flag</item>
+        <item name="iconEmojiCategory8Tab">@drawable/ic_kb_tab_people</item>
+        <item name="iconEmojiCategory9Tab">@drawable/ic_kb_tab_nature</item>
+        <item name="iconEmojiCategory10Tab">@drawable/ic_kb_tab_food</item>
+        <item name="iconEmojiCategory11Tab">@drawable/ic_kb_tab_places</item>
+        <item name="iconEmojiCategory12Tab">@drawable/ic_kb_tab_activity</item>
+        <item name="iconEmojiCategory13Tab">@drawable/ic_kb_tab_objects</item>
+        <item name="iconEmojiCategory14Tab">@drawable/ic_kb_tab_symbols</item>
+        <item name="iconEmojiCategory15Tab">@drawable/ic_kb_tab_flag</item>
+        <item name="iconEmojiCategory16Tab">@drawable/ic_kb_tab_people</item>
     </style>
     <style
         name="MoreKeysKeyboard.LXX_Light_Border"

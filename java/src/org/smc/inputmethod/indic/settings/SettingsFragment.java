@@ -28,6 +28,8 @@ import android.view.MenuItem;
 
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceScreen;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.FeedbackUtils;
@@ -55,6 +57,11 @@ public final class SettingsFragment extends PreferenceFragmentCompat {
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    protected RecyclerView.Adapter onCreateAdapter(final PreferenceScreen preferenceScreen) {
+        return new CardedPreferenceGroupAdapter(preferenceScreen);
     }
 
     /**

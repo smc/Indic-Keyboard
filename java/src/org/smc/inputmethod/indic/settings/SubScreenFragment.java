@@ -28,7 +28,9 @@ import android.util.Log;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceScreen;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.inputmethod.compat.PreferenceManagerCompat;
 
@@ -96,6 +98,20 @@ public abstract class SubScreenFragment extends PreferenceFragmentCompat
         super.addPreferencesFromResource(preferencesResId);
         TwoStatePreferenceHelper.replaceCheckBoxPreferencesBySwitchPreferences(
                 getPreferenceScreen());
+        // Inner screens have no leading icons; don't reserve the icon column so text starts flush.
+        removeUnusedIconSpace(getPreferenceScreen());
+    }
+
+    private static void removeUnusedIconSpace(final PreferenceGroup group) {
+        for (int index = 0; index < group.getPreferenceCount(); index++) {
+            final Preference preference = group.getPreference(index);
+            if (preference.getIcon() == null) {
+                preference.setIconSpaceReserved(false);
+            }
+            if (preference instanceof PreferenceGroup) {
+                removeUnusedIconSpace((PreferenceGroup) preference);
+            }
+        }
     }
 
     @Override
@@ -104,6 +120,11 @@ public abstract class SubScreenFragment extends PreferenceFragmentCompat
             getPreferenceManager().setStorageDeviceProtected();
         }
         // Subclasses override this, call super first, then add their preferences resource.
+    }
+
+    @Override
+    protected RecyclerView.Adapter onCreateAdapter(final PreferenceScreen preferenceScreen) {
+        return new CardedPreferenceGroupAdapter(preferenceScreen);
     }
 
     @Override

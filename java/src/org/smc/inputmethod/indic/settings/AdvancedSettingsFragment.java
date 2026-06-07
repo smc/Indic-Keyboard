@@ -72,7 +72,6 @@ public final class AdvancedSettingsFragment extends SubScreenFragment {
         if (key.equals(Settings.PREF_SHOW_SETUP_WIZARD_ICON)) {
             SystemBroadcastReceiver.toggleAppIcon(getActivity());
         }
-        updateListPreferenceSummaryToCurrentValue(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
         refreshEnablingsOfKeypressSoundAndVibrationSettings();
     }
 
