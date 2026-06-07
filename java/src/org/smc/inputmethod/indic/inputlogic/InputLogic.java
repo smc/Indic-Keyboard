@@ -387,6 +387,7 @@ public final class InputLogic {
         // We set this to NONE because after a cursor move, we don't want the space
         // state-related special processing to kick in.
         mSpaceState = SpaceState.NONE;
+        mAutoSpacePending = false;
 
         final boolean selectionChangedOrSafeToReset =
                 oldSelStart != newSelStart || oldSelEnd != newSelEnd // selection changed
@@ -553,6 +554,7 @@ public final class InputLogic {
             final boolean autoShiftHasBeenOverriden = keyboardSwitcher.getKeyboardShiftMode() !=
                     getCurrentAutoCapsState(settingsValues);
             mSpaceState = SpaceState.PHANTOM;
+            mAutoSpacePending = false;
             if (!autoShiftHasBeenOverriden) {
                 // When we change the space state, we need to update the shift state of the
                 // keyboard unless it has been overridden manually. This is happening for example
