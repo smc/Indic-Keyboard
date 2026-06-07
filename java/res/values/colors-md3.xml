@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="md3_light_surface">#F7F2FA</color>
+    <color name="md3_light_key">#FFFFFF</color>
+    <color name="md3_light_key_pressed">#E8DEF8</color>
+    <color name="md3_light_functional">#ECE6F0</color>
+    <color name="md3_light_action">#6750A4</color>
+    <color name="md3_light_action_pressed">#7965AF</color>
+    <color name="md3_light_on_surface">#1D1B20</color>
+    <color name="md3_light_on_surface_variant">#49454F</color>
+    <color name="md3_light_primary">#6750A4</color>
+    <color name="md3_light_on_primary">#FFFFFF</color>
+
+    <color name="md3_dark_surface">#141218</color>
+    <color name="md3_dark_key">#2B2930</color>
+    <color name="md3_dark_key_pressed">#4A4458</color>
+    <color name="md3_dark_functional">#211F26</color>
+    <color name="md3_dark_action">#D0BCFF</color>
+    <color name="md3_dark_action_pressed">#B69DF8</color>
+    <color name="md3_dark_on_surface">#E6E0E9</color>
+    <color name="md3_dark_on_surface_variant">#CAC4D0</color>
+    <color name="md3_dark_primary">#D0BCFF</color>
+    <color name="md3_dark_on_primary">#381E72</color>
+</resources>

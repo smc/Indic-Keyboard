@@ -373,6 +373,9 @@ mobile devices. [CHAR LIMIT=25] -->
     <string name="keyboard_theme_dark_border" translatable="false">Modern Dark Bordered</string>
     <string name="keyboard_theme_light_border" translatable="false">Modern Light Bordered</string>
     <string name="keyboard_theme_amoled_border" translatable="false">Pure Black Bordered</string>
+    <string name="keyboard_theme_md3_dynamic" translatable="false">Material You (Dynamic)</string>
+    <string name="keyboard_theme_md3_light" translatable="false">Material 3 Light</string>
+    <string name="keyboard_theme_md3_dark" translatable="false">Material 3 Dark</string>
     <!-- Title of the preference settings for custom input styles (language and keyboard layout pairs) [CHAR LIMIT=35]-->
     <string name="custom_input_styles_title">Custom input styles</string>
     <!-- Title of the option menu to add a new style entry in the preference settings [CHAR LIMIT=16] -->

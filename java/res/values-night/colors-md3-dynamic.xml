@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="md3_dynamic_surface">@color/md3_dark_surface</color>
+    <color name="md3_dynamic_key">@color/md3_dark_key</color>
+    <color name="md3_dynamic_key_pressed">@color/md3_dark_key_pressed</color>
+    <color name="md3_dynamic_functional">@color/md3_dark_functional</color>
+    <color name="md3_dynamic_action">@color/md3_dark_action</color>
+    <color name="md3_dynamic_action_pressed">@color/md3_dark_action_pressed</color>
+    <color name="md3_dynamic_on_surface">@color/md3_dark_on_surface</color>
+    <color name="md3_dynamic_on_surface_variant">@color/md3_dark_on_surface_variant</color>
+    <color name="md3_dynamic_primary">@color/md3_dark_primary</color>
+    <color name="md3_dynamic_on_primary">@color/md3_dark_on_primary</color>
+</resources>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Material You (dynamic) tokens. Below API 31 there is no system palette, so these fall back to
+     the static MD3 light colors (values-night provides the dark fallback). values-v31 and
+     values-night-v31 override them with the framework system_* colors. -->
+<resources>
+    <color name="md3_dynamic_surface">@color/md3_light_surface</color>
+    <color name="md3_dynamic_key">@color/md3_light_key</color>
+    <color name="md3_dynamic_key_pressed">@color/md3_light_key_pressed</color>
+    <color name="md3_dynamic_functional">@color/md3_light_functional</color>
+    <color name="md3_dynamic_action">@color/md3_light_action</color>
+    <color name="md3_dynamic_action_pressed">@color/md3_light_action_pressed</color>
+    <color name="md3_dynamic_on_surface">@color/md3_light_on_surface</color>
+    <color name="md3_dynamic_on_surface_variant">@color/md3_light_on_surface_variant</color>
+    <color name="md3_dynamic_primary">@color/md3_light_primary</color>
+    <color name="md3_dynamic_on_primary">@color/md3_light_on_primary</color>
+</resources>

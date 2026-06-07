@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Shared MD3 styles. Colors come from ?attr/md3* tokens defined per theme below, so the
+         MD3 Light, Dark and Dynamic themes reuse these same styles and key drawables. -->
+    <style name="KeyboardView.MD3" parent="KeyboardView.LXX">
+        <item name="android:background">?attr/md3Surface</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_md3</item>
+        <item name="functionalKeyBackground">@drawable/btn_keyboard_key_functional_md3</item>
+        <item name="spacebarBackground">@drawable/btn_keyboard_key_functional_md3</item>
+        <item name="keyTextColor">?attr/md3OnSurface</item>
+        <item name="keyTextInactivatedColor">?attr/md3OnSurfaceVariant</item>
+        <item name="functionalTextColor">?attr/md3OnSurfaceVariant</item>
+        <item name="keyHintLetterColor">?attr/md3OnSurfaceVariant</item>
+        <item name="keyHintLabelColor">?attr/md3OnSurfaceVariant</item>
+        <item name="keyShiftedLetterHintInactivatedColor">?attr/md3OnSurfaceVariant</item>
+        <item name="keyShiftedLetterHintActivatedColor">?attr/md3OnSurface</item>
+        <item name="keyPreviewTextColor">?attr/md3OnSurface</item>
+    </style>
+
+    <style name="MainKeyboardView.MD3" parent="KeyboardView.MD3">
+        <item name="moreKeysKeyboardForActionLayout">@layout/more_keys_keyboard_for_action_lxx</item>
+        <item name="keyPreviewBackground">@drawable/md3_popup_background</item>
+        <item name="keyPreviewHeight">@dimen/config_key_preview_height_lxx</item>
+        <item name="keyPreviewOffset">@dimen/config_key_preview_offset_lxx</item>
+        <item name="keyPreviewShowUpAnimator">@anim/key_preview_show_up_lxx</item>
+        <item name="keyPreviewDismissAnimator">@anim/key_preview_dismiss_lxx</item>
+        <item name="gestureFloatingPreviewTextColor">?attr/md3OnPrimary</item>
+        <item name="gestureFloatingPreviewColor">?attr/md3Primary</item>
+        <item name="gestureTrailColor">?attr/md3Primary</item>
+        <item name="slidingKeyInputPreviewColor">?attr/md3Primary</item>
+        <item name="languageOnSpacebarTextColor">?attr/md3OnSurfaceVariant</item>
+        <item name="languageOnSpacebarTextShadowRadius">-1.0</item>
+    </style>
+
+    <style name="MoreKeysKeyboard.MD3" parent="Keyboard">
+        <item name="keyboardTopPadding">0%p</item>
+        <item name="keyboardBottomPadding">0%p</item>
+        <item name="horizontalGap">0%p</item>
+        <item name="touchPositionCorrectionData">@null</item>
+    </style>
+
+    <style name="MoreKeysKeyboardView.MD3" parent="KeyboardView.MD3">
+        <item name="android:background">@drawable/md3_popup_background</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_md3</item>
+        <item name="divider">@drawable/more_keys_divider</item>
+        <item name="keyTypeface">normal</item>
+        <item name="verticalCorrection">@dimen/config_more_keys_keyboard_vertical_correction_holo</item>
+    </style>
+
+    <style name="MoreKeysKeyboardView.MD3.Action" parent="MoreKeysKeyboardView.MD3">
+        <item name="android:background">@drawable/md3_popup_background</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_md3</item>
+        <item name="divider">@null</item>
+        <item name="keyLabelFlags">keepBackgroundAspectRatio</item>
+    </style>
+
+    <style name="SuggestionStripView.MD3" parent="KeyboardView.MD3">
+        <item name="suggestionsCountInStrip">@integer/config_suggestions_count_in_strip</item>
+        <item name="centerSuggestionPercentile">@fraction/config_center_suggestion_percentile</item>
+        <item name="maxMoreSuggestionsRow">@integer/config_max_more_suggestions_row</item>
+        <item name="minMoreSuggestionsWidth">@fraction/config_min_more_suggestions_width</item>
+        <item name="android:background">?attr/md3Surface</item>
+        <item name="android:src">@null</item>
+        <item name="suggestionStripOptions">autoCorrectBold|validTypedWordBold</item>
+        <item name="colorValidTypedWord">?attr/md3OnSurface</item>
+        <item name="colorTypedWord">?attr/md3OnSurface</item>
+        <item name="colorAutoCorrect">?attr/md3Primary</item>
+        <item name="colorSuggested">?attr/md3OnSurfaceVariant</item>
+        <item name="alphaObsoleted">70%</item>
+    </style>
+
+    <style name="SuggestionWord.MD3" parent="SuggestionWord">
+        <item name="android:background">@null</item>
+        <item name="android:textColor">?attr/md3OnSurface</item>
+    </style>
+
+    <style name="EmojiPalettesView.MD3.Light" parent="MainKeyboardView.MD3">
+        <item name="categoryIndicatorEnabled">false</item>
+        <item name="categoryPageIndicatorColor">?attr/md3Primary</item>
+        <item name="iconEmojiRecentsTab">@drawable/ic_emoji_recents_lxx_light</item>
+        <item name="iconEmojiCategory1Tab">@drawable/ic_emoji_people_lxx_light</item>
+        <item name="iconEmojiCategory2Tab">@drawable/ic_emoji_objects_lxx_light</item>
+        <item name="iconEmojiCategory3Tab">@drawable/ic_emoji_nature_lxx_light</item>
+        <item name="iconEmojiCategory4Tab">@drawable/ic_emoji_places_lxx_light</item>
+        <item name="iconEmojiCategory5Tab">@drawable/ic_emoji_symbols_lxx_light</item>
+        <item name="iconEmojiCategory6Tab">@drawable/ic_emoji_emoticons_lxx_light</item>
+        <item name="iconEmojiCategory7Tab">@drawable/ic_emoji_flag_lxx_light</item>
+        <item name="iconEmojiCategory8Tab">@drawable/ic_emoji_people_lxx_light</item>
+        <item name="iconEmojiCategory9Tab">@drawable/ic_emoji_nature_lxx_light</item>
+        <item name="iconEmojiCategory10Tab">@drawable/ic_emoji_food_lxx_light</item>
+        <item name="iconEmojiCategory11Tab">@drawable/ic_emoji_places_lxx_light</item>
+        <item name="iconEmojiCategory12Tab">@drawable/ic_emoji_activity_lxx_light</item>
+        <item name="iconEmojiCategory13Tab">@drawable/ic_emoji_objects_lxx_light</item>
+        <item name="iconEmojiCategory14Tab">@drawable/ic_emoji_symbols_lxx_light</item>
+        <item name="iconEmojiCategory15Tab">@drawable/ic_emoji_flag_lxx_light</item>
+        <item name="iconEmojiCategory16Tab">@drawable/ic_emoji_people_lxx_light</item>
+    </style>
+
+    <style name="EmojiPalettesView.MD3.Dark" parent="MainKeyboardView.MD3">
+        <item name="categoryIndicatorEnabled">false</item>
+        <item name="categoryPageIndicatorColor">?attr/md3Primary</item>
+        <item name="iconEmojiRecentsTab">@drawable/ic_emoji_recents_lxx_dark</item>
+        <item name="iconEmojiCategory1Tab">@drawable/ic_emoji_people_lxx_dark</item>
+        <item name="iconEmojiCategory2Tab">@drawable/ic_emoji_objects_lxx_dark</item>
+        <item name="iconEmojiCategory3Tab">@drawable/ic_emoji_nature_lxx_dark</item>
+        <item name="iconEmojiCategory4Tab">@drawable/ic_emoji_places_lxx_dark</item>
+        <item name="iconEmojiCategory5Tab">@drawable/ic_emoji_symbols_lxx_dark</item>
+        <item name="iconEmojiCategory6Tab">@drawable/ic_emoji_emoticons_lxx_dark</item>
+        <item name="iconEmojiCategory7Tab">@drawable/ic_emoji_flag_lxx_dark</item>
+        <item name="iconEmojiCategory8Tab">@drawable/ic_emoji_people_lxx_dark</item>
+        <item name="iconEmojiCategory9Tab">@drawable/ic_emoji_nature_lxx_dark</item>
+        <item name="iconEmojiCategory10Tab">@drawable/ic_emoji_food_lxx_dark</item>
+        <item name="iconEmojiCategory11Tab">@drawable/ic_emoji_places_lxx_dark</item>
+        <item name="iconEmojiCategory12Tab">@drawable/ic_emoji_activity_lxx_dark</item>
+        <item name="iconEmojiCategory13Tab">@drawable/ic_emoji_objects_lxx_dark</item>
+        <item name="iconEmojiCategory14Tab">@drawable/ic_emoji_symbols_lxx_dark</item>
+        <item name="iconEmojiCategory15Tab">@drawable/ic_emoji_flag_lxx_dark</item>
+        <item name="iconEmojiCategory16Tab">@drawable/ic_emoji_people_lxx_dark</item>
+    </style>
+
+    <!-- Keyboard styles carry the themeId so layout <case>s resolve correctly. -->
+    <style name="Keyboard.MD3_Light" parent="Keyboard">
+        <item name="themeId">MD3Light</item>
+    </style>
+    <style name="Keyboard.MD3_Dark" parent="Keyboard">
+        <item name="themeId">MD3Dark</item>
+    </style>
+    <style name="Keyboard.MD3_Dynamic" parent="Keyboard">
+        <item name="themeId">MD3Dynamic</item>
+    </style>
+
+    <style name="KeyboardTheme.MD3_Light" parent="KeyboardIcons.LXX_Light">
+        <item name="md3Surface">@color/md3_light_surface</item>
+        <item name="md3KeyColor">@color/md3_light_key</item>
+        <item name="md3KeyPressedColor">@color/md3_light_key_pressed</item>
+        <item name="md3FunctionalKeyColor">@color/md3_light_functional</item>
+        <item name="md3ActionKeyColor">@color/md3_light_action</item>
+        <item name="md3ActionKeyPressedColor">@color/md3_light_action_pressed</item>
+        <item name="md3OnSurface">@color/md3_light_on_surface</item>
+        <item name="md3OnSurfaceVariant">@color/md3_light_on_surface_variant</item>
+        <item name="md3Primary">@color/md3_light_primary</item>
+        <item name="md3OnPrimary">@color/md3_light_on_primary</item>
+        <item name="inputViewStyle">@style/InputView.LXX</item>
+        <item name="keyboardStyle">@style/Keyboard.MD3_Light</item>
+        <item name="keyboardViewStyle">@style/KeyboardView.MD3</item>
+        <item name="mainKeyboardViewStyle">@style/MainKeyboardView.MD3</item>
+        <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.MD3.Light</item>
+        <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.MD3</item>
+        <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.MD3</item>
+        <item name="moreKeysKeyboardViewForActionStyle">@style/MoreKeysKeyboardView.MD3.Action</item>
+        <item name="suggestionStripViewStyle">@style/SuggestionStripView.MD3</item>
+        <item name="suggestionWordStyle">@style/SuggestionWord.MD3</item>
+    </style>
+
+    <style name="KeyboardTheme.MD3_Dark" parent="KeyboardIcons.LXX_Dark">
+        <item name="md3Surface">@color/md3_dark_surface</item>
+        <item name="md3KeyColor">@color/md3_dark_key</item>
+        <item name="md3KeyPressedColor">@color/md3_dark_key_pressed</item>
+        <item name="md3FunctionalKeyColor">@color/md3_dark_functional</item>
+        <item name="md3ActionKeyColor">@color/md3_dark_action</item>
+        <item name="md3ActionKeyPressedColor">@color/md3_dark_action_pressed</item>
+        <item name="md3OnSurface">@color/md3_dark_on_surface</item>
+        <item name="md3OnSurfaceVariant">@color/md3_dark_on_surface_variant</item>
+        <item name="md3Primary">@color/md3_dark_primary</item>
+        <item name="md3OnPrimary">@color/md3_dark_on_primary</item>
+        <item name="inputViewStyle">@style/InputView.LXX</item>
+        <item name="keyboardStyle">@style/Keyboard.MD3_Dark</item>
+        <item name="keyboardViewStyle">@style/KeyboardView.MD3</item>
+        <item name="mainKeyboardViewStyle">@style/MainKeyboardView.MD3</item>
+        <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.MD3.Dark</item>
+        <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.MD3</item>
+        <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.MD3</item>
+        <item name="moreKeysKeyboardViewForActionStyle">@style/MoreKeysKeyboardView.MD3.Action</item>
+        <item name="suggestionStripViewStyle">@style/SuggestionStripView.MD3</item>
+        <item name="suggestionWordStyle">@style/SuggestionWord.MD3</item>
+    </style>
+
+    <style name="KeyboardTheme.MD3_Dynamic" parent="KeyboardIcons.LXX_Dark">
+        <item name="md3Surface">@color/md3_dynamic_surface</item>
+        <item name="md3KeyColor">@color/md3_dynamic_key</item>
+        <item name="md3KeyPressedColor">@color/md3_dynamic_key_pressed</item>
+        <item name="md3FunctionalKeyColor">@color/md3_dynamic_functional</item>
+        <item name="md3ActionKeyColor">@color/md3_dynamic_action</item>
+        <item name="md3ActionKeyPressedColor">@color/md3_dynamic_action_pressed</item>
+        <item name="md3OnSurface">@color/md3_dynamic_on_surface</item>
+        <item name="md3OnSurfaceVariant">@color/md3_dynamic_on_surface_variant</item>
+        <item name="md3Primary">@color/md3_dynamic_primary</item>
+        <item name="md3OnPrimary">@color/md3_dynamic_on_primary</item>
+        <item name="inputViewStyle">@style/InputView.LXX</item>
+        <item name="keyboardStyle">@style/Keyboard.MD3_Dynamic</item>
+        <item name="keyboardViewStyle">@style/KeyboardView.MD3</item>
+        <item name="mainKeyboardViewStyle">@style/MainKeyboardView.MD3</item>
+        <item name="emojiPalettesViewStyle">@style/EmojiPalettesView.MD3.Dark</item>
+        <item name="moreKeysKeyboardStyle">@style/MoreKeysKeyboard.MD3</item>
+        <item name="moreKeysKeyboardViewStyle">@style/MoreKeysKeyboardView.MD3</item>
+        <item name="moreKeysKeyboardViewForActionStyle">@style/MoreKeysKeyboardView.MD3.Action</item>
+        <item name="suggestionStripViewStyle">@style/SuggestionStripView.MD3</item>
+        <item name="suggestionWordStyle">@style/SuggestionWord.MD3</item>
+    </style>
+</resources>

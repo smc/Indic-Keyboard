@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Action keys. -->
+    <item android:state_active="true" android:state_pressed="true"
+          android:drawable="@drawable/md3_key_action_pressed" />
+    <item android:state_active="true"
+          android:drawable="@drawable/md3_key_action" />
+
+    <!-- Toggle keys. -->
+    <item android:state_checkable="true" android:state_checked="true" android:state_pressed="true"
+          android:drawable="@drawable/md3_key_functional" />
+    <item android:state_checkable="true" android:state_pressed="true"
+          android:drawable="@drawable/md3_key_pressed" />
+    <item android:state_checkable="true" android:state_checked="true"
+          android:drawable="@drawable/md3_key_pressed" />
+    <item android:state_checkable="true"
+          android:drawable="@drawable/md3_key_functional" />
+
+    <!-- Empty background keys. -->
+    <item android:state_empty="true" android:state_pressed="true"
+          android:drawable="@drawable/md3_key_pressed" />
+    <item android:state_empty="true"
+          android:drawable="@android:color/transparent" />
+
+    <!-- Normal keys. -->
+    <item android:state_pressed="true"
+          android:drawable="@drawable/md3_key_pressed" />
+    <item android:drawable="@drawable/md3_key_normal" />
+</selector>

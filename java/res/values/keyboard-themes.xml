@@ -20,6 +20,9 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- For keyboard color scheme option dialog. -->
     <string-array name="keyboard_theme_names" translatable="false">
+        <item>@string/keyboard_theme_md3_dynamic</item>
+        <item>@string/keyboard_theme_md3_light</item>
+        <item>@string/keyboard_theme_md3_dark</item>
         <item>@string/keyboard_theme_light_border</item>
         <item>@string/keyboard_theme_material_light</item>
         <item>@string/keyboard_theme_material_dark</item>
@@ -31,6 +34,9 @@
     <!-- An element must be a keyboard theme id of
          {@link com.android.inputmethod.keyboard.KeyboardTheme#THEME_ID_ICS} etc. -->
     <integer-array name="keyboard_theme_ids" translatable="false">
+        <item>10</item>
+        <item>8</item>
+        <item>9</item>
         <item>5</item>
         <item>3</item>
         <item>4</item>

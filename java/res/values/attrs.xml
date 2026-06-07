@@ -19,6 +19,20 @@
 -->
 
 <resources>
+    <!-- Material 3 keyboard theme color tokens. Set per-theme in themes-md3.xml and referenced as
+         ?attr/... by the shared MD3 styles and key-background drawables, so one style/drawable set
+         serves the MD3 Light, Dark and Dynamic (Material You) themes. -->
+    <attr name="md3Surface" format="color" />
+    <attr name="md3KeyColor" format="color" />
+    <attr name="md3KeyPressedColor" format="color" />
+    <attr name="md3FunctionalKeyColor" format="color" />
+    <attr name="md3ActionKeyColor" format="color" />
+    <attr name="md3ActionKeyPressedColor" format="color" />
+    <attr name="md3OnSurface" format="color" />
+    <attr name="md3OnSurfaceVariant" format="color" />
+    <attr name="md3Primary" format="color" />
+    <attr name="md3OnPrimary" format="color" />
+
     <declare-styleable name="KeyboardTheme">
         <!-- InputView style -->
         <attr name="inputViewStyle" format="reference" />
@@ -241,6 +255,9 @@
             <enum name="LXXLightBorder" value="5" />
             <enum name="LXXDarkBorder" value="6" />
             <enum name="AMOLEDBorder" value="7" />
+            <enum name="MD3Light" value="8" />
+            <enum name="MD3Dark" value="9" />
+            <enum name="MD3Dynamic" value="10" />
         </attr>
         <!-- Touch position correction -->
         <attr name="touchPositionCorrectionData" format="reference" />
