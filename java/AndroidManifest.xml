@@ -119,7 +119,7 @@
         </activity>
 
         <activity android:name="org.smc.inputmethod.indic.settings.SettingsActivity"
-                android:theme="@style/platformSettingsTheme"
+                android:theme="@style/Theme.IndicKeyboard.Settings"
                 android:exported="true"
                 android:label="@string/english_ime_settings">
             <intent-filter>
@@ -128,7 +128,7 @@
         </activity>
 
         <activity android:name="org.smc.inputmethod.indic.spellcheck.SpellCheckerSettingsActivity"
-                  android:theme="@style/platformSettingsTheme"
+                  android:theme="@style/Theme.IndicKeyboard.Settings"
                   android:exported="true"
                   android:label="@string/android_spell_checker_settings">
             <intent-filter>

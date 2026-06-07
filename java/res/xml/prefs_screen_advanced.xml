@@ -31,10 +31,6 @@
       </Preference>
     </PreferenceCategory>
     <PreferenceCategory android:title="Duration">
-      <!-- TODO: consolidate key preview dismiss delay with the key preview animation parameters. -->
-      <ListPreference
-          android:key="pref_key_preview_popup_dismiss_delay"
-          android:title="@string/key_preview_popup_dismiss_delay" />
       <org.smc.inputmethod.indic.settings.SeekBarDialogPreference
           android:key="pref_vibration_duration_settings"
           android:title="@string/prefs_keypress_vibration_duration_settings"

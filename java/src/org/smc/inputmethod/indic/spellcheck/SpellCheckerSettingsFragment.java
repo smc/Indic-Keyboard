@@ -19,9 +19,10 @@ package org.smc.inputmethod.indic.spellcheck;
 import android.Manifest;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceScreen;
-import android.preference.SwitchPreference;
 import android.text.TextUtils;
+
+import androidx.preference.PreferenceScreen;
+import androidx.preference.SwitchPreferenceCompat;
 
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.permissions.PermissionsManager;
@@ -39,18 +40,18 @@ public final class SpellCheckerSettingsFragment extends SubScreenFragment
     implements SharedPreferences.OnSharedPreferenceChangeListener,
             PermissionsManager.PermissionsResultCallback {
 
-    private SwitchPreference mLookupContactsPreference;
+    private SwitchPreferenceCompat mLookupContactsPreference;
 
     @Override
-    public void onActivityCreated(final Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onCreatePreferences(final Bundle savedInstanceState, final String rootKey) {
+        super.onCreatePreferences(savedInstanceState, rootKey);
         addPreferencesFromResource(R.xml.spell_checker_settings);
         final PreferenceScreen preferenceScreen = getPreferenceScreen();
         preferenceScreen.setTitle(ApplicationUtils.getActivityTitleResId(
                 getActivity(), SpellCheckerSettingsActivity.class));
         TwoStatePreferenceHelper.replaceCheckBoxPreferencesBySwitchPreferences(preferenceScreen);
 
-        mLookupContactsPreference = (SwitchPreference) findPreference(
+        mLookupContactsPreference = (SwitchPreferenceCompat) findPreference(
                 AndroidSpellCheckerService.PREF_USE_CONTACTS_KEY);
         turnOffLookupContactsIfNoPermission();
     }

@@ -21,7 +21,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.media.AudioManager;
 import android.os.Bundle;
-import android.preference.ListPreference;
 
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.R;
@@ -40,8 +39,8 @@ import com.android.inputmethod.latin.SystemBroadcastReceiver;
  */
 public final class AdvancedSettingsFragment extends SubScreenFragment {
     @Override
-    public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
+    public void onCreatePreferences(final Bundle savedInstanceState, final String rootKey) {
+        super.onCreatePreferences(savedInstanceState, rootKey);
         addPreferencesFromResource(R.xml.prefs_screen_advanced);
 
         final Resources res = getResources();

@@ -18,8 +18,9 @@ package org.smc.inputmethod.indic.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceFragment;
 import android.view.inputmethod.InputMethodSubtype;
+
+import androidx.preference.PreferenceFragmentCompat;
 
 import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.RichInputMethodManager;
@@ -38,7 +39,7 @@ public class AdditionalFeaturesSettingUtils {
     }
 
     public static void addAdditionalFeaturesPreferences(
-            final Context context, final PreferenceFragment settingsFragment) {
+            final Context context, final PreferenceFragmentCompat settingsFragment) {
         // do nothing.
     }
 

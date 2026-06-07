@@ -16,40 +16,41 @@
 
 package org.smc.inputmethod.indic.spellcheck;
 
-import com.android.inputmethod.latin.permissions.PermissionsManager;
-import com.android.inputmethod.latin.utils.FragmentUtils;
-
-import android.annotation.TargetApi;
-import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.permissions.PermissionsManager;
+import com.google.android.material.appbar.MaterialToolbar;
 
 /**
  * Spell checker preference screen.
  */
-public final class SpellCheckerSettingsActivity extends PreferenceActivity
+public final class SpellCheckerSettingsActivity extends AppCompatActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
-    private static final String DEFAULT_FRAGMENT = SpellCheckerSettingsFragment.class.getName();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.settings_activity);
+        final MaterialToolbar toolbar = findViewById(R.id.settings_toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.settings_container, new SpellCheckerSettingsFragment())
+                    .commit();
+        }
     }
 
     @Override
-    public Intent getIntent() {
-        final Intent modIntent = new Intent(super.getIntent());
-        modIntent.putExtra(EXTRA_SHOW_FRAGMENT, DEFAULT_FRAGMENT);
-        modIntent.putExtra(EXTRA_NO_HEADERS, true);
-        return modIntent;
-    }
-
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    @Override
-    public boolean isValidFragment(String fragmentName) {
-        return FragmentUtils.isValidFragment(fragmentName);
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 
     @Override

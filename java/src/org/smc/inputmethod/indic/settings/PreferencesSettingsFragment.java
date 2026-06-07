@@ -19,9 +19,9 @@ package org.smc.inputmethod.indic.settings;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.Preference;
+
+import androidx.preference.Preference;
 
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.R;
@@ -45,8 +45,8 @@ public final class PreferencesSettingsFragment extends SubScreenFragment {
     private static final boolean VOICE_IME_ENABLED = true;
 
     @Override
-    public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
+    public void onCreatePreferences(final Bundle savedInstanceState, final String rootKey) {
+        super.onCreatePreferences(savedInstanceState, rootKey);
         addPreferencesFromResource(R.xml.prefs_screen_preferences);
 
         final Resources res = getResources();

@@ -22,10 +22,11 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Process;
-import android.preference.Preference;
-import android.preference.Preference.OnPreferenceClickListener;
-import android.preference.PreferenceGroup;
-import android.preference.TwoStatePreference;
+
+import androidx.preference.Preference;
+import androidx.preference.Preference.OnPreferenceClickListener;
+import androidx.preference.PreferenceGroup;
+import androidx.preference.TwoStatePreference;
 
 import com.android.inputmethod.latin.DictionaryDumpBroadcastReceiver;
 import com.android.inputmethod.latin.DictionaryFacilitatorImpl;
@@ -49,8 +50,8 @@ public final class DebugSettingsFragment extends SubScreenFragment
     private TwoStatePreference mDebugMode;
 
     @Override
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
+    public void onCreatePreferences(final Bundle savedInstanceState, final String rootKey) {
+        super.onCreatePreferences(savedInstanceState, rootKey);
         addPreferencesFromResource(R.xml.prefs_screen_debug);
 
         if (!Settings.SHOULD_SHOW_LXX_SUGGESTION_UI) {
@@ -237,5 +238,4 @@ public final class DebugSettingsFragment extends SubScreenFragment
             public void feedbackValue(final int value) {}
         });
     }
-
 }

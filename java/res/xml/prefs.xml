@@ -21,21 +21,26 @@
     <PreferenceScreen
         android:fragment="org.smc.inputmethod.indic.settings.ThemeSettingsFragment"
         android:key="screen_theme"
+        android:icon="@drawable/ic_settings_theme"
         android:title="@string/settings_screen_theme" />
     <PreferenceScreen
         android:fragment="org.smc.inputmethod.indic.settings.PreferencesSettingsFragment"
         android:title="@string/settings_screen_preferences"
+        android:icon="@drawable/ic_settings_preferences"
         android:key="screen_preferences" />
     <PreferenceScreen
         android:fragment="org.smc.inputmethod.indic.settings.GestureSettingsFragment"
         android:title="@string/settings_screen_gesture"
+        android:icon="@drawable/ic_settings_gestures"
         android:key="screen_gesture" />
     <PreferenceScreen
         android:fragment="org.smc.inputmethod.indic.settings.CorrectionSettingsFragment"
         android:title="@string/settings_screen_correction"
+        android:icon="@drawable/ic_settings_text"
         android:key="screen_correction" />
     <PreferenceScreen
         android:fragment="org.smc.inputmethod.indic.settings.AdvancedSettingsFragment"
         android:title="@string/settings_screen_advanced"
+        android:icon="@drawable/ic_settings_advanced"
         android:key="screen_advanced" />
 </PreferenceScreen>

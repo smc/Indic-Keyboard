@@ -23,20 +23,20 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
 import android.util.Log;
+
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceScreen;
 
 import com.android.inputmethod.compat.PreferenceManagerCompat;
 
-/**
- * A base abstract class for a {@link PreferenceFragment} that implements a nested
- * {@link PreferenceScreen} of the main preference screen.
- */
-public abstract class SubScreenFragment extends PreferenceFragment
+public abstract class SubScreenFragment extends PreferenceFragmentCompat
         implements OnSharedPreferenceChangeListener {
+    private static final String DIALOG_FRAGMENT_TAG =
+            "org.smc.inputmethod.indic.settings.SubScreenFragment.DIALOG";
+
     private OnSharedPreferenceChangeListener mSharedPreferenceChangeListener;
 
     static void setPreferenceEnabled(final String prefKey, final boolean enabled,
@@ -56,9 +56,7 @@ public abstract class SubScreenFragment extends PreferenceFragment
 
     static void updateListPreferenceSummaryToCurrentValue(final String prefKey,
             final PreferenceScreen screen) {
-        // Because the "%s" summary trick of {@link ListPreference} doesn't work properly before
-        // KitKat, we need to update the summary programmatically.
-        final ListPreference listPreference = (ListPreference)screen.findPreference(prefKey);
+        final ListPreference listPreference = (ListPreference) screen.findPreference(prefKey);
         if (listPreference == null) {
             return;
         }
@@ -101,11 +99,16 @@ public abstract class SubScreenFragment extends PreferenceFragment
     }
 
     @Override
+    public void onCreatePreferences(final Bundle savedInstanceState, final String rootKey) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            getPreferenceManager().setStorageDeviceProtected();
+        }
+        // Subclasses override this, call super first, then add their preferences resource.
+    }
+
+    @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            super.getPreferenceManager().setStorageDeviceProtected();
-        }
         mSharedPreferenceChangeListener = new OnSharedPreferenceChangeListener() {
             @Override
             public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
@@ -113,8 +116,6 @@ public abstract class SubScreenFragment extends PreferenceFragment
                 final Context context = fragment.getActivity();
                 if (context == null || fragment.getPreferenceScreen() == null) {
                     final String tag = fragment.getClass().getSimpleName();
-                    // TODO: Introduce a static function to register this class and ensure that
-                    // onCreate must be called before "onSharedPreferenceChanged" is called.
                     Log.w(tag, "onSharedPreferenceChanged called before activity starts.");
                     return;
                 }
@@ -136,5 +137,20 @@ public abstract class SubScreenFragment extends PreferenceFragment
     @Override
     public void onSharedPreferenceChanged(final SharedPreferences prefs, final String key) {
         // This method may be overridden by an extended class.
+    }
+
+    @Override
+    public void onDisplayPreferenceDialog(final Preference preference) {
+        if (getParentFragmentManager().findFragmentByTag(DIALOG_FRAGMENT_TAG) != null) {
+            return;
+        }
+        if (preference instanceof SeekBarDialogPreference) {
+            final SeekBarDialogPreferenceFragment fragment =
+                    SeekBarDialogPreferenceFragment.newInstance(preference.getKey());
+            fragment.setTargetFragment(this, 0);
+            fragment.show(getParentFragmentManager(), DIALOG_FRAGMENT_TAG);
+            return;
+        }
+        super.onDisplayPreferenceDialog(preference);
     }
 }

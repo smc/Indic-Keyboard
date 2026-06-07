@@ -27,8 +27,8 @@ import com.android.inputmethod.latin.define.ProductionFlags;
  */
 public final class AppearanceSettingsFragment extends SubScreenFragment {
     @Override
-    public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
+    public void onCreatePreferences(final Bundle savedInstanceState, final String rootKey) {
+        super.onCreatePreferences(savedInstanceState, rootKey);
         addPreferencesFromResource(R.xml.prefs_screen_appearance);
         if (!ProductionFlags.IS_SPLIT_KEYBOARD_SUPPORTED ||
                 Constants.isPhone(Settings.readScreenMetrics(getResources()))) {

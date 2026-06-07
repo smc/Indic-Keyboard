@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.IndicKeyboard.Settings" parent="Theme.Material3.DayNight">
+    <style name="Theme.IndicKeyboard.Settings" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
     </style>
 
     <style name="Theme.IndicKeyboard.Setup" parent="Theme.Material3.DayNight.NoActionBar">

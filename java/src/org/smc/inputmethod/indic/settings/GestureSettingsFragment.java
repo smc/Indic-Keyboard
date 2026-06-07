@@ -31,8 +31,8 @@ import com.android.inputmethod.latin.R;
  */
 public final class GestureSettingsFragment extends SubScreenFragment {
     @Override
-    public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
+    public void onCreatePreferences(final Bundle savedInstanceState, final String rootKey) {
+        super.onCreatePreferences(savedInstanceState, rootKey);
         addPreferencesFromResource(R.xml.prefs_screen_gesture);
     }
 }

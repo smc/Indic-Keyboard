@@ -17,23 +17,24 @@
 package org.smc.inputmethod.indic.settings;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceScreen;
 import android.provider.Settings.Secure;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.define.ProductionFlags;
-import com.android.inputmethod.latin.utils.ApplicationUtils;
-import com.android.inputmethod.latin.utils.FeedbackUtils;
-import com.android.inputmethodcommon.InputMethodSettingsFragment;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 
-public final class SettingsFragment extends InputMethodSettingsFragment {
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.utils.FeedbackUtils;
+
+import org.smc.inputmethod.indic.LatinIME;
+
+public final class SettingsFragment extends PreferenceFragmentCompat {
     // We don't care about menu grouping.
     private static final int NO_MENU_GROUP = Menu.NONE;
     // The first menu item id and order.
@@ -42,15 +43,38 @@ public final class SettingsFragment extends InputMethodSettingsFragment {
     private static final int MENU_HELP_AND_FEEDBACK = Menu.FIRST + 1;
 
     @Override
-    public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        setHasOptionsMenu(true);
-        setInputMethodSettingsCategoryTitle(R.string.language_selection_title);
-        setSubtypeEnablerTitle(R.string.select_language);
+    public void onCreatePreferences(final Bundle savedInstanceState, final String rootKey) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            getPreferenceManager().setStorageDeviceProtected();
+        }
         addPreferencesFromResource(R.xml.prefs);
-        final PreferenceScreen preferenceScreen = getPreferenceScreen();
-        preferenceScreen.setTitle(
-                ApplicationUtils.getActivityTitleResId(getActivity(), SettingsActivity.class));
+        addLanguageSelectionPreference();
+    }
+
+    @Override
+    public void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    /**
+     * Adds a "Languages" entry at the top that opens the system input-method subtype enabler for
+     * this keyboard. Replaces the language preference previously contributed by the framework
+     * InputMethodSettingsFragment.
+     */
+    private void addLanguageSelectionPreference() {
+        final Activity activity = getActivity();
+        final Preference languagePref = new Preference(activity);
+        languagePref.setTitle(R.string.language_selection_title);
+        languagePref.setIcon(R.drawable.ic_settings_languages);
+        languagePref.setOrder(-1);
+        final String imeId = new ComponentName(activity, LatinIME.class).flattenToShortString();
+        final Intent intent = new Intent(
+                android.provider.Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS);
+        intent.putExtra(android.provider.Settings.EXTRA_INPUT_METHOD_ID, imeId);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        languagePref.setIntent(intent);
+        getPreferenceScreen().addPreference(languagePref);
     }
 
     @Override

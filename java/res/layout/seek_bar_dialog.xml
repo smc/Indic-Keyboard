@@ -20,24 +20,23 @@
 
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp">
-    <LinearLayout
-        android:orientation="horizontal"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="8dp">
+    <TextView android:id="@+id/seek_bar_dialog_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="8dp"
+        android:textColor="?attr/colorPrimary"
+        android:textAppearance="?attr/textAppearanceHeadlineSmall"/>
+    <com.google.android.material.slider.Slider
+        android:id="@+id/seek_bar_dialog_slider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:layout_margin="10dp">
-        <TextView android:id="@+id/seek_bar_dialog_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"/>
-    </LinearLayout>
-    <SeekBar
-        android:id="@+id/seek_bar_dialog_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"/>
+        app:labelBehavior="floating"/>
 </LinearLayout>

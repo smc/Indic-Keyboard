@@ -17,10 +17,12 @@
 package org.smc.inputmethod.indic.settings;
 
 import android.content.Context;
-import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RadioButton;
+
+import androidx.preference.Preference;
+import androidx.preference.PreferenceViewHolder;
 
 import com.android.inputmethod.latin.R;
 
@@ -52,12 +54,7 @@ public class RadioButtonPreference extends Preference {
     }
 
     public RadioButtonPreference(final Context context, final AttributeSet attrs) {
-        this(context, attrs, android.R.attr.preferenceStyle);
-    }
-
-    public RadioButtonPreference(final Context context, final AttributeSet attrs,
-            final int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+        super(context, attrs);
         setWidgetLayoutResource(R.layout.radio_button_preference_widget);
     }
 
@@ -72,12 +69,12 @@ public class RadioButtonPreference extends Preference {
     }
 
     @Override
-    protected void onBindView(final View view) {
-        super.onBindView(view);
-        mRadioButton = (RadioButton)view.findViewById(R.id.radio_button);
+    public void onBindViewHolder(final PreferenceViewHolder holder) {
+        super.onBindViewHolder(holder);
+        mRadioButton = (RadioButton) holder.findViewById(R.id.radio_button);
         mRadioButton.setChecked(mIsSelected);
         mRadioButton.setOnClickListener(mClickListener);
-        view.setOnClickListener(mClickListener);
+        holder.itemView.setOnClickListener(mClickListener);
     }
 
     public boolean isSelected() {

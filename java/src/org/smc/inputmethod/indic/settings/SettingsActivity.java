@@ -16,50 +16,99 @@
 
 package org.smc.inputmethod.indic.settings;
 
-import com.android.inputmethod.latin.permissions.PermissionsManager;
-import com.android.inputmethod.latin.utils.FragmentUtils;
-import com.android.inputmethod.latin.utils.StatsUtils;
-
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
-import androidx.core.app.ActivityCompat;
-import android.view.MenuItem;
 
-public final class SettingsActivity extends PreferenceActivity
-        implements ActivityCompat.OnRequestPermissionsResultCallback {
-    private static final String DEFAULT_FRAGMENT = SettingsFragment.class.getName();
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.permissions.PermissionsManager;
+import com.google.android.material.appbar.MaterialToolbar;
+
+public final class SettingsActivity extends AppCompatActivity
+        implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
+        ActivityCompat.OnRequestPermissionsResultCallback {
+    // Kept compatible with the framework PreferenceActivity extra so external deep links and the
+    // system "App info" entry continue to open a specific fragment.
+    public static final String EXTRA_SHOW_FRAGMENT = ":android:show_fragment";
 
     public static final String EXTRA_ENTRY_KEY = "entry";
     public static final String EXTRA_ENTRY_VALUE_APP_ICON = "app_icon";
     public static final String EXTRA_ENTRY_VALUE_NOTICE_DIALOG = "important_notice";
     public static final String EXTRA_ENTRY_VALUE_SYSTEM_SETTINGS = "system_settings";
 
+    private CharSequence mDefaultTitle;
+
     @Override
     protected void onCreate(final Bundle savedState) {
         super.onCreate(savedState);
-        final ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeButtonEnabled(true);
+        setContentView(R.layout.settings_activity);
+        final MaterialToolbar toolbar = findViewById(R.id.settings_toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        mDefaultTitle = getTitle();
+
+        getSupportFragmentManager().addOnBackStackChangedListener(this::updateTitle);
+
+        if (savedState == null) {
+            final String fragmentName = getIntent().getStringExtra(EXTRA_SHOW_FRAGMENT);
+            final Fragment fragment = (fragmentName != null)
+                    ? instantiate(fragmentName, null) : new SettingsFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.settings_container, fragment)
+                    .commit();
+        }
+    }
+
+    private Fragment instantiate(final String name, final Bundle args) {
+        final Fragment fragment = getSupportFragmentManager().getFragmentFactory()
+                .instantiate(getClassLoader(), name);
+        if (args != null) {
+            args.setClassLoader(fragment.getClass().getClassLoader());
+            fragment.setArguments(args);
+        }
+        return fragment;
+    }
+
+    private void updateTitle() {
+        if (getSupportActionBar() == null) {
+            return;
+        }
+        if (getSupportFragmentManager().getBackStackEntryCount() == 0) {
+            getSupportActionBar().setTitle(mDefaultTitle);
         }
     }
 
     @Override
-    public Intent getIntent() {
-        final Intent intent = super.getIntent();
-        final String fragment = intent.getStringExtra(EXTRA_SHOW_FRAGMENT);
-        if (fragment == null) {
-            intent.putExtra(EXTRA_SHOW_FRAGMENT, DEFAULT_FRAGMENT);
+    public boolean onPreferenceStartFragment(final PreferenceFragmentCompat caller,
+            final Preference pref) {
+        final Fragment fragment = instantiate(pref.getFragment(), pref.getExtras());
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.settings_container, fragment)
+                .addToBackStack(null)
+                .commit();
+        if (getSupportActionBar() != null && pref.getTitle() != null) {
+            getSupportActionBar().setTitle(pref.getTitle());
         }
-        intent.putExtra(EXTRA_NO_HEADERS, true);
-        return intent;
+        return true;
     }
 
     @Override
-    public boolean isValidFragment(final String fragmentName) {
-        return FragmentUtils.isValidFragment(fragmentName);
+    public boolean onSupportNavigateUp() {
+        final FragmentManager fm = getSupportFragmentManager();
+        if (fm.getBackStackEntryCount() > 0) {
+            fm.popBackStack();
+            return true;
+        }
+        finish();
+        return true;
     }
 
     @Override

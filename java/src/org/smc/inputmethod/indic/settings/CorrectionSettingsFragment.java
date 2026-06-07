@@ -23,11 +23,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.SwitchPreference;
 import android.text.TextUtils;
+
+import androidx.preference.Preference;
+import androidx.preference.SwitchPreferenceCompat;
 
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.permissions.PermissionsManager;
@@ -56,11 +56,11 @@ public final class CorrectionSettingsFragment extends SubScreenFragment
 
     private static final boolean USE_INTERNAL_PERSONAL_DICTIONARY_SETTINGS = false;
 
-    private SwitchPreference mUseContactsPreference;
+    private SwitchPreferenceCompat mUseContactsPreference;
 
     @Override
-    public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
+    public void onCreatePreferences(final Bundle savedInstanceState, final String rootKey) {
+        super.onCreatePreferences(savedInstanceState, rootKey);
         addPreferencesFromResource(R.xml.prefs_screen_correction);
 
         final Context context = getActivity();
@@ -88,7 +88,8 @@ public final class CorrectionSettingsFragment extends SubScreenFragment
             overwriteUserDictionaryPreference(editPersonalDictionary);
         }
 
-        mUseContactsPreference = (SwitchPreference) findPreference(Settings.PREF_KEY_USE_CONTACTS_DICT);
+        mUseContactsPreference =
+                (SwitchPreferenceCompat) findPreference(Settings.PREF_KEY_USE_CONTACTS_DICT);
         turnOffUseContactsIfNoPermission();
     }
 
@@ -104,9 +105,6 @@ public final class CorrectionSettingsFragment extends SubScreenFragment
             // If the size of localeList is 0, we don't set the locale parameter in the
             // extras. This will be interpreted by the UserDictionarySettings class as
             // meaning "the current locale".
-            // Note that with the current code for UserDictionaryList#getUserDictionaryLocalesSet()
-            // the locale list always has at least one element, since it always includes the current
-            // locale explicitly. @see UserDictionaryList.getUserDictionaryLocalesSet().
             if (localeList.size() == 1) {
                 final String locale = (String)localeList.toArray()[0];
                 userDictionaryPreference.getExtras().putString("locale", locale);
