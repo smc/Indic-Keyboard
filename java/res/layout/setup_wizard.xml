@@ -1,36 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-/*
-**
-** Copyright 2013, The Android Open Source Project
-**
-** Licensed under the Apache License, Version 2.0 (the "License");
-** you may not use this file except in compliance with the License.
-** You may obtain a copy of the License at
-**
-**     http://www.apache.org/licenses/LICENSE-2.0
-**
-** Unless required by applicable law or agreed to in writing, software
-** distributed under the License is distributed on an "AS IS" BASIS,
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-** See the License for the specific language governing permissions and
-** limitations under the License.
-*/
--->
-
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/setup_wizard"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/setup_background"
-    android:paddingLeft="@dimen/setup_horizontal_padding"
-    android:paddingRight="@dimen/setup_horizontal_padding"
-    android:paddingTop="@dimen/setup_vertical_padding"
-    android:paddingBottom="@dimen/setup_vertical_padding">
-    <include
-        android:id="@+id/setup_welcome_screen"
-        layout="@layout/setup_welcome_screen" />
-    <include
-        android:id="@+id/setup_steps_screen"
-        layout="@layout/setup_steps_screen" />
-</FrameLayout>
+    android:orientation="vertical"
+    android:background="?attr/colorSurface"
+    android:fitsSystemWindows="true">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingHorizontal="32dp"
+            android:paddingVertical="40dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/setup_logo"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:src="@mipmap/ic_launcher_round"
+                android:importantForAccessibility="no" />
+
+            <TextView
+                android:id="@+id/setup_welcome_word"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="28dp"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textStyle="bold"
+                android:textColor="?attr/colorPrimary"
+                android:visibility="gone"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="32sp"
+                app:autoSizeMaxTextSize="72sp"
+                app:autoSizeStepGranularity="1sp" />
+
+            <TextView
+                android:id="@+id/setup_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:gravity="center"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textColor="?attr/colorOnSurface" />
+
+            <TextView
+                android:id="@+id/setup_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                android:textColor="?attr/colorOnSurfaceVariant" />
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/setup_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:gravity="center"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
+        android:textColor="?attr/colorPrimary" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/setup_primary_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginBottom="28dp"
+        android:minHeight="56dp"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
+        app:cornerRadius="28dp" />
+</LinearLayout>

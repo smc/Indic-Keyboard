@@ -16,11 +16,12 @@
 
 package org.smc.inputmethod.indic.setup;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-public final class SetupActivity extends Activity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public final class SetupActivity extends AppCompatActivity {
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

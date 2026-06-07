@@ -88,7 +88,7 @@
 
         <!-- Activities -->
         <activity android:name="org.smc.inputmethod.indic.setup.SetupActivity"
-                android:theme="@style/platformActivityTheme"
+                android:theme="@style/Theme.IndicKeyboard.Setup"
                 android:label="@string/english_ime_name"
                 android:icon="@mipmap/ic_launcher"
                 android:roundIcon="@mipmap/ic_launcher_round"
@@ -109,7 +109,7 @@
         </activity>
 
         <activity android:name="org.smc.inputmethod.indic.setup.SetupWizardActivity"
-                android:theme="@style/platformActivityTheme"
+                android:theme="@style/Theme.IndicKeyboard.Setup"
                 android:label="@string/english_ime_name"
                 android:exported="true"
                 android:clearTaskOnLaunch="true">

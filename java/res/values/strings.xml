@@ -413,49 +413,6 @@ mobile devices. [CHAR LIMIT=25] -->
     <!-- Title of the button to revert to the default value of the device in the settings dialog [CHAR LIMIT=15] -->
     <string name="button_default">Default</string>
 
-    <!-- Title of the setup wizard welcome screen. [CHAR LIMT=40] -->
-    <string name="setup_welcome_title">"Welcome to <xliff:g id="application_name">%s</xliff:g>"</string>
-    <!-- Additional title of the setup wizard welcome screen, just below the setup_welcome_title. [CHAR_LIMIT=64] -->
-    <string name="setup_welcome_additional_description">
-        "\nनमस्ते\nவணக்கம்\nনমস্কার\nനമസ്കാരം\nనమస్కారం\nਸਤਿ ਸ੍ਰੀ ਅਕਾਲ\nনমস্কাৰ\nನಮಸ್ಕಾರ\nखुरुमजरी\nનમસ્તે\n"
-    </string>
-    <!-- The label of the button that starts the setup wizard. [CHAR_LIMIT=64] -->
-    <string name="setup_start_action">Get started</string>
-    <!-- The label of the button that navigates the user to the next step of the setup wizard. [CHAR_LIMIT=64] -->
-    <string name="setup_next_action">Next step</string>
-    <!-- Title of the setup wizard. [CHAR LIMT=40] -->
-    <string name="setup_steps_title">"Setting up <xliff:g id="APPLICATION_NAME" example="Android Keyboard">%s</xliff:g>"</string>
-    <!-- Ordinal number of the 1st step in the setup wizard. [CHAR LIMIT=5] -->
-    <string name="setup_step1_bullet" translatable="false">1</string>
-    <!-- Title of the 1st step in the setup wizard. [CHAR LIMIT=64] -->
-    <string name="setup_step1_title">"Enable <xliff:g id="APPLICATION_NAME" example="Android Keyboard">%s</xliff:g>"</string>
-    <!-- Detailed instruction of the 1st step in the setup wizard. [CHAR LIMIT=120] -->
-    <string name="setup_step1_instruction">"Please check \"<xliff:g id="APPLICATION_NAME" example="Android Keyboard">%s</xliff:g>\" in your Languages&#160;&amp; input settings. This will authorize it to run on your device."</string>
-    <!-- Detailed instruction of the already finished 1st step in the setup wizard. [CHAR LIMIT=120] -->
-    <string name="setup_step1_finished_instruction">"<xliff:g id="APPLICATION_NAME" example="Android Keyboard">%s</xliff:g> is already enabled in your Languages&#160;&amp; input settings, so this step is done. On to the next one!"</string>
-    <!-- The label of the button that triggers the Languages & input settings in order to enable the keyboard. [CHAR_LIMIT=64] -->
-    <string name="setup_step1_action">Enable in Settings</string>
-    <!-- Ordinal number of the 2nd step in the setup wizard. [CHAR LIMIT=5] -->
-    <string name="setup_step2_bullet" translatable="false">2</string>
-    <!-- Title of the 2nd step in the setup wizard. [CHAR LIMIT=64] -->
-    <string name="setup_step2_title">"Switch to <xliff:g id="APPLICATION_NAME" example="Android Keyboard">%s</xliff:g>"</string>
-    <!-- Detailed instruction of the 2nd step in the setup wizard. [CHAR LIMIT=120] -->
-    <string name="setup_step2_instruction">"Next, select \"<xliff:g id="APPLICATION_NAME" example="Android Keyboard">%s</xliff:g>\" as your active text-input method."</string>
-    <!-- The label of the button that triggers the choose input method dialog in order to select the keyboard. [CHAR_LIMIT=64] -->
-    <string name="setup_step2_action">Switch input methods</string>
-    <!-- Ordinal number of the 3rd step in the setup wizard. [CHAR LIMIT=5] -->
-    <string name="setup_step3_bullet" translatable="false">3</string>
-    <!-- Title of the 3rd step in the setup wizard. [CHAR LIMIT=64] -->
-    <string name="setup_step3_title">"Select languages"</string>
-    <string name="setup_step3_instruction">Select the languages and layouts you want to use.</string>
-    <string name="setup_step3_action">Configure languages</string>
-    <!-- The label of the button that triggers the screen for configuaring additional languages of the keyboard. [CHAR_LIMIT=64] -->
-    <string name="setup_step4_bullet" translatable="false">4</string>
-    <string name="setup_step4_title">"Congratulations, you're all set!"</string>
-    <!-- Detailed instruction of the 3rd step in the setup wizard. [CHAR LIMIT=120] -->
-    <string name="setup_step4_instruction">Now you can type in all your favorite apps with <xliff:g id="APPLICATION_NAME" example="Android Keyboard">%s</xliff:g>.</string>
-    <!-- The label of the button that finishes the setup wizard. [CHAR_LIMIT=64] -->
-    <string name="setup_finish_action">Finished</string>
     <!-- Option to show setup wizard icon. [CHAR LIMIT=30]-->
     <string name="show_setup_wizard_icon">Show app icon</string>
     <!-- Description for the option to show setup wizard application icon of this IME in the laucher. [CHAR_LIMIT=65] -->
@@ -617,4 +574,49 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
     <string name="varnam_vst_missing">Varnam support for "%1$s" not found. Make sure you have installed Varnam Indic Keyboard App.</string>
     <string name="settings_screen_varnam">Varnam</string>
     <string name="settings_screen_varnam_summary">Varnam is an intelligent word-by-word transliterator. You need to have varnam apk installed inorder for this to work.</string>
+
+    <!-- Modern setup wizard -->
+    <string name="su_welcome_subtitle">Type in 20+ Indian languages. Setup takes just a moment.</string>
+    <string name="su_get_started">Get started</string>
+    <string name="su_step1_title">Enable Indic Keyboard</string>
+    <string name="su_step1_desc">Turn on Indic Keyboard in your device\'s input method settings.</string>
+    <string name="su_step1_action">Enable keyboard</string>
+    <string name="su_step2_title">Switch to Indic Keyboard</string>
+    <string name="su_step2_desc">Set Indic Keyboard as your current keyboard.</string>
+    <string name="su_step2_action">Switch keyboard</string>
+    <string name="su_step3_title">Choose your languages</string>
+    <string name="su_step3_desc">Pick the languages and layouts you want to type in.</string>
+    <string name="su_step3_action">Choose languages</string>
+    <string name="su_done_title">You\'re all set</string>
+    <string name="su_done_desc">Indic Keyboard is ready. Start typing in your language.</string>
+    <string name="su_done_action">Done</string>
+    <string name="su_step_progress">Step %1$d of %2$d</string>
+
+    <!-- "Welcome" cycled on the setup welcome screen.
+         NOTE: A few of these should be confirmed by a native speaker. -->
+    <string-array name="su_welcome_greetings" translatable="false">
+        <item>Welcome</item>           <!-- English (en) -->
+        <item>स्वागत है</item>            <!-- Hindi (hi) -->
+        <item>স্বাগতম</item>            <!-- Assamese (as) -->
+        <item>স্বাগতম</item>            <!-- Bengali (bn) -->
+        <item>સ્વાગત છે</item>           <!-- Gujarati (gu) -->
+        <item>ಸ್ವಾಗತ</item>             <!-- Kannada (kn) -->
+        <item>സ്വാഗതം</item>           <!-- Malayalam (ml) -->
+        <item>स्वागत आहे</item>          <!-- Marathi (mr) -->
+        <item>ସ୍ୱାଗତ</item>             <!-- Odia (or) -->
+        <item>ਜੀ ਆਇਆਂ ਨੂੰ</item>        <!-- Punjabi (pa) -->
+        <item>स्वागतम्</item>            <!-- Sanskrit (sa) -->
+        <item>வரவேற்கிறோம்</item>       <!-- Tamil (ta) -->
+        <item>స్వాగతం</item>            <!-- Telugu (te) -->
+        <item>स्वागत छ</item>            <!-- Nepali (ne) -->
+        <item>ආයුබෝවන්</item>          <!-- Sinhala (si) -->
+        <item>ကြိုဆိုပါတယ်</item>          <!-- Burmese (my) -->
+        <item>مرحبًا</item>              <!-- Arabic (ar) -->
+        <item>خوش آمدید</item>          <!-- Urdu (ur) -->
+        <item>خوش آمدید</item>          <!-- Kashmiri (ks) -->
+        <item>स्वागत अछि</item>          <!-- Maithili (mai) -->
+        <item>ꯈꯨꯔꯨꯝꯖꯔꯤ</item>            <!-- Manipuri / Meitei (mni) -->
+        <item>တၟေ်ဂၠိုၚ်</item>            <!-- Mon (mnw) -->
+        <item>ᱡᱚᱦᱟᱨ</item>             <!-- Santali (sat) -->
+    </string-array>
 </resources>

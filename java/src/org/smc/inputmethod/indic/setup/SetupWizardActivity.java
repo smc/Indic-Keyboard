@@ -16,47 +16,64 @@
 
 package org.smc.inputmethod.indic.setup;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
 import android.os.Bundle;
 import android.os.Message;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.android.inputmethod.latin.R;
-import org.smc.inputmethod.indic.settings.SettingsActivity;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 import com.android.inputmethod.latin.utils.UncachedInputMethodManagerUtils;
+import com.google.android.material.button.MaterialButton;
 
-import java.util.ArrayList;
+import org.smc.inputmethod.indic.settings.SettingsActivity;
 
 import javax.annotation.Nonnull;
 
-// TODO: Use Fragment to implement welcome screen and setup steps.
-public final class SetupWizardActivity extends Activity implements View.OnClickListener {
+/**
+ * Modern Material 3 onboarding for the keyboard. A single adaptive screen guides the user through
+ * the three Android-mandated steps - enable the IME, switch to it, then choose languages - by
+ * updating its title, description and primary action per step. The underlying step state machine
+ * (which system screen to open, and detecting when the user returns) is unchanged.
+ */
+public final class SetupWizardActivity extends AppCompatActivity implements View.OnClickListener {
     static final String TAG = SetupWizardActivity.class.getSimpleName();
 
     private InputMethodManager mImm;
 
     private View mSetupWizard;
-    private View mWelcomeScreen;
-    private View mSetupScreen;
-    private View mActionStart;
-    private View mActionNext;
-    private TextView mStep1Bullet;
-    //private TextView mActionFinish;
-    private SetupStepGroup mSetupStepGroup;
+    private TextView mWelcomeWord;
+    private TextView mTitle;
+    private TextView mDescription;
+    private TextView mProgress;
+    private MaterialButton mPrimaryAction;
+    private String mApplicationName;
+
+    private String[] mGreetings;
+    private int mGreetingIndex;
+    private static final int[] GREETING_GRADIENT =
+            { 0xFF00BFA5, 0xFF2979FF, 0xFF7C4DFF };
+    private static final long GREETING_HOLD_MS = 1500;
+    private static final long GREETING_FADE_MS = 450;
+
     private static final String STATE_STEP = "step";
+    private static final String STATE_FIRST_STEP = "first_step";
+    private static final String EXTRA_FIRST_STEP = "first_step";
     private int mStepNumber;
+    private int mFirstStep;
     private boolean mNeedsToAdjustStepNumberToSystemState;
     private boolean finishState;
     private static final int STEP_WELCOME = 0;
@@ -112,21 +129,24 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        setTheme(android.R.style.Theme_Translucent_NoTitleBar);
         super.onCreate(savedInstanceState);
 
         mImm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
         mHandler = new SettingsPoolingHandler(this, mImm);
+        mApplicationName = getResources().getString(getApplicationInfo().labelRes);
 
         setContentView(R.layout.setup_wizard);
         mSetupWizard = findViewById(R.id.setup_wizard);
+        mWelcomeWord = findViewById(R.id.setup_welcome_word);
+        mTitle = findViewById(R.id.setup_title);
+        mDescription = findViewById(R.id.setup_description);
+        mProgress = findViewById(R.id.setup_progress);
+        mPrimaryAction = findViewById(R.id.setup_primary_action);
+        mPrimaryAction.setOnClickListener(this);
 
-        // Keep the wizard content, especially the bottom action buttons, clear of the
-        // system bars when the window is laid out edge-to-edge (Android 15 and above).
-        final int basePaddingLeft = mSetupWizard.getPaddingLeft();
-        final int basePaddingTop = mSetupWizard.getPaddingTop();
-        final int basePaddingRight = mSetupWizard.getPaddingRight();
-        final int basePaddingBottom = mSetupWizard.getPaddingBottom();
+        mGreetings = getResources().getStringArray(R.array.su_welcome_greetings);
+        mWelcomeWord.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> applyGreetingGradient());
+
         ViewCompat.setOnApplyWindowInsetsListener(mSetupWizard,
                 new OnApplyWindowInsetsListener() {
             @Override
@@ -134,123 +154,99 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
                     @Nonnull final WindowInsetsCompat insets) {
                 final Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars()
                         | WindowInsetsCompat.Type.displayCutout());
-                v.setPadding(basePaddingLeft + systemBars.left,
-                        basePaddingTop + systemBars.top,
-                        basePaddingRight + systemBars.right,
-                        basePaddingBottom + systemBars.bottom);
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
                 return WindowInsetsCompat.CONSUMED;
             }
         });
 
         if (savedInstanceState == null) {
+            final int carriedFirstStep = getIntent().getIntExtra(EXTRA_FIRST_STEP, 0);
+            mFirstStep = carriedFirstStep != 0 ? carriedFirstStep : determineSetupStepNumber();
             mStepNumber = determineSetupStepNumberFromLauncher();
         } else {
             mStepNumber = savedInstanceState.getInt(STATE_STEP);
+            mFirstStep = savedInstanceState.getInt(STATE_FIRST_STEP, STEP_1);
         }
+    }
 
-        final String applicationName = getResources().getString(getApplicationInfo().labelRes);
-        mWelcomeScreen = findViewById(R.id.setup_welcome_screen);
-        final TextView welcomeTitle = (TextView)findViewById(R.id.setup_welcome_title);
-        welcomeTitle.setText(getString(R.string.setup_welcome_title, applicationName));
+    private final Runnable mGreetingCycler = new Runnable() {
+        @Override
+        public void run() {
+            mGreetingIndex = (mGreetingIndex + 1) % mGreetings.length;
+            crossFadeToGreeting(mGreetingIndex);
+            mWelcomeWord.postDelayed(this, GREETING_HOLD_MS + GREETING_FADE_MS * 2);
+        }
+    };
 
-        mSetupScreen = findViewById(R.id.setup_steps_screen);
-        final TextView stepsTitle = (TextView)findViewById(R.id.setup_title);
-        stepsTitle.setText(getString(R.string.setup_steps_title, applicationName));
+    private void startGreetingAnimation() {
+        mGreetingIndex = 0;
+        mWelcomeWord.animate().cancel();
+        mWelcomeWord.setAlpha(1f);
+        mWelcomeWord.setText(mGreetings[0]);
+        applyGreetingGradient();
+        mWelcomeWord.removeCallbacks(mGreetingCycler);
+        if (mGreetings.length > 1) {
+            mWelcomeWord.postDelayed(mGreetingCycler, GREETING_HOLD_MS + GREETING_FADE_MS);
+        }
+    }
 
-        final SetupStepIndicatorView indicatorView =
-                (SetupStepIndicatorView)findViewById(R.id.setup_step_indicator);
-        mSetupStepGroup = new SetupStepGroup(indicatorView);
+    private void stopGreetingAnimation() {
+        mWelcomeWord.removeCallbacks(mGreetingCycler);
+        mWelcomeWord.animate().cancel();
+    }
 
-        mStep1Bullet = (TextView)findViewById(R.id.setup_step1_bullet);
-        mStep1Bullet.setOnClickListener(this);
-        final SetupStep step1 = new SetupStep(STEP_1, applicationName,
-                mStep1Bullet, findViewById(R.id.setup_step1),
-                R.string.setup_step1_title, R.string.setup_step1_instruction,
-                R.string.setup_step1_finished_instruction, R.drawable.ic_setup_step1,
-                R.string.setup_step1_action);
-        final SettingsPoolingHandler handler = mHandler;
-        step1.setAction(new Runnable() {
+    private void crossFadeToGreeting(final int index) {
+        mWelcomeWord.animate().alpha(0f).setDuration(GREETING_FADE_MS).withEndAction(
+                new Runnable() {
             @Override
             public void run() {
-                invokeLanguageAndInputSettings();
-                handler.startPollingImeSettings();
+                mWelcomeWord.setText(mGreetings[index]);
+                applyGreetingGradient();
+                mWelcomeWord.animate().alpha(1f).setDuration(GREETING_FADE_MS).start();
             }
-        });
-        mSetupStepGroup.addStep(step1);
+        }).start();
+    }
 
-        final SetupStep step2 = new SetupStep(STEP_2, applicationName,
-                (TextView)findViewById(R.id.setup_step2_bullet), findViewById(R.id.setup_step2),
-                R.string.setup_step2_title, R.string.setup_step2_instruction,
-                0 /* finishedInstruction */, R.drawable.ic_setup_step2,
-                R.string.setup_step2_action);
-        step2.setAction(new Runnable() {
-            @Override
-            public void run() {
-                invokeInputMethodPicker();
-            }
-        });
-        mSetupStepGroup.addStep(step2);
-
-        final SetupStep step3 = new SetupStep(STEP_3, applicationName,
-                (TextView)findViewById(R.id.setup_step3_bullet), findViewById(R.id.setup_step3),
-                R.string.setup_step3_title, R.string.setup_step3_instruction,
-                0 /* finishedInstruction */, R.drawable.ic_setup_step3,
-                R.string.setup_step3_action);
-        step3.setAction(new Runnable() {
-            @Override
-            public void run() {
-                invokeSubtypeEnablerOfThisIme();
-            }
-        });
-        mSetupStepGroup.addStep(step3);
-
-        final SetupStep step4 = new SetupStep(STEP_4, applicationName,
-                (TextView)findViewById(R.id.setup_step4_bullet), findViewById(R.id.setup_step4),
-                R.string.setup_step4_title, R.string.setup_step4_instruction,
-                0 /* finishedInstruction */, R.drawable.ic_setup_finish,
-                R.string.setup_finish_action);
-        step4.setAction(new Runnable() {
-            @Override
-            public void run() {
-                finish();
-            }
-        });
-        mSetupStepGroup.addStep(step4);
-
-        mActionStart = findViewById(R.id.setup_start_label);
-        mActionStart.setOnClickListener(this);
-        mActionNext = findViewById(R.id.setup_next);
-        mActionNext.setOnClickListener(this);
-        /*
-        mActionFinish = (TextView)findViewById(R.id.setup_finish);
-        mActionFinish.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                getResources().getDrawable(R.drawable.ic_setup_finish), null, null, null);
-        mActionFinish.setOnClickListener(this);
-        */
+    private void applyGreetingGradient() {
+        final CharSequence text = mWelcomeWord.getText();
+        if (TextUtils.isEmpty(text) || mWelcomeWord.getWidth() == 0) {
+            return;
+        }
+        final float textWidth = mWelcomeWord.getPaint().measureText(text.toString());
+        if (textWidth <= 0f) {
+            return;
+        }
+        final float available = mWelcomeWord.getWidth() - mWelcomeWord.getPaddingLeft()
+                - mWelcomeWord.getPaddingRight();
+        final float start = mWelcomeWord.getPaddingLeft() + Math.max(0f, (available - textWidth) / 2f);
+        mWelcomeWord.getPaint().setShader(new LinearGradient(start, 0f, start + textWidth, 0f,
+                GREETING_GRADIENT, null, Shader.TileMode.CLAMP));
+        mWelcomeWord.invalidate();
     }
 
     @Override
     public void onClick(final View v) {
-        /*
-        if (v == mActionFinish) {
-            finish();
+        if (v != mPrimaryAction) {
             return;
         }
-        */
-        final int currentStep = determineSetupStepNumber();
-        final int nextStep;
-        if (v == mActionStart) {
-            nextStep = STEP_1;
-        } else if (v == mActionNext) {
-            nextStep = mStepNumber + 1;
-        } else if (v == mStep1Bullet && currentStep == STEP_2) {
-            nextStep = STEP_1;
-        } else {
-            nextStep = mStepNumber;
-        }
-        if (mStepNumber != nextStep) {
-            mStepNumber = nextStep;
+        switch (mStepNumber) {
+        case STEP_WELCOME:
+            mStepNumber = determineSetupStepNumber();
             updateSetupStepView();
+            break;
+        case STEP_1:
+            invokeLanguageAndInputSettings();
+            mHandler.startPollingImeSettings();
+            break;
+        case STEP_2:
+            invokeInputMethodPicker();
+            break;
+        case STEP_3:
+            invokeSubtypeEnablerOfThisIme();
+            break;
+        case STEP_4:
+            finish();
+            break;
         }
     }
 
@@ -260,6 +256,7 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
         intent.setFlags(Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
                 | Intent.FLAG_ACTIVITY_SINGLE_TOP
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(EXTRA_FIRST_STEP, mFirstStep);
         startActivity(intent);
         mNeedsToAdjustStepNumberToSystemState = true;
     }
@@ -283,7 +280,6 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
     }
 
     void invokeInputMethodPicker() {
-        // Invoke input method picker.
         mImm.showInputMethodPicker();
         mNeedsToAdjustStepNumberToSystemState = true;
     }
@@ -305,11 +301,8 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
 
     private int determineSetupStepNumberFromLauncher() {
         final int stepNumber = determineSetupStepNumber();
-        if (stepNumber == STEP_1) {
+        if (stepNumber == STEP_1 || stepNumber == STEP_2) {
             return STEP_WELCOME;
-        }
-        if (stepNumber == STEP_2) {
-            return stepNumber;
         }
         return STEP_LAUNCHING_IME_SETTINGS;
     }
@@ -332,12 +325,14 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
     protected void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_STEP, mStepNumber);
+        outState.putInt(STATE_FIRST_STEP, mFirstStep);
     }
 
     @Override
     protected void onRestoreInstanceState(final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         mStepNumber = savedInstanceState.getInt(STATE_STEP);
+        mFirstStep = savedInstanceState.getInt(STATE_FIRST_STEP, mFirstStep);
     }
 
     private static boolean isInSetupSteps(final int stepNumber) {
@@ -347,9 +342,8 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
     @Override
     protected void onRestart() {
         super.onRestart();
-        // Probably the setup wizard has been invoked from "Recent" menu. The setup step number
-        // needs to be adjusted to system state, because the state (IME is enabled and/or current)
-        // may have been changed.
+        // The setup wizard may have been invoked from "Recent" menu; re-sync to the system state
+        // because the IME may have been enabled/selected in the meantime.
         if (isInSetupSteps(mStepNumber)) {
             mStepNumber = determineSetupStepNumber();
         }
@@ -359,7 +353,7 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
     protected void onResume() {
         super.onResume();
         if (mStepNumber == STEP_LAUNCHING_IME_SETTINGS) {
-            // Prevent white screen flashing while launching settings activity.
+            // Prevent flashing the wizard while launching the settings activity.
             mSetupWizard.setVisibility(View.INVISIBLE);
             invokeSettingsOfThisIme();
             mStepNumber = STEP_BACK_FROM_IME_SETTINGS;
@@ -373,18 +367,19 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        stopGreetingAnimation();
+    }
+
+    @Override
     public void onBackPressed() {
-        if (mStepNumber == STEP_1) {
+        if (mStepNumber == STEP_1 || mStepNumber == STEP_2) {
             mStepNumber = STEP_WELCOME;
             updateSetupStepView();
             return;
         }
         super.onBackPressed();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
     }
 
     @Override
@@ -399,97 +394,58 @@ public final class SetupWizardActivity extends Activity implements View.OnClickL
 
     private void updateSetupStepView() {
         mSetupWizard.setVisibility(View.VISIBLE);
-        final boolean welcomeScreen = (mStepNumber == STEP_WELCOME);
-        mWelcomeScreen.setVisibility(welcomeScreen ? View.VISIBLE : View.GONE);
-        mSetupScreen.setVisibility(welcomeScreen ? View.GONE : View.VISIBLE);
-        if (welcomeScreen) {
+        final int titleRes;
+        final int descRes;
+        final int actionRes;
+        final boolean showProgress;
+        switch (mStepNumber) {
+        case STEP_1:
+            titleRes = R.string.su_step1_title;
+            descRes = R.string.su_step1_desc;
+            actionRes = R.string.su_step1_action;
+            showProgress = true;
+            break;
+        case STEP_2:
+            titleRes = R.string.su_step2_title;
+            descRes = R.string.su_step2_desc;
+            actionRes = R.string.su_step2_action;
+            showProgress = true;
+            break;
+        case STEP_3:
+            titleRes = R.string.su_step3_title;
+            descRes = R.string.su_step3_desc;
+            actionRes = R.string.su_step3_action;
+            showProgress = true;
+            break;
+        case STEP_4:
+            titleRes = R.string.su_done_title;
+            descRes = R.string.su_done_desc;
+            actionRes = R.string.su_done_action;
+            showProgress = false;
+            break;
+        case STEP_WELCOME:
+        default:
+            mTitle.setVisibility(View.GONE);
+            mWelcomeWord.setVisibility(View.VISIBLE);
+            mDescription.setText(R.string.su_welcome_subtitle);
+            mPrimaryAction.setText(R.string.su_get_started);
+            mProgress.setVisibility(View.GONE);
+            startGreetingAnimation();
             return;
         }
-        final boolean isStepActionAlreadyDone = mStepNumber < determineSetupStepNumber();
-        mSetupStepGroup.enableStep(mStepNumber, isStepActionAlreadyDone);
-        mActionNext.setVisibility(isStepActionAlreadyDone ? View.VISIBLE : View.GONE);
-        //mActionFinish.setVisibility((mStepNumber == STEP_4) ? View.VISIBLE : View.GONE);
-    }
-
-    static final class SetupStep implements View.OnClickListener {
-        public final int mStepNo;
-        private final View mStepView;
-        private final TextView mBulletView;
-        private final int mActivatedColor;
-        private final int mDeactivatedColor;
-        private final String mInstruction;
-        private final String mFinishedInstruction;
-        private final TextView mActionLabel;
-        private Runnable mAction;
-
-        public SetupStep(final int stepNo, final String applicationName, final TextView bulletView,
-                final View stepView, final int title, final int instruction,
-                final int finishedInstruction, final int actionIcon, final int actionLabel) {
-            mStepNo = stepNo;
-            mStepView = stepView;
-            mBulletView = bulletView;
-            final Resources res = stepView.getResources();
-            mActivatedColor = res.getColor(R.color.setup_text_action);
-            mDeactivatedColor = res.getColor(R.color.setup_text_dark);
-
-            final TextView titleView = (TextView)mStepView.findViewById(R.id.setup_step_title);
-            titleView.setText(res.getString(title, applicationName));
-            mInstruction = (instruction == 0) ? null
-                    : res.getString(instruction, applicationName);
-            mFinishedInstruction = (finishedInstruction == 0) ? null
-                    : res.getString(finishedInstruction, applicationName);
-
-            mActionLabel = (TextView)mStepView.findViewById(R.id.setup_step_action_label);
-            mActionLabel.setText(res.getString(actionLabel));
-            if (actionIcon == 0) {
-                final int paddingEnd = mActionLabel.getPaddingEnd();
-                mActionLabel.setPaddingRelative(paddingEnd, 0, paddingEnd, 0);
-            } else {
-                mActionLabel.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                        res.getDrawable(actionIcon), null, null, null);
-            }
-        }
-
-        public void setEnabled(final boolean enabled, final boolean isStepActionAlreadyDone) {
-            mStepView.setVisibility(enabled ? View.VISIBLE : View.GONE);
-            mBulletView.setTextColor(enabled ? mActivatedColor : mDeactivatedColor);
-            final TextView instructionView = (TextView)mStepView.findViewById(
-                    R.id.setup_step_instruction);
-            instructionView.setText(isStepActionAlreadyDone ? mFinishedInstruction : mInstruction);
-            mActionLabel.setVisibility(isStepActionAlreadyDone ? View.GONE : View.VISIBLE);
-        }
-
-        public void setAction(final Runnable action) {
-            mActionLabel.setOnClickListener(this);
-            mAction = action;
-        }
-
-        @Override
-        public void onClick(final View v) {
-            if (v == mActionLabel && mAction != null) {
-                mAction.run();
-                return;
-            }
-        }
-    }
-
-    static final class SetupStepGroup {
-        private final SetupStepIndicatorView mIndicatorView;
-        private final ArrayList<SetupStep> mGroup = new ArrayList<>();
-
-        public SetupStepGroup(final SetupStepIndicatorView indicatorView) {
-            mIndicatorView = indicatorView;
-        }
-
-        public void addStep(final SetupStep step) {
-            mGroup.add(step);
-        }
-
-        public void enableStep(final int enableStepNo, final boolean isStepActionAlreadyDone) {
-            for (final SetupStep step : mGroup) {
-                step.setEnabled(step.mStepNo == enableStepNo, isStepActionAlreadyDone);
-            }
-            mIndicatorView.setIndicatorPosition(enableStepNo - STEP_1, mGroup.size());
+        stopGreetingAnimation();
+        mWelcomeWord.setVisibility(View.GONE);
+        mTitle.setVisibility(View.VISIBLE);
+        mTitle.setText(titleRes);
+        mDescription.setText(descRes);
+        mPrimaryAction.setText(actionRes);
+        if (showProgress) {
+            final int total = Math.max(1, STEP_3 - mFirstStep + 1);
+            final int current = Math.min(total, Math.max(1, mStepNumber - mFirstStep + 1));
+            mProgress.setVisibility(View.VISIBLE);
+            mProgress.setText(getString(R.string.su_step_progress, current, total));
+        } else {
+            mProgress.setVisibility(View.GONE);
         }
     }
 }
