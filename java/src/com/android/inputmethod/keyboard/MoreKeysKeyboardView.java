@@ -16,15 +16,18 @@
 
 package com.android.inputmethod.keyboard;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.PathInterpolator;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.MoreKeysKeyboardAccessibilityDelegate;
@@ -32,6 +35,7 @@ import com.android.inputmethod.keyboard.internal.KeyDrawParams;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.CoordinateUtils;
+import com.android.inputmethod.latin.utils.TypefaceUtils;
 
 /**
  * A view that renders a virtual {@link MoreKeysKeyboard}. It handles rendering of keys and
@@ -41,6 +45,15 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     private final int[] mCoordinates = CoordinateUtils.newInstance();
 
     private final Drawable mDivider;
+    private final int mKeyFocusedTextColor;
+    private final Drawable mHoverHighlight;
+    private static final float HOVER_ACTIVE_SCALE = 1.06f;
+    private static final long HOVER_MOVE_DURATION_MS = 130L;
+    private float mHoverCenterX;
+    private float mHoverCenterY;
+    private int mHoverRadius;
+    private boolean mHoverVisible;
+    private ValueAnimator mHoverAnimator;
     protected final KeyDetector mKeyDetector;
     private Controller mController = EMPTY_CONTROLLER;
     protected KeyboardActionListener mListener;
@@ -66,6 +79,10 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
             // TODO: Drawable itself should have an alpha value.
             mDivider.setAlpha(128);
         }
+        mKeyFocusedTextColor = moreKeysKeyboardViewAttr.getColor(
+                R.styleable.MoreKeysKeyboardView_keyFocusedTextColor, 0);
+        mHoverHighlight = moreKeysKeyboardViewAttr.getDrawable(
+                R.styleable.MoreKeysKeyboardView_keyHoverHighlight);
         moreKeysKeyboardViewAttr.recycle();
         mKeyDetector = new MoreKeysDetector(getResources().getDimension(
                 R.dimen.config_more_keys_keyboard_slide_allowance));
@@ -88,6 +105,26 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
             final KeyDrawParams params) {
         if (!key.isSpacer() || !(key instanceof MoreKeysKeyboard.MoreKeyDivider)
                 || mDivider == null) {
+            if (mKeyFocusedTextColor != 0 && isUnderHover(key)) {
+                final int textColor = params.mTextColor;
+                final int functionalColor = params.mFunctionalTextColor;
+                final int inactivatedColor = params.mTextInactivatedColor;
+                params.mTextColor = mKeyFocusedTextColor;
+                params.mFunctionalTextColor = mKeyFocusedTextColor;
+                params.mTextInactivatedColor = mKeyFocusedTextColor;
+                final float dy = focusedLabelVerticalCorrection(key, paint, params);
+                final float cx = key.getDrawWidth() * 0.5f;
+                final float cy = key.getHeight() * 0.5f;
+                canvas.save();
+                canvas.scale(HOVER_ACTIVE_SCALE, HOVER_ACTIVE_SCALE, cx, cy);
+                canvas.translate(0.0f, dy);
+                super.onDrawKeyTopVisuals(key, canvas, paint, params);
+                canvas.restore();
+                params.mTextColor = textColor;
+                params.mFunctionalTextColor = functionalColor;
+                params.mTextInactivatedColor = inactivatedColor;
+                return;
+            }
             super.onDrawKeyTopVisuals(key, canvas, paint, params);
             return;
         }
@@ -98,6 +135,92 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         final int iconX = (keyWidth - iconWidth) / 2; // Align horizontally center
         final int iconY = (keyHeight - iconHeight) / 2; // Align vertically center
         drawIcon(canvas, mDivider, iconX, iconY, iconWidth, iconHeight);
+    }
+
+    private static final Rect sLabelBounds = new Rect();
+    private float focusedLabelVerticalCorrection(final Key key, final Paint paint,
+            final KeyDrawParams params) {
+        final String label = key.getLabel();
+        if (label == null) {
+            return 0.0f;
+        }
+        paint.setTypeface(key.selectTypeface(params));
+        paint.setTextSize(key.selectTextSize(params));
+        final float referenceHeight = TypefaceUtils.getReferenceCharHeight(paint);
+        paint.getTextBounds(label, 0, label.length(), sLabelBounds);
+        return -(referenceHeight / 2.0f + (sLabelBounds.top + sLabelBounds.bottom) / 2.0f);
+    }
+
+    @Override
+    protected void onDraw(final Canvas canvas) {
+        // Draw the sliding highlight under the labels (super draws keys/labels on top).
+        if (mHoverVisible && mHoverHighlight != null && mHoverRadius > 0) {
+            mHoverHighlight.setBounds(
+                    Math.round(mHoverCenterX - mHoverRadius),
+                    Math.round(mHoverCenterY - mHoverRadius),
+                    Math.round(mHoverCenterX + mHoverRadius),
+                    Math.round(mHoverCenterY + mHoverRadius));
+            mHoverHighlight.draw(canvas);
+        }
+        super.onDraw(canvas);
+    }
+
+    private float keyCenterX(final Key key) {
+        return key.getX() + getPaddingLeft() + key.getDrawWidth() * 0.5f;
+    }
+
+    private float keyCenterY(final Key key) {
+        return key.getY() + getPaddingTop() + key.getHeight() * 0.5f;
+    }
+
+    private boolean isUnderHover(final Key key) {
+        if (!mHoverVisible) {
+            return false;
+        }
+        final float left = key.getX() + getPaddingLeft();
+        final float top = key.getY() + getPaddingTop();
+        return mHoverCenterX >= left && mHoverCenterX < left + key.getDrawWidth()
+                && mHoverCenterY >= top && mHoverCenterY < top + key.getHeight();
+    }
+
+    private void moveHoverTo(final Key key) {
+        if (mKeyFocusedTextColor == 0 || mHoverHighlight == null) {
+            return;
+        }
+        mHoverRadius = Math.round(Math.min(key.getDrawWidth(), key.getHeight()) * 0.5f) - 1;
+        final float targetX = keyCenterX(key);
+        final float targetY = keyCenterY(key);
+        if (mHoverAnimator != null) {
+            mHoverAnimator.cancel();
+        }
+        if (!mHoverVisible) {
+            mHoverVisible = true;
+            mHoverCenterX = targetX;
+            mHoverCenterY = targetY;
+            invalidateAllKeys();
+            return;
+        }
+        final float startX = mHoverCenterX;
+        final float startY = mHoverCenterY;
+        mHoverAnimator = ValueAnimator.ofFloat(0.0f, 1.0f);
+        mHoverAnimator.setDuration(HOVER_MOVE_DURATION_MS);
+        mHoverAnimator.setInterpolator(new PathInterpolator(0.4f, 0.0f, 0.2f, 1.0f));
+        mHoverAnimator.addUpdateListener(animation -> {
+            final float f = (Float) animation.getAnimatedValue();
+            mHoverCenterX = startX + (targetX - startX) * f;
+            mHoverCenterY = startY + (targetY - startY) * f;
+            invalidateAllKeys();
+        });
+        mHoverAnimator.start();
+    }
+
+    private void hideHover() {
+        if (mHoverAnimator != null) {
+            mHoverAnimator.cancel();
+            mHoverAnimator = null;
+        }
+        mHoverVisible = false;
+        invalidateAllKeys();
     }
 
     @Override
@@ -231,6 +354,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
 
     private void updatePressKeyGraphics(final Key key) {
         key.onPressed();
+        moveHoverTo(key);
         invalidateKey(key);
     }
 
@@ -239,6 +363,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         if (!isShowingInParent()) {
             return;
         }
+        hideHover();
         final MoreKeysKeyboardAccessibilityDelegate accessibilityDelegate = mAccessibilityDelegate;
         if (accessibilityDelegate != null
                 && AccessibilityUtils.getInstance().isAccessibilityEnabled()) {

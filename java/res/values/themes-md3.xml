@@ -16,12 +16,13 @@
         <item name="keyShiftedLetterHintInactivatedColor">?attr/md3OnSurfaceVariant</item>
         <item name="keyShiftedLetterHintActivatedColor">?attr/md3OnSurface</item>
         <item name="keyPreviewTextColor">?attr/md3OnSurface</item>
+        <item name="keyPreviewTextRatio">68%</item>
     </style>
 
     <style name="MainKeyboardView.MD3" parent="KeyboardView.MD3">
         <item name="moreKeysKeyboardForActionLayout">@layout/more_keys_keyboard_for_action_lxx</item>
-        <item name="keyPreviewBackground">@drawable/md3_popup_background</item>
-        <item name="keyPreviewHeight">@dimen/config_key_preview_height_lxx</item>
+        <item name="keyPreviewBackground">@drawable/md3_key_preview_background</item>
+        <item name="keyPreviewHeight">96dp</item>
         <item name="keyPreviewOffset">@dimen/config_key_preview_offset_lxx</item>
         <item name="keyPreviewShowUpAnimator">@anim/key_preview_show_up_lxx</item>
         <item name="keyPreviewDismissAnimator">@anim/key_preview_dismiss_lxx</item>
@@ -37,12 +38,15 @@
         <item name="keyboardTopPadding">0%p</item>
         <item name="keyboardBottomPadding">0%p</item>
         <item name="horizontalGap">0%p</item>
+        <item name="verticalGap">0%p</item>
         <item name="touchPositionCorrectionData">@null</item>
     </style>
 
     <style name="MoreKeysKeyboardView.MD3" parent="KeyboardView.MD3">
         <item name="android:background">@drawable/md3_popup_background</item>
-        <item name="keyBackground">@drawable/btn_keyboard_key_md3</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_popup_md3</item>
+        <item name="keyFocusedTextColor">?attr/md3Surface</item>
+        <item name="keyHoverHighlight">@drawable/md3_hover_circle</item>
         <item name="divider">@drawable/more_keys_divider</item>
         <item name="keyTypeface">normal</item>
         <item name="verticalCorrection">@dimen/config_more_keys_keyboard_vertical_correction_holo</item>
@@ -50,7 +54,7 @@
 
     <style name="MoreKeysKeyboardView.MD3.Action" parent="MoreKeysKeyboardView.MD3">
         <item name="android:background">@drawable/md3_popup_background</item>
-        <item name="keyBackground">@drawable/btn_keyboard_key_md3</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_popup_md3</item>
         <item name="divider">@null</item>
         <item name="keyLabelFlags">keepBackgroundAspectRatio</item>
     </style>
@@ -97,14 +101,16 @@
         <item name="iconEmojiCategory16Tab">@drawable/ic_kb_tab_people</item>
     </style>
 
-    <!-- Keyboard styles carry the themeId so layout <case>s resolve correctly. -->
-    <style name="Keyboard.MD3_Light" parent="Keyboard">
+    <style name="Keyboard.MD3" parent="Keyboard">
+        <item name="moreKeysTemplate">@xml/kbd_more_keys_keyboard_template_md3</item>
+    </style>
+    <style name="Keyboard.MD3_Light" parent="Keyboard.MD3">
         <item name="themeId">MD3Light</item>
     </style>
-    <style name="Keyboard.MD3_Dark" parent="Keyboard">
+    <style name="Keyboard.MD3_Dark" parent="Keyboard.MD3">
         <item name="themeId">MD3Dark</item>
     </style>
-    <style name="Keyboard.MD3_Dynamic" parent="Keyboard">
+    <style name="Keyboard.MD3_Dynamic" parent="Keyboard.MD3">
         <item name="themeId">MD3Dynamic</item>
     </style>
 

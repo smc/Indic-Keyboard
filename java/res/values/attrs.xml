@@ -198,6 +198,10 @@
 
     <declare-styleable name="MoreKeysKeyboardView">
         <attr name="divider" format="reference" />
+        <!-- Label color for the focused key, drawn over its highlight. 0 = no override. -->
+        <attr name="keyFocusedTextColor" format="color" />
+        <!-- Highlight that slides between keys as focus moves (drawn behind the labels). -->
+        <attr name="keyHoverHighlight" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="EmojiPalettesView">

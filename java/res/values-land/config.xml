@@ -29,6 +29,7 @@
 
     <!-- key_height + key_bottom_gap = config_more_keys_keyboard_key_height -->
     <dimen name="config_more_keys_keyboard_key_height">44.8dp</dimen>
+    <dimen name="config_more_keys_keyboard_key_height_md3">36dp</dimen>
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
     <!-- config_more_keys_keyboard_key_height x 1.2 -->
     <dimen name="config_more_keys_keyboard_slide_allowance">53.76dp</dimen>

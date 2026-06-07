@@ -906,6 +906,10 @@ public class Key implements Comparable<Key> {
         mPressed = false;
     }
 
+    public boolean isPressed() {
+        return mPressed;
+    }
+
     public final boolean isEnabled() {
         return mEnabled;
     }
