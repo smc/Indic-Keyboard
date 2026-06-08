@@ -152,7 +152,7 @@ public class SettingsValues {
                 ? Settings.readShowsLanguageSwitchKey(prefs) : true /* forcibly */;
         mShowsEmojiSwitchKey = Settings.readShowsEmojiSwitchKey(prefs);
         mShowsNumberRow = Settings.readShowsNumberRow(prefs);
-        mShowsHints = prefs.getBoolean(Settings.PREF_SHOW_HINTS, true);
+        mShowsHints = prefs.getBoolean(Settings.PREF_SHOW_HINTS, false);
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mUsePersonalizedDicts = prefs.getBoolean(Settings.PREF_KEY_USE_PERSONALIZED_DICTS, true);
         mUseDoubleSpacePeriod = prefs.getBoolean(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true)
@@ -386,7 +386,7 @@ public class SettingsValues {
                     .remove(Settings.PREF_VOICE_MODE_OBSOLETE)
                     .apply();
         }
-        return prefs.getBoolean(Settings.PREF_VOICE_INPUT_KEY, true);
+        return prefs.getBoolean(Settings.PREF_VOICE_INPUT_KEY, false);
     }
 
     public String dump() {

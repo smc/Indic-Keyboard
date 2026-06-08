@@ -25,6 +25,9 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -67,6 +70,7 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.keyboard.KeyboardTheme;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.DictionaryDumpBroadcastReceiver;
@@ -600,10 +604,29 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mIsHardwareAcceleratedDrawingEnabled = true;
     }
 
+    private void migrateToMaterialThemeOnUpgrade() {
+        final SharedPreferences prefs = PreferenceManagerCompat.getDeviceSharedPreferences(this);
+        if (prefs.getBoolean(Settings.PREF_DID_MD3_MIGRATION, false)) {
+            return;
+        }
+        boolean isUpgrade = false;
+        try {
+            final PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
+            isUpgrade = info.lastUpdateTime > info.firstInstallTime;
+        } catch (final PackageManager.NameNotFoundException e) {
+            // Treat as a fresh install: leave the default theme untouched.
+        }
+        if (isUpgrade) {
+            KeyboardTheme.saveKeyboardThemeId(KeyboardTheme.THEME_ID_MD3_DYNAMIC, prefs);
+        }
+        prefs.edit().putBoolean(Settings.PREF_DID_MD3_MIGRATION, true).apply();
+    }
+
     @Override
     public void onCreate() {
         Settings.init(this);
         DebugFlags.init(PreferenceManagerCompat.getDeviceSharedPreferences(this));
+        migrateToMaterialThemeOnUpgrade();
         RichInputMethodManager.init(this);
         mRichImm = RichInputMethodManager.getInstance();
         mDisplayContext = getDisplayContext();
