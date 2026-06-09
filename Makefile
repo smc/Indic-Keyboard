@@ -25,7 +25,12 @@ GRADLEW     := JAVA_HOME="$(JAVA_HOME)" ./gradlew
 DEBUG_APK   := java/build/outputs/apk/debug/IndicKeyboard-$(ABI)-debug.apk
 RELEASE_APK := java/build/outputs/apk/release/IndicKeyboard-$(ABI)-release.apk
 
-.PHONY: help build install run emulator emulator-install emulator-run release release-install uninstall clear-data clean logcat build-native build-native-x86 keyboard-text dicttool dictionaries dictionaries-en device-check
+TEST_APP_DIR := input-test-app
+TEST_APP_PKG := org.smc.inputtest
+TEST_APP_APK := $(TEST_APP_DIR)/build/outputs/apk/debug/input-test-app-debug.apk
+TEST_APP_ACT := $(TEST_APP_PKG)/.MainActivity
+
+.PHONY: help build install run emulator emulator-install emulator-run release release-install uninstall clear-data clean logcat build-native build-native-x86 keyboard-text dicttool dictionaries dictionaries-en device-check test-app-build test-app-install test-app-emulator-install
 
 .DEFAULT_GOAL := help
 
@@ -71,6 +76,16 @@ emulator-run: emulator ## Boot the emulator, install and make Indic Keyboard the
 	$(ADB_BASE) -s emulator-5554 shell ime enable $(PKG)/.LatinIME
 	$(ADB_BASE) -s emulator-5554 shell ime set $(PKG)/.LatinIME
 	@echo "Indic Keyboard is now the active IME. Focus a text field to see it."
+
+test-app-build: ## Assemble the input-type test app's debug APK
+	cd $(TEST_APP_DIR) && $(GRADLEW) assembleDebug
+
+test-app-install: test-app-build device-check ## Build, install + launch the input test app on the device
+	$(ADB) install -r $(TEST_APP_APK)
+	$(ADB) shell am start -n $(TEST_APP_ACT)
+
+test-app-emulator-install: emulator ## Boot the emulator and install + launch the input test app on it
+	$(MAKE) test-app-install DEVICE=emulator-5554
 
 # Signing config comes from the environment:
 #   INDIC_KEYSTORE, INDIC_KEYSTORE_PASSWORD, INDIC_KEY_ALIAS, INDIC_KEY_PASSWORD
