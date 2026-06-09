@@ -73,6 +73,16 @@ public final class MoreSuggestionsView extends MoreKeysKeyboardView {
         return pane.mOccupiedWidth / 2;
     }
 
+    @Override
+    protected boolean isRectangularHover() {
+        return true;
+    }
+
+    @Override
+    public boolean showsScrim() {
+        return false;
+    }
+
     public void updateKeyboardGeometry(final int keyHeight) {
         updateKeyDrawParams(keyHeight);
     }

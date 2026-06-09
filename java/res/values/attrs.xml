@@ -203,6 +203,7 @@
         <attr name="keyFocusedTextColor" format="color" />
         <!-- Highlight that slides between keys as focus moves (drawn behind the labels). -->
         <attr name="keyHoverHighlight" format="reference" />
+        <attr name="keyHoverHighlightRect" format="reference" />
         <!-- Circular panel background used when the panel holds a single key. -->
         <attr name="keySingleBackground" format="reference" />
     </declare-styleable>

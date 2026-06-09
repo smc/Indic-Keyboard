@@ -665,7 +665,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         panel.showInParent(mDrawingPreviewPlacerView);
         mMoreKeysPanel = panel;
         final Keyboard keyboard = getKeyboard();
-        if (keyboard != null
+        if (keyboard != null && panel.showsScrim()
                 && keyboard.mMoreKeysTemplate == R.xml.kbd_more_keys_keyboard_template_md3) {
             mDrawingPreviewPlacerView.setScrim(true, getContext().getColor(R.color.keyboard_scrim_md3));
         }

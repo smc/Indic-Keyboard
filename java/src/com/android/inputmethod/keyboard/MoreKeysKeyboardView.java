@@ -46,6 +46,7 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     private final Drawable mDivider;
     private final int mKeyFocusedTextColor;
     private final Drawable mHoverHighlight;
+    private final Drawable mHoverHighlightRect;
     private final Drawable mSingleKeyBackground;
     private final Drawable mPanelBackground;
     private final Rect mBackgroundPadding = new Rect();
@@ -56,7 +57,8 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     private float mHoverCenterY;
     private float mHoverTargetX;
     private float mHoverTargetY;
-    private int mHoverRadius;
+    private float mHoverHalfWidth;
+    private float mHoverHalfHeight;
     private boolean mHoverVisible;
     private ValueAnimator mHoverAnimator;
     protected final KeyDetector mKeyDetector;
@@ -88,6 +90,8 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
                 R.styleable.MoreKeysKeyboardView_keyFocusedTextColor, 0);
         mHoverHighlight = moreKeysKeyboardViewAttr.getDrawable(
                 R.styleable.MoreKeysKeyboardView_keyHoverHighlight);
+        mHoverHighlightRect = moreKeysKeyboardViewAttr.getDrawable(
+                R.styleable.MoreKeysKeyboardView_keyHoverHighlightRect);
         mSingleKeyBackground = moreKeysKeyboardViewAttr.getDrawable(
                 R.styleable.MoreKeysKeyboardView_keySingleBackground);
         mPanelBackground = getBackground();
@@ -154,15 +158,27 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     }
 
 
+    protected boolean isRectangularHover() {
+        return false;
+    }
+
+    private Drawable activeHoverHighlight() {
+        if (isRectangularHover() && mHoverHighlightRect != null) {
+            return mHoverHighlightRect;
+        }
+        return mHoverHighlight;
+    }
+
     @Override
     protected void onDraw(final Canvas canvas) {
-        if (mHoverVisible && mHoverHighlight != null && mHoverRadius > 0) {
-            mHoverHighlight.setBounds(
-                    Math.round(mHoverCenterX - mHoverRadius),
-                    Math.round(mHoverCenterY - mHoverRadius),
-                    Math.round(mHoverCenterX + mHoverRadius),
-                    Math.round(mHoverCenterY + mHoverRadius));
-            mHoverHighlight.draw(canvas);
+        final Drawable highlight = activeHoverHighlight();
+        if (mHoverVisible && highlight != null && mHoverHalfWidth > 0 && mHoverHalfHeight > 0) {
+            highlight.setBounds(
+                    Math.round(mHoverCenterX - mHoverHalfWidth),
+                    Math.round(mHoverCenterY - mHoverHalfHeight),
+                    Math.round(mHoverCenterX + mHoverHalfWidth),
+                    Math.round(mHoverCenterY + mHoverHalfHeight));
+            highlight.draw(canvas);
         }
         super.onDraw(canvas);
     }
@@ -186,10 +202,19 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     }
 
     private void moveHoverTo(final Key key) {
-        if (mKeyFocusedTextColor == 0 || mHoverHighlight == null) {
+        if (mKeyFocusedTextColor == 0 || activeHoverHighlight() == null) {
             return;
         }
-        mHoverRadius = Math.round(Math.min(key.getDrawWidth(), key.getHeight()) * 0.5f) - 1;
+        if (isRectangularHover()) {
+            final float inset = getResources().getDimension(
+                    R.dimen.config_more_suggestions_hover_inset_md3);
+            mHoverHalfWidth = key.getDrawWidth() * 0.5f - inset;
+            mHoverHalfHeight = key.getHeight() * 0.5f - inset;
+        } else {
+            final float radius = Math.round(Math.min(key.getDrawWidth(), key.getHeight()) * 0.5f) - 1;
+            mHoverHalfWidth = radius;
+            mHoverHalfHeight = radius;
+        }
         mHoverTargetX = keyCenterX(key);
         mHoverTargetY = keyCenterY(key);
         if (!mHoverVisible) {
@@ -514,5 +539,10 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
     @Override
     public boolean isShowingInParent() {
         return (getContainerView().getParent() != null);
+    }
+
+    @Override
+    public boolean showsScrim() {
+        return true;
     }
 }

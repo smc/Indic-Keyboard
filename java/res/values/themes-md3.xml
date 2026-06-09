@@ -47,6 +47,7 @@
         <item name="keyBackground">@drawable/btn_keyboard_key_popup_md3</item>
         <item name="keyFocusedTextColor">?attr/md3Surface</item>
         <item name="keyHoverHighlight">@drawable/md3_hover_circle</item>
+        <item name="keyHoverHighlightRect">@drawable/md3_hover_rect</item>
         <item name="keySingleBackground">@drawable/md3_popup_background_circle</item>
         <item name="divider">@drawable/more_keys_divider</item>
         <item name="keyTypeface">normal</item>

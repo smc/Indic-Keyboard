@@ -133,4 +133,6 @@ public interface MoreKeysPanel {
      * Return whether the panel is currently being shown.
      */
     public boolean isShowingInParent();
+
+    public boolean showsScrim();
 }
