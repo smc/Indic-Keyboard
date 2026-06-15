@@ -87,7 +87,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
     private ImageButton mDeleteKey;
     private TextView mAlphabetKeyLeft;
-    private ImageButton mSearchKey;
+    private EmojiSearchController mEmojiSearchController;
     private View mSpacebar;
     // TODO: Remove this workaround.
     private View mSpacebarIcon;
@@ -172,6 +172,10 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         tspec.setContent(R.id.emoji_keyboard_dummy);
         final ImageView iconView = (ImageView) LayoutInflater.from(getContext()).inflate(
                 R.layout.emoji_keyboard_tab_icon, null);
+        final int tabWidth = Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48,
+                getResources().getDisplayMetrics()));
+        iconView.setLayoutParams(new LinearLayout.LayoutParams(
+                tabWidth, LinearLayout.LayoutParams.MATCH_PARENT));
         // TODO: Replace background color with its own setting rather than using the
         //       category page indicator background as a workaround.
         iconView.setBackgroundColor(mCategoryPageIndicatorBackground);
@@ -256,10 +260,14 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         mAlphabetKeyLeft.setOnTouchListener(this);
         mAlphabetKeyLeft.setOnClickListener(this);
 
-        mSearchKey = (ImageButton) findViewById(R.id.emoji_keyboard_search);
-        mSearchKey.setTag(Constants.CODE_EMOJI_SEARCH);
-        mSearchKey.setOnTouchListener(this);
-        mSearchKey.setOnClickListener(this);
+        findViewById(R.id.emoji_search_box).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                if (mEmojiSearchController != null) {
+                    mEmojiSearchController.enterSearch();
+                }
+            }
+        });
 
         mSpacebar = findViewById(R.id.emoji_keyboard_space);
         mSpacebar.setBackgroundResource(mSpacebarBackgroundId);
@@ -399,10 +407,6 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             // TODO: Remove this workaround to place the spacebar icon.
             mSpacebarIcon.setBackgroundResource(spacebarResId);
         }
-        final int searchIconResId = iconSet.getIconResourceId(KeyboardIconsSet.NAME_SEARCH_KEY);
-        if (searchIconResId != 0) {
-            mSearchKey.setImageResource(searchIconResId);
-        }
         final KeyDrawParams params = new KeyDrawParams();
         params.updateParams(mEmojiLayoutParams.getActionBarHeight(), keyVisualAttr);
         setupAlphabetKey(mAlphabetKeyLeft, switchToAlphaLabel, params);
@@ -420,6 +424,10 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     public void setKeyboardActionListener(final KeyboardActionListener listener) {
         mKeyboardActionListener = listener;
         mDeleteKeyOnTouchListener.setKeyboardActionListener(listener);
+    }
+
+    public void setEmojiSearchController(final EmojiSearchController controller) {
+        mEmojiSearchController = controller;
     }
 
     private void setCurrentCategoryAndPageId(final int categoryId, final int categoryPageId,
@@ -526,5 +534,6 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
      */
     public void refreshRecentEmojis() {
         mEmojiCategory.loadRecentKeys();
+        mEmojiPalettesAdapter.invalidateRecents();
     }
 }

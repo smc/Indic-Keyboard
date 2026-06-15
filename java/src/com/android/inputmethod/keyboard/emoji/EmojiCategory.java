@@ -216,6 +216,11 @@ final class EmojiCategory {
     }
 
     public DynamicGridKeyboard loadRecentKeys() {
+        for (final CategoryProperties properties : mShownCategories) {
+            if (properties.mCategoryId != EmojiCategory.ID_RECENTS) {
+                getKeyboard(properties.mCategoryId, 0 /* categoryPageId */);
+            }
+        }
         DynamicGridKeyboard recentsKbd =
                 getKeyboard(EmojiCategory.ID_RECENTS, 0 /* categoryPageId */);
         recentsKbd.loadRecentKeys(mCategoryKeyboardMap.values());

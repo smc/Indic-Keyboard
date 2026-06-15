@@ -23,6 +23,7 @@ import android.util.Log;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import org.smc.inputmethod.indic.settings.Settings;
+import com.android.inputmethod.latin.common.StringUtils;
 import com.android.inputmethod.latin.utils.JsonUtils;
 
 import java.util.ArrayDeque;
@@ -190,13 +191,19 @@ final class DynamicGridKeyboard extends Keyboard {
         final List<Object> keys = JsonUtils.jsonStrToList(str);
         Log.d(TAG, str);
         for (final Object o : keys) {
-            final Key key;
+            Key key = null;
             if (o instanceof Integer) {
                 final int code = (Integer)o;
                 key = getKeyByCode(keyboards, code);
+                if (key == null) {
+                    key = getKeyByOutputText(keyboards, StringUtils.newSingleCodePointString(code));
+                }
             } else if (o instanceof String) {
                 final String outputText = (String)o;
                 key = getKeyByOutputText(keyboards, outputText);
+                if (key == null && outputText.codePointCount(0, outputText.length()) == 1) {
+                    key = getKeyByCode(keyboards, outputText.codePointAt(0));
+                }
             } else {
                 Log.w(TAG, "Invalid object: " + o);
                 continue;

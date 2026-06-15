@@ -28,6 +28,7 @@ import android.view.inputmethod.InputMethodSubtype;
 import com.android.inputmethod.event.Event;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet.KeyboardLayoutSetException;
 import com.android.inputmethod.keyboard.emoji.EmojiPalettesView;
+import com.android.inputmethod.keyboard.emoji.EmojiSearchController;
 import com.android.inputmethod.keyboard.internal.KeyboardState;
 import com.android.inputmethod.keyboard.internal.KeyboardTextsSet;
 import com.android.inputmethod.latin.InputView;
@@ -59,8 +60,8 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private RichInputMethodManager mRichImm;
     private boolean mIsHardwareAcceleratedDrawingEnabled;
 
-    public boolean isEmojiSearch = false; // This is toggled to true by LatinIME
-    private InputMethodSubtype prevIMS; // Previous keyboard layout
+    public boolean isEmojiSearch = false; // True while the in-keyboard emoji search is showing.
+    private KeyboardLayoutSet mSavedKeyboardLayoutSet;
 
     private KeyboardState mState;
 
@@ -289,6 +290,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private void setMainKeyboardFrame(
             @Nonnull final SettingsValues settingsValues,
             @Nonnull final KeyboardSwitchState toggleState) {
+        final boolean wasShowingEmojiPalettes = isShowingEmojiPalettes();
         final int visibility =  isImeSuppressedByHardwareKeyboard(settingsValues, toggleState)
                 ? View.GONE : View.VISIBLE;
         mKeyboardView.setVisibility(visibility);
@@ -298,6 +300,10 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mMainKeyboardFrame.setVisibility(visibility);
         mEmojiPalettesView.setVisibility(View.GONE);
         mEmojiPalettesView.stopEmojiPalettes();
+        if (wasShowingEmojiPalettes) {
+            // Leaving the emoji palette for the main keyboard: drop any leftover suggestions.
+            mLatinIME.clearSuggestionStrip();
+        }
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
@@ -319,40 +325,54 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mEmojiPalettesView.setVisibility(View.VISIBLE);
     }
 
-    public void setEmojiSearch() {
-        prevIMS = mRichImm.getCurrentSubtype().getRawSubtype();
-        isEmojiSearch = true;
-        if (prevIMS.getLocale().equals(SubtypeLocaleUtils.DEFAULT_LANGUAGE)) {
-            // It's qwerty english. No layout change needed.
-            setAlphabetKeyboard();
-        } else {
-            mLatinIME.switchLanguage(
-                mRichImm.findSubtypeByLocaleAndKeyboardLayoutSet(SubtypeLocaleUtils.DEFAULT_LANGUAGE, SubtypeLocaleUtils.QWERTY)
-            );
+    public void setEmojiSearchController(final EmojiSearchController controller) {
+        if (mEmojiPalettesView != null) {
+            mEmojiPalettesView.setEmojiSearchController(controller);
         }
-        mLatinIME.setEmojiSearch();
     }
 
     /**
-     * Unset emoji search state
-     * @param switchBack Should keyboard layout be switched to what it was before ?
+     * Show an English qwerty keyboard for the in-keyboard emoji search without persistently
+     * changing the user's subtype. The real layout set is saved and restored on exit.
      */
-    public void unsetEmojiSearch(boolean switchBack) {
-        if (!isEmojiSearch) return;
-
-        // This should be called to reset suggestion strip & InputLogic.
-        mLatinIME.unsetEmojiSearch();
-
-        isEmojiSearch = false;
-
-        if (switchBack && !prevIMS.getLocale().equals("en_US")) {
-            // Switch back to previous keyboard layout
-            mLatinIME.switchLanguage(prevIMS);
-        } else {
-            // Old keyboard was english qwerty.
-            // Do this to reset keyboard spacebar text (emoji search).
-            setAlphabetKeyboard();
+    public void setEmojiSearchKeyboard() {
+        if (!isEmojiSearch) {
+            mSavedKeyboardLayoutSet = mKeyboardLayoutSet;
+            mKeyboardLayoutSet = buildEmojiSearchLayoutSet();
+            isEmojiSearch = true;
         }
+        resetKeyboardStateToAlphabet(WordComposer.CAPS_MODE_OFF,
+                RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
+    }
+
+    public void restoreFromEmojiSearch() {
+        if (isEmojiSearch) {
+            mKeyboardLayoutSet = mSavedKeyboardLayoutSet;
+            mSavedKeyboardLayoutSet = null;
+            isEmojiSearch = false;
+        }
+    }
+
+    public void exitEmojiSearchKeyboard() {
+        restoreFromEmojiSearch();
+        setEmojiKeyboard();
+    }
+
+    private KeyboardLayoutSet buildEmojiSearchLayoutSet() {
+        final SettingsValues settingsValues = Settings.getInstance().getCurrent();
+        final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(
+                mThemeContext, mLatinIME.getCurrentInputEditorInfo());
+        final Resources res = mThemeContext.getResources();
+        builder.setKeyboardGeometry(ResourceUtils.getDefaultKeyboardWidth(mThemeContext),
+                ResourceUtils.getKeyboardHeight(res, settingsValues));
+        builder.setSubtype(RichInputMethodSubtype.getEmojiSearchSubtype());
+        builder.setVoiceInputKeyEnabled(false);
+        builder.setLanguageSwitchKeyEnabled(false);
+        builder.setEmojiSwitchKeyEnabled(false);
+        builder.setNumberRowEnabled(mLatinIME.shouldShowNumberRow());
+        builder.setSplitLayoutEnabledByUser(ProductionFlags.IS_SPLIT_KEYBOARD_SUPPORTED
+                && settingsValues.mIsSplitKeyboardEnabled);
+        return builder.build();
     }
 
     public enum KeyboardSwitchState {

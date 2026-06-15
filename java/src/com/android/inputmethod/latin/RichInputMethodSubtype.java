@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.InputMethodSubtypeCompatUtils;
+import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -242,5 +243,16 @@ public class RichInputMethodSubtype {
         Log.w(TAG, "No input method subtype found; returning placeholder subtype: "
                 + PLACEHOLDER_EMOJI_SUBTYPE);
         return PLACEHOLDER_EMOJI_SUBTYPE;
+    }
+
+    // A subtype that uses the dedicated emoji-search layout set (QWERTY)
+    // but keeps the user's current locale. Used only to drive the emoji search keyboard.
+    @Nonnull
+    public static RichInputMethodSubtype getEmojiSearchSubtype() {
+        final String locale =
+                RichInputMethodManager.getInstance().getCurrentSubtype().getRawSubtype().getLocale();
+        return new RichInputMethodSubtype(
+                AdditionalSubtypeUtils.createAsciiEmojiCapableAdditionalSubtype(
+                        locale, "emoji_search"));
     }
 }

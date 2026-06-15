@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Bottom row for the emoji-search keyboard: a language key (returns to the previous layout) and
+     a wide spacebar. No symbols/comma/period/emoji keys are needed while searching emoji. -->
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res-auto"
+>
+    <Row
+        latin:keyWidth="10%p"
+    >
+        <!-- Same "ABC" key as the emoji palette's alphabet key; returns to the user's previous
+             layout. key_language_switch is intercepted by LatinIME during search to do the exit. -->
+        <Key
+            latin:keySpec="!text/keylabel_to_alpha|!code/key_language_switch"
+            latin:keyWidth="15%p"
+            latin:backgroundType="functional" />
+        <Key
+            latin:keyStyle="spaceKeyStyle"
+            latin:keyWidth="60%p" />
+        <Key
+            latin:keyStyle="emojiKeyStyle" />
+        <Key
+            latin:keyStyle="enterKeyStyle"
+            latin:keyWidth="fillRight" />
+    </Row>
+</merge>

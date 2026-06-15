@@ -25,6 +25,66 @@
     android:layout_gravity="bottom"
     android:orientation="vertical" >
 
+    <LinearLayout
+        android:id="@+id/emoji_search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/config_suggestions_strip_height"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:visibility="gone"
+        style="?attr/suggestionStripViewStyle" >
+        <ImageButton
+            android:id="@+id/emoji_search_back"
+            android:layout_width="@dimen/config_suggestions_strip_edge_key_width"
+            android:layout_height="match_parent"
+            android:scaleType="center"
+            android:src="@drawable/ic_kb_arrow_back"
+            android:contentDescription="@string/spoken_description_back"
+            style="?attr/suggestionWordStyle" />
+        <LinearLayout
+            android:id="@+id/emoji_search_field"
+            android:layout_width="0dip"
+            android:layout_weight="1"
+            android:layout_height="36dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginRight="12dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:background="@drawable/emoji_search_box_background" >
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/ic_kb_search"
+                android:tint="?attr/md3OnSurfaceVariant" />
+            <TextView
+                android:id="@+id/emoji_search_query"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/md3OnSurfaceVariant"
+                android:textSize="16sp"
+                android:singleLine="true" />
+            <View
+                android:id="@+id/emoji_search_caret"
+                android:layout_width="2dp"
+                android:layout_height="20dp"
+                android:background="?attr/md3OnSurfaceVariant" />
+            <TextView
+                android:id="@+id/emoji_search_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:text="@string/emoji_search_hint"
+                android:textColor="?attr/md3OnSurfaceVariant"
+                android:textSize="16sp"
+                android:alpha="0.5"
+                android:singleLine="true" />
+        </LinearLayout>
+    </LinearLayout>
+
     <!-- To ensure that key preview popup is correctly placed when the current system locale is
          one of RTL locales, layoutDirection="ltr" is needed in the SDK version 17+. -->
     <org.smc.inputmethod.indic.suggestions.SuggestionStripView

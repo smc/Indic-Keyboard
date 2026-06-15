@@ -51,8 +51,6 @@ public final class KeyboardState {
         public void setAlphabetShiftLockedKeyboard();
         public void setAlphabetShiftLockShiftedKeyboard();
         public void setEmojiKeyboard();
-        public void setEmojiSearch();
-        public void unsetEmojiSearch(boolean switchBack);
         public void setSymbolsKeyboard();
         public void setSymbolsShiftedKeyboard();
 
@@ -674,10 +672,6 @@ public final class KeyboardState {
             setEmojiKeyboard();
         } else if (code == Constants.CODE_ALPHA_FROM_EMOJI) {
             setAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
-        } else if (code == Constants.CODE_EMOJI_SEARCH) {
-            mSwitchActions.setEmojiSearch();
-        } else if (code == Constants.CODE_BACK_TO_KEYBOARD) {
-            mSwitchActions.unsetEmojiSearch(true);
         }
     }
 

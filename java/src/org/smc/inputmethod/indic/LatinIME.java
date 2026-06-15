@@ -48,6 +48,7 @@ import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.TextView;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
@@ -71,6 +72,7 @@ import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardTheme;
+import com.android.inputmethod.keyboard.emoji.EmojiSearchController;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
 import com.android.inputmethod.latin.DictionaryDumpBroadcastReceiver;
@@ -171,6 +173,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private View mInputView;
     private InsetsUpdater mInsetsUpdater;
     private SuggestionStripView mSuggestionStripView;
+    private EmojiSearchController mEmojiSearchController;
+    private View mEmojiSearchBar;
 
     private Context mDisplayContext;
 
@@ -812,7 +816,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onDestroy() {
-        mKeyboardSwitcher.unsetEmojiSearch(false);
         mDictionaryFacilitator.closeDictionaries();
         mSettings.onDestroy();
         unregisterReceiver(mHideSoftInputReceiver);
@@ -910,6 +913,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (hasSuggestionStripView()) {
             mSuggestionStripView.setListener(this, view);
         }
+        mEmojiSearchBar = view.findViewById(R.id.emoji_search_bar);
+        if (mEmojiSearchBar != null && hasSuggestionStripView()) {
+            mEmojiSearchController = new EmojiSearchController(
+                    this, mKeyboardSwitcher, mSuggestionStripView, mEmojiSearchBar);
+            mKeyboardSwitcher.setEmojiSearchController(mEmojiSearchController);
+        }
         keepKeyboardClearOfTheNavigationBar(view);
     }
 
@@ -999,10 +1008,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mSettings.getCurrent());
         checkForTransliteration();
         loadKeyboard();
-
-        if (mKeyboardSwitcher.isEmojiSearch && !subtype.getLocale().equals(SubtypeLocaleUtils.DEFAULT_LANGUAGE)) {
-            mKeyboardSwitcher.unsetEmojiSearch(false);
-        }
     }
 
     void onStartInputInternal(final EditorInfo editorInfo, final boolean restarting) {
@@ -1224,6 +1229,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void cleanupInternalStateForFinishInput() {
+        if (mEmojiSearchController != null) {
+            mEmojiSearchController.reset();
+        }
         // Remove pending messages related to update suggestions
         mHandler.cancelUpdateSuggestionStrip();
         // Should do the following in onFinishInputInternal but until JB MR2 it's not called :(
@@ -1366,7 +1374,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final int suggestionsHeight = (!mKeyboardSwitcher.isShowingEmojiPalettes()
                 && mSuggestionStripView.getVisibility() == View.VISIBLE)
                 ? mSuggestionStripView.getHeight() : 0;
-        final int visibleTopY = inputHeight - visibleKeyboardView.getHeight() - suggestionsHeight;
+        final int searchBarHeight = (mEmojiSearchBar != null
+                && mEmojiSearchBar.getVisibility() == View.VISIBLE)
+                ? mEmojiSearchBar.getHeight() : 0;
+        final int visibleTopY = inputHeight - visibleKeyboardView.getHeight() - suggestionsHeight
+                - searchBarHeight;
         mSuggestionStripView.setMoreSuggestionsHeight(visibleTopY);
         // Need to set expanded touchable region only if a keyboard view is being shown.
         if (visibleKeyboardView.isShown()) {
@@ -1601,6 +1613,23 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (Constants.CODE_SHORTCUT == event.mKeyCode) {
             mRichImm.switchToShortcutIme(this);
         }
+        if (mEmojiSearchController != null && mEmojiSearchController.isActive()) {
+            if (event.mKeyCode == Constants.CODE_EMOJI) {
+                mEmojiSearchController.exitSearch();
+                return;
+            }
+            // The language key on the search keyboard returns to the user's previous layout.
+            if (event.mKeyCode == Constants.CODE_LANGUAGE_SWITCH) {
+                mEmojiSearchController.exitToKeyboard();
+                return;
+            }
+            // While searching, keys feed the in-keyboard query (never the host editor), but still
+            // drive the qwerty keyboard's shift/symbol state.
+            mEmojiSearchController.handleEvent(event);
+            mKeyboardSwitcher.onEvent(event, getCurrentAutoCapsState(),
+                    getCurrentRecapitalizeState());
+            return;
+        }
         final InputTransaction completeInputTransaction =
                 mInputLogic.onCodeInput(mSettings.getCurrent(), event,
                         mKeyboardSwitcher.getKeyboardShiftMode(),
@@ -1630,6 +1659,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Called from PointerTracker through the KeyboardActionListener interface
     @Override
     public void onTextInput(final String rawText) {
+        if (mEmojiSearchController != null && mEmojiSearchController.isActive()) {
+            mEmojiSearchController.handleTextInput(rawText);
+            return;
+        }
         // TODO: have the keyboard pass the correct key code when we need it.
         final Event event = Event.createSoftwareTextEvent(rawText, Constants.CODE_OUTPUT_TEXT);
         final InputTransaction completeInputTransaction =
@@ -1706,6 +1739,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void setSuggestedWords(final SuggestedWords suggestedWords) {
+        // While emoji search is active the controller owns the strip (query results / recents).
+        // Suppress normal suggestion updates so a committed emoji's async update can't clobber it.
+        if (mEmojiSearchController != null && mEmojiSearchController.isActive()) {
+            return;
+        }
         final SettingsValues currentSettingsValues = mSettings.getCurrent();
         mInputLogic.setSuggestedWords(suggestedWords);
         // TODO: Modify this when we support suggestions with hard keyboard
@@ -1773,12 +1811,22 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // interface
     @Override
     public void pickSuggestionManually(final SuggestedWordInfo suggestionInfo) {
+        if (mEmojiSearchController != null && mEmojiSearchController.isActive()) {
+            mEmojiSearchController.commitPicked(suggestionInfo);
+            return;
+        }
         final InputTransaction completeInputTransaction = mInputLogic.onPickSuggestionManually(
                 mSettings.getCurrent(), suggestionInfo,
                 mKeyboardSwitcher.getKeyboardShiftMode(),
                 mKeyboardSwitcher.getCurrentKeyboardScriptId(),
                 mHandler);
         updateStateAfterInputTransaction(completeInputTransaction);
+    }
+
+    public void clearSuggestionStrip() {
+        if (mSuggestionStripView != null) {
+            mSuggestionStripView.setSuggestions(SuggestedWords.getEmptyInstance(), false);
+        }
     }
 
     // This will show either an empty suggestion strip (if prediction is enabled) or
@@ -2163,14 +2211,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         view.setSystemUiVisibility(flags);
     }
 
-    public void setEmojiSearch() {
-        mInputLogic.setEmojiSearch(getApplicationContext());
-        mSuggestionStripView.setEmojiSearch();
-    }
-
-    public void unsetEmojiSearch() {
-        mInputLogic.unsetEmojiSearch();
-        mSuggestionStripView.unsetEmojiSearch();
+    public void commitEmojiFromSearch(final String emoji) {
+        final Event event = Event.createSoftwareTextEvent(emoji, Constants.CODE_OUTPUT_TEXT);
+        final InputTransaction completeInputTransaction =
+                mInputLogic.onTextInput(mSettings.getCurrent(), event,
+                        mKeyboardSwitcher.getKeyboardShiftMode(), mHandler);
+        updateStateAfterInputTransaction(completeInputTransaction);
+        addEmojiToRecentKeys(emoji);
     }
 
     public void addEmojiToRecentKeys(String emoji) {

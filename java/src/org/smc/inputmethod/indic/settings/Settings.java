@@ -464,11 +464,10 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
         final String str = readEmojiRecentKeys(prefs);
         final List<Object> keys = JsonUtils.jsonStrToList(str);
-        if (keys.contains(toInsert)) {
-            return;
-        }
-
-        keys.add(toInsert);
+        // Most-recent first, matching the palette's own recents ordering (addKeyFirst). Move an
+        // already-present emoji to the front rather than leaving it in place.
+        keys.remove(toInsert);
+        keys.add(0, toInsert);
         final String jsonStr = JsonUtils.listToJsonStr(keys);
         writeEmojiRecentKeys(prefs, jsonStr);
     }

@@ -624,4 +624,6 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
         <item>တၟေ်ဂၠိုၚ်</item>            <!-- Mon (mnw) -->
         <item>ᱡᱚᱦᱟᱨ</item>             <!-- Santali (sat) -->
     </string-array>
+
+    <string name="emoji_search_hint">Search emoji</string>
 </resources>

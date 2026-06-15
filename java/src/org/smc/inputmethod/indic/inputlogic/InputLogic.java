@@ -129,9 +129,6 @@ public final class InputLogic {
     private boolean varnamSettingLearn = true; // Should varnam learn words
     private int varnamTransliterationTaskID = 0; // For IDying parallel varnam suggestion fetch task
 
-    private boolean isEmoji;
-    private EmojiSearch emojiSearch;
-
     /**
      * Create a new instance of the input logic.
      * @param latinIME the instance of the parent LatinIME. We should remove this when we can.
@@ -851,7 +848,7 @@ public final class InputLogic {
             unlearnWord(mWordComposer.getTypedWord(), inputTransaction.mSettingsValues,
                     Constants.EVENT_BACKSPACE);
             resetEntireInputState(mConnection.getExpectedSelectionStart(),
-                    mConnection.getExpectedSelectionEnd(), !isVarnam && !isEmoji /* clearSuggestionStrip */);
+                    mConnection.getExpectedSelectionEnd(), !isVarnam /* clearSuggestionStrip */);
             isComposingWord = false;
         }
         // We want to find out whether to start composing a new word with this character. If so,
@@ -902,7 +899,7 @@ public final class InputLogic {
                 sendKeyCodePoint(settingsValues, codePoint, isTransliteration);
             }
         }
-        if (isEmoji || isVarnam) {
+        if (isVarnam) {
             restartSuggestionsOnWordTouchedByCursor(settingsValues, true, ScriptUtils.SCRIPT_LATIN);
         } else {
             inputTransaction.setRequiresUpdateSuggestions();
@@ -1537,13 +1534,13 @@ public final class InputLogic {
             return;
         }
 
-        if (!mWordComposer.isComposingWord() && !(settingsValues.mBigramPredictionEnabled || isEmoji)) {
+        if (!mWordComposer.isComposingWord() && !settingsValues.mBigramPredictionEnabled) {
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             return;
         }
 
         // Check if we have a suggestion engine attached.
-        if (!settingsValues.needsToLookupSuggestions() && !isEmoji) {
+        if (!settingsValues.needsToLookupSuggestions()) {
             if (mWordComposer.isComposingWord()) {
                 Log.w(TAG, "Called updateSuggestionsOrPredictions but suggestions were not "
                         + "requested!");
@@ -1563,13 +1560,8 @@ public final class InputLogic {
                 new OnGetSuggestedWordsCallback() {
                     @Override
                     public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
-                        String typedWord;
-                        if (isEmoji) {
-                            typedWord = mWordComposer.getTypedWord();
-                        } else {
-                            typedWord = getWordAtCursor(settingsValues, ScriptUtils.SCRIPT_LATIN);
-                        }
-                        final String typedWordString = typedWord;
+                        final String typedWordString = getWordAtCursor(
+                                settingsValues, ScriptUtils.SCRIPT_LATIN);
                         final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
                                 typedWordString, "" /* prevWordsContext */,
                                 SuggestedWordInfo.MAX_SCORE,
@@ -1581,7 +1573,7 @@ public final class InputLogic {
                         // typed word is <= 1 (after a deletion typically) we clear old suggestions.
                         if (suggestedWords.size() > 1 || typedWordString.length() <= 1) {
                             holder.set(suggestedWords);
-                        } else if (!isEmoji /* emoji search suggestions won't have typed word in it */) {
+                        } else {
                             holder.set(retrieveOlderSuggestions(typedWordInfo, mSuggestedWords));
                         }
                     }
@@ -1677,28 +1669,18 @@ public final class InputLogic {
                 SuggestedWordInfo.NOT_A_CONFIDENCE /* autoCommitFirstWordConfidence */);
 
         if (!isVarnam) {
-            if (isEmoji) {
-                ArrayList<SuggestedWordInfo> suggestedEmojis = emojiSearch.search(typedWordString);
-
-                if (suggestedEmojis.size() == 0) {
-                    mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
-                    return;
-                }
-                suggestions.addAll(suggestedEmojis);
-            } else {
-                suggestions.add(typedWordInfo);
-                int i = 0;
-                for (final SuggestionSpan span : range.getSuggestionSpansAtWord()) {
-                    for (final String s : span.getSuggestions()) {
-                        ++i;
-                        if (!TextUtils.equals(s, typedWordString)) {
-                            suggestions.add(new SuggestedWordInfo(s,
-                                    "" /* prevWordsContext */, SuggestedWords.MAX_SUGGESTIONS - i,
-                                    SuggestedWordInfo.KIND_RESUMED, Dictionary.DICTIONARY_RESUMED,
-                                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                                    SuggestedWordInfo.NOT_A_CONFIDENCE
-                                    /* autoCommitFirstWordConfidence */));
-                        }
+            suggestions.add(typedWordInfo);
+            int i = 0;
+            for (final SuggestionSpan span : range.getSuggestionSpansAtWord()) {
+                for (final String s : span.getSuggestions()) {
+                    ++i;
+                    if (!TextUtils.equals(s, typedWordString)) {
+                        suggestions.add(new SuggestedWordInfo(s,
+                                "" /* prevWordsContext */, SuggestedWords.MAX_SUGGESTIONS - i,
+                                SuggestedWordInfo.KIND_RESUMED, Dictionary.DICTIONARY_RESUMED,
+                                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                                SuggestedWordInfo.NOT_A_CONFIDENCE
+                                /* autoCommitFirstWordConfidence */));
                     }
                 }
             }
@@ -1724,7 +1706,7 @@ public final class InputLogic {
     }
 
     public void restartSuggestionsOnWordTouchedByCursorUpdateSuggestions (SuggestedWordInfo typedWordInfo, ArrayList<SuggestedWordInfo> suggestions) {
-        if (suggestions.size() <= 1 && !isEmoji /* emoji search won't have typed word in suggestions list */) {
+        if (suggestions.size() <= 1) {
             // If there weren't any suggestion spans on this word, suggestions#size() will be 1
             // if shouldIncludeResumedWordInSuggestions is true, 0 otherwise. In this case, we
             // have no useful suggestions, so we will try to compute some for it instead.
@@ -2364,15 +2346,6 @@ public final class InputLogic {
         mLastComposedWord = mWordComposer.commitWord(commitType,
                 chosenWordWithSuggestions, separatorString, ngramContext);
 
-        if (isEmoji) {
-            ArrayList<SuggestedWordInfo> suggestedEmojis = emojiSearch.search(chosenWord);
-
-            if (suggestedEmojis.size() > 0) {
-                // add emoji to recents
-                mLatinIME.addEmojiToRecentKeys(chosenWord);
-            }
-        }
-
         if (DebugFlags.DEBUG_ENABLED) {
             long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
             Log.d(TAG, "commitChosenWord() : " + runTimeMillis + " ms to run "
@@ -2416,38 +2389,7 @@ public final class InputLogic {
     public void getSuggestedWords(final SettingsValues settingsValues,
             final Keyboard keyboard, final int keyboardShiftMode, final int inputStyle,
             final int sequenceNumber, final OnGetSuggestedWordsCallback callback) {
-        if (isEmoji) {
-            final SuggestedWordInfo emptyWordInfo = new SuggestedWordInfo(
-                    "",
-                    "" /* prevWordsContext */,
-                    SuggestedWordInfo.MAX_SCORE,
-                    SuggestedWordInfo.KIND_TYPED,
-                    Dictionary.DICTIONARY_USER_TYPED,
-                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                    SuggestedWordInfo.NOT_A_CONFIDENCE);
-
-            final String typedWordString = getWordAtCursor(settingsValues, ScriptUtils.SCRIPT_LATIN);
-            ArrayList<SuggestedWordInfo> suggestedEmojis = emojiSearch.search(typedWordString);
-
-            // Emoji search suggestions won't have typed word in it.
-            // Suggestions need at least 2 elements including typed word,
-            // otherwise exception happens
-            if (suggestedEmojis.size() == 1) {
-                // So add the same emoji again
-                suggestedEmojis.add(suggestedEmojis.get(0));
-            }
-
-            callback.onGetSuggestedWords(new SuggestedWords(
-                suggestedEmojis,
-                null,
-                emptyWordInfo,
-                false,
-                true,
-                false,
-                SuggestedWords.INPUT_STYLE_PREDICTION,
-                SuggestedWords.INDEX_OF_AUTO_CORRECTION
-            ));
-        } else {
+        {
             mWordComposer.adviseCapitalizedModeBeforeFetchingSuggestions(
                     getActualCapsMode(settingsValues, keyboardShiftMode));
             mSuggest.getSuggestedWords(mWordComposer,
@@ -2601,19 +2543,6 @@ public final class InputLogic {
             isVarnam = false;
             varnam = null;
         }
-    }
-
-    public void setEmojiSearch(Context context) {
-        if (emojiSearch == null) {
-            emojiSearch = new EmojiSearch(context);
-        }
-        mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
-        isEmoji = true;
-    }
-
-    public void unsetEmojiSearch() {
-        isEmoji = false;
-        mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
     }
 
     public void enableVarnam (String schemeID, Context context) {

@@ -29,45 +29,71 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/config_suggestions_strip_height"
+        android:layout_height="48dp"
+        android:gravity="center_vertical"
         style="?attr/suggestionStripViewStyle"
     >
-        <com.android.inputmethod.compat.TabHostCompat
-            android:id="@+id/emoji_category_tabhost"
-            android:layout_width="0dip"
-            android:layout_weight="87.5"
-            android:layout_height="match_parent"
+        <LinearLayout
+            android:id="@+id/emoji_search_box"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="34dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="14dp"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="@drawable/emoji_search_box_background"
+            android:contentDescription="@string/spoken_description_search"
         >
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="match_parent"
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_marginRight="6dp"
+                android:src="@drawable/ic_kb_search"
+                android:tint="?attr/md3OnSurfaceVariant" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/emoji_search_hint"
+                android:textColor="?attr/md3OnSurfaceVariant"
+                android:textSize="15sp"
+                android:singleLine="true" />
+        </LinearLayout>
+
+        <HorizontalScrollView
+            android:layout_width="0dip"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:overScrollMode="never"
+            android:fillViewport="true"
+        >
+            <com.android.inputmethod.compat.TabHostCompat
+                android:id="@+id/emoji_category_tabhost"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:divider="@null" />
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="0dip"
-                android:layout_height="0dip"
             >
-                <!-- Empty placeholder that TabHost requires. But we don't use it to actually
-                     display anything. We monitor the tab changes and change the ViewPager.
-                     Similarly the ViewPager swipes are intercepted and passed to the TabHost. -->
-                <View
-                    android:id="@+id/emoji_keyboard_dummy"
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:divider="@null" />
+                <FrameLayout
+                    android:id="@android:id/tabcontent"
                     android:layout_width="0dip"
                     android:layout_height="0dip"
-                    android:visibility="gone" />
-            </FrameLayout>
-        </com.android.inputmethod.compat.TabHostCompat>
-
-        <ImageButton
-            android:id="@+id/emoji_keyboard_search"
-            android:layout_width="0dip"
-            android:layout_weight="12.5"
-            android:layout_height="match_parent"
-            android:hapticFeedbackEnabled="false"
-            android:soundEffectsEnabled="false"
-            style="?attr/suggestionWordStyle"
-            android:contentDescription="@string/spoken_description_search" />
+                >
+                    <View
+                        android:id="@+id/emoji_keyboard_dummy"
+                        android:layout_width="0dip"
+                        android:layout_height="0dip"
+                        android:visibility="gone" />
+                </FrameLayout>
+            </com.android.inputmethod.compat.TabHostCompat>
+        </HorizontalScrollView>
 
     </LinearLayout>
     <androidx.viewpager2.widget.ViewPager2
