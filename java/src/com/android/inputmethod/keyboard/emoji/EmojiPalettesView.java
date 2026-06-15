@@ -24,7 +24,6 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.util.AttributeSet;
@@ -95,9 +94,9 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     private TabHostCompat mTabHost;
     private ViewPager2 mEmojiPager;
     private int mCurrentPagerPosition = 0;
-    private EmojiCategoryPageIndicatorView mEmojiCategoryPageIndicatorView;
 
     private KeyboardActionListener mKeyboardActionListener = KeyboardActionListener.EMPTY_LISTENER;
+    private int mMainKeyboardHeight;
 
     private final EmojiCategory mEmojiCategory;
 
@@ -147,15 +146,24 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
     @Override
     protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         final Resources res = getContext().getResources();
-        // The main keyboard expands to the entire this {@link KeyboardView}.
         final int width = ResourceUtils.getDefaultKeyboardWidth(getContext())
                 + getPaddingLeft() + getPaddingRight();
-        final int height = ResourceUtils.getDefaultKeyboardHeight(res)
+        final int mainKeyboardHeight = mMainKeyboardHeight > 0
+                ? mMainKeyboardHeight : ResourceUtils.getDefaultKeyboardHeight(res);
+        final int height = mainKeyboardHeight
                 + res.getDimensionPixelSize(R.dimen.config_suggestions_strip_height)
                 + getPaddingTop() + getPaddingBottom();
-        setMeasuredDimension(width, height);
+        super.onMeasure(
+                MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+    }
+
+    public void setMainKeyboardHeight(final int height) {
+        if (height > 0 && height != mMainKeyboardHeight) {
+            mMainKeyboardHeight = height;
+            requestLayout();
+        }
     }
 
     private void addTab(final TabHost host, final int categoryId) {
@@ -201,23 +209,6 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 mEmojiPalettesAdapter.onPageScrolled();
-                final Pair<Integer, Integer> newPos =
-                        mEmojiCategory.getCategoryIdAndPageIdFromPagePosition(position);
-                final int newCategoryId = newPos.first;
-                final int newCategorySize = mEmojiCategory.getCategoryPageSize(newCategoryId);
-                final int currentCategoryId = mEmojiCategory.getCurrentCategoryId();
-                final int currentCategoryPageId = mEmojiCategory.getCurrentCategoryPageId();
-                final int currentCategorySize = mEmojiCategory.getCurrentCategoryPageSize();
-                if (newCategoryId == currentCategoryId) {
-                    mEmojiCategoryPageIndicatorView.setCategoryPageId(
-                            newCategorySize, newPos.second, positionOffset);
-                } else if (newCategoryId > currentCategoryId) {
-                    mEmojiCategoryPageIndicatorView.setCategoryPageId(
-                            currentCategorySize, currentCategoryPageId, positionOffset);
-                } else if (newCategoryId < currentCategoryId) {
-                    mEmojiCategoryPageIndicatorView.setCategoryPageId(
-                            currentCategorySize, currentCategoryPageId, positionOffset - 1);
-                }
             }
 
             @Override
@@ -226,7 +217,6 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
                         mEmojiCategory.getCategoryIdAndPageIdFromPagePosition(position);
                 setCurrentCategoryAndPageId(newPos.first /* categoryId */, newPos.second /* categoryPageId */,
                         false /* force */);
-                updateEmojiCategoryPageIdView();
                 mCurrentPagerPosition = position;
             }
 
@@ -239,12 +229,6 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         mEmojiPager.setOffscreenPageLimit(ViewPager2.OFFSCREEN_PAGE_LIMIT_DEFAULT);
         mEmojiPager.setPersistentDrawingCache(PERSISTENT_NO_CACHE);
         mEmojiLayoutParams.setPagerProperties(mEmojiPager);
-
-        mEmojiCategoryPageIndicatorView =
-                findViewById(R.id.emoji_category_page_id_view);
-        mEmojiCategoryPageIndicatorView.setColors(
-                mCategoryPageIndicatorColor, mCategoryPageIndicatorBackground);
-        mEmojiLayoutParams.setCategoryPageIdViewProperties(mEmojiCategoryPageIndicatorView);
 
         setCurrentCategoryAndPageId(mEmojiCategory.getCurrentCategoryId(), mEmojiCategory.getCurrentCategoryPageId(),
                 true /* force */);
@@ -299,8 +283,11 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         AudioAndHapticFeedbackManager.getInstance().performHapticAndAudioFeedback(
                 Constants.CODE_UNSPECIFIED, this);
         final int categoryId = mEmojiCategory.getCategoryId(tabId);
+        if (categoryId == mEmojiCategory.getCurrentCategoryId()) {
+            // Re-tapping the current category's tab scrolls its grid back to the top.
+            mEmojiPalettesAdapter.scrollPageToTop(mEmojiPager.getCurrentItem());
+        }
         setCurrentCategoryAndPageId(categoryId, 0, false /* force */);
-        updateEmojiCategoryPageIdView();
     }
 
     /**
@@ -419,28 +406,20 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         final KeyDrawParams params = new KeyDrawParams();
         params.updateParams(mEmojiLayoutParams.getActionBarHeight(), keyVisualAttr);
         setupAlphabetKey(mAlphabetKeyLeft, switchToAlphaLabel, params);
-        mEmojiPager.setAdapter(mEmojiPalettesAdapter);
+        if (mEmojiPager.getAdapter() == null) {
+            mEmojiPager.setAdapter(mEmojiPalettesAdapter);
+        }
         mEmojiPager.setCurrentItem(mCurrentPagerPosition, false);
     }
 
     public void stopEmojiPalettes() {
         mEmojiPalettesAdapter.releaseCurrentKey(true /* withKeyRegistering */);
         mEmojiPalettesAdapter.flushPendingRecentKeys();
-        mEmojiPager.setAdapter(null);
     }
 
     public void setKeyboardActionListener(final KeyboardActionListener listener) {
         mKeyboardActionListener = listener;
         mDeleteKeyOnTouchListener.setKeyboardActionListener(listener);
-    }
-
-    private void updateEmojiCategoryPageIdView() {
-        if (mEmojiCategoryPageIndicatorView == null) {
-            return;
-        }
-        mEmojiCategoryPageIndicatorView.setCategoryPageId(
-                mEmojiCategory.getCurrentCategoryPageSize(),
-                mEmojiCategory.getCurrentCategoryPageId(), 0.0f /* offset */);
     }
 
     private void setCurrentCategoryAndPageId(final int categoryId, final int categoryPageId,
@@ -472,6 +451,25 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         final int newTabId = mEmojiCategory.getTabIdFromCategoryId(categoryId);
         if (force || mTabHost.getCurrentTab() != newTabId) {
             mTabHost.setCurrentTab(newTabId);
+        }
+        updateTabHighlight(newTabId);
+    }
+
+    private void updateTabHighlight(final int selectedTabId) {
+        final TabWidget tabWidget = mTabHost.getTabWidget();
+        for (int i = 0; i < tabWidget.getChildCount(); i++) {
+            final View tabView = tabWidget.getChildAt(i);
+            if (!(tabView instanceof ImageView)) {
+                continue;
+            }
+            final ImageView icon = (ImageView) tabView;
+            final boolean isSelected = i == selectedTabId;
+            if (isSelected && mCategoryPageIndicatorColor != 0) {
+                icon.setColorFilter(mCategoryPageIndicatorColor);
+            } else {
+                icon.clearColorFilter();
+            }
+            icon.setAlpha(isSelected ? 1.0f : 0.5f);
         }
     }
 

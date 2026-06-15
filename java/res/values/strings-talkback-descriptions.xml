@@ -135,8 +135,10 @@
     <string name="spoken_descrption_emoji_category_symbols">Symbols</string>
     <!-- Description of the emoji category icon of Flags. -->
     <string name="spoken_descrption_emoji_category_flags">Flags</string>
-    <!-- Description of the emoji category icon of Smiley & People. -->
-    <string name="spoken_descrption_emoji_category_eight_smiley_people">Smiley &amp; People</string>
+    <!-- Description of the emoji category icon of Smileys & Emotion. -->
+    <string name="spoken_descrption_emoji_category_eight_smileys_emotion">Smileys &amp; Emotion</string>
+    <!-- Description of the emoji category icon of People & Body. -->
+    <string name="spoken_descrption_emoji_category_people_body">People &amp; Body</string>
     <!-- Description of the emoji category icon of Animals & Nature. -->
     <string name="spoken_descrption_emoji_category_eight_animals_nature">Animals &amp; Nature</string>
     <!-- Description of the emoji category icon of Food & Drink. -->

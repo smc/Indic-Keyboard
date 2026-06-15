@@ -95,6 +95,19 @@ final class EmojiPageKeyboardView extends KeyboardView implements
     }
 
     @Override
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
+        final Keyboard keyboard = getKeyboard();
+        if (keyboard instanceof DynamicGridKeyboard) {
+            final int width = keyboard.mOccupiedWidth + getPaddingLeft() + getPaddingRight();
+            final int height = ((DynamicGridKeyboard) keyboard).getContentHeight()
+                    + getPaddingTop() + getPaddingBottom();
+            setMeasuredDimension(width, height);
+            return;
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
     public boolean dispatchPopulateAccessibilityEvent(final AccessibilityEvent event) {
         // Don't populate accessibility event with all Emoji keys.
         return true;

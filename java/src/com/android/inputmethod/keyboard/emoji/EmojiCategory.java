@@ -53,7 +53,7 @@ final class EmojiCategory {
     private static final int ID_SYMBOLS = 5;
     private static final int ID_EMOTICONS = 6;
     private static final int ID_FLAGS = 7;
-    private static final int ID_EIGHT_SMILEY_PEOPLE = 8;
+    private static final int ID_EIGHT_SMILEYS_EMOTION = 8;
     private static final int ID_EIGHT_ANIMALS_NATURE = 9;
     private static final int ID_EIGHT_FOOD_DRINK = 10;
     private static final int ID_EIGHT_TRAVEL_PLACES = 11;
@@ -61,7 +61,7 @@ final class EmojiCategory {
     private static final int ID_EIGHT_OBJECTS = 13;
     private static final int ID_EIGHT_SYMBOLS = 14;
     private static final int ID_EIGHT_FLAGS = 15;
-    private static final int ID_EIGHT_SMILEY_PEOPLE_BORING = 16;
+    private static final int ID_EIGHT_PEOPLE_BODY = 16;
 
     public final class CategoryProperties {
         public final int mCategoryId;
@@ -81,7 +81,7 @@ final class EmojiCategory {
             "symbols",
             "emoticons",
             "flags",
-            "smiley & people",
+            "smileys & emotion",
             "animals & nature",
             "food & drink",
             "travel & places",
@@ -89,7 +89,7 @@ final class EmojiCategory {
             "objects2",
             "symbols2",
             "flags2",
-            "smiley & people2" };
+            "people & body" };
 
     private static final int[] sCategoryTabIconAttr = {
             R.styleable.EmojiPalettesView_iconEmojiRecentsTab,
@@ -119,7 +119,7 @@ final class EmojiCategory {
             R.string.spoken_descrption_emoji_category_symbols,
             R.string.spoken_descrption_emoji_category_emoticons,
             R.string.spoken_descrption_emoji_category_flags,
-            R.string.spoken_descrption_emoji_category_eight_smiley_people,
+            R.string.spoken_descrption_emoji_category_eight_smileys_emotion,
             R.string.spoken_descrption_emoji_category_eight_animals_nature,
             R.string.spoken_descrption_emoji_category_eight_food_drink,
             R.string.spoken_descrption_emoji_category_eight_travel_places,
@@ -127,7 +127,7 @@ final class EmojiCategory {
             R.string.spoken_descrption_emoji_category_objects,
             R.string.spoken_descrption_emoji_category_symbols,
             R.string.spoken_descrption_emoji_category_flags,
-            R.string.spoken_descrption_emoji_category_eight_smiley_people };
+            R.string.spoken_descrption_emoji_category_people_body };
 
     private static final int[] sCategoryElementId = {
             KeyboardId.ELEMENT_EMOJI_RECENTS,
@@ -176,8 +176,9 @@ final class EmojiCategory {
         final int defaultCategoryId;
         addShownCategoryId(EmojiCategory.ID_RECENTS);
         if (canShowUnicodeEightEmoji()) {
-            defaultCategoryId = EmojiCategory.ID_EIGHT_SMILEY_PEOPLE;
-            addShownCategoryId(EmojiCategory.ID_EIGHT_SMILEY_PEOPLE);
+            defaultCategoryId = EmojiCategory.ID_EIGHT_SMILEYS_EMOTION;
+            addShownCategoryId(EmojiCategory.ID_EIGHT_SMILEYS_EMOTION);
+            addShownCategoryId(EmojiCategory.ID_EIGHT_PEOPLE_BODY);
             addShownCategoryId(EmojiCategory.ID_EIGHT_ANIMALS_NATURE);
             addShownCategoryId(EmojiCategory.ID_EIGHT_FOOD_DRINK);
             addShownCategoryId(EmojiCategory.ID_EIGHT_TRAVEL_PLACES);
@@ -263,21 +264,6 @@ final class EmojiCategory {
         return mCurrentCategoryId;
     }
 
-    public int getCurrentCategoryPageSize() {
-        return getCategoryPageSize(mCurrentCategoryId);
-    }
-
-    public int getCategoryPageSize(final int categoryId) {
-        for (final CategoryProperties prop : mShownCategories) {
-            if (prop.mCategoryId == categoryId) {
-                return prop.mPageCount;
-            }
-        }
-        Log.w(TAG, "Invalid category id: " + categoryId);
-        // Should not reach here.
-        return 0;
-    }
-
     public void setCurrentCategoryId(final int categoryId) {
         mCurrentCategoryId = categoryId;
         Settings.writeLastShownEmojiCategoryId(mPrefs, categoryId);
@@ -330,8 +316,7 @@ final class EmojiCategory {
     }
 
     private int getCategoryPageCount(final int categoryId) {
-        final Keyboard keyboard = mLayoutSet.getKeyboard(sCategoryElementId[categoryId]);
-        return (keyboard.getSortedKeys().size() - 1) / mMaxPageKeyCount + 1;
+        return 1;
     }
 
     // Returns a pair of the category id and the category page id from the view pager's page
@@ -380,22 +365,16 @@ final class EmojiCategory {
             }
 
             final Keyboard keyboard = mLayoutSet.getKeyboard(sCategoryElementId[categoryId]);
-            final Key[][] sortedKeys = sortKeysIntoPages(
-                    keyboard.getSortedKeys(), mMaxPageKeyCount);
-            for (int pageId = 0; pageId < sortedKeys.length; ++pageId) {
-                final DynamicGridKeyboard tempKeyboard = new DynamicGridKeyboard(mPrefs,
-                        mLayoutSet.getKeyboard(KeyboardId.ELEMENT_EMOJI_RECENTS),
-                        mMaxPageKeyCount, categoryId);
-                for (final Key emojiKey : sortedKeys[pageId]) {
-                    if (emojiKey == null) {
-                        break;
-                    }
-                    tempKeyboard.addKeyLast(emojiKey);
-                }
-                mCategoryKeyboardMap.put(
-                        getCategoryKeyboardMapKey(categoryId, pageId), tempKeyboard);
+            final ArrayList<Key> sortedKeys = new ArrayList<>(keyboard.getSortedKeys());
+            Collections.sort(sortedKeys, EMOJI_KEY_COMPARATOR);
+            final DynamicGridKeyboard catKeyboard = new DynamicGridKeyboard(mPrefs,
+                    mLayoutSet.getKeyboard(KeyboardId.ELEMENT_EMOJI_RECENTS),
+                    Integer.MAX_VALUE /* maxKeyCount */, categoryId);
+            for (final Key emojiKey : sortedKeys) {
+                catKeyboard.addKeyLast(emojiKey);
             }
-            return mCategoryKeyboardMap.get(categoryKeyboardMapKey);
+            mCategoryKeyboardMap.put(getCategoryKeyboardMapKey(categoryId, 0), catKeyboard);
+            return catKeyboard;
         }
     }
 
@@ -428,17 +407,6 @@ final class EmojiCategory {
             return lhs.getCode() < rhs.getCode() ? -1 : 1;
         }
     };
-
-    private static Key[][] sortKeysIntoPages(final List<Key> inKeys, final int maxPageCount) {
-        final ArrayList<Key> keys = new ArrayList<>(inKeys);
-        Collections.sort(keys, EMOJI_KEY_COMPARATOR);
-        final int pageCount = (keys.size() - 1) / maxPageCount + 1;
-        final Key[][] retval = new Key[pageCount][maxPageCount];
-        for (int i = 0; i < keys.size(); ++i) {
-            retval[i / maxPageCount][i % maxPageCount] = keys.get(i);
-        }
-        return retval;
-    }
 
     private static boolean canShowFlagEmoji() {
         Paint paint = new Paint();

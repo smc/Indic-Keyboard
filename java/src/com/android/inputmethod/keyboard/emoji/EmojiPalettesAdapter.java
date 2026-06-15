@@ -18,12 +18,12 @@ package com.android.inputmethod.keyboard.emoji;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.PagerAdapter;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
@@ -77,6 +77,14 @@ final class EmojiPalettesAdapter extends RecyclerView.Adapter<EmojiPalettesAdapt
         releaseCurrentKey(false /* withKeyRegistering */);
     }
 
+    /** Scrolls the (already-visible) page at {@code position} back to the top. */
+    public void scrollPageToTop(final int position) {
+        final EmojiPageKeyboardView view = mActiveKeyboardViews.get(position);
+        if (view != null && view.getParent() instanceof ScrollView) {
+            ((ScrollView) view.getParent()).smoothScrollTo(0, 0);
+        }
+    }
+
     public void releaseCurrentKey(final boolean withKeyRegistering) {
         // Make sure the delayed key-down event (highlight effect and haptic feedback) will be
         // canceled.
@@ -91,25 +99,9 @@ final class EmojiPalettesAdapter extends RecyclerView.Adapter<EmojiPalettesAdapt
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        /*if (DEBUG_PAGER) {
-            Log.d(TAG, "instantiate item: " + viewType);
-        }
-        final EmojiPageKeyboardView oldKeyboardView = mActiveKeyboardViews.get(viewType);
-        if (oldKeyboardView != null) {
-            oldKeyboardView.deallocateMemory();
-            // This may be redundant but wanted to be safer..
-            mActiveKeyboardViews.remove(viewType);
-        }
-        final Keyboard keyboard =
-                mEmojiCategory.getKeyboardFromPagePosition(parent.getVerticalScrollbarPosition());*/
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        final EmojiPageKeyboardView keyboardView = (EmojiPageKeyboardView)inflater.inflate(
-                R.layout.emoji_keyboard_page, parent, false);
-        /*keyboardView.setKeyboard(keyboard);
-        keyboardView.setOnKeyEventListener(mListener);
-        parent.addView(keyboardView);
-        mActiveKeyboardViews.put(parent.getVerticalScrollbarPosition(), keyboardView);*/
-        return new ViewHolder(keyboardView);
+        final View page = inflater.inflate(R.layout.emoji_keyboard_page, parent, false);
+        return new ViewHolder(page);
     }
 
     @Override
@@ -127,18 +119,8 @@ final class EmojiPalettesAdapter extends RecyclerView.Adapter<EmojiPalettesAdapt
                 mEmojiCategory.getKeyboardFromPagePosition(position);
         holder.getKeyboardView().setKeyboard(keyboard);
         holder.getKeyboardView().setOnKeyEventListener(mListener);
-        //parent.addView(keyboardView);
+        holder.itemView.scrollTo(0, 0);
         mActiveKeyboardViews.put(position, holder.getKeyboardView());
-
-        /*if (mActivePosition == position) {
-            return;
-        }
-        final EmojiPageKeyboardView oldKeyboardView = mActiveKeyboardViews.get(mActivePosition);
-        if (oldKeyboardView != null) {
-            oldKeyboardView.releaseCurrentKey(false);
-            oldKeyboardView.deallocateMemory();
-        }
-        mActivePosition = position;*/
     }
 
     @Override
@@ -148,11 +130,11 @@ final class EmojiPalettesAdapter extends RecyclerView.Adapter<EmojiPalettesAdapt
 
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        private EmojiPageKeyboardView customView;
+        private final EmojiPageKeyboardView customView;
 
         public ViewHolder(View v) {
             super(v);
-            customView = (EmojiPageKeyboardView) v;
+            customView = v.findViewById(R.id.emoji_keyboard_page);
         }
 
         public EmojiPageKeyboardView getKeyboardView() {

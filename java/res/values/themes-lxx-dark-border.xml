@@ -83,7 +83,7 @@
         <item name="iconEmojiCategory13Tab">@drawable/ic_kb_tab_objects</item>
         <item name="iconEmojiCategory14Tab">@drawable/ic_kb_tab_symbols</item>
         <item name="iconEmojiCategory15Tab">@drawable/ic_kb_tab_flag</item>
-        <item name="iconEmojiCategory16Tab">@drawable/ic_kb_tab_people</item>
+        <item name="iconEmojiCategory16Tab">@drawable/ic_kb_tab_people_body</item>
     </style>
     <style
         name="MoreKeysKeyboard.LXX_Dark_Border"

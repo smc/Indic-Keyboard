@@ -50,6 +50,7 @@ final class DynamicGridKeyboard extends Keyboard {
     private final ArrayDeque<Key> mPendingKeys = new ArrayDeque<>();
 
     private List<Key> mCachedGridKeys;
+    private int mContentHeight;
 
     public DynamicGridKeyboard(final SharedPreferences prefs, final Keyboard templateKeyboard,
             final int maxKeyCount, final int categoryId) {
@@ -139,6 +140,12 @@ final class DynamicGridKeyboard extends Keyboard {
             gridKey.updateCoordinates(keyX0, keyY0, keyX1, keyY1);
             index++;
         }
+        final int rows = Math.max(1, (mGridKeys.size() + mColumnsNum - 1) / mColumnsNum);
+        mContentHeight = rows * mVerticalStep + mVerticalGap;
+    }
+
+    public int getContentHeight() {
+        return mContentHeight;
     }
 
     private void saveRecentKeys() {

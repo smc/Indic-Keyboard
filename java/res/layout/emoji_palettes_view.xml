@@ -70,27 +70,17 @@
             android:contentDescription="@string/spoken_description_search" />
 
     </LinearLayout>
-    <LinearLayout
-        android:orientation="horizontal"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/emoji_keyboard_pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/emoji_keyboard_pager"
-            android:layout_width="0dip"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-        <com.android.inputmethod.keyboard.emoji.EmojiCategoryPageIndicatorView
-            android:id="@+id/emoji_category_page_id_view"
-            android:layout_width="2dip"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:orientation="horizontal" />
     <LinearLayout
         android:id="@+id/emoji_action_bar"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
     >
         <!-- TODO: Implement a KeyView and replace this. -->
         <!-- Provide audio and haptic feedback by ourselves based on the keyboard settings.
