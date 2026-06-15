@@ -68,6 +68,8 @@ class MainActivity : Activity() {
         ),
         "Other" to listOf(
             field("Null (raw key events)", TYPE_NULL),
+            field("Incognito (no personalized learning)", TYPE_CLASS_TEXT,
+                EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING),
         ),
         "IME actions" to listOf(
             field("Go", TYPE_CLASS_TEXT, EditorInfo.IME_ACTION_GO),

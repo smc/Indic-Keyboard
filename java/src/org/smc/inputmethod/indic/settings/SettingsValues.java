@@ -72,6 +72,7 @@ public class SettingsValues {
     public final boolean mShowsEmojiSwitchKey;
     public final boolean mShowsNumberRow;
     public final boolean mShowsHints;
+    public final boolean mGrayOutSuggestionsInIncognito;
     public final boolean mUseContactsDict;
     public final boolean mUsePersonalizedDicts;
     public final boolean mUseDoubleSpacePeriod;
@@ -153,6 +154,8 @@ public class SettingsValues {
         mShowsEmojiSwitchKey = Settings.readShowsEmojiSwitchKey(prefs);
         mShowsNumberRow = Settings.readShowsNumberRow(prefs);
         mShowsHints = prefs.getBoolean(Settings.PREF_SHOW_HINTS, false);
+        mGrayOutSuggestionsInIncognito =
+                prefs.getBoolean(Settings.PREF_GRAY_OUT_SUGGESTIONS_INCOGNITO, false);
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
         mUsePersonalizedDicts = prefs.getBoolean(Settings.PREF_KEY_USE_PERSONALIZED_DICTS, true);
         mUseDoubleSpacePeriod = prefs.getBoolean(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true)

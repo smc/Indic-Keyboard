@@ -300,6 +300,7 @@
         <attr name="iconBackToKeyboardKey" format="reference" />
         <attr name="iconShortcutKey" format="reference" />
         <attr name="iconIncognitoKey" format="reference" />
+        <attr name="voiceKeyBackground" format="reference" />
         <attr name="iconMoreSuggestionsKey" format="reference" />
         <attr name="iconSpaceKeyForNumberLayout" format="reference" />
         <attr name="iconShiftKeyShifted" format="reference" />

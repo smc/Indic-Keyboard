@@ -65,11 +65,11 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     static final boolean DBG = DebugFlags.DEBUG_ENABLED;
     private static final float DEBUG_INFO_TEXT_SIZE_IN_DIP = 6.0f;
+    private static final float INCOGNITO_GRAY_OUT_ALPHA = 0.5f;
 
     private final ViewGroup mSuggestionsStrip;
     private final ImageButton mVoiceKey;
     private final ImageButton mBackToKeyboardKey;
-    private final ImageButton mIncognitoIcon;
     private final ImageButton mMoreSuggestionsKey;
     private final View mImportantNoticeStrip;
     MainKeyboardView mMainKeyboardView;
@@ -146,7 +146,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mSuggestionsStrip = (ViewGroup)findViewById(R.id.suggestions_strip);
         mBackToKeyboardKey = (ImageButton)findViewById(R.id.suggestions_strip_back_to_keyboard_key);
         mVoiceKey = (ImageButton)findViewById(R.id.suggestions_strip_voice_key);
-        mIncognitoIcon = findViewById(R.id.suggestions_strip_incognito_icon);
         mMoreSuggestionsKey = (ImageButton)findViewById(R.id.suggestions_strip_more_key);
         mImportantNoticeStrip = findViewById(R.id.important_notice_strip);
         mStripVisibilityGroup = new StripVisibilityGroup(this, mSuggestionsStrip,
@@ -185,10 +184,14 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         final Drawable iconVoice = keyboardAttr.getDrawable(R.styleable.Keyboard_iconShortcutKey);
         final Drawable iconMore = keyboardAttr.getDrawable(R.styleable.Keyboard_iconMoreSuggestionsKey);
         final Drawable iconBackToKeyboard = keyboardAttr.getDrawable(R.styleable.Keyboard_iconBackToKeyboardKey);
-        final Drawable iconIncognito = keyboardAttr.getDrawable(R.styleable.Keyboard_iconIncognitoKey);
+        final Drawable voiceKeyBackground =
+                keyboardAttr.getDrawable(R.styleable.Keyboard_voiceKeyBackground);
         keyboardAttr.recycle();
 
         mVoiceKey.setImageDrawable(iconVoice);
+        if (voiceKeyBackground != null) {
+            mVoiceKey.setBackground(voiceKeyBackground);
+        }
         mVoiceKey.setOnClickListener(this);
 
         mMoreSuggestionsKey.setImageDrawable(iconMore);
@@ -196,7 +199,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
         mBackToKeyboardKey.setImageDrawable(iconBackToKeyboard);
         mBackToKeyboardKey.setOnClickListener(this);
-        mIncognitoIcon.setImageDrawable(iconIncognito);
     }
 
     /**
@@ -212,7 +214,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         final int visibility = shouldBeVisible ? VISIBLE : (isFullscreenMode ? GONE : INVISIBLE);
         setVisibility(visibility);
         if (!isEmojiSearch) {
-            updateLeftIcon();
+            updateKeys();
         }
     }
 
@@ -495,8 +497,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         if (view == mMoreSuggestionsKey) {
             if (isShowingMoreSuggestionPanel()) {
                 mMoreSuggestionsView.dismissMoreKeysPanel();
-            } else {
-                showMoreSuggestions();
+            } else if (showMoreSuggestions()) {
+                mMoreSuggestionsView.setModalMode();
             }
             return;
         }
@@ -533,24 +535,43 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     public void setEmojiSearch() {
         isEmojiSearch = true;
         mVoiceKey.setVisibility(GONE);
-        mIncognitoIcon.setVisibility(GONE);
         mBackToKeyboardKey.setVisibility(VISIBLE);
     }
 
     public void unsetEmojiSearch() {
         isEmojiSearch = false;
         mBackToKeyboardKey.setVisibility(GONE);
-        updateLeftIcon();
+        updateKeys();
     }
 
-    private void updateLeftIcon() {
+    private void updateKeys() {
         final SettingsValues currentSettingsValues = Settings.getInstance().getCurrent();
-        if (currentSettingsValues.mIncognitoModeEnabled) {
-            mVoiceKey.setVisibility(INVISIBLE);
-            mIncognitoIcon.setVisibility(VISIBLE);
-        } else {
-            mVoiceKey.setVisibility(currentSettingsValues.mShowsVoiceInputKey ? VISIBLE : INVISIBLE);
-            mIncognitoIcon.setVisibility(INVISIBLE);
+        final boolean grayOut = currentSettingsValues.mIncognitoModeEnabled
+                && currentSettingsValues.mGrayOutSuggestionsInIncognito;
+        mVoiceKey.setVisibility(currentSettingsValues.mShowsVoiceInputKey ? VISIBLE : GONE);
+        mSuggestionsStrip.setAlpha(grayOut ? INCOGNITO_GRAY_OUT_ALPHA : 1.0f);
+        positionRightKeys();
+    }
+
+    private void positionRightKeys() {
+        final boolean voiceShown = mVoiceKey.getVisibility() == VISIBLE;
+        final int edge = getResources().getDimensionPixelSize(
+                R.dimen.config_suggestions_strip_edge_key_width);
+        final int baseMargin = getResources().getDimensionPixelSize(
+                R.dimen.config_suggestions_strip_horizontal_margin);
+        final int moreMargin = voiceShown ? edge : 0;
+        final int stripMargin = baseMargin + (voiceShown ? edge : 0);
+        final RelativeLayout.LayoutParams moreLp =
+                (RelativeLayout.LayoutParams) mMoreSuggestionsKey.getLayoutParams();
+        if (moreLp.rightMargin != moreMargin) {
+            moreLp.rightMargin = moreMargin;
+            mMoreSuggestionsKey.setLayoutParams(moreLp);
+        }
+        final RelativeLayout.LayoutParams stripLp =
+                (RelativeLayout.LayoutParams) mSuggestionsStrip.getLayoutParams();
+        if (stripLp.rightMargin != stripMargin) {
+            stripLp.rightMargin = stripMargin;
+            mSuggestionsStrip.setLayoutParams(stripLp);
         }
     }
 }

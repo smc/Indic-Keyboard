@@ -68,5 +68,11 @@
             android:summary="@string/prefs_block_potentially_offensive_summary"
             android:defaultValue="@bool/config_block_potentially_offensive"
             android:persistent="true" />
+        <CheckBoxPreference
+            android:key="pref_gray_out_suggestions_incognito"
+            android:title="@string/prefs_gray_out_suggestions_incognito_title"
+            android:summary="@string/prefs_gray_out_suggestions_incognito_summary"
+            android:defaultValue="false"
+            android:persistent="true" />
     </PreferenceCategory>
 </PreferenceScreen>
