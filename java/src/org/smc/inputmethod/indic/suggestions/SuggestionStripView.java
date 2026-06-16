@@ -71,7 +71,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private final ImageButton mVoiceKey;
     private final ImageButton mMoreSuggestionsKey;
     private final View mImportantNoticeStrip;
-    private boolean mEmojiMode;
     MainKeyboardView mMainKeyboardView;
 
     private final View mMoreSuggestionsContainer;
@@ -206,12 +205,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     public void updateVisibility(final boolean shouldBeVisible, final boolean isFullscreenMode) {
         final int visibility = shouldBeVisible ? VISIBLE : (isFullscreenMode ? GONE : INVISIBLE);
         setVisibility(visibility);
-        updateKeys();
-    }
-
-    public void setEmojiMode(final boolean emojiMode) {
-        mEmojiMode = emojiMode;
-        mLayoutHelper.setEmojiMode(emojiMode);
         updateKeys();
     }
 
@@ -525,10 +518,9 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     private void updateKeys() {
         final SettingsValues currentSettingsValues = Settings.getInstance().getCurrent();
-        final boolean grayOut = !mEmojiMode && currentSettingsValues.mIncognitoModeEnabled
+        final boolean grayOut = currentSettingsValues.mIncognitoModeEnabled
                 && currentSettingsValues.mGrayOutSuggestionsInIncognito;
-        mVoiceKey.setVisibility(
-                !mEmojiMode && currentSettingsValues.mShowsVoiceInputKey ? VISIBLE : GONE);
+        mVoiceKey.setVisibility(currentSettingsValues.mShowsVoiceInputKey ? VISIBLE : GONE);
         mSuggestionsStrip.setAlpha(grayOut ? INCOGNITO_GRAY_OUT_ALPHA : 1.0f);
         positionRightKeys();
     }

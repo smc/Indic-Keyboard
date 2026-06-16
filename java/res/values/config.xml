@@ -73,6 +73,11 @@
     <fraction name="config_key_shifted_letter_hint_ratio_5row">41%</fraction>
 
     <dimen name="config_suggestions_strip_height">40dp</dimen>
+    <dimen name="config_emoji_suggestions_strip_height">48dp</dimen>
+    <dimen name="config_emoji_suggestions_text_size">24sp</dimen>
+    <dimen name="config_emoji_suggestions_cell_width">44dp</dimen>
+    <dimen name="config_emoji_suggestions_fade_length">28dp</dimen>
+    <dimen name="config_emoji_suggestions_start_padding">8dp</dimen>
     <dimen name="config_suggestions_strip_horizontal_margin">36dp</dimen>
     <dimen name="config_suggestions_strip_edge_key_width">36dp</dimen>
     <dimen name="config_more_suggestions_row_height">40dp</dimen>

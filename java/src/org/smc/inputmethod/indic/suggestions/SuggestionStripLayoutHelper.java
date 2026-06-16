@@ -64,7 +64,6 @@ final class SuggestionStripLayoutHelper {
     private static final float DEFAULT_CENTER_SUGGESTION_PERCENTILE = 0.40f;
     private static final int DEFAULT_MAX_MORE_SUGGESTIONS_ROW = 2;
     private static final int PUNCTUATIONS_IN_STRIP = 5;
-    private static final int EMOJI_IN_STRIP = 8;
     private static final float MIN_TEXT_XSCALE = 0.70f;
 
     public final int mPadding;
@@ -76,7 +75,6 @@ final class SuggestionStripLayoutHelper {
     public final float mMinMoreSuggestionsWidth;
     public final int mMoreSuggestionsBottomGap;
     private boolean mMoreSuggestionsAvailable;
-    private boolean mEmojiMode;
 
     // The index of these {@link ArrayList} is the position in the suggestion strip. The indices
     // increase towards the right for LTR scripts and the left for RTL scripts, starting with 0.
@@ -159,10 +157,6 @@ final class SuggestionStripLayoutHelper {
                 R.dimen.config_more_suggestions_bottom_gap);
         mMoreSuggestionsRowHeight = res.getDimensionPixelSize(
                 R.dimen.config_more_suggestions_row_height);
-    }
-
-    public void setEmojiMode(final boolean emojiMode) {
-        mEmojiMode = emojiMode;
     }
 
     public int getMaxMoreSuggestionsRow() {
@@ -355,9 +349,6 @@ final class SuggestionStripLayoutHelper {
             final SuggestedWords suggestedWords,
             final ViewGroup stripView,
             final ViewGroup placerView) {
-        if (mEmojiMode) {
-            return layoutEmojiAndReturnStartIndexOfMoreSuggestions(suggestedWords, stripView);
-        }
         if (suggestedWords.isPunctuationSuggestions()) {
             return layoutPunctuationsAndReturnStartIndexOfMoreSuggestions(
                     (PunctuationSuggestions)suggestedWords, stripView);
@@ -525,32 +516,6 @@ final class SuggestionStripLayoutHelper {
             count++;
         }
         return indexInSuggestedWords;
-    }
-
-    private int layoutEmojiAndReturnStartIndexOfMoreSuggestions(
-            final SuggestedWords suggestedWords, final ViewGroup stripView) {
-        final int countInStrip = Math.min(suggestedWords.size(),
-                Math.min(EMOJI_IN_STRIP, mWordViews.size()));
-        for (int positionInStrip = 0; positionInStrip < countInStrip; positionInStrip++) {
-            if (positionInStrip != 0) {
-                addDivider(stripView, mDividerViews.get(positionInStrip));
-            }
-            final TextView wordView = mWordViews.get(positionInStrip);
-            final String emoji = suggestedWords.getLabel(positionInStrip);
-            // {@link TextView#getTag()} is the index into suggestedWords used in
-            // {@link SuggestionStripView#onClick(View)}.
-            wordView.setTag(positionInStrip);
-            wordView.setText(emoji);
-            wordView.setContentDescription(emoji);
-            wordView.setTextScaleX(1.0f);
-            wordView.setCompoundDrawables(null, null, null, null);
-            wordView.setTextColor(mColorAutoCorrect);
-            wordView.setEnabled(true);
-            stripView.addView(wordView);
-            setLayoutWeight(wordView, 1.0f, mSuggestionsStripHeight);
-        }
-        mMoreSuggestionsAvailable = (suggestedWords.size() > countInStrip);
-        return countInStrip;
     }
 
     private int layoutPunctuationsAndReturnStartIndexOfMoreSuggestions(

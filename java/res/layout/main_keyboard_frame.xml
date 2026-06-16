@@ -86,6 +86,13 @@
         </LinearLayout>
     </LinearLayout>
 
+    <com.android.inputmethod.keyboard.emoji.EmojiSuggestionStripView
+        android:id="@+id/emoji_suggestion_strip"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/config_emoji_suggestions_strip_height"
+        android:visibility="gone"
+        style="?attr/suggestionStripViewStyle" />
+
     <!-- To ensure that key preview popup is correctly placed when the current system locale is
          one of RTL locales, layoutDirection="ltr" is needed in the SDK version 17+. -->
     <org.smc.inputmethod.indic.suggestions.SuggestionStripView

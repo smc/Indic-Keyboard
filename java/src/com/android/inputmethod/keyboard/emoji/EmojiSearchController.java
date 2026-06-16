@@ -58,6 +58,7 @@ public final class EmojiSearchController {
     private final LatinIME mLatinIME;
     private final KeyboardSwitcher mKeyboardSwitcher;
     private final SuggestionStripView mStripView;
+    private final EmojiSuggestionStripView mEmojiStrip;
     private final View mSearchBar;
     private final View mSearchField;
     private final View mBackButton;
@@ -85,6 +86,8 @@ public final class EmojiSearchController {
         mLatinIME = latinIME;
         mKeyboardSwitcher = keyboardSwitcher;
         mStripView = stripView;
+        mEmojiStrip = (EmojiSuggestionStripView)
+                ((View) searchBar.getParent()).findViewById(R.id.emoji_suggestion_strip);
         mSearchBar = searchBar;
         mSearchField = searchBar.findViewById(R.id.emoji_search_field);
         mBackButton = searchBar.findViewById(R.id.emoji_search_back);
@@ -109,7 +112,8 @@ public final class EmojiSearchController {
         mActive = true;
         mQuery.setLength(0);
         mSearchBar.setVisibility(View.VISIBLE);
-        mStripView.setEmojiMode(true);
+        mStripView.setVisibility(View.GONE);
+        mEmojiStrip.setVisibility(View.VISIBLE);
         mKeyboardSwitcher.setEmojiSearchKeyboard();
         startCaretBlink();
         onQueryChanged();
@@ -157,7 +161,8 @@ public final class EmojiSearchController {
         }
         restoreSearchFieldLayout();
         mSearchBar.setVisibility(View.GONE);
-        mStripView.setEmojiMode(false);
+        mEmojiStrip.setVisibility(View.GONE);
+        mEmojiStrip.clear();
     }
 
     /**
@@ -222,9 +227,16 @@ public final class EmojiSearchController {
                 null /* rawSuggestions */, null /* typedWord */, false /* typedWordValid */,
                 false /* willAutoCorrect */, false /* isObsoleteSuggestions */,
                 SuggestedWords.INPUT_STYLE_NONE, SuggestedWords.NOT_A_SEQUENCE_NUMBER);
-        mStripView.setSuggestions(suggestedWords, false /* isRtlLanguage */);
-        mStripView.updateVisibility(true, mLatinIME.isFullscreenMode());
+        mEmojiStrip.setSuggestions(suggestedWords, mEmojiClickListener);
     }
+
+    private final EmojiSuggestionStripView.OnEmojiClickListener mEmojiClickListener =
+            new EmojiSuggestionStripView.OnEmojiClickListener() {
+                @Override
+                public void onEmojiClicked(final SuggestedWordInfo info) {
+                    commitPicked(info);
+                }
+            };
 
     private ArrayList<SuggestedWordInfo> recentEmojis() {
         final ArrayList<SuggestedWordInfo> list = new ArrayList<>();
