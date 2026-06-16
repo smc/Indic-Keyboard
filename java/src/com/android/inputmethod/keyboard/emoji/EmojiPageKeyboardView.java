@@ -22,7 +22,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -31,7 +30,9 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -302,12 +303,9 @@ final class EmojiPageKeyboardView extends KeyboardView implements
         final Context context = getContext();
         final LinearLayout row = new LinearLayout(context);
         row.setOrientation(LinearLayout.HORIZONTAL);
-        final int pad = dp(4);
-        row.setPadding(pad, pad, pad, pad);
-        final GradientDrawable background = new GradientDrawable();
-        background.setColor(Color.WHITE);
-        background.setCornerRadius(dp(10));
-        row.setBackground(background);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setBackgroundResource(R.drawable.md3_popup_background);
+        row.setElevation(dp(6));
 
         final int cellWidth = key.getWidth();
         final int cellHeight = key.getHeight();
@@ -330,20 +328,43 @@ final class EmojiPageKeyboardView extends KeyboardView implements
             row.addView(cell);
         }
 
-        final PopupWindow popup = new PopupWindow(row,
+        final int shadowPad = dp(12);
+        final FrameLayout container = new FrameLayout(context);
+        container.setPadding(shadowPad, shadowPad, shadowPad, shadowPad);
+        container.setClipToPadding(false);
+        container.setClipChildren(false);
+        container.addView(row);
+
+        final PopupWindow popup = new PopupWindow(container,
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         popup.setOutsideTouchable(true);
         popup.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         mVariationsPopup = popup;
 
-        row.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-        final int popupWidth = row.getMeasuredWidth();
-        final int popupHeight = row.getMeasuredHeight();
+        container.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        final int popupWidth = container.getMeasuredWidth();
+        final int popupHeight = container.getMeasuredHeight();
         final int[] location = new int[2];
         getLocationInWindow(location);
         final int x = location[0] + key.getX() + key.getWidth() / 2 - popupWidth / 2;
-        final int y = location[1] + key.getY() - popupHeight;
+        // Sit the box just above the key (the container's bottom padding holds the shadow).
+        final int y = location[1] + key.getY() - popupHeight + shadowPad;
         popup.showAtLocation(this, Gravity.NO_GRAVITY, Math.max(0, x), Math.max(0, y));
+        dimBehind(popup);
+    }
+
+    private void dimBehind(final PopupWindow popup) {
+        final View decor = popup.getContentView().getRootView();
+        if (decor == null
+                || !(decor.getLayoutParams() instanceof WindowManager.LayoutParams)) {
+            return;
+        }
+        final WindowManager wm =
+                (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        final WindowManager.LayoutParams lp = (WindowManager.LayoutParams) decor.getLayoutParams();
+        lp.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        lp.dimAmount = 0.32f;
+        wm.updateViewLayout(decor, lp);
     }
 
     private void dismissVariationsPopup() {
