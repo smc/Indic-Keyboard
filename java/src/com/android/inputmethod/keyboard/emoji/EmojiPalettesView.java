@@ -82,6 +82,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     private final DeleteKeyOnTouchListener mDeleteKeyOnTouchListener;
 
     private ImageButton mDeleteKey;
+    private ImageButton mZwjKey;
     private TextView mAlphabetKeyLeft;
     private EmojiSearchController mEmojiSearchController;
     private View mSpacebar;
@@ -270,6 +271,10 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         mSpacebar.setOnClickListener(this);
         mEmojiLayoutParams.setKeyProperties(mSpacebar);
         mSpacebarIcon = findViewById(R.id.emoji_keyboard_space_icon);
+
+        mZwjKey = (ImageButton) findViewById(R.id.emoji_keyboard_zwj);
+        mZwjKey.setBackgroundResource(mFunctionalKeyBackgroundId);
+        mZwjKey.setOnClickListener(this);
     }
 
     @Override
@@ -323,6 +328,11 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
      */
     @Override
     public void onClick(View v) {
+        if (v == mZwjKey) {
+            mKeyboardActionListener.onTextInput("\u200D");
+            mKeyboardActionListener.onReleaseKey(Constants.CODE_OUTPUT_TEXT, false /* withSliding */);
+            return;
+        }
         final Object tag = v.getTag();
         if (!(tag instanceof Integer)) {
             return;

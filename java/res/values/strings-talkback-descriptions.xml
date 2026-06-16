@@ -60,6 +60,7 @@
     <string name="spoken_description_tab">Tab</string>
     <!-- Spoken description for the "Space" keyboard key. -->
     <string name="spoken_description_space">Space</string>
+    <string name="spoken_description_zwj">Join emoji</string>
     <!-- Spoken description for the "Emoji Search" keyboard key. -->
     <string name="spoken_description_back">Back</string>
     <!-- Spoken description for the "Mic" keyboard key. -->
