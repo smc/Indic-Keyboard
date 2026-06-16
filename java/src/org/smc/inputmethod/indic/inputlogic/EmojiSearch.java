@@ -7,16 +7,27 @@
 package org.smc.inputmethod.indic.inputlogic;
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.util.Log;
 
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.Dictionary;
+import com.android.inputmethod.latin.NgramContext;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+import com.android.inputmethod.latin.common.ComposedData;
+import com.android.inputmethod.latin.common.InputPointers;
 import com.android.inputmethod.latin.common.StringUtils;
+
+import org.smc.inputmethod.indic.settings.SettingsValuesForSuggestion;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class EmojiSearch {
@@ -24,6 +35,7 @@ public class EmojiSearch {
     private static HashMap<String, String> dict;
 
     private Context mContext;
+    private volatile BinaryDictionary mDict;
 
     public EmojiSearch(Context context) {
         mContext = context;
@@ -32,32 +44,72 @@ public class EmojiSearch {
             @Override
             public void run() {
                 makeDict();
+                openSearchDict();
             }
         };
         Thread thread = new Thread(runnable);
         thread.start();
     }
 
-    public ArrayList<SuggestedWords.SuggestedWordInfo> search(String query) {
-        query = query.toLowerCase();
-        ArrayList<SuggestedWords.SuggestedWordInfo> suggestedEmojis = new ArrayList<SuggestedWords.SuggestedWordInfo>();
-
-        String description;
-        for (Map.Entry<String, String> entry : dict.entrySet()) {
-            description = entry.getKey();
-            if (description.contains(query)) {
-                final SuggestedWords.SuggestedWordInfo emojiInfo = new SuggestedWords.SuggestedWordInfo(
-                        getStringFromCodepoints(entry.getValue()),
-                        "" /* prevWordsContext */,
-                        description.length() - query.length(),
-                        SuggestedWords.SuggestedWordInfo.KIND_COMPLETION,
-                        Dictionary.DICTIONARY_RESUMED,
-                        SuggestedWords.SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                        SuggestedWords.SuggestedWordInfo.NOT_A_CONFIDENCE);
-                suggestedEmojis.add(emojiInfo);
+    private void openSearchDict() {
+        try {
+            final AssetFileDescriptor afd =
+                    mContext.getResources().openRawResourceFd(R.raw.emoji_search);
+            if (afd == null) {
+                Log.e(TAG, "emoji_search.dict is compressed / not found");
+                return;
             }
+            final String sourceDir = mContext.getApplicationInfo().sourceDir;
+            final long offset = afd.getStartOffset();
+            final long length = afd.getLength();
+            afd.close();
+            final BinaryDictionary d = new BinaryDictionary(sourceDir, offset, length,
+                    false /* useFullEditDistance */, Locale.ENGLISH, "emoji",
+                    false /* isUpdatable */);
+            if (d.isValidDictionary()) {
+                mDict = d;
+                Log.d(TAG, "emoji_search.dict loaded ok");
+            } else {
+                Log.e(TAG, "emoji_search.dict invalid");
+                d.close();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "openSearchDict failed", e);
         }
-        return suggestedEmojis;
+    }
+
+    public ArrayList<SuggestedWords.SuggestedWordInfo> search(String query) {
+        final ArrayList<SuggestedWordInfo> out = new ArrayList<>();
+        final BinaryDictionary d = mDict;
+        if (d == null) {
+            return out;
+        }
+        final String token = query.toLowerCase().trim();
+        if (token.isEmpty()) {
+            return out;
+        }
+        // Native getSuggestions requires a valid ProximityInfo handle (passing 0 crashes natively).
+        final Keyboard kb = KeyboardSwitcher.getInstance().getKeyboard();
+        if (kb == null) {
+            return out;
+        }
+        final long proximity = kb.getProximityInfo().getNativeProximityInfo();
+        final ComposedData composed =
+                new ComposedData(new InputPointers(48), false /* isBatchMode */, token);
+        final ArrayList<SuggestedWordInfo> results = d.getSuggestions(composed,
+                NgramContext.EMPTY_PREV_WORDS_INFO, proximity,
+                new SettingsValuesForSuggestion(false), 0 /* sessionId */, 1.0f /* weightForLocale */,
+                new float[] { -1.0f });
+        Log.d(TAG, "search('" + token + "') -> " + (results == null ? "null" : results.size()));
+        if (results == null) {
+            return out;
+        }
+        for (final SuggestedWordInfo info : results) {
+            Log.d(TAG, "result word=[" + info.mWord + "] kind=" + info.mKindAndFlags
+                    + " score=" + info.mScore);
+            out.add(info);
+        }
+        return out;
     }
 
     public String getDescription(String emoji) {

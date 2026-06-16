@@ -17,14 +17,19 @@
 package com.android.inputmethod.latin.makedict;
 
 import com.android.inputmethod.annotations.UsedForTesting;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNode;
+import com.android.inputmethod.latin.makedict.FusionDictionary.PtNodeArray;
 import com.android.inputmethod.latin.makedict.UnsupportedFormatException;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.annotation.Nonnull;
 
@@ -400,6 +405,110 @@ public final class BinaryDictDecoderUtils {
             attributes.put(keyValues.get(i), keyValues.get(i + 1));
         }
         return attributes;
+    }
+
+    /**
+     * Helper function to get the binary format version from the header.
+     */
+    private static int getFormatVersion(final DictBuffer dictBuffer) {
+        final int magic = dictBuffer.readInt();
+        if (FormatSpec.MAGIC_NUMBER == magic) return dictBuffer.readUnsignedShort();
+        return FormatSpec.NOT_A_VERSION_NUMBER;
+    }
+
+    /**
+     * Helper function to get and validate the binary format version.
+     */
+    static int checkFormatVersion(final DictBuffer dictBuffer)
+            throws UnsupportedFormatException {
+        final int version = getFormatVersion(dictBuffer);
+        if (version != FormatSpec.VERSION2 && version != FormatSpec.VERSION201
+                && version != FormatSpec.VERSION202) {
+            throw new UnsupportedFormatException("This file has version " + version
+                    + ", but this implementation does not support static versions other than "
+                    + "2, 201 and 202.");
+        }
+        return version;
+    }
+
+    /**
+     * Reads a single node array and recursively its children, populating a PtNodeArray.
+     */
+    private static PtNodeArray readNodeArray(final DictDecoder dictDecoder,
+            final int headerSize, final Map<Integer, PtNodeArray> reverseNodeArrayMap,
+            final Map<Integer, PtNode> reversePtNodeMap)
+            throws IOException, UnsupportedFormatException {
+        final ArrayList<PtNode> nodeArrayContents = new ArrayList<>();
+        final int nodeArrayOriginPos = dictDecoder.getPosition();
+
+        final int count = dictDecoder.readPtNodeCount();
+        int groupPos = dictDecoder.getPosition();
+        for (int i = count; i > 0; --i) {
+            PtNodeInfo info = dictDecoder.readPtNode(groupPos);
+            ArrayList<WeightedString> shortcutTargets = info.mShortcutTargets;
+            ArrayList<WeightedString> bigrams = null;
+            if (null != info.mBigrams) {
+                bigrams = new ArrayList<>();
+                for (PendingAttribute bigram : info.mBigrams) {
+                    final WeightedString word = getWordAtPosition(dictDecoder, headerSize,
+                            bigram.mAddress);
+                    final int reconstructedFrequency =
+                            BinaryDictIOUtils.reconstructBigramFrequency(word.getProbability(),
+                                    bigram.mFrequency);
+                    bigrams.add(new WeightedString(word.mWord, reconstructedFrequency));
+                }
+            }
+            if (BinaryDictIOUtils.hasChildrenAddress(info.mChildrenAddress)) {
+                PtNodeArray children = reverseNodeArrayMap.get(info.mChildrenAddress);
+                if (null == children) {
+                    final int currentPosition = dictDecoder.getPosition();
+                    dictDecoder.setPosition(info.mChildrenAddress);
+                    children = readNodeArray(dictDecoder, headerSize, reverseNodeArrayMap,
+                            reversePtNodeMap);
+                    dictDecoder.setPosition(currentPosition);
+                }
+                nodeArrayContents.add(
+                        new PtNode(info.mCharacters, shortcutTargets, bigrams,
+                                info.mProbabilityInfo,
+                                0 != (info.mFlags & FormatSpec.FLAG_IS_NOT_A_WORD),
+                                0 != (info.mFlags & FormatSpec.FLAG_IS_POSSIBLY_OFFENSIVE),
+                                children));
+            } else {
+                nodeArrayContents.add(
+                        new PtNode(info.mCharacters, shortcutTargets, bigrams,
+                                info.mProbabilityInfo,
+                                0 != (info.mFlags & FormatSpec.FLAG_IS_NOT_A_WORD),
+                                0 != (info.mFlags & FormatSpec.FLAG_IS_POSSIBLY_OFFENSIVE)));
+            }
+            groupPos = info.mEndAddress;
+        }
+
+        final PtNodeArray nodeArray = new PtNodeArray(nodeArrayContents);
+        nodeArray.mCachedAddressBeforeUpdate = nodeArrayOriginPos;
+        nodeArray.mCachedAddressAfterUpdate = nodeArrayOriginPos;
+        reverseNodeArrayMap.put(nodeArray.mCachedAddressAfterUpdate, nodeArray);
+        return nodeArray;
+    }
+
+    /**
+     * Reads a buffer and returns the memory representation of the dictionary.
+     *
+     * This high-level method takes a dict decoder and reads its contents, populating a
+     * FusionDictionary structure. This is a pure-Java path, used by dicttool to decode a
+     * static (VERSION2xx) dictionary off-device without the native library.
+     *
+     * @param dictDecoder the dict decoder.
+     * @return the created dictionary.
+     */
+    @UsedForTesting
+    /* package */ static FusionDictionary readDictionaryBinary(final DictDecoder dictDecoder)
+            throws IOException, UnsupportedFormatException {
+        final DictionaryHeader fileHeader = dictDecoder.readHeader();
+        final Map<Integer, PtNodeArray> reverseNodeArrayMapping = new TreeMap<>();
+        final Map<Integer, PtNode> reversePtNodeMapping = new TreeMap<>();
+        final PtNodeArray root = readNodeArray(dictDecoder, fileHeader.mBodyOffset,
+                reverseNodeArrayMapping, reversePtNodeMapping);
+        return new FusionDictionary(root, fileHeader.mDictionaryOptions);
     }
 
     /**

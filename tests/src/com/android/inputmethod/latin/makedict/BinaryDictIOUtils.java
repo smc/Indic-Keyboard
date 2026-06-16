@@ -43,12 +43,18 @@ public final class BinaryDictIOUtils {
      */
     public static DictDecoder getDictDecoder(final File dictFile, final long offset,
             final long length, final int bufferType) {
-        return new Ver4DictDecoder(dictFile);
+        if (dictFile.isDirectory()) {
+            return new Ver4DictDecoder(dictFile);
+        }
+        return new Ver2DictDecoder(dictFile, offset, length, bufferType);
     }
 
     public static DictDecoder getDictDecoder(final File dictFile, final long offset,
             final long length, final DictionaryBufferFactory factory) {
-        return new Ver4DictDecoder(dictFile);
+        if (dictFile.isDirectory()) {
+            return new Ver4DictDecoder(dictFile);
+        }
+        return new Ver2DictDecoder(dictFile, offset, length, factory);
     }
 
     public static DictDecoder getDictDecoder(final File dictFile, final long offset,
