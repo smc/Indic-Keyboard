@@ -17,11 +17,24 @@
 package com.android.inputmethod.keyboard.emoji;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.KeyboardAccessibilityDelegate;
@@ -29,6 +42,8 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardView;
+import com.android.inputmethod.keyboard.internal.KeyDrawParams;
+import com.android.inputmethod.keyboard.internal.MoreKeySpec;
 import com.android.inputmethod.latin.R;
 
 /**
@@ -45,6 +60,8 @@ final class EmojiPageKeyboardView extends KeyboardView implements
         public void onPressKey(Key key);
         public void onReleaseKey(Key key);
         public void onHoldKey(Key key);
+        public boolean isRecentsTab();
+        public void onPickEmojiVariation(Key baseKey, String emoji);
     }
 
     private static final OnKeyEventListener EMPTY_LISTENER = new OnKeyEventListener() {
@@ -54,12 +71,20 @@ final class EmojiPageKeyboardView extends KeyboardView implements
         public void onReleaseKey(final Key key) {}
         @Override
         public void onHoldKey(final Key key) {}
+        @Override
+        public boolean isRecentsTab() { return false; }
+        @Override
+        public void onPickEmojiVariation(final Key baseKey, final String emoji) {}
     };
 
     private OnKeyEventListener mListener = EMPTY_LISTENER;
     private final KeyDetector mKeyDetector = new KeyDetector();
     private final GestureDetector mGestureDetector;
     private KeyboardAccessibilityDelegate<EmojiPageKeyboardView> mAccessibilityDelegate;
+
+    private PopupWindow mVariationsPopup;
+    private final Paint mTrianglePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Path mTrianglePath = new Path();
 
     public EmojiPageKeyboardView(final Context context, final AttributeSet attrs) {
         this(context, attrs, R.attr.keyboardViewStyle);
@@ -71,6 +96,7 @@ final class EmojiPageKeyboardView extends KeyboardView implements
         mGestureDetector = new GestureDetector(context, this);
         mGestureDetector.setIsLongpressEnabled(true /* isLongpressEnabled */);
         mHandler = new Handler();
+        mTrianglePaint.setStyle(Paint.Style.FILL);
     }
 
     public void setOnKeyEventListener(final OnKeyEventListener listener) {
@@ -243,6 +269,7 @@ final class EmojiPageKeyboardView extends KeyboardView implements
     @Override
     public boolean onScroll(final MotionEvent e1, final MotionEvent e2, final float distanceX,
            final float distanceY) {
+        dismissVariationsPopup();
         releaseCurrentKey(false /* withKeyRegistering */);
         return false;
     }
@@ -257,7 +284,103 @@ final class EmojiPageKeyboardView extends KeyboardView implements
     @Override
     public void onLongPress(final MotionEvent e) {
         final Key key = getKey(e);
-        if (key == null) return;
+        if (key == null) {
+            return;
+        }
+        if (!mListener.isRecentsTab() && key.getMoreKeys() != null) {
+            mHoldKey = true;
+            key.onReleased();
+            invalidateKey(key);
+            showVariationsPopup(key);
+            return;
+        }
         callListenerOnHoldKey(key);
+    }
+
+    private void showVariationsPopup(final Key key) {
+        dismissVariationsPopup();
+        final Context context = getContext();
+        final LinearLayout row = new LinearLayout(context);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        final int pad = dp(4);
+        row.setPadding(pad, pad, pad, pad);
+        final GradientDrawable background = new GradientDrawable();
+        background.setColor(Color.WHITE);
+        background.setCornerRadius(dp(10));
+        row.setBackground(background);
+
+        final int cellWidth = key.getWidth();
+        final int cellHeight = key.getHeight();
+        for (final MoreKeySpec spec : key.getMoreKeys()) {
+            final String emoji = (spec.mOutputText != null) ? spec.mOutputText : spec.mLabel;
+            final TextView cell = new TextView(context);
+            cell.setText(emoji);
+            cell.setGravity(Gravity.CENTER);
+            cell.setTextSize(TypedValue.COMPLEX_UNIT_PX, cellHeight * 0.5f);
+            cell.setWidth(cellWidth);
+            cell.setHeight(cellHeight);
+            cell.setClickable(true);
+            cell.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View v) {
+                    mListener.onPickEmojiVariation(key, emoji);
+                    dismissVariationsPopup();
+                }
+            });
+            row.addView(cell);
+        }
+
+        final PopupWindow popup = new PopupWindow(row,
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        popup.setOutsideTouchable(true);
+        popup.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        mVariationsPopup = popup;
+
+        row.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        final int popupWidth = row.getMeasuredWidth();
+        final int popupHeight = row.getMeasuredHeight();
+        final int[] location = new int[2];
+        getLocationInWindow(location);
+        final int x = location[0] + key.getX() + key.getWidth() / 2 - popupWidth / 2;
+        final int y = location[1] + key.getY() - popupHeight;
+        popup.showAtLocation(this, Gravity.NO_GRAVITY, Math.max(0, x), Math.max(0, y));
+    }
+
+    private void dismissVariationsPopup() {
+        if (mVariationsPopup != null) {
+            if (mVariationsPopup.isShowing()) {
+                mVariationsPopup.dismiss();
+            }
+            mVariationsPopup = null;
+        }
+    }
+
+    private int dp(final int value) {
+        return (int) (value * getResources().getDisplayMetrics().density + 0.5f);
+    }
+
+    @Override
+    protected void onDrawKeyTopVisuals(final Key key, final Canvas canvas, final Paint paint,
+            final KeyDrawParams params) {
+        super.onDrawKeyTopVisuals(key, canvas, paint, params);
+        if (key.getMoreKeys() == null) {
+            return;
+        }
+        final int width = key.getDrawWidth();
+        final float side = dp(6);
+        final float inset = dp(2);
+        mTrianglePath.reset();
+        mTrianglePath.moveTo(width - inset, inset);
+        mTrianglePath.lineTo(width - inset - side, inset);
+        mTrianglePath.lineTo(width - inset, inset + side);
+        mTrianglePath.close();
+        mTrianglePaint.setColor(params.mHintLabelColor);
+        canvas.drawPath(mTrianglePath, mTrianglePaint);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        dismissVariationsPopup();
+        super.onDetachedFromWindow();
     }
 }

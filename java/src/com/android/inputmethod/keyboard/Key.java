@@ -215,17 +215,29 @@ public class Key implements Comparable<Key> {
             @Nullable final String outputText, @Nullable final String hintLabel,
             final int labelFlags, final int backgroundType, final int x, final int y,
             final int width, final int height, final int horizontalGap, final int verticalGap) {
+        this(label, iconId, code, outputText, hintLabel, labelFlags, backgroundType, x, y,
+                width, height, horizontalGap, verticalGap, null /* moreKeys */);
+    }
+
+    /** Variant of the <GridRows/> constructor that attaches more keys (e.g. emoji skin tones). */
+    public Key(@Nullable final String label, final int iconId, final int code,
+            @Nullable final String outputText, @Nullable final String hintLabel,
+            final int labelFlags, final int backgroundType, final int x, final int y,
+            final int width, final int height, final int horizontalGap, final int verticalGap,
+            @Nullable final MoreKeySpec[] moreKeys) {
         mWidth = width - horizontalGap;
         mHeight = height - verticalGap;
         mHorizontalGap = horizontalGap;
         mVerticalGap = verticalGap;
         mHintLabel = hintLabel;
-        mLabelFlags = labelFlags;
+        mLabelFlags = labelFlags | (moreKeys != null ? LABEL_FLAGS_HAS_POPUP_HINT : 0);
         mBackgroundType = backgroundType;
         // TODO: Pass keyActionFlags as an argument.
-        mActionFlags = ACTION_FLAGS_NO_KEY_PREVIEW;
-        mMoreKeys = null;
-        mMoreKeysColumnAndFlags = 0;
+        mActionFlags = ACTION_FLAGS_NO_KEY_PREVIEW
+                | (moreKeys != null ? ACTION_FLAGS_ENABLE_LONG_PRESS : 0);
+        mMoreKeys = moreKeys;
+        mMoreKeysColumnAndFlags = (moreKeys == null) ? 0
+                : (MORE_KEYS_MODE_FIXED_COLUMN_WITH_FIXED_ORDER | Math.min(moreKeys.length, 7));
         mLabel = label;
         mOptionalAttributes = OptionalAttributes.newInstance(outputText, CODE_UNSPECIFIED,
                 ICON_UNDEFINED, 0 /* visualInsetsLeft */, 0 /* visualInsetsRight */);
@@ -239,6 +251,19 @@ public class Key implements Comparable<Key> {
         mKeyVisualAttributes = null;
 
         mHashCode = computeHashCode(this);
+    }
+
+    /**
+     * Build a recents grid key for an emoji variation picked from {@code base}'s more-keys popup,
+     * carrying {@code emoji} as its output while reusing the base key's geometry. The recents
+     * keyboard recomputes the position, so only the size needs to match.
+     */
+    @Nonnull
+    public static Key newEmojiVariantKey(@Nonnull final Key base, @Nonnull final String emoji) {
+        return new Key(emoji, ICON_UNDEFINED, CODE_OUTPUT_TEXT, emoji, null /* hintLabel */,
+                0 /* labelFlags */, base.mBackgroundType, base.getX(), base.getY(),
+                base.mWidth + base.mHorizontalGap, base.mHeight + base.mVerticalGap,
+                base.mHorizontalGap, base.mVerticalGap, null /* moreKeys */);
     }
 
     /**

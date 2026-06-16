@@ -21,6 +21,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.keyboard.Key;
+import com.android.inputmethod.keyboard.internal.MoreKeySpec;
 import com.android.inputmethod.keyboard.Keyboard;
 import org.smc.inputmethod.indic.settings.Settings;
 import com.android.inputmethod.latin.common.StringUtils;
@@ -180,6 +181,16 @@ final class DynamicGridKeyboard extends Keyboard {
             for (final Key key : keyboard.getSortedKeys()) {
                 if (outputText.equals(key.getOutputText())) {
                     return key;
+                }
+                final MoreKeySpec[] moreKeys = key.getMoreKeys();
+                if (moreKeys == null) {
+                    continue;
+                }
+                for (final MoreKeySpec spec : moreKeys) {
+                    final String variant = (spec.mOutputText != null) ? spec.mOutputText : spec.mLabel;
+                    if (outputText.equals(variant)) {
+                        return Key.newEmojiVariantKey(key, outputText);
+                    }
                 }
             }
         }

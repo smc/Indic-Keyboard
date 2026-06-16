@@ -1,6 +1,7 @@
 /**
  * Emoji search
  * Copyright (C) 2020, Subin Siby <mail@subinsb.com>
+ *               2026, Jishnu Mohan
  * Licensed under the Apache License, Version 2.0
  */
 
@@ -20,19 +21,19 @@ import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import com.android.inputmethod.latin.common.ComposedData;
 import com.android.inputmethod.latin.common.InputPointers;
-import com.android.inputmethod.latin.common.StringUtils;
 
 import org.smc.inputmethod.indic.settings.SettingsValuesForSuggestion;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 
 public class EmojiSearch {
     private static String TAG = "EmojiSearch";
-    private static HashMap<String, String> dict;
 
     private Context mContext;
     private volatile BinaryDictionary mDict;
@@ -43,7 +44,6 @@ public class EmojiSearch {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                makeDict();
                 openSearchDict();
             }
         };
@@ -68,7 +68,6 @@ public class EmojiSearch {
                     false /* isUpdatable */);
             if (d.isValidDictionary()) {
                 mDict = d;
-                Log.d(TAG, "emoji_search.dict loaded ok");
             } else {
                 Log.e(TAG, "emoji_search.dict invalid");
                 d.close();
@@ -84,128 +83,70 @@ public class EmojiSearch {
         if (d == null) {
             return out;
         }
-        final String token = query.toLowerCase().trim();
-        if (token.isEmpty()) {
-            return out;
-        }
-        // Native getSuggestions requires a valid ProximityInfo handle (passing 0 crashes natively).
         final Keyboard kb = KeyboardSwitcher.getInstance().getKeyboard();
         if (kb == null) {
             return out;
         }
         final long proximity = kb.getProximityInfo().getNativeProximityInfo();
+        // Query each whitespace-separated token; emoji must match every token (AND), ranked by the
+        // summed dictionary score.
+        LinkedHashMap<String, Integer> scores = null;
+        for (final String token : query.toLowerCase().trim().split("\\s+")) {
+            if (token.isEmpty()) {
+                continue;
+            }
+            final HashMap<String, Integer> tokenScores = queryToken(d, proximity, token);
+            if (scores == null) {
+                scores = new LinkedHashMap<>(tokenScores);
+            } else {
+                scores.keySet().retainAll(tokenScores.keySet());
+                for (final Map.Entry<String, Integer> e : scores.entrySet()) {
+                    e.setValue(e.getValue() + tokenScores.get(e.getKey()));
+                }
+            }
+            if (scores.isEmpty()) {
+                return out;
+            }
+        }
+        if (scores == null) {
+            return out;
+        }
+        final ArrayList<Map.Entry<String, Integer>> ranked = new ArrayList<>(scores.entrySet());
+        Collections.sort(ranked, new Comparator<Map.Entry<String, Integer>>() {
+            @Override
+            public int compare(Map.Entry<String, Integer> a, Map.Entry<String, Integer> b) {
+                return Integer.compare(b.getValue(), a.getValue());
+            }
+        });
+        for (final Map.Entry<String, Integer> e : ranked) {
+            out.add(new SuggestedWordInfo(e.getKey(), "" /* prevWordsContext */, e.getValue(),
+                    SuggestedWordInfo.KIND_COMPLETION, Dictionary.DICTIONARY_RESUMED,
+                    SuggestedWordInfo.NOT_AN_INDEX, SuggestedWordInfo.NOT_A_CONFIDENCE));
+        }
+        return out;
+    }
+
+    private HashMap<String, Integer> queryToken(final BinaryDictionary d, final long proximity,
+            final String token) {
+        final HashMap<String, Integer> map = new HashMap<>();
         final ComposedData composed =
                 new ComposedData(new InputPointers(48), false /* isBatchMode */, token);
         final ArrayList<SuggestedWordInfo> results = d.getSuggestions(composed,
                 NgramContext.EMPTY_PREV_WORDS_INFO, proximity,
                 new SettingsValuesForSuggestion(false), 0 /* sessionId */, 1.0f /* weightForLocale */,
                 new float[] { -1.0f });
-        Log.d(TAG, "search('" + token + "') -> " + (results == null ? "null" : results.size()));
         if (results == null) {
-            return out;
+            return map;
         }
         for (final SuggestedWordInfo info : results) {
-            Log.d(TAG, "result word=[" + info.mWord + "] kind=" + info.mKindAndFlags
-                    + " score=" + info.mScore);
-            out.add(info);
-        }
-        return out;
-    }
-
-    public String getDescription(String emoji) {
-        emoji = getCodepointsFromString(emoji);
-        String codepoint;
-        for (Map.Entry<String, String> entry : dict.entrySet()) {
-            codepoint = entry.getValue();
-            if (codepoint.equals(emoji)) {
-                return toTitleCase(entry.getKey());
+            if (!info.isKindOf(SuggestedWordInfo.KIND_SHORTCUT)) {
+                continue;
+            }
+            final Integer prev = map.get(info.mWord);
+            if (prev == null || info.mScore > prev) {
+                map.put(info.mWord, info.mScore);
             }
         }
-        return null;
-    }
-
-    private static String toTitleCase(String input) {
-        StringBuilder titleCase = new StringBuilder(input.length());
-        boolean nextTitleCase = true;
-
-        for (char c : input.toCharArray()) {
-            if (Character.isSpaceChar(c)) {
-                nextTitleCase = true;
-            } else if (nextTitleCase) {
-                c = Character.toTitleCase(c);
-                nextTitleCase = false;
-            }
-
-            titleCase.append(c);
-        }
-
-        return titleCase.toString();
-    }
-
-    private void makeDict() {
-        if (dict != null) return;
-
-        // TODO move strings-emoji-description.xml to a dictionary and read direct
-        Log.d(TAG, "making emoji dictionary");
-
-        // Make emoji dictionary
-        Field[] fields = R.string.class.getDeclaredFields();
-        dict = new HashMap<>();
-
-        try {
-            String name, description;
-            for (Field field : fields) {
-                name = field.getName();
-                if (
-                        name.length() > 13 &&
-                        name.substring(0, 13).equals("spoken_emoji_") &&
-                        !name.equals("spoken_emoji_unknown")
-                ) {
-                    description = mContext.getString(field.getInt(field))
-                            .toLowerCase()
-                            .replaceAll("[^a-zA-Z0-9]","") /* remove all non alphanumeric chars */;
-                    dict.put(
-                            description,
-                            name.substring(13) /* codepoints */
-                    );
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Get emoji string from codepoint
-     * @param codepoints Codepoints (hexa) separated by underscore
-     * @return emoji text
-     */
-    public static String getStringFromCodepoints(String codepoints) {
-        StringBuilder result = new StringBuilder();
-        for (String codepoint: codepoints.split("_")) {
-            result.append(StringUtils.newSingleCodePointString(Integer.parseInt(codepoint, 16)));
-        }
-        return result.toString();
-    }
-
-    /**
-     * Get codepoints separated by _ from a string
-     * @param str String
-     * @return Codepoints (hexa) separated by underscore
-     */
-    public static String getCodepointsFromString(String str) {
-        StringBuilder codepoints = new StringBuilder();
-        final int length = str.length();
-        for (int offset = 0; offset < length; ) {
-            final int codepoint = str.codePointAt(offset);
-            final String hexa = Integer.toHexString(codepoint);
-
-            if (!codepoints.toString().equals("")) codepoints.append("_");
-            codepoints.append(hexa.toUpperCase());
-
-            offset += Character.charCount(codepoint);
-        }
-
-        return codepoints.toString();
+        return map;
     }
 }

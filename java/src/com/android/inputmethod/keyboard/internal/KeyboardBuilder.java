@@ -430,6 +430,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 final int code;
                 final String outputText;
                 final int supportedMinSdkVersion;
+                String[] variations = null;
                 if (codesArrayId != 0) {
                     final String codeArraySpec = array[i];
                     label = CodesArrayParser.parseLabel(codeArraySpec);
@@ -437,6 +438,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     outputText = CodesArrayParser.parseOutputText(codeArraySpec);
                     supportedMinSdkVersion =
                             CodesArrayParser.getMinSupportSdkVersion(codeArraySpec);
+                    variations = CodesArrayParser.parseVariations(codeArraySpec);
                 } else {
                     final String textArraySpec = array[i];
                     // TODO: Utilize KeySpecParser or write more generic TextsArrayParser.
@@ -455,9 +457,17 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 final int y = row.getKeyY();
                 final int width = (int)keyWidth;
                 final int height = row.getRowHeight();
+                MoreKeySpec[] moreKeys = null;
+                if (variations != null) {
+                    moreKeys = new MoreKeySpec[variations.length];
+                    for (int v = 0; v < variations.length; v++) {
+                        moreKeys[v] = new MoreKeySpec(variations[v], false /* needsToUpperCase */,
+                                Locale.ROOT);
+                    }
+                }
                 final Key key = new Key(label, KeyboardIconsSet.ICON_UNDEFINED, code, outputText,
                         null /* hintLabel */, labelFlags, backgroundType, x, y, width, height,
-                        mParams.mHorizontalGap, mParams.mVerticalGap);
+                        mParams.mHorizontalGap, mParams.mVerticalGap, moreKeys);
                 endKey(key);
                 row.advanceXPos(keyWidth);
             }

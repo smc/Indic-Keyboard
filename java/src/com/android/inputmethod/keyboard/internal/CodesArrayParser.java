@@ -97,11 +97,31 @@ public final class CodesArrayParser {
         if (codeSpec.indexOf(COMMA) < 0) {
             return null;
         }
+        return hexSeqToString(codeSpec);
+    }
+
+    private static String hexSeqToString(final String hexCsv) {
         final StringBuilder sb = new StringBuilder();
-        for (final String codeInHex : codeSpec.split(COMMA_REGEX)) {
-            final int codePoint = Integer.parseInt(codeInHex, BASE_HEX);
-            sb.appendCodePoint(codePoint);
+        for (final String codeInHex : hexCsv.split(COMMA_REGEX)) {
+            sb.appendCodePoint(Integer.parseInt(codeInHex, BASE_HEX));
         }
         return sb.toString();
+    }
+
+    /**
+     * Optional 4th field: a ';'-separated list of variation sequences (e.g. skin tones), each a
+     * comma-joined hex codepoint sequence. Returns the variation emoji strings, or null if none.
+     */
+    public static String[] parseVariations(final String codesArraySpec) {
+        final String[] strs = codesArraySpec.split(VERTICAL_BAR_REGEX, -1);
+        if (strs.length <= 3 || TextUtils.isEmpty(strs[3])) {
+            return null;
+        }
+        final String[] variants = strs[3].split(";");
+        final String[] out = new String[variants.length];
+        for (int i = 0; i < variants.length; i++) {
+            out[i] = hexSeqToString(variants[i]);
+        }
+        return out;
     }
 }
