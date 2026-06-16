@@ -355,7 +355,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     public void exitEmojiSearchKeyboard() {
         restoreFromEmojiSearch();
-        setEmojiKeyboard();
+        mState.onExitEmojiSearch();
     }
 
     private KeyboardLayoutSet buildEmojiSearchLayoutSet() {

@@ -1262,8 +1262,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (isInputViewShown()
                 && mInputLogic.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd,
                         settingsValues)) {
-            mKeyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(),
-                    getCurrentRecapitalizeState());
+            if (mEmojiSearchController != null && mEmojiSearchController.isActive()) {
+                mEmojiSearchController.exitSearch();
+            } else {
+                mKeyboardSwitcher.requestUpdatingShiftState(getCurrentAutoCapsState(),
+                        getCurrentRecapitalizeState());
+            }
         }
     }
 

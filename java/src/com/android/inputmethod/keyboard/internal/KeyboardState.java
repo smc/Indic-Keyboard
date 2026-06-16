@@ -338,6 +338,10 @@ public final class KeyboardState {
         mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
     }
 
+    public void onExitEmojiSearch() {
+        setEmojiKeyboard();
+    }
+
     private void setEmojiKeyboard() {
         if (DEBUG_INTERNAL_ACTION) {
             Log.d(TAG, "setEmojiKeyboard");

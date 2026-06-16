@@ -28,9 +28,10 @@
     <LinearLayout
         android:id="@+id/emoji_search_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/config_suggestions_strip_height"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
+        android:paddingTop="8dp"
         android:visibility="gone"
         style="?attr/suggestionStripViewStyle" >
         <ImageButton
