@@ -17,7 +17,6 @@
 package org.smc.inputmethod.indic.settings;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,8 +32,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.utils.FeedbackUtils;
-
-import org.smc.inputmethod.indic.LatinIME;
 
 public final class SettingsFragment extends PreferenceFragmentCompat {
     // We don't care about menu grouping.
@@ -65,9 +62,7 @@ public final class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     /**
-     * Adds a "Languages" entry at the top that opens the system input-method subtype enabler for
-     * this keyboard. Replaces the language preference previously contributed by the framework
-     * InputMethodSettingsFragment.
+     * Adds a "Languages" entry at the top that opens our self-managed language-selection screen.
      */
     private void addLanguageSelectionPreference() {
         final Activity activity = getActivity();
@@ -75,12 +70,7 @@ public final class SettingsFragment extends PreferenceFragmentCompat {
         languagePref.setTitle(R.string.language_selection_title);
         languagePref.setIcon(R.drawable.ic_settings_languages);
         languagePref.setOrder(-1);
-        final String imeId = new ComponentName(activity, LatinIME.class).flattenToShortString();
-        final Intent intent = new Intent(
-                android.provider.Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS);
-        intent.putExtra(android.provider.Settings.EXTRA_INPUT_METHOD_ID, imeId);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        languagePref.setIntent(intent);
+        languagePref.setFragment(LanguageSettingsFragment.class.getName());
         getPreferenceScreen().addPreference(languagePref);
     }
 

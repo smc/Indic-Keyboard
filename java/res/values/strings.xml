@@ -207,6 +207,17 @@
     <!-- Title for input language selection screen -->
     <string name="language_selection_title">Languages</string>
 
+    <!-- Section header for languages the user has turned on [CHAR LIMIT=30] -->
+    <string name="language_section_enabled">Enabled</string>
+    <!-- Section header for languages the user can turn on [CHAR LIMIT=30] -->
+    <string name="language_section_available">Available</string>
+    <!-- Section header above the list of layouts for a language [CHAR LIMIT=30] -->
+    <string name="language_section_layouts">Layouts</string>
+    <!-- Toast shown when the user tries to turn off the last remaining layout [CHAR LIMIT=60] -->
+    <string name="language_keep_one_layout">Keep at least one layout enabled</string>
+    <!-- Button in the language picker that opens the system switcher for other keyboards [CHAR LIMIT=30] -->
+    <string name="switch_other_keyboards">Other keyboards</string>
+
     <!-- Title for the 'Help & feedback' settings fragment which shows a help page and has a button
          for submitting feedback. [CHAR LIMIT=35] -->
     <string name="help_and_feedback">Help &amp; feedback</string>
@@ -376,29 +387,6 @@ mobile devices. [CHAR LIMIT=25] -->
     <string name="keyboard_theme_md3_dynamic" translatable="false">Material You (Dynamic)</string>
     <string name="keyboard_theme_md3_light" translatable="false">Material 3 Light</string>
     <string name="keyboard_theme_md3_dark" translatable="false">Material 3 Dark</string>
-    <!-- Title of the preference settings for custom input styles (language and keyboard layout pairs) [CHAR LIMIT=35]-->
-    <string name="custom_input_styles_title">Custom input styles</string>
-    <!-- Title of the option menu to add a new style entry in the preference settings [CHAR LIMIT=16] -->
-    <string name="add_style">Add style</string>
-    <!-- Title of the button to add custom style entry in the settings dialog [CHAR LIMIT=15] -->
-    <string name="add">Add</string>
-    <!-- Title of the button to remove a custom style entry in the settings dialog [CHAR LIMIT=15] -->
-    <string name="remove">Remove</string>
-    <!-- Title of the button to save a custom style entry in the settings dialog [CHAR LIMIT=15] -->
-    <string name="save">Save</string>
-    <!-- Title of the spinner for choosing a language of custom style in the settings dialog [CHAR LIMIT=15] -->
-    <string name="subtype_locale">Language</string>
-    <!-- Title of the spinner for choosing a keyboard layout of custom style in the settings dialog [CHAR LIMIT=15] -->
-    <string name="keyboard_layout_set">Layout</string>
-    <!-- The message of the dialog to note that a custom input style needs to be enabled. [CHAR LIMIT=130] -->
-    <string name="custom_input_style_note_message">"Your custom input style needs to be enabled before you start using it. Do you want to enable it now?"</string>
-    <!-- Title of the button to enable a custom input style entry in the settings dialog [CHAR LIMIT=15] -->
-    <string name="enable">Enable</string>
-    <!-- Title of the button to postpone enabling a custom input style entry in the settings dialog [CHAR LIMIT=15] -->
-    <string name="not_now">Not now</string>
-    <!-- Toast text to describe the same input style already exists [CHAR LIMIT=64]-->
-    <string name="custom_input_style_already_exists">"The same input style already exists: <xliff:g id="INPUT_STYLE_NAME" example="English (Dvorak)">%s</xliff:g>"</string>
-
     <!-- Title of the settings for keypress vibration duration [CHAR LIMIT=35] -->
     <string name="prefs_keypress_vibration_duration_settings">Keypress vibration duration</string>
     <!-- Title of the settings for keypress sound volume [CHAR LIMIT=35] -->

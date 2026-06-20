@@ -95,7 +95,7 @@ public final class LocaleUtils {
     }
 
     private static final int MIN_LENGTH_OF_LANGUAGE = 2;
-    private static final int MAX_LENGTH_OF_LANGUAGE = 2;
+    private static final int MAX_LENGTH_OF_LANGUAGE = 3;
     private static final int LENGTH_OF_SCRIPT = 4;
     private static final int MIN_LENGTH_OF_REGION = 2;
     private static final int MAX_LENGTH_OF_REGION = 2;

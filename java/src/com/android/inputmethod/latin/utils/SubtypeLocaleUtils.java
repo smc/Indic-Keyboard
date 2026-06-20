@@ -347,4 +347,9 @@ public final class SubtypeLocaleUtils {
     public static String getCombiningRulesExtraValue(final InputMethodSubtype subtype) {
         return subtype.getExtraValueOf(COMBINING_RULES);
     }
+
+    @Nonnull
+    public static String getSubtypeKey(@Nonnull final InputMethodSubtype subtype) {
+        return subtype.getLocale() + "|" + subtype.getExtraValue();
+    }
 }

@@ -23,6 +23,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.compat.PreferenceManagerCompat;
@@ -37,6 +38,7 @@ import com.android.inputmethod.latin.utils.RunInLocale;
 import com.android.inputmethod.latin.utils.StatsUtils;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -80,6 +82,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST =
             "pref_include_other_imes_in_language_switch_list";
     public static final String PREF_CUSTOM_INPUT_STYLES = "custom_input_styles";
+    public static final String PREF_ENABLED_SUBTYPES = "enabled_subtypes";
     public static final String PREF_ENABLE_SPLIT_KEYBOARD = "pref_split_keyboard";
     // TODO: consolidate key preview dismiss delay with the key preview animation parameters.
     public static final String PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY =
@@ -304,6 +307,28 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static void writePrefAdditionalSubtypes(final SharedPreferences prefs,
             final String prefSubtypes) {
         prefs.edit().putString(PREF_CUSTOM_INPUT_STYLES, prefSubtypes).apply();
+    }
+
+    private static final String ENABLED_SUBTYPE_KEY_SEPARATOR = ";";
+
+    public static boolean hasEnabledSubtypes(final SharedPreferences prefs) {
+        return prefs.contains(PREF_ENABLED_SUBTYPES);
+    }
+
+    public static Set<String> readEnabledSubtypeKeys(final SharedPreferences prefs) {
+        final String value = prefs.getString(PREF_ENABLED_SUBTYPES, "");
+        final Set<String> keys = new HashSet<>();
+        if (value.isEmpty()) {
+            return keys;
+        }
+        Collections.addAll(keys, value.split(ENABLED_SUBTYPE_KEY_SEPARATOR));
+        return keys;
+    }
+
+    public static void writeEnabledSubtypeKeys(final SharedPreferences prefs,
+            final Set<String> keys) {
+        prefs.edit().putString(PREF_ENABLED_SUBTYPES,
+                TextUtils.join(ENABLED_SUBTYPE_KEY_SEPARATOR, keys)).apply();
     }
 
     public static float readKeypressSoundVolume(final SharedPreferences prefs,

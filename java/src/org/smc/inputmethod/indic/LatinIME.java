@@ -19,6 +19,7 @@ package org.smc.inputmethod.indic;
 import android.Manifest.permission;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -33,6 +34,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.os.Build;
@@ -45,15 +47,22 @@ import android.util.Log;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
 import android.util.SparseArray;
+import android.util.TypedValue;
+import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
@@ -98,7 +107,9 @@ import com.android.inputmethod.latin.utils.DialogUtils;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
+import com.android.inputmethod.latin.utils.KeyboardLanguages;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.StatsUtilsManager;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
@@ -213,7 +224,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
     final HideSoftInputReceiver mHideSoftInputReceiver = new HideSoftInputReceiver(this);
 
-    private AlertDialog mOptionsDialog;
+    private Dialog mOptionsDialog;
 
     private final boolean mIsHardwareAcceleratedDrawingEnabled;
 
@@ -1036,6 +1047,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // also wouldn't be consuming gesture data.
         mGestureConsumer = GestureConsumer.NULL_GESTURE_CONSUMER;
         mRichImm.refreshSubtypeCaches();
+        if (!restarting) {
+            mRichImm.ensureCurrentSubtypeEnabled(
+                    getWindow().getWindow().getAttributes().token);
+        }
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         switcher.updateKeyboardTheme(mDisplayContext);
         final MainKeyboardView mainKeyboardView = switcher.getMainKeyboardView();
@@ -1526,8 +1541,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (isShowingOptionDialog()) return false;
         switch (requestCode) {
         case Constants.CUSTOM_CODE_SHOW_INPUT_METHOD_PICKER:
-            if (mRichImm.hasMultipleEnabledIMEsOrSubtypes(true /* include aux subtypes */)) {
-                mRichImm.getInputMethodManager().showInputMethodPicker();
+            final List<InputMethodSubtype> enabledSubtypes =
+                    mRichImm.getMyEnabledInputMethodSubtypeList(true /* allowsImplicit */);
+            final boolean hasOtherImes =
+                    mRichImm.getInputMethodManager().getEnabledInputMethodList().size() > 1;
+            if (enabledSubtypes.size() > 1 || hasOtherImes) {
+                showEnabledSubtypePicker(enabledSubtypes, hasOtherImes);
                 return true;
             }
             return false;
@@ -2038,6 +2057,202 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 ActivityOptions.makeBasic().setLaunchDisplayId(currentDisplayId).toBundle());
     }
 
+    private void showEnabledSubtypePicker(final List<InputMethodSubtype> subtypes,
+            final boolean hasOtherImes) {
+        final MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(
+                new ContextThemeWrapper(this, R.style.Theme_IndicKeyboard_Settings));
+        final Context context = builder.getContext();
+        final IBinder token = getWindow().getWindow().getAttributes().token;
+        final InputMethodSubtype current =
+                mRichImm.getInputMethodManager().getCurrentInputMethodSubtype();
+        final String currentKey =
+                (current != null) ? SubtypeLocaleUtils.getSubtypeKey(current) : null;
+
+        final LinearLayout content = new LinearLayout(context);
+        content.setOrientation(LinearLayout.VERTICAL);
+        content.setPaddingRelative(0, dpToPx(context, 12), 0, 0);
+        final ScrollView scrollView = new ScrollView(context);
+        scrollView.addView(content);
+
+        final Dialog dialog = builder
+                .setTitle(R.string.language_selection_title)
+                .setView(scrollView)
+                .create();
+
+        for (final InputMethodSubtype subtype : subtypes) {
+            content.addView(createPickerRow(context,
+                    KeyboardLanguages.getNativeDisplayName(this, subtype),
+                    SubtypeLocaleUtils.getSubtypeKey(subtype).equals(currentKey),
+                    false /* indented */,
+                    new SubtypeSwitcher(dialog, token, null /* this ime */, subtype)));
+        }
+
+        if (hasOtherImes) {
+            final LinearLayout othersContainer = new LinearLayout(context);
+            othersContainer.setOrientation(LinearLayout.VERTICAL);
+            othersContainer.setVisibility(View.GONE);
+            final ImageView caret = new ImageView(context);
+            caret.setImageResource(R.drawable.ic_expand_more);
+            final View expander = createExpanderRow(context,
+                    getString(R.string.switch_other_keyboards), caret);
+            expander.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View v) {
+                    final boolean show = othersContainer.getVisibility() != View.VISIBLE;
+                    if (show && othersContainer.getChildCount() == 0) {
+                        addOtherImeRows(context, othersContainer, dialog, token);
+                    }
+                    othersContainer.setVisibility(show ? View.VISIBLE : View.GONE);
+                    caret.setRotation(show ? 180f : 0f);
+                }
+            });
+            content.addView(expander);
+            content.addView(othersContainer);
+        }
+
+        dialog.setCancelable(true /* cancelable */);
+        dialog.setCanceledOnTouchOutside(true /* cancelable */);
+        showOptionDialog(dialog);
+    }
+
+    private void addOtherImeRows(final Context context, final LinearLayout container,
+            final Dialog dialog, final IBinder token) {
+        final InputMethodManager imm = mRichImm.getInputMethodManager();
+        final String myId = mRichImm.getInputMethodIdOfThisIme();
+        for (final InputMethodInfo imi : imm.getEnabledInputMethodList()) {
+            if (imi.getId().equals(myId)) {
+                continue;
+            }
+            final CharSequence imeLabel = imi.loadLabel(getPackageManager());
+            container.addView(createHeaderRow(context, imeLabel));
+            final List<InputMethodSubtype> imeSubtypes =
+                    imm.getEnabledInputMethodSubtypeList(imi, true /* allowsImplicit */);
+            if (imeSubtypes.isEmpty()) {
+                container.addView(createPickerRow(context, imeLabel, false /* checked */,
+                        true /* indented */,
+                        new SubtypeSwitcher(dialog, token, imi.getId(), null /* no subtype */)));
+                continue;
+            }
+            for (final InputMethodSubtype subtype : imeSubtypes) {
+                final CharSequence name = subtype.getDisplayName(
+                        context, imi.getPackageName(), imi.getServiceInfo().applicationInfo);
+                container.addView(createPickerRow(context, name, false /* checked */,
+                        true /* indented */,
+                        new SubtypeSwitcher(dialog, token, imi.getId(), subtype)));
+            }
+        }
+    }
+
+    private final class SubtypeSwitcher implements View.OnClickListener {
+        private final Dialog mDialog;
+        private final IBinder mToken;
+        private final String mImiId; // null means this IME
+        private final InputMethodSubtype mSubtype; // null means switch IME without a subtype
+
+        SubtypeSwitcher(final Dialog dialog, final IBinder token, final String imiId,
+                final InputMethodSubtype subtype) {
+            mDialog = dialog;
+            mToken = token;
+            mImiId = imiId;
+            mSubtype = subtype;
+        }
+
+        @Override
+        public void onClick(final View v) {
+            mDialog.dismiss();
+            final InputMethodManager imm = mRichImm.getInputMethodManager();
+            final String id = (mImiId != null) ? mImiId : mRichImm.getInputMethodIdOfThisIme();
+            if (mSubtype != null) {
+                imm.setInputMethodAndSubtype(mToken, id, mSubtype);
+            } else {
+                imm.setInputMethod(mToken, id);
+            }
+        }
+    }
+
+    private static TextView createPickerRow(final Context context, final CharSequence text,
+            final boolean checked, final boolean indented, final View.OnClickListener onClick) {
+        final TextView row = new TextView(context);
+        row.setLayoutParams(new LinearLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+        row.setText(text);
+        row.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setPaddingRelative(dpToPx(context, indented ? 40 : 24), dpToPx(context, 14),
+                dpToPx(context, 24), dpToPx(context, 14));
+        row.setClickable(true);
+        if (checked) {
+            final int accent = resolveColor(context, androidx.appcompat.R.attr.colorPrimary);
+            final GradientDrawable background = new GradientDrawable();
+            background.setCornerRadius(dpToPx(context, 12));
+            background.setColor((accent & 0x00FFFFFF) | 0x33000000 /* ~20% alpha */);
+            row.setBackground(background);
+            row.setTextColor(accent);
+            final Drawable check = context.getDrawable(R.drawable.ic_check).mutate();
+            check.setTint(accent);
+            row.setCompoundDrawablePadding(dpToPx(context, 12));
+            row.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, check, null);
+        } else {
+            row.setBackgroundResource(
+                    resolveAttr(context, android.R.attr.selectableItemBackground));
+        }
+        row.setOnClickListener(onClick);
+        return row;
+    }
+
+    private static View createExpanderRow(final Context context, final CharSequence text,
+            final ImageView caret) {
+        final LinearLayout row = new LinearLayout(context);
+        row.setLayoutParams(new LinearLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        row.setClickable(true);
+        row.setBackgroundResource(resolveAttr(context, android.R.attr.selectableItemBackground));
+        row.setPaddingRelative(dpToPx(context, 24), dpToPx(context, 14),
+                dpToPx(context, 16), dpToPx(context, 14));
+        final TextView label = new TextView(context);
+        label.setText(text);
+        label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        row.addView(label, new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f));
+        caret.setColorFilter(label.getCurrentTextColor());
+        row.addView(caret);
+        return row;
+    }
+
+    private static TextView createHeaderRow(final Context context, final CharSequence text) {
+        final TextView header = new TextView(context);
+        header.setLayoutParams(new LinearLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+        header.setText(text);
+        header.setAllCaps(true);
+        header.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
+        header.setPaddingRelative(dpToPx(context, 24), dpToPx(context, 14),
+                dpToPx(context, 24), dpToPx(context, 4));
+        return header;
+    }
+
+    private static int dpToPx(final Context context, final int dp) {
+        return Math.round(dp * context.getResources().getDisplayMetrics().density);
+    }
+
+    private static int resolveAttr(final Context context, final int attr) {
+        final TypedValue value = new TypedValue();
+        context.getTheme().resolveAttribute(attr, value, true);
+        return value.resourceId;
+    }
+
+    @SuppressWarnings("deprecation")
+    private static int resolveColor(final Context context, final int attr) {
+        final TypedValue value = new TypedValue();
+        context.getTheme().resolveAttribute(attr, value, true);
+        if (value.type >= TypedValue.TYPE_FIRST_COLOR_INT
+                && value.type <= TypedValue.TYPE_LAST_COLOR_INT) {
+            return value.data;
+        }
+        return context.getResources().getColor(value.resourceId);
+    }
+
     private void showSubtypeSelectorAndSettings() {
         final CharSequence title = getString(R.string.english_ime_input_options);
         // TODO: Should use new string "Select active input modes".
@@ -2077,7 +2292,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     // TODO: Move this method out of {@link LatinIME}.
-    private void showOptionDialog(final AlertDialog dialog) {
+    private void showOptionDialog(final Dialog dialog) {
         final IBinder windowToken = mKeyboardSwitcher.getMainKeyboardView().getWindowToken();
         if (windowToken == null) {
             return;

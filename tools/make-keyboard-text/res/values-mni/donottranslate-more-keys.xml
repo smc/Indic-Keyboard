@@ -2,8 +2,7 @@
 <!--
 /*
 **
-** Copyright © 2021 Mujeebcpy 
-** Swathanthra Malayalam Computing
+** Copyright 2026, Jishnu Mohan <jishnu7@gmail.com>
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -19,9 +18,6 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="morekeys_period">"!autoColumnOrder!8,&#x0650;,&#x064e;,&#x064f;,&#x0652;,&#x0651;,&#x0640;,&#x061f;,&#x061b;,&#x064d;,&#x064b;,&#x064c;,&#x0653;,&#x0670;,&#x0656;,&#x0654;,&#x0655;"</string>
-    <string name="keyspec_comma">&#x060c;</string>
-    <!-- U+0627 U+0628 U+062A: Arabic letters alif, ba, ta -->
-    <string name="keylabel_to_alpha">&#x0627;&#x0628;&#x062A;</string>
-
+    <!-- U+0985: Bengali letter A (Manipuri/Meitei in Bengali script) -->
+    <string name="keylabel_to_alpha">&#x0985;</string>
 </resources>

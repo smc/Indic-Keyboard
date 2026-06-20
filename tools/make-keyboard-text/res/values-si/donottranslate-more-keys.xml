@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2014, The Android Open Source Project
+** Copyright 2026, Jishnu Mohan <jishnu7@gmail.com>
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -17,10 +17,7 @@
 ** limitations under the License.
 */
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@+id/action_add_style"
-        android:icon="@drawable/ic_add_circle_white_24dp"
-        android:title="@string/add_style"
-        android:showAsAction="always" />
-</menu>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- U+0D85: Sinhala letter Ayanna -->
+    <string name="keylabel_to_alpha">&#x0D85;</string>
+</resources>

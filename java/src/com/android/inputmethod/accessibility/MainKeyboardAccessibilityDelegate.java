@@ -30,7 +30,7 @@ import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
+import com.android.inputmethod.latin.utils.KeyboardLanguages;
 
 /**
  * This class represents a delegate that can be registered in {@link MainKeyboardView} to enhance
@@ -119,8 +119,8 @@ public final class MainKeyboardAccessibilityDelegate
      * @param keyboard The new keyboard.
      */
     private void announceKeyboardLanguage(final Keyboard keyboard) {
-        final String languageText = SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(
-                keyboard.mId.mSubtype.getRawSubtype());
+        final String languageText = KeyboardLanguages.getDisplayName(
+                mKeyboardView.getContext(), keyboard.mId.mSubtype.getRawSubtype());
         sendWindowStateChanged(languageText);
     }
 

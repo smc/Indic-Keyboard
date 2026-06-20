@@ -39,6 +39,7 @@ import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils;
 import com.android.inputmethod.latin.utils.LanguageOnSpacebarUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -70,6 +71,8 @@ public class RichInputMethodManager {
     private RichInputMethodSubtype mCurrentRichInputMethodSubtype;
     private InputMethodInfo mShortcutInputMethodInfo;
     private InputMethodSubtype mShortcutSubtype;
+    @Nullable
+    private List<InputMethodSubtype> mEnabledSubtypeList;
 
     private static final int INDEX_NOT_FOUND = -1;
 
@@ -104,8 +107,87 @@ public class RichInputMethodManager {
         mImm.setAdditionalInputMethodSubtypes(
                 getInputMethodIdOfThisIme(), additionalSubtypes);
 
+        seedEnabledSubtypesIfNeeded();
+
         // Initialize the current input method subtype and the shortcut IME.
         refreshSubtypeCaches();
+    }
+
+    // We manage the set of enabled subtypes ourselves rather than reading the system enabler.
+    // On first run we carry over whatever the system currently has enabled for this IME so that
+    // upgrading users keep their languages; a fresh install falls back to English plus a subtype
+    // matching the system locale.
+    private void seedEnabledSubtypesIfNeeded() {
+        final SharedPreferences prefs = PreferenceManagerCompat.getDeviceSharedPreferences(mContext);
+        if (Settings.hasEnabledSubtypes(prefs)) {
+            return;
+        }
+        final InputMethodInfo imi = getInputMethodInfoOfThisIme();
+        final Set<String> keys = new HashSet<>();
+        for (final InputMethodSubtype subtype :
+                mImm.getEnabledInputMethodSubtypeList(imi, true)) {
+            keys.add(SubtypeLocaleUtils.getSubtypeKey(subtype));
+        }
+        if (keys.isEmpty()) {
+            final InputMethodSubtype english = findSubtypeByLocaleAndKeyboardLayoutSet(
+                    SubtypeLocaleUtils.DEFAULT_LANGUAGE, SubtypeLocaleUtils.QWERTY);
+            if (english != null) {
+                keys.add(SubtypeLocaleUtils.getSubtypeKey(english));
+            }
+            final String systemLanguage =
+                    mContext.getResources().getConfiguration().locale.getLanguage();
+            final int count = imi.getSubtypeCount();
+            for (int i = 0; i < count; i++) {
+                final InputMethodSubtype subtype = imi.getSubtypeAt(i);
+                if (SubtypeLocaleUtils.getSubtypeLocale(subtype).getLanguage()
+                        .equals(systemLanguage)) {
+                    keys.add(SubtypeLocaleUtils.getSubtypeKey(subtype));
+                    break;
+                }
+            }
+        }
+        Settings.writeEnabledSubtypeKeys(prefs, keys);
+    }
+
+    @Nonnull
+    private List<InputMethodSubtype> getSelfManagedEnabledSubtypes() {
+        if (mEnabledSubtypeList != null) {
+            return mEnabledSubtypeList;
+        }
+        final SharedPreferences prefs = PreferenceManagerCompat.getDeviceSharedPreferences(mContext);
+        final Set<String> enabledKeys = Settings.readEnabledSubtypeKeys(prefs);
+        final InputMethodInfo imi = getInputMethodInfoOfThisIme();
+        final int count = imi.getSubtypeCount();
+        final ArrayList<InputMethodSubtype> list = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            final InputMethodSubtype subtype = imi.getSubtypeAt(i);
+            if (enabledKeys.contains(SubtypeLocaleUtils.getSubtypeKey(subtype))) {
+                list.add(subtype);
+            }
+        }
+        mEnabledSubtypeList = Collections.unmodifiableList(list);
+        return mEnabledSubtypeList;
+    }
+
+    public void setEnabledSubtypeKeys(final Set<String> keys) {
+        final SharedPreferences prefs = PreferenceManagerCompat.getDeviceSharedPreferences(mContext);
+        Settings.writeEnabledSubtypeKeys(prefs, keys);
+        refreshSubtypeCaches();
+    }
+
+    public void ensureCurrentSubtypeEnabled(final IBinder token) {
+        if (token == null) {
+            return;
+        }
+        final List<InputMethodSubtype> enabled = getMyEnabledInputMethodSubtypeList(true);
+        if (enabled.isEmpty()) {
+            return;
+        }
+        final InputMethodSubtype current = mImm.getCurrentInputMethodSubtype();
+        if (current != null && checkIfSubtypeBelongsToList(current, enabled)) {
+            return;
+        }
+        setInputMethodAndSubtype(token, enabled.get(0));
     }
 
     public InputMethodSubtype[] getAdditionalSubtypes() {
@@ -122,8 +204,7 @@ public class RichInputMethodManager {
 
     public List<InputMethodSubtype> getMyEnabledInputMethodSubtypeList(
             boolean allowsImplicitlySelectedSubtypes) {
-        return getEnabledInputMethodSubtypeList(
-                getInputMethodInfoOfThisIme(), allowsImplicitlySelectedSubtypes);
+        return getSelfManagedEnabledSubtypes();
     }
 
     public boolean switchToNextInputMethod(final IBinder token, final boolean onlyCurrentIme) {
@@ -287,8 +368,7 @@ public class RichInputMethodManager {
 
     public boolean checkIfSubtypeBelongsToThisImeAndEnabled(final InputMethodSubtype subtype) {
         return checkIfSubtypeBelongsToList(subtype,
-                getEnabledInputMethodSubtypeList(
-                        getInputMethodInfoOfThisIme(),
+                getMyEnabledInputMethodSubtypeList(
                         true /* allowsImplicitlySelectedSubtypes */));
     }
 
@@ -488,6 +568,7 @@ public class RichInputMethodManager {
 
     public void refreshSubtypeCaches() {
         mInputMethodInfoCache.clear();
+        mEnabledSubtypeList = null;
         updateCurrentSubtype(mImm.getCurrentInputMethodSubtype());
         updateShortcutIme();
     }
