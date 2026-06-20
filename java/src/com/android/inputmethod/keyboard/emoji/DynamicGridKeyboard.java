@@ -175,6 +175,24 @@ final class DynamicGridKeyboard extends Keyboard {
         return null;
     }
 
+    /**
+     * Build a recents key for {@code emoji} when it can't be matched to a key in any category
+     * keyboard (e.g. an emoji picked from search, a ZWJ sequence, or one missing from the palette).
+     * Reuses an existing key's geometry so the synthesized key lays out like the rest.
+     */
+    private static Key synthesizeEmojiKey(final Collection<DynamicGridKeyboard> keyboards,
+            final String emoji) {
+        if (TextUtils.isEmpty(emoji)) {
+            return null;
+        }
+        for (final DynamicGridKeyboard keyboard : keyboards) {
+            for (final Key templateKey : keyboard.getSortedKeys()) {
+                return Key.newEmojiVariantKey(templateKey, emoji);
+            }
+        }
+        return null;
+    }
+
     private static Key getKeyByOutputText(final Collection<DynamicGridKeyboard> keyboards,
             final String outputText) {
         for (final DynamicGridKeyboard keyboard : keyboards) {
@@ -200,24 +218,35 @@ final class DynamicGridKeyboard extends Keyboard {
     public void loadRecentKeys(final Collection<DynamicGridKeyboard> keyboards) {
         final String str = Settings.readEmojiRecentKeys(mPrefs);
         final List<Object> keys = JsonUtils.jsonStrToList(str);
-        Log.d(TAG, str);
+        // Rebuild from the prefs (the source of truth). Without clearing, addKeyLast() appends to an
+        // already-full grid, so the most-recent entry is immediately evicted by the size cap.
+        synchronized (mLock) {
+            mGridKeys.clear();
+            mCachedGridKeys = null;
+        }
         for (final Object o : keys) {
             Key key = null;
+            final String emoji;
             if (o instanceof Integer) {
                 final int code = (Integer)o;
+                emoji = StringUtils.newSingleCodePointString(code);
                 key = getKeyByCode(keyboards, code);
                 if (key == null) {
-                    key = getKeyByOutputText(keyboards, StringUtils.newSingleCodePointString(code));
+                    key = getKeyByOutputText(keyboards, emoji);
                 }
             } else if (o instanceof String) {
-                final String outputText = (String)o;
-                key = getKeyByOutputText(keyboards, outputText);
-                if (key == null && outputText.codePointCount(0, outputText.length()) == 1) {
-                    key = getKeyByCode(keyboards, outputText.codePointAt(0));
+                emoji = (String)o;
+                key = getKeyByOutputText(keyboards, emoji);
+                if (key == null && emoji.codePointCount(0, emoji.length()) == 1) {
+                    key = getKeyByCode(keyboards, emoji.codePointAt(0));
                 }
             } else {
                 Log.w(TAG, "Invalid object: " + o);
                 continue;
+            }
+            if (key == null) {
+                // Not a palette key (search pick / ZWJ sequence / unsupported): show it anyway.
+                key = synthesizeEmojiKey(keyboards, emoji);
             }
             addKeyLast(key);
         }
