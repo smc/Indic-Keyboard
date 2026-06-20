@@ -111,6 +111,7 @@ public class RichInputMethodManager {
 
         // Initialize the current input method subtype and the shortcut IME.
         refreshSubtypeCaches();
+        syncEnabledSubtypesToSystem();
     }
 
     // We manage the set of enabled subtypes ourselves rather than reading the system enabler.
@@ -173,6 +174,25 @@ public class RichInputMethodManager {
         final SharedPreferences prefs = PreferenceManagerCompat.getDeviceSharedPreferences(mContext);
         Settings.writeEnabledSubtypeKeys(prefs, keys);
         refreshSubtypeCaches();
+        syncEnabledSubtypesToSystem();
+    }
+
+    // Push our self-managed enabled subtypes into the system's enabled-subtype list
+    // so that the OS switcher and other keyboards can discover them.
+    private void syncEnabledSubtypesToSystem() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            return;
+        }
+        final List<InputMethodSubtype> enabled = getSelfManagedEnabledSubtypes();
+        final int[] subtypeIds = new int[enabled.size()];
+        for (int i = 0; i < enabled.size(); i++) {
+            subtypeIds[i] = enabled.get(i).hashCode();
+        }
+        try {
+            mImm.setExplicitlyEnabledInputMethodSubtypes(getInputMethodIdOfThisIme(), subtypeIds);
+        } catch (final Exception e) {
+            Log.w(TAG, "Could not push enabled subtypes to the system", e);
+        }
     }
 
     public void ensureCurrentSubtypeEnabled(final IBinder token) {
