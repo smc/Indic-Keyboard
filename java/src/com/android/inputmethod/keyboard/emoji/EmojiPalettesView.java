@@ -425,6 +425,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         if (mEmojiPager.getAdapter() == null) {
             mEmojiPager.setAdapter(mEmojiPalettesAdapter);
         }
+        refreshRecentEmojis();
         mEmojiPager.setCurrentItem(mCurrentPagerPosition, false);
     }
 
