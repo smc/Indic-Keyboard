@@ -24,6 +24,8 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -125,6 +127,15 @@ public abstract class SubScreenFragment extends PreferenceFragmentCompat
     @Override
     protected RecyclerView.Adapter onCreateAdapter(final PreferenceScreen preferenceScreen) {
         return new CardedPreferenceGroupAdapter(preferenceScreen);
+    }
+
+    @Override
+    public RecyclerView onCreateRecyclerView(final LayoutInflater inflater, final ViewGroup parent,
+            final Bundle savedInstanceState) {
+        final RecyclerView recyclerView =
+                super.onCreateRecyclerView(inflater, parent, savedInstanceState);
+        recyclerView.addItemDecoration(new CardedPreferenceGroupAdapter.CardDivider(getActivity()));
+        return recyclerView;
     }
 
     @Override

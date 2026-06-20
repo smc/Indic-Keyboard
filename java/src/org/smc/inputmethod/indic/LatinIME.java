@@ -118,6 +118,7 @@ import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 import org.smc.inputmethod.indic.inputlogic.InputLogic;
 import org.smc.inputmethod.indic.personalization.PersonalizationHelper;
 import org.smc.inputmethod.indic.settings.Settings;
+import org.smc.inputmethod.indic.settings.LanguageSettingsFragment;
 import org.smc.inputmethod.indic.settings.SettingsActivity;
 import org.smc.inputmethod.indic.settings.SettingsValues;
 import org.smc.inputmethod.indic.suggestions.SuggestionStripView;
@@ -2178,8 +2179,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         row.setText(text);
         row.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         row.setGravity(Gravity.CENTER_VERTICAL);
-        row.setPaddingRelative(dpToPx(context, indented ? 40 : 24), dpToPx(context, 14),
-                dpToPx(context, 24), dpToPx(context, 14));
+        row.setMinHeight(dpToPx(context, 72));
+        row.setPaddingRelative(dpToPx(context, indented ? 40 : 24), dpToPx(context, 20),
+                dpToPx(context, 24), dpToPx(context, 20));
         row.setClickable(true);
         if (checked) {
             final int accent = resolveColor(context, androidx.appcompat.R.attr.colorPrimary);
@@ -2209,8 +2211,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         row.setGravity(Gravity.CENTER_VERTICAL);
         row.setClickable(true);
         row.setBackgroundResource(resolveAttr(context, android.R.attr.selectableItemBackground));
-        row.setPaddingRelative(dpToPx(context, 24), dpToPx(context, 14),
-                dpToPx(context, 16), dpToPx(context, 14));
+        row.setMinimumHeight(dpToPx(context, 72));
+        row.setPaddingRelative(dpToPx(context, 24), dpToPx(context, 20),
+                dpToPx(context, 16), dpToPx(context, 20));
         final TextView label = new TextView(context);
         label.setText(text);
         label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
@@ -2254,38 +2257,44 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void showSubtypeSelectorAndSettings() {
-        final CharSequence title = getString(R.string.english_ime_input_options);
-        // TODO: Should use new string "Select active input modes".
-        final CharSequence languageSelectionTitle = getString(R.string.language_selection_title);
-        final CharSequence[] items = new CharSequence[] {
-                languageSelectionTitle,
-                getString(ApplicationUtils.getActivityTitleResId(this, SettingsActivity.class))
-        };
-        final String imeId = mRichImm.getInputMethodIdOfThisIme();
-        final OnClickListener listener = new OnClickListener() {
+        final MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(
+                new ContextThemeWrapper(this, R.style.Theme_IndicKeyboard_Settings));
+        final Context context = builder.getContext();
+
+        final LinearLayout content = new LinearLayout(context);
+        content.setOrientation(LinearLayout.VERTICAL);
+        content.setPaddingRelative(0, dpToPx(context, 12), 0, 0);
+        final ScrollView scrollView = new ScrollView(context);
+        scrollView.addView(content);
+
+        final Dialog dialog = builder
+                .setTitle(R.string.english_ime_input_options)
+                .setView(scrollView)
+                .create();
+
+        content.addView(createPickerRow(context, getString(R.string.language_selection_title),
+                false /* checked */, false /* indented */, new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface di, int position) {
-                di.dismiss();
-                switch (position) {
-                case 0:
-                    final Intent intent = IntentUtils.getInputLanguageSelectionIntent(
-                            imeId,
-                            Intent.FLAG_ACTIVITY_NEW_TASK
-                                    | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
-                                    | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra(Intent.EXTRA_TITLE, languageSelectionTitle);
-                    startActivity(intent);
-                    break;
-                case 1:
-                    launchSettings();
-                    break;
-                }
+            public void onClick(final View v) {
+                dialog.dismiss();
+                final Intent intent = new Intent(LatinIME.this, SettingsActivity.class);
+                intent.putExtra(SettingsActivity.EXTRA_SHOW_FRAGMENT,
+                        LanguageSettingsFragment.class.getName());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
             }
-        };
-        final AlertDialog.Builder builder = new AlertDialog.Builder(
-                DialogUtils.getPlatformDialogThemeContext(this));
-        builder.setItems(items, listener).setTitle(title);
-        final AlertDialog dialog = builder.create();
+        }));
+        content.addView(createPickerRow(context,
+                getString(ApplicationUtils.getActivityTitleResId(this, SettingsActivity.class)),
+                false /* checked */, false /* indented */, new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                dialog.dismiss();
+                launchSettings();
+            }
+        }));
+
         dialog.setCancelable(true /* cancelable */);
         dialog.setCanceledOnTouchOutside(true /* cancelable */);
         showOptionDialog(dialog);

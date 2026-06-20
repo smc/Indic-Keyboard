@@ -18,6 +18,8 @@ package org.smc.inputmethod.indic.settings;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -104,6 +106,48 @@ public class CardedPreferenceGroupAdapter extends PreferenceGroupAdapter {
 
     private boolean isCardBottom(final int position) {
         return position == getItemCount() - 1 || getItem(position + 1) instanceof PreferenceCategory;
+    }
+
+    boolean hasDividerBelow(final int position) {
+        return !(getItem(position) instanceof PreferenceCategory) && !isCardBottom(position);
+    }
+
+    public static final class CardDivider extends RecyclerView.ItemDecoration {
+        private final Paint mPaint = new Paint();
+        private final int mThickness;
+        private final int mInset;
+
+        public CardDivider(final Context context) {
+            final Resources res = context.getResources();
+            mThickness = Math.max(1, dp(res, 1));
+            mInset = dp(res, 16);
+            final int outline = MaterialColors.getColor(context,
+                    com.google.android.material.R.attr.colorOutlineVariant, 0xFF000000);
+            mPaint.setColor((outline & 0x00FFFFFF) | 0x66000000);
+        }
+
+        @Override
+        public void onDrawOver(final Canvas canvas, final RecyclerView parent,
+                final RecyclerView.State state) {
+            final RecyclerView.Adapter<?> adapter = parent.getAdapter();
+            if (!(adapter instanceof CardedPreferenceGroupAdapter)) {
+                return;
+            }
+            final CardedPreferenceGroupAdapter cardAdapter =
+                    (CardedPreferenceGroupAdapter) adapter;
+            final int left = mInset;
+            final int right = parent.getWidth() - mInset;
+            for (int i = 0; i < parent.getChildCount(); i++) {
+                final View child = parent.getChildAt(i);
+                final int position = parent.getChildAdapterPosition(child);
+                if (position == RecyclerView.NO_POSITION
+                        || !cardAdapter.hasDividerBelow(position)) {
+                    continue;
+                }
+                final int bottom = child.getBottom();
+                canvas.drawRect(left, bottom - mThickness, right, bottom, mPaint);
+            }
+        }
     }
 
     private static int cardBackground(final boolean top, final boolean bottom) {

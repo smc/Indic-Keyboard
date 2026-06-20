@@ -21,6 +21,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.TypedValue;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceScreen;
@@ -49,6 +51,12 @@ public final class LanguageSettingsFragment extends SubScreenFragment {
     @Override
     public void onResume() {
         super.onResume();
+        if (getActivity() instanceof AppCompatActivity) {
+            final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setTitle(R.string.language_selection_title);
+            }
+        }
         // A language moves between the enabled and available sections after its layouts are
         // edited, so rebuild the whole screen each time we return to it.
         buildScreen();

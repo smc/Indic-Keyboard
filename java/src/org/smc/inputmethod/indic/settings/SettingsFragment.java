@@ -21,9 +21,11 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings.Secure;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -59,6 +61,15 @@ public final class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     protected RecyclerView.Adapter onCreateAdapter(final PreferenceScreen preferenceScreen) {
         return new CardedPreferenceGroupAdapter(preferenceScreen);
+    }
+
+    @Override
+    public RecyclerView onCreateRecyclerView(final LayoutInflater inflater, final ViewGroup parent,
+            final Bundle savedInstanceState) {
+        final RecyclerView recyclerView =
+                super.onCreateRecyclerView(inflater, parent, savedInstanceState);
+        recyclerView.addItemDecoration(new CardedPreferenceGroupAdapter.CardDivider(getActivity()));
+        return recyclerView;
     }
 
     /**

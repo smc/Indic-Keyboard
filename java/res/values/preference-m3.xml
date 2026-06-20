@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+ * Copyright 2026, Jishnu Mohan <jishnu7@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<!-- Sizes every preference row to the Material 3 list-item height by default. Wired in via the
+     settings theme's preferenceTheme, so all preference screens get the same metrics. Category
+     headers keep their own style. -->
+<resources>
+    <style name="M3PreferenceTheme" parent="@style/PreferenceThemeOverlay">
+        <item name="preferenceStyle">@style/M3Preference</item>
+        <item name="preferenceScreenStyle">@style/M3PreferenceScreen</item>
+        <item name="switchPreferenceCompatStyle">@style/M3SwitchPreferenceCompat</item>
+        <item name="switchPreferenceStyle">@style/M3SwitchPreference</item>
+        <item name="checkBoxPreferenceStyle">@style/M3CheckBoxPreference</item>
+        <item name="dialogPreferenceStyle">@style/M3DialogPreference</item>
+    </style>
+
+    <style name="M3Preference" parent="@style/Preference.Material">
+        <item name="android:layout">@layout/preference_material_m3</item>
+    </style>
+    <style name="M3PreferenceScreen" parent="@style/Preference.PreferenceScreen.Material">
+        <item name="android:layout">@layout/preference_material_m3</item>
+    </style>
+    <style name="M3SwitchPreferenceCompat" parent="@style/Preference.SwitchPreferenceCompat.Material">
+        <item name="android:layout">@layout/preference_material_m3</item>
+    </style>
+    <style name="M3SwitchPreference" parent="@style/Preference.SwitchPreference.Material">
+        <item name="android:layout">@layout/preference_material_m3</item>
+    </style>
+    <style name="M3CheckBoxPreference" parent="@style/Preference.CheckBoxPreference.Material">
+        <item name="android:layout">@layout/preference_material_m3</item>
+    </style>
+    <style name="M3DialogPreference" parent="@style/Preference.DialogPreference.Material">
+        <item name="android:layout">@layout/preference_material_m3</item>
+    </style>
+</resources>
