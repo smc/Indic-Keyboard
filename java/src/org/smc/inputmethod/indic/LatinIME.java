@@ -120,6 +120,7 @@ import org.smc.inputmethod.indic.personalization.PersonalizationHelper;
 import org.smc.inputmethod.indic.settings.Settings;
 import org.smc.inputmethod.indic.settings.LanguageSettingsFragment;
 import org.smc.inputmethod.indic.settings.SettingsActivity;
+import org.smc.inputmethod.indic.settings.ThemeSettingsFragment;
 import org.smc.inputmethod.indic.settings.SettingsValues;
 import org.smc.inputmethod.indic.suggestions.SuggestionStripView;
 import org.smc.inputmethod.indic.suggestions.SuggestionStripViewAccessor;
@@ -2088,6 +2089,24 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     new SubtypeSwitcher(dialog, token, null /* this ime */, subtype)));
         }
 
+        final TextView addRow = createPickerRow(context, getString(R.string.add_more_languages),
+                false /* checked */, false /* indented */, new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                dialog.dismiss();
+                final Intent intent = new Intent(LatinIME.this, SettingsActivity.class);
+                intent.putExtra(SettingsActivity.EXTRA_SHOW_FRAGMENT,
+                        LanguageSettingsFragment.class.getName());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        });
+        final Drawable addIcon = context.getDrawable(R.drawable.ic_add).mutate();
+        addIcon.setTint(addRow.getCurrentTextColor());
+        addRow.setCompoundDrawablePadding(dpToPx(context, 16));
+        addRow.setCompoundDrawablesRelativeWithIntrinsicBounds(addIcon, null, null, null);
+        content.addView(addRow);
+
         if (hasOtherImes) {
             final LinearLayout othersContainer = new LinearLayout(context);
             othersContainer.setOrientation(LinearLayout.VERTICAL);
@@ -2280,6 +2299,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 final Intent intent = new Intent(LatinIME.this, SettingsActivity.class);
                 intent.putExtra(SettingsActivity.EXTRA_SHOW_FRAGMENT,
                         LanguageSettingsFragment.class.getName());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        }));
+        content.addView(createPickerRow(context, getString(R.string.settings_screen_theme),
+                false /* checked */, false /* indented */, new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                dialog.dismiss();
+                final Intent intent = new Intent(LatinIME.this, SettingsActivity.class);
+                intent.putExtra(SettingsActivity.EXTRA_SHOW_FRAGMENT,
+                        ThemeSettingsFragment.class.getName());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                         | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);

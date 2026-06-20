@@ -217,6 +217,8 @@
     <string name="language_keep_one_layout">Keep at least one layout enabled</string>
     <!-- Button in the language picker that opens the system switcher for other keyboards [CHAR LIMIT=30] -->
     <string name="switch_other_keyboards">Other keyboards</string>
+    <!-- Row in the language picker that opens the language settings to enable more languages [CHAR LIMIT=30] -->
+    <string name="add_more_languages">Add languages</string>
 
     <!-- Title for the 'Help & feedback' settings fragment which shows a help page and has a button
          for submitting feedback. [CHAR LIMIT=35] -->

@@ -20,6 +20,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceScreen;
 
@@ -89,6 +91,12 @@ public final class ThemeSettingsFragment extends SubScreenFragment
     @Override
     public void onResume() {
         super.onResume();
+        if (getActivity() instanceof AppCompatActivity) {
+            final ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setTitle(R.string.settings_screen_theme);
+            }
+        }
         updateSelected();
     }
 
