@@ -19,27 +19,49 @@ package org.smc.inputmethod.indic.setup;
 import android.content.Intent;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Message;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.android.inputmethod.compat.PreferenceManagerCompat;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.RichInputMethodManager;
+import com.android.inputmethod.latin.utils.KeyboardLanguages;
+import com.android.inputmethod.latin.utils.KeyboardLanguages.Language;
+import com.android.inputmethod.latin.utils.KeyboardLanguages.Layout;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
+import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
+import com.android.inputmethod.latin.utils.TextDrawable;
 import com.android.inputmethod.latin.utils.UncachedInputMethodManagerUtils;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.materialswitch.MaterialSwitch;
 
 import org.smc.inputmethod.indic.settings.SettingsActivity;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 
@@ -75,14 +97,21 @@ public final class SetupWizardActivity extends AppCompatActivity implements View
     private int mStepNumber;
     private int mFirstStep;
     private boolean mNeedsToAdjustStepNumberToSystemState;
-    private boolean finishState;
     private static final int STEP_WELCOME = 0;
     private static final int STEP_1 = 1;
     private static final int STEP_2 = 2;
-    private static final int STEP_3 = 3;
-    private static final int STEP_4 = 4;
-    private static final int STEP_LAUNCHING_IME_SETTINGS = 5;
-    private static final int STEP_BACK_FROM_IME_SETTINGS = 6;
+    private static final int STEP_LANGUAGES = 3;
+    private static final int STEP_LAYOUTS = 4;
+    private static final int STEP_DONE = 5;
+    private static final int STEP_LAUNCHING_IME_SETTINGS = 6;
+    private static final int STEP_BACK_FROM_IME_SETTINGS = 7;
+
+    private OnBackPressedCallback mBackToPreviousStep;
+    private View mLogo;
+    private LinearLayout mSelectionList;
+    private List<Language> mLanguages;
+    private Set<String> mSelectedLocales;
+    private Set<String> mEnabledKeys;
 
     private SettingsPoolingHandler mHandler;
 
@@ -137,12 +166,23 @@ public final class SetupWizardActivity extends AppCompatActivity implements View
 
         setContentView(R.layout.setup_wizard);
         mSetupWizard = findViewById(R.id.setup_wizard);
+        mLogo = findViewById(R.id.setup_logo);
         mWelcomeWord = findViewById(R.id.setup_welcome_word);
         mTitle = findViewById(R.id.setup_title);
         mDescription = findViewById(R.id.setup_description);
+        mSelectionList = findViewById(R.id.setup_selection_list);
         mProgress = findViewById(R.id.setup_progress);
         mPrimaryAction = findViewById(R.id.setup_primary_action);
         mPrimaryAction.setOnClickListener(this);
+
+        mBackToPreviousStep = new OnBackPressedCallback(false) {
+            @Override
+            public void handleOnBackPressed() {
+                mStepNumber = previousStep(mStepNumber);
+                updateSetupStepView();
+            }
+        };
+        getOnBackPressedDispatcher().addCallback(this, mBackToPreviousStep);
 
         mGreetings = getResources().getStringArray(R.array.su_welcome_greetings);
         mWelcomeWord.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> applyGreetingGradient());
@@ -241,10 +281,20 @@ public final class SetupWizardActivity extends AppCompatActivity implements View
         case STEP_2:
             invokeInputMethodPicker();
             break;
-        case STEP_3:
-            invokeSubtypeEnablerOfThisIme();
+        case STEP_LANGUAGES:
+            if (mSelectedLocales == null || mSelectedLocales.isEmpty()) {
+                Toast.makeText(this, R.string.su_select_a_language, Toast.LENGTH_SHORT).show();
+                break;
+            }
+            mStepNumber = STEP_LAYOUTS;
+            updateSetupStepView();
             break;
-        case STEP_4:
+        case STEP_LAYOUTS:
+            commitSelectedLayouts();
+            mStepNumber = STEP_DONE;
+            updateSetupStepView();
+            break;
+        case STEP_DONE:
             finish();
             break;
         }
@@ -284,21 +334,6 @@ public final class SetupWizardActivity extends AppCompatActivity implements View
         mNeedsToAdjustStepNumberToSystemState = true;
     }
 
-    void invokeSubtypeEnablerOfThisIme() {
-        final InputMethodInfo imi =
-                UncachedInputMethodManagerUtils.getInputMethodInfoOf(getPackageName(), mImm);
-        if (imi == null) {
-            return;
-        }
-        final Intent intent = new Intent();
-        intent.setAction(Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS);
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
-        intent.putExtra(Settings.EXTRA_INPUT_METHOD_ID, imi.getId());
-        startActivity(intent);
-        mNeedsToAdjustStepNumberToSystemState = true;
-        finishState = true;
-    }
-
     private int determineSetupStepNumberFromLauncher() {
         final int stepNumber = determineSetupStepNumber();
         if (stepNumber == STEP_1 || stepNumber == STEP_2) {
@@ -315,10 +350,7 @@ public final class SetupWizardActivity extends AppCompatActivity implements View
         if (!UncachedInputMethodManagerUtils.isThisImeCurrent(this, mImm)) {
             return STEP_2;
         }
-        if (finishState) {
-            return STEP_4;
-        }
-        return STEP_3;
+        return STEP_LANGUAGES;
     }
 
     @Override
@@ -336,15 +368,13 @@ public final class SetupWizardActivity extends AppCompatActivity implements View
     }
 
     private static boolean isInSetupSteps(final int stepNumber) {
-        return stepNumber >= STEP_1 && stepNumber <= STEP_4;
+        return stepNumber >= STEP_1 && stepNumber <= STEP_DONE;
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        // The setup wizard may have been invoked from "Recent" menu; re-sync to the system state
-        // because the IME may have been enabled/selected in the meantime.
-        if (isInSetupSteps(mStepNumber)) {
+        if (mStepNumber == STEP_1 || mStepNumber == STEP_2) {
             mStepNumber = determineSetupStepNumber();
         }
     }
@@ -372,14 +402,19 @@ public final class SetupWizardActivity extends AppCompatActivity implements View
         stopGreetingAnimation();
     }
 
-    @Override
-    public void onBackPressed() {
-        if (mStepNumber == STEP_1 || mStepNumber == STEP_2) {
-            mStepNumber = STEP_WELCOME;
-            updateSetupStepView();
-            return;
+    private int previousStep(final int step) {
+        switch (step) {
+        case STEP_DONE:
+            return STEP_LAYOUTS;
+        case STEP_LAYOUTS:
+            return STEP_LANGUAGES;
+        case STEP_LANGUAGES:
+        case STEP_2:
+        case STEP_1:
+            return STEP_WELCOME;
+        default:
+            return step;
         }
-        super.onBackPressed();
     }
 
     @Override
@@ -393,38 +428,53 @@ public final class SetupWizardActivity extends AppCompatActivity implements View
     }
 
     private void updateSetupStepView() {
+        mBackToPreviousStep.setEnabled(previousStep(mStepNumber) != mStepNumber);
         mSetupWizard.setVisibility(View.VISIBLE);
         final int titleRes;
         final int descRes;
         final int actionRes;
         final boolean showProgress;
+        final boolean showList;
         switch (mStepNumber) {
         case STEP_1:
             titleRes = R.string.su_step1_title;
             descRes = R.string.su_step1_desc;
             actionRes = R.string.su_step1_action;
             showProgress = true;
+            showList = false;
             break;
         case STEP_2:
             titleRes = R.string.su_step2_title;
             descRes = R.string.su_step2_desc;
             actionRes = R.string.su_step2_action;
             showProgress = true;
+            showList = false;
             break;
-        case STEP_3:
+        case STEP_LANGUAGES:
             titleRes = R.string.su_step3_title;
             descRes = R.string.su_step3_desc;
             actionRes = R.string.su_step3_action;
             showProgress = true;
+            showList = true;
             break;
-        case STEP_4:
+        case STEP_LAYOUTS:
+            titleRes = R.string.su_step4_title;
+            descRes = R.string.su_step4_desc;
+            actionRes = R.string.su_step4_action;
+            showProgress = true;
+            showList = true;
+            break;
+        case STEP_DONE:
             titleRes = R.string.su_done_title;
             descRes = R.string.su_done_desc;
             actionRes = R.string.su_done_action;
             showProgress = false;
+            showList = false;
             break;
         case STEP_WELCOME:
         default:
+            mLogo.setVisibility(View.VISIBLE);
+            mSelectionList.setVisibility(View.GONE);
             mTitle.setVisibility(View.GONE);
             mWelcomeWord.setVisibility(View.VISIBLE);
             mDescription.setText(R.string.su_welcome_subtitle);
@@ -435,17 +485,163 @@ public final class SetupWizardActivity extends AppCompatActivity implements View
         }
         stopGreetingAnimation();
         mWelcomeWord.setVisibility(View.GONE);
+        mLogo.setVisibility(showList ? View.GONE : View.VISIBLE);
         mTitle.setVisibility(View.VISIBLE);
         mTitle.setText(titleRes);
         mDescription.setText(descRes);
         mPrimaryAction.setText(actionRes);
+        if (showList) {
+            mSelectionList.setVisibility(View.VISIBLE);
+            if (mStepNumber == STEP_LANGUAGES) {
+                ensureSelectionStateLoaded();
+                buildLanguageList();
+            } else {
+                buildLayoutList();
+            }
+        } else {
+            mSelectionList.setVisibility(View.GONE);
+        }
         if (showProgress) {
-            final int total = Math.max(1, STEP_3 - mFirstStep + 1);
+            final int total = Math.max(1, STEP_LAYOUTS - mFirstStep + 1);
             final int current = Math.min(total, Math.max(1, mStepNumber - mFirstStep + 1));
             mProgress.setVisibility(View.VISIBLE);
             mProgress.setText(getString(R.string.su_step_progress, current, total));
         } else {
             mProgress.setVisibility(View.GONE);
         }
+    }
+
+    private void ensureSelectionStateLoaded() {
+        if (mLanguages != null) {
+            return;
+        }
+        RichInputMethodManager.init(this);
+        mLanguages = KeyboardLanguages.getLanguages(this);
+        mEnabledKeys = new HashSet<>(
+                org.smc.inputmethod.indic.settings.Settings.readEnabledSubtypeKeys(
+                        PreferenceManagerCompat.getDeviceSharedPreferences(this)));
+        mSelectedLocales = new LinkedHashSet<>();
+        for (final Language language : mLanguages) {
+            for (final Layout layout : language.mLayouts) {
+                if (mEnabledKeys.contains(SubtypeLocaleUtils.getSubtypeKey(layout.mSubtype))) {
+                    mSelectedLocales.add(language.mLocale);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void buildLanguageList() {
+        mSelectionList.removeAllViews();
+        final LayoutInflater inflater = getLayoutInflater();
+        for (final Language language : sortedLanguages()) {
+            final View row = inflater.inflate(R.layout.setup_selection_row, mSelectionList, false);
+            ((ImageView) row.findViewById(R.id.selection_icon))
+                    .setImageDrawable(createGlyphIcon(language));
+            ((TextView) row.findViewById(R.id.selection_title)).setText(formatName(language));
+            final MaterialSwitch toggle = row.findViewById(R.id.selection_switch);
+            toggle.setChecked(mSelectedLocales.contains(language.mLocale));
+            row.setOnClickListener(v -> {
+                final boolean checked = !toggle.isChecked();
+                toggle.setChecked(checked);
+                if (checked) {
+                    mSelectedLocales.add(language.mLocale);
+                } else {
+                    mSelectedLocales.remove(language.mLocale);
+                }
+            });
+            mSelectionList.addView(row);
+        }
+    }
+
+    private void buildLayoutList() {
+        reconcileEnabledWithSelection();
+        mSelectionList.removeAllViews();
+        final LayoutInflater inflater = getLayoutInflater();
+        for (final Language language : sortedLanguages()) {
+            if (!mSelectedLocales.contains(language.mLocale)) {
+                continue;
+            }
+            final TextView header = (TextView) inflater.inflate(
+                    R.layout.setup_selection_header, mSelectionList, false);
+            header.setText(formatName(language));
+            mSelectionList.addView(header);
+            for (final Layout layout : language.mLayouts) {
+                final String key = SubtypeLocaleUtils.getSubtypeKey(layout.mSubtype);
+                final View row = inflater.inflate(
+                        R.layout.setup_selection_row, mSelectionList, false);
+                row.findViewById(R.id.selection_icon).setVisibility(View.GONE);
+                ((TextView) row.findViewById(R.id.selection_title)).setText(layout.mName);
+                final MaterialSwitch toggle = row.findViewById(R.id.selection_switch);
+                toggle.setChecked(mEnabledKeys.contains(key));
+                row.setOnClickListener(v -> {
+                    final boolean checked = !toggle.isChecked();
+                    toggle.setChecked(checked);
+                    if (checked) {
+                        mEnabledKeys.add(key);
+                    } else {
+                        mEnabledKeys.remove(key);
+                    }
+                });
+                mSelectionList.addView(row);
+            }
+        }
+    }
+
+    private void reconcileEnabledWithSelection() {
+        for (final Language language : mLanguages) {
+            final boolean selected = mSelectedLocales.contains(language.mLocale);
+            boolean hasEnabled = false;
+            for (final Layout layout : language.mLayouts) {
+                if (mEnabledKeys.contains(SubtypeLocaleUtils.getSubtypeKey(layout.mSubtype))) {
+                    hasEnabled = true;
+                    break;
+                }
+            }
+            if (selected && !hasEnabled && !language.mLayouts.isEmpty()) {
+                mEnabledKeys.add(SubtypeLocaleUtils.getSubtypeKey(
+                        language.mLayouts.get(0).mSubtype));
+            } else if (!selected && hasEnabled) {
+                for (final Layout layout : language.mLayouts) {
+                    mEnabledKeys.remove(SubtypeLocaleUtils.getSubtypeKey(layout.mSubtype));
+                }
+            }
+        }
+    }
+
+    private void commitSelectedLayouts() {
+        reconcileEnabledWithSelection();
+        RichInputMethodManager.init(this);
+        RichInputMethodManager.getInstance().setEnabledSubtypeKeys(mEnabledKeys);
+    }
+
+    private List<Language> sortedLanguages() {
+        final List<Language> sorted = new ArrayList<>(mLanguages);
+        Collections.sort(sorted, new Comparator<Language>() {
+            @Override
+            public int compare(final Language a, final Language b) {
+                final boolean aEn = a.mLocale.startsWith("en");
+                final boolean bEn = b.mLocale.startsWith("en");
+                if (aEn != bEn) {
+                    return aEn ? -1 : 1;
+                }
+                return a.mEnglishName.compareToIgnoreCase(b.mEnglishName);
+            }
+        });
+        return sorted;
+    }
+
+    private Drawable createGlyphIcon(final Language language) {
+        final TypedValue value = new TypedValue();
+        getTheme().resolveAttribute(android.R.attr.colorAccent, value, true);
+        final int size = Math.round(40 * getResources().getDisplayMetrics().density);
+        return new TextDrawable(language.mGlyph, value.data, 0 /* no background */, size);
+    }
+
+    private static CharSequence formatName(final Language language) {
+        if (language.mEnglishName.equalsIgnoreCase(language.mAutonym)) {
+            return language.mEnglishName;
+        }
+        return language.mEnglishName + " (" + language.mAutonym + ")";
     }
 }

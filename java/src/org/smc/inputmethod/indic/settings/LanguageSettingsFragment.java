@@ -113,6 +113,11 @@ public final class LanguageSettingsFragment extends SubScreenFragment {
         Collections.sort(languages, new Comparator<Language>() {
             @Override
             public int compare(final Language a, final Language b) {
+                final boolean aEn = a.mLocale.startsWith("en");
+                final boolean bEn = b.mLocale.startsWith("en");
+                if (aEn != bEn) {
+                    return aEn ? -1 : 1;
+                }
                 return a.mEnglishName.compareToIgnoreCase(b.mEnglishName);
             }
         });
