@@ -173,8 +173,9 @@ dicttool: ## Build tools/dicttool into tools/dicttool/build/dicttool.jar
 		com.android.inputmethod.latin.dicttool.Dicttool -C $(DICTTOOL_BUILD)/classes .
 	@echo "Built $(DICTTOOL_JAR)"
 
-dictionaries: dicttool ## Regenerate java/res/raw/main_<lang>.dict from dictionaries-indic/*.combined
-	@for f in dictionaries-indic/*_wordlist.combined; do \
+dictionaries: dicttool ## Regenerate java/res/raw/main_<lang>.dict from dictionaries/*_wordlist.combined
+	@for f in dictionaries/*_wordlist.combined; do \
+		case "$$f" in */emoji_search_wordlist.combined) continue;; esac; \
 		lang=$$(basename $$f); lang=$${lang%%_*}; \
 		echo "==> java/res/raw/main_$$lang.dict"; \
 		$(DICTTOOL_RUN) makedict -s $$f -d java/res/raw/main_$$lang.dict >/dev/null || exit 1; \
