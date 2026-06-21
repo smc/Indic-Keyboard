@@ -375,14 +375,6 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     }
 
     public void onHoldKey(final Key key) {
-        if (mEmojiCategory.isInRecentTab()) {
-            mEmojiPalettesAdapter.removeRecentKey(key);
-        }
-    }
-
-    @Override
-    public boolean isRecentsTab() {
-        return mEmojiCategory.isInRecentTab();
     }
 
     @Override

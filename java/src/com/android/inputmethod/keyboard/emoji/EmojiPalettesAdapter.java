@@ -69,10 +69,6 @@ final class EmojiPalettesAdapter extends RecyclerView.Adapter<EmojiPalettesAdapt
         }
     }
 
-    public void removeRecentKey(final Key key) {
-        mRecentsKeyboard.removeKey(key);
-    }
-
     /** Redraw the recents page after its keys were reloaded externally (e.g. an emoji search pick). */
     public void invalidateRecents() {
         final EmojiPageKeyboardView recentKeyboardView =

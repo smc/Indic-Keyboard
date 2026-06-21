@@ -61,7 +61,6 @@ final class EmojiPageKeyboardView extends KeyboardView implements
         public void onPressKey(Key key);
         public void onReleaseKey(Key key);
         public void onHoldKey(Key key);
-        public boolean isRecentsTab();
         public void onPickEmojiVariation(Key baseKey, String emoji);
     }
 
@@ -72,8 +71,6 @@ final class EmojiPageKeyboardView extends KeyboardView implements
         public void onReleaseKey(final Key key) {}
         @Override
         public void onHoldKey(final Key key) {}
-        @Override
-        public boolean isRecentsTab() { return false; }
         @Override
         public void onPickEmojiVariation(final Key baseKey, final String emoji) {}
     };
@@ -288,7 +285,7 @@ final class EmojiPageKeyboardView extends KeyboardView implements
         if (key == null) {
             return;
         }
-        if (!mListener.isRecentsTab() && key.getMoreKeys() != null) {
+        if (key.getMoreKeys() != null) {
             mHoldKey = true;
             key.onReleased();
             invalidateKey(key);

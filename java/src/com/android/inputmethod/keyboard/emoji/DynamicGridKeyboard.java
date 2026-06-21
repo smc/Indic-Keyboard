@@ -102,14 +102,6 @@ final class DynamicGridKeyboard extends Keyboard {
         addKey(usedKey, false);
     }
 
-    public void removeKey(final Key key) {
-        synchronized (mLock) {
-            mCachedGridKeys = null;
-            mGridKeys.remove(key);
-            updateCoords();
-        }
-    }
-
     private void addKey(final Key usedKey, final boolean addFirst) {
         if (usedKey == null) {
             return;
