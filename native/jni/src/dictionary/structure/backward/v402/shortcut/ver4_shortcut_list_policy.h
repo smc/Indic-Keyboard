@@ -49,13 +49,16 @@ class Ver4ShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
     }
 
     void getNextShortcut(const int maxCodePointCount, int *const outCodePoint,
-            int *const outCodePointCount, bool *const outIsWhitelist, bool *const outHasNext,
-            int *const pos) const {
+            int *const outCodePointCount, bool *const outIsWhitelist, int *const outProbability,
+            bool *const outHasNext, int *const pos) const {
         int probability = 0;
         mShortcutDictContent->getShortcutEntryAndAdvancePosition(maxCodePointCount,
                 outCodePoint, outCodePointCount, &probability, outHasNext, pos);
         if (outIsWhitelist) {
             *outIsWhitelist = ShortcutListReadingUtils::isWhitelist(probability);
+        }
+        if (outProbability) {
+            *outProbability = probability;
         }
     }
 

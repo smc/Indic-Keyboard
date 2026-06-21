@@ -254,16 +254,19 @@ const int SuggestionsOutputUtils::MIN_LEN_FOR_MULTI_WORD_AUTOCORRECT = 16;
     while (shortcutIt->hasNextShortcutTarget()) {
         bool isWhilelist;
         int shortcutTargetStringLength;
+        int shortcutProbability = 0;
         shortcutIt->nextShortcutTarget(MAX_WORD_LENGTH, shortcutTarget,
-                &shortcutTargetStringLength, &isWhilelist);
+                &shortcutTargetStringLength, &isWhilelist, &shortcutProbability);
         int shortcutScore;
         int kind;
         if (isWhilelist && sameAsTyped) {
             shortcutScore = S_INT_MAX;
             kind = Dictionary::KIND_WHITELIST;
         } else {
-            // shortcut entry's score == its base entry's score - 1
-            shortcutScore = finalScore;
+            // Rank a word's shortcuts among themselves by their stored probability (0.15) so the
+            // most relevant targets (e.g. the best emoji for a search keyword) sort first, while
+            // still keeping every shortcut just below its triggering word.
+            shortcutScore = finalScore - 16 + shortcutProbability;
             // Protection against int underflow
             shortcutScore = std::max(S_INT_MIN + 1, shortcutScore) - 1;
             kind = Dictionary::KIND_SHORTCUT;

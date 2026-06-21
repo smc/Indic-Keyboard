@@ -119,6 +119,8 @@ Mujeebcpy contributed Malayalam Mobile inscript and Poorna inscript Keyboard Lay
 
 Some icons from from FontAwesome, they are in [Creative Commons Attribution 4.0 International license](https://fontawesome.com/license)
 
+Emoji search keywords are derived from the [Emoogle Emoji Search Engine](https://github.com/xitanggg/emoogle-emoji-search-engine) dataset by Xitang Zhao, used under the MIT License.
+
 Also thank [LineageOS](https://review.lineageos.org/c/LineageOS/android_packages_inputmethods_LatinIME/), [Openboard](https://github.com/dslul/openboard/), and [Simple-Keyboard](https://github.com/rkkr/simple-keyboard) some changes are taken/adopted from these keyboards
 
 ## TODO

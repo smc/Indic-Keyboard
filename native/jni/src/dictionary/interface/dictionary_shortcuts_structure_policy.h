@@ -31,8 +31,8 @@ class DictionaryShortcutsStructurePolicy {
     virtual int getStartPos(const int pos) const = 0;
 
     virtual void getNextShortcut(const int maxCodePointCount, int *const outCodePoint,
-            int *const outCodePointCount, bool *const outIsWhitelist, bool *const outHasNext,
-            int *const pos) const = 0;
+            int *const outCodePointCount, bool *const outIsWhitelist, int *const outProbability,
+            bool *const outHasNext, int *const pos) const = 0;
 
     virtual void skipAllShortcuts(int *const pos) const = 0;
 

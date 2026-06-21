@@ -27,7 +27,6 @@ import org.smc.inputmethod.indic.settings.SettingsValuesForSuggestion;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -95,7 +94,7 @@ public class EmojiSearch {
             if (token.isEmpty()) {
                 continue;
             }
-            final HashMap<String, Integer> tokenScores = queryToken(d, proximity, token);
+            final LinkedHashMap<String, Integer> tokenScores = queryToken(d, proximity, token);
             if (scores == null) {
                 scores = new LinkedHashMap<>(tokenScores);
             } else {
@@ -126,9 +125,9 @@ public class EmojiSearch {
         return out;
     }
 
-    private HashMap<String, Integer> queryToken(final BinaryDictionary d, final long proximity,
-            final String token) {
-        final HashMap<String, Integer> map = new HashMap<>();
+    private LinkedHashMap<String, Integer> queryToken(final BinaryDictionary d,
+            final long proximity, final String token) {
+        final LinkedHashMap<String, Integer> map = new LinkedHashMap<>();
         final ComposedData composed =
                 new ComposedData(new InputPointers(48), false /* isBatchMode */, token);
         final ArrayList<SuggestedWordInfo> results = d.getSuggestions(composed,

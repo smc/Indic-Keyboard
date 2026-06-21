@@ -41,12 +41,13 @@ class BinaryDictionaryShortcutIterator {
     }
 
     // Gets the shortcut target itself as an int string and put it to outTarget, put its length
-    // to outTargetLength, put whether it is allowlist to outIsAllowed.
+    // to outTargetLength, put whether it is allowlist to outIsAllowed, and its stored probability
+    // (0.15) to outProbability.
     AK_FORCE_INLINE void nextShortcutTarget(
             const int maxDepth, int *const outTarget, int *const outTargetLength,
-            bool *const outIsAllowed) {
+            bool *const outIsAllowed, int *const outProbability) {
         mShortcutStructurePolicy->getNextShortcut(maxDepth, outTarget, outTargetLength,
-                outIsAllowed, &mHasNextShortcutTarget, &mPos);
+                outIsAllowed, outProbability, &mHasNextShortcutTarget, &mPos);
     }
 
  private:

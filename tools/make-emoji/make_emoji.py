@@ -2,8 +2,14 @@
 # Generate emoji resources from Unicode Emoji data.
 #
 # Inputs (committed under tools/make-emoji/data/):
-#   emoji-test.txt        Unicode emoji-test.txt (groups, order, skin-tone sequences, CLDR names)
-#   annotations_en.xml    CLDR English annotations (keywords) for richer search
+#   emoji-test.txt                Unicode emoji-test.txt (groups, order, skin-tone sequences, names)
+#   emoogle-emoji-keywords.json   Emoogle curated search keywords, ordered by relevance (primary
+#                                 keyword source; MIT, see emoogle-data.LICENSE)
+#   emoogle-keyword-most-relevant-emoji.json
+#                                 Emoogle keyword -> single best emoji; that pair is pinned to the
+#                                 top of the keyword's results
+#   annotations_en.xml            CLDR English annotations, supplementary keyword coverage for
+#                                 emoji absent from the Emoogle set
 #
 # Outputs:
 #   java/res/values/emoji-categories.xml   active category arrays (with skin-tone variations+minSdk)
@@ -12,6 +18,7 @@
 #
 # Run via `make emoji`.
 
+import json
 import os
 import re
 import sys
@@ -21,6 +28,8 @@ ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 DATA = os.path.join(HERE, "data")
 
 EMOJI_TEST = os.path.join(DATA, "emoji-test.txt")
+EMOOGLE = os.path.join(DATA, "emoogle-emoji-keywords.json")
+EMOOGLE_TOP = os.path.join(DATA, "emoogle-keyword-most-relevant-emoji.json")
 ANNOTATIONS = os.path.join(DATA, "annotations_en.xml")
 CATEGORIES_XML = os.path.join(ROOT, "java/res/values/emoji-categories.xml")
 WORDLIST = os.path.join(ROOT, "dictionaries/emoji_search_wordlist.combined")
@@ -130,6 +139,27 @@ def parse_annotations():
     return kw
 
 
+def parse_emoogle():
+    """Return {emoji_string: [keyword phrases]} from the Emoogle dataset (most relevant first)."""
+    with open(EMOOGLE, encoding="utf-8") as f:
+        return json.load(f)
+
+
+def parse_most_relevant():
+    """Return {emoji_string: set(keyword tokens)} for which that emoji is Emoogle's single best
+    result. Keyed by both the emoji and its no-VS16 form so it matches whichever the palette uses."""
+    with open(EMOOGLE_TOP, encoding="utf-8") as f:
+        data = json.load(f)
+    rev = {}
+    for keyword, emoji in data.items():
+        toks = tokenize(keyword)
+        if not toks:
+            continue
+        for key in (emoji, emoji.replace(VS16_CHAR, "")):
+            rev.setdefault(key, set()).update(toks)
+    return rev
+
+
 def tokenize(s):
     return set(t for t in re.findall(r"[a-z0-9]+", s.lower()) if len(t) >= 2)
 
@@ -199,22 +229,45 @@ def write_categories(bases, variants):
 VS16_CHAR = chr(0xFE0F)
 
 
-def relevance(token, name, rank):
-    """Shortcut frequency (1..14) ranking an emoji for a keyword: a name match (esp. the whole or
-    first word) beats a keyword-only match; Unicode order is a minor tiebreak."""
-    name_words = [w for w in re.findall(r"[a-z0-9]+", name.lower())]
-    if token not in name_words:
-        base = 6  # keyword-only match
-    elif len(name_words) == 1:
-        base = 14  # the entire name is this token
-    elif name_words[0] == token:
-        base = 12  # first word of the name
-    else:
-        base = 10
-    return max(1, min(14, base - min(2, rank // 700)))
+def emoji_token_relevance(base, emoogle, cldr, most_relevant):
+    """token -> shortcut frequency (1..14) for one emoji, merged across keyword sources.
+
+    Ordinary sources score 1..13; 14 is reserved for an Emoogle "most relevant" pairing so that
+    emoji is pinned to the top of its keyword's results. The Emoogle keyword list is ordered
+    most-relevant-first, so earlier keywords score higher. Unicode name words anchor exact-name
+    searches; CLDR annotations fill coverage for emoji the Emoogle set omits. The strongest score
+    across sources wins for each token."""
+    emoji = base["emoji"]
+    no_vs16 = emoji.replace(VS16_CHAR, "")
+    rel = {}
+
+    def bump(token, value):
+        if len(token) >= 2 and value > rel.get(token, 0):
+            rel[token] = value
+
+    # Unicode name words.
+    name_words = re.findall(r"[a-z0-9]+", base["name"].lower())
+    for i, w in enumerate(name_words):
+        bump(w, 13 if len(name_words) == 1 else (12 if i == 0 else 10))
+
+    # Emoogle curated keywords, ordered by relevance.
+    for j, phrase in enumerate(emoogle.get(emoji) or emoogle.get(no_vs16) or []):
+        value = max(4, 12 - j)
+        for t in tokenize(phrase):
+            bump(t, value)
+
+    # CLDR annotations (supplementary).
+    for t in cldr.get(emoji, set()) | cldr.get(no_vs16, set()):
+        bump(t, 6)
+
+    # Emoogle "most relevant" pairing: pin this emoji to the very top for these keywords.
+    for t in most_relevant.get(emoji, set()) | most_relevant.get(no_vs16, set()):
+        bump(t, 14)
+
+    return rel
 
 
-def write_wordlist(bases, keywords):
+def write_wordlist(bases, emoogle, cldr, most_relevant):
     # token -> list of (freq, rank, emoji)
     token_emoji = {}
     seen = set()
@@ -223,11 +276,8 @@ def write_wordlist(bases, keywords):
         if emoji in seen:
             continue
         seen.add(emoji)
-        toks = tokenize(b["name"])
-        toks |= keywords.get(emoji, set())
-        toks |= keywords.get(emoji.replace(VS16_CHAR, ""), set())
-        for t in toks:
-            token_emoji.setdefault(t, []).append((relevance(t, b["name"], rank), rank, emoji))
+        for t, freq in emoji_token_relevance(b, emoogle, cldr, most_relevant).items():
+            token_emoji.setdefault(t, []).append((freq, rank, emoji))
     lines = ["dictionary=main:en,locale=en,description=emoji search,date=1,version=1"]
     for token in sorted(token_emoji):
         # Most relevant first; cap shortcuts per keyword.
@@ -242,12 +292,15 @@ def write_wordlist(bases, keywords):
 
 
 def main():
-    if not os.path.exists(EMOJI_TEST) or not os.path.exists(ANNOTATIONS):
-        sys.exit("Missing input data in %s (need emoji-test.txt + annotations_en.xml)" % DATA)
+    for path in (EMOJI_TEST, EMOOGLE, EMOOGLE_TOP, ANNOTATIONS):
+        if not os.path.exists(path):
+            sys.exit("Missing input data: %s" % path)
     bases, variants = parse_emoji_test()
-    keywords = parse_annotations()
+    emoogle = parse_emoogle()
+    most_relevant = parse_most_relevant()
+    cldr = parse_annotations()
     write_categories(bases, variants)
-    write_wordlist(bases, keywords)
+    write_wordlist(bases, emoogle, cldr, most_relevant)
 
 
 if __name__ == "__main__":

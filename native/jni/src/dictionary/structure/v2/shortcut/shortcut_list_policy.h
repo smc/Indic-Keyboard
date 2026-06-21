@@ -42,8 +42,8 @@ class ShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
     }
 
     void getNextShortcut(const int maxCodePointCount, int *const outCodePoint,
-            int *const outCodePointCount, bool *const outIsWhitelist, bool *const outHasNext,
-            int *const pos) const {
+            int *const outCodePointCount, bool *const outIsWhitelist, int *const outProbability,
+            bool *const outHasNext, int *const pos) const {
         const ShortcutListReadingUtils::ShortcutFlags flags =
                 ShortcutListReadingUtils::getFlagsAndForwardPointer(mBuffer, pos);
         if (outHasNext) {
@@ -51,6 +51,9 @@ class ShortcutListPolicy : public DictionaryShortcutsStructurePolicy {
         }
         if (outIsWhitelist) {
             *outIsWhitelist = ShortcutListReadingUtils::isWhitelist(flags);
+        }
+        if (outProbability) {
+            *outProbability = ShortcutListReadingUtils::getProbabilityFromFlags(flags);
         }
         if (outCodePoint) {
             *outCodePointCount = ShortcutListReadingUtils::readShortcutTarget(
