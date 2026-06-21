@@ -94,6 +94,10 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mIsHardwareAcceleratedDrawingEnabled = true;
     }
 
+    public Context getThemeContext() {
+        return mThemeContext;
+    }
+
     public void updateKeyboardTheme(@Nonnull Context displayContext) {
         final boolean themeUpdated = updateKeyboardThemeAndContextThemeWrapper(
                 displayContext, KeyboardTheme.getKeyboardTheme(displayContext /* context */));

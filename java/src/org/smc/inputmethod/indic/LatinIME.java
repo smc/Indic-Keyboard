@@ -2064,10 +2064,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 ActivityOptions.makeBasic().setLaunchDisplayId(currentDisplayId).toBundle());
     }
 
+    private Context pickerDialogContext() {
+        final Context kbContext = mKeyboardSwitcher.getThemeContext();
+        final TypedValue value = new TypedValue();
+        if (kbContext != null
+                && kbContext.getTheme().resolveAttribute(R.attr.md3Primary, value, true)) {
+            return new ContextThemeWrapper(kbContext, R.style.Theme_IndicKeyboard_Picker);
+        }
+        return new ContextThemeWrapper(this, R.style.Theme_IndicKeyboard_Settings);
+    }
+
     private void showEnabledSubtypePicker(final List<InputMethodSubtype> subtypes,
             final boolean hasOtherImes) {
-        final MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(
-                new ContextThemeWrapper(this, R.style.Theme_IndicKeyboard_Settings));
+        final MaterialAlertDialogBuilder builder =
+                new MaterialAlertDialogBuilder(pickerDialogContext());
         final Context context = builder.getContext();
         final IBinder token = getWindow().getWindow().getAttributes().token;
         final InputMethodSubtype current =
@@ -2281,8 +2291,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void showSubtypeSelectorAndSettings() {
-        final MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(
-                new ContextThemeWrapper(this, R.style.Theme_IndicKeyboard_Settings));
+        final MaterialAlertDialogBuilder builder =
+                new MaterialAlertDialogBuilder(pickerDialogContext());
         final Context context = builder.getContext();
 
         final LinearLayout content = new LinearLayout(context);

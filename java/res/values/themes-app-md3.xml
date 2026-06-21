@@ -8,4 +8,13 @@
     <style name="Theme.IndicKeyboard.Setup" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
     </style>
+
+    <style name="Theme.IndicKeyboard.Picker" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">?attr/md3Primary</item>
+        <item name="colorOnPrimary">?attr/md3OnPrimary</item>
+        <item name="colorSurface">?attr/md3Surface</item>
+        <item name="colorOnSurface">?attr/md3OnSurface</item>
+        <item name="colorOnSurfaceVariant">?attr/md3OnSurfaceVariant</item>
+        <item name="android:colorBackground">?attr/md3Surface</item>
+    </style>
 </resources>
