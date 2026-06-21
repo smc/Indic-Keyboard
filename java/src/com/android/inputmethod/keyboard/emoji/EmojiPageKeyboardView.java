@@ -17,11 +17,13 @@
 package com.android.inputmethod.keyboard.emoji;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -295,13 +297,28 @@ final class EmojiPageKeyboardView extends KeyboardView implements
         callListenerOnHoldKey(key);
     }
 
+    private Drawable moreKeysPanelBackground() {
+        final TypedValue style = new TypedValue();
+        if (getContext().getTheme().resolveAttribute(
+                R.attr.moreKeysKeyboardViewStyle, style, true)) {
+            final TypedArray a = getContext().obtainStyledAttributes(style.resourceId,
+                    new int[] { android.R.attr.background });
+            final Drawable bg = a.getDrawable(0);
+            a.recycle();
+            if (bg != null) {
+                return bg;
+            }
+        }
+        return getContext().getDrawable(R.drawable.md3_popup_background);
+    }
+
     private void showVariationsPopup(final Key key) {
         dismissVariationsPopup();
         final Context context = getContext();
         final LinearLayout row = new LinearLayout(context);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
-        row.setBackgroundResource(R.drawable.md3_popup_background);
+        row.setBackground(moreKeysPanelBackground());
         row.setElevation(dp(6));
 
         final int cellWidth = key.getWidth();
