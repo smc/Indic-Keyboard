@@ -188,6 +188,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private SuggestionStripView mSuggestionStripView;
     private EmojiSearchController mEmojiSearchController;
     private View mEmojiSearchBar;
+    private View mEmojiSuggestionStrip;
 
     private Context mDisplayContext;
 
@@ -927,6 +928,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSuggestionStripView.setListener(this, view);
         }
         mEmojiSearchBar = view.findViewById(R.id.emoji_search_bar);
+        mEmojiSuggestionStrip = view.findViewById(R.id.emoji_suggestion_strip);
         if (mEmojiSearchBar != null && hasSuggestionStripView()) {
             mEmojiSearchController = new EmojiSearchController(
                     this, mKeyboardSwitcher, mSuggestionStripView, mEmojiSearchBar);
@@ -1398,8 +1400,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final int searchBarHeight = (mEmojiSearchBar != null
                 && mEmojiSearchBar.getVisibility() == View.VISIBLE)
                 ? mEmojiSearchBar.getHeight() : 0;
+        final int emojiSuggestionsHeight = (mEmojiSuggestionStrip != null
+                && mEmojiSuggestionStrip.getVisibility() == View.VISIBLE)
+                ? mEmojiSuggestionStrip.getHeight() : 0;
         final int visibleTopY = inputHeight - visibleKeyboardView.getHeight() - suggestionsHeight
-                - searchBarHeight;
+                - searchBarHeight - emojiSuggestionsHeight;
         mSuggestionStripView.setMoreSuggestionsHeight(visibleTopY);
         // Need to set expanded touchable region only if a keyboard view is being shown.
         if (visibleKeyboardView.isShown()) {
