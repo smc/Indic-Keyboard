@@ -25,13 +25,22 @@
     android:layout_gravity="bottom"
     android:orientation="vertical" >
 
+    <com.android.inputmethod.keyboard.emoji.EmojiSuggestionStripView
+        android:id="@+id/emoji_suggestion_strip"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/config_emoji_suggestions_strip_height"
+        android:visibility="gone"
+        android:paddingTop="4dp"
+        style="?attr/suggestionStripViewStyle" />
+
     <LinearLayout
         android:id="@+id/emoji_search_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingTop="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         android:visibility="gone"
         style="?attr/suggestionStripViewStyle" >
         <ImageButton
@@ -85,13 +94,6 @@
                 android:singleLine="true" />
         </LinearLayout>
     </LinearLayout>
-
-    <com.android.inputmethod.keyboard.emoji.EmojiSuggestionStripView
-        android:id="@+id/emoji_suggestion_strip"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/config_emoji_suggestions_strip_height"
-        android:visibility="gone"
-        style="?attr/suggestionStripViewStyle" />
 
     <!-- To ensure that key preview popup is correctly placed when the current system locale is
          one of RTL locales, layoutDirection="ltr" is needed in the SDK version 17+. -->
