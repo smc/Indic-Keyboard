@@ -23,6 +23,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.preference.PreferenceManager;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -255,7 +256,9 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         mAlphabetKeyLeft.setOnTouchListener(this);
         mAlphabetKeyLeft.setOnClickListener(this);
 
-        findViewById(R.id.emoji_search_box).setOnClickListener(new View.OnClickListener() {
+        final View searchBox = findViewById(R.id.emoji_search_box);
+        searchBox.setBackground(createSearchBoxBackground(getContext()));
+        searchBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
                 if (mEmojiSearchController != null) {
@@ -397,6 +400,18 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         alphabetKey.setTextColor(params.mFunctionalTextColor);
         alphabetKey.setTextSize(TypedValue.COMPLEX_UNIT_PX, params.mLabelSize);
         alphabetKey.setTypeface(params.mTypeface);
+    }
+
+    static GradientDrawable createSearchBoxBackground(final Context context) {
+        final TypedValue value = new TypedValue();
+        context.getTheme().resolveAttribute(R.attr.md3OnSurfaceVariant, value, true);
+        final int onSurfaceVariant = (value.type >= TypedValue.TYPE_FIRST_COLOR_INT
+                && value.type <= TypedValue.TYPE_LAST_COLOR_INT)
+                ? value.data : context.getResources().getColor(value.resourceId);
+        final GradientDrawable background = new GradientDrawable();
+        background.setCornerRadius(18 * context.getResources().getDisplayMetrics().density);
+        background.setColor((onSurfaceVariant & 0x00FFFFFF) | 0x24000000 /* ~14% alpha */);
+        return background;
     }
 
     public void startEmojiPalettes(final String switchToAlphaLabel,

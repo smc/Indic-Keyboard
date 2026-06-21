@@ -90,6 +90,8 @@ public final class EmojiSearchController {
                 ((View) searchBar.getParent()).findViewById(R.id.emoji_suggestion_strip);
         mSearchBar = searchBar;
         mSearchField = searchBar.findViewById(R.id.emoji_search_field);
+        mSearchField.setBackground(
+                EmojiPalettesView.createSearchBoxBackground(mSearchField.getContext()));
         mBackButton = searchBar.findViewById(R.id.emoji_search_back);
         mQueryView = (TextView) searchBar.findViewById(R.id.emoji_search_query);
         mCaret = searchBar.findViewById(R.id.emoji_search_caret);

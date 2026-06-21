@@ -131,7 +131,7 @@ public final class LanguageSettingsFragment extends SubScreenFragment {
     }
 
     private Drawable createIcon(final Context context, final Language language) {
-        final int accent = resolveColor(context, android.R.attr.colorAccent);
+        final int accent = resolveColor(context, androidx.appcompat.R.attr.colorPrimary);
         final int size = Math.round(40 * context.getResources().getDisplayMetrics().density);
         return new TextDrawable(language.mGlyph, accent, 0, size);
     }

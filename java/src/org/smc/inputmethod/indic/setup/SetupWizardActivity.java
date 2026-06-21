@@ -633,7 +633,7 @@ public final class SetupWizardActivity extends AppCompatActivity implements View
 
     private Drawable createGlyphIcon(final Language language) {
         final TypedValue value = new TypedValue();
-        getTheme().resolveAttribute(android.R.attr.colorAccent, value, true);
+        getTheme().resolveAttribute(androidx.appcompat.R.attr.colorPrimary, value, true);
         final int size = Math.round(40 * getResources().getDisplayMetrics().density);
         return new TextDrawable(language.mGlyph, value.data, 0 /* no background */, size);
     }

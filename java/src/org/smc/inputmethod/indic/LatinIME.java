@@ -2264,6 +2264,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         header.setText(text);
         header.setAllCaps(true);
         header.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
+        header.setTextColor(resolveColor(context, androidx.appcompat.R.attr.colorPrimary));
         header.setPaddingRelative(dpToPx(context, 24), dpToPx(context, 14),
                 dpToPx(context, 24), dpToPx(context, 4));
         return header;
