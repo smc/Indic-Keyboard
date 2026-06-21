@@ -68,5 +68,4 @@
     <fraction name="config_emoji_keyboard_key_width">10%p</fraction>
     <fraction name="config_emoji_keyboard_row_height">33%p</fraction>
     <fraction name="config_emoji_keyboard_key_letter_size">70%p</fraction>
-    <integer name="config_emoji_keyboard_max_page_key_count">30</integer>
 </resources>

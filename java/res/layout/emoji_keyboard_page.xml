@@ -22,12 +22,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:scrollbars="none"
+    android:scrollbars="vertical"
+    android:fadeScrollbars="true"
     android:overScrollMode="ifContentScrolls"
     android:fillViewport="false">
     <com.android.inputmethod.keyboard.emoji.EmojiPageKeyboardView
         android:id="@+id/emoji_keyboard_page"
         android:layoutDirection="ltr"
+        android:background="@android:color/transparent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </ScrollView>
