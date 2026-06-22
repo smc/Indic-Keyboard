@@ -151,7 +151,7 @@ build-native: ## Rebuild libjni_latinime.so with the NDK (ABI=<list>|all) and co
 		echo "NDK not found at $(NDK_HOME)."; \
 		echo "Download it from https://github.com/android/ndk/wiki and pass NDK_HOME=<path>."; \
 		exit 1; }
-	cd native/jni && "$(NDK_HOME)/ndk-build" -e "APP_ABI=$(ABI_LIST)" -C ./
+	cd native/jni && "$(NDK_HOME)/ndk-build" "APP_ABI=$(ABI_LIST)" -C ./
 	@for abi in $(ABI_LIST); do \
 		mkdir -p java/jniLibs/$$abi; \
 		cp -v native/libs/$$abi/libjni_latinime.so java/jniLibs/$$abi/libjni_latinime.so; \
