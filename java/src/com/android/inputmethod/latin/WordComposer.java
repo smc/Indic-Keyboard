@@ -294,6 +294,16 @@ public final class WordComposer {
         int cursorPos = mCursorPositionWithinWord;
         // TODO: Don't make that copy. We can do this directly from mTypedWordCache.
         final int[] codePoints = StringUtils.toCodePointArray(mTypedWordCache);
+        // mCursorPositionWithinWord can briefly fall out of sync with the typed-word cache (e.g.
+        // a spacebar-swipe cursor move delivering onUpdateSelection while the composing word is
+        // being rebuilt). Clamp it so the backward scan below cannot index past the array; an
+        // out-of-range position then yields actualMoveAmount != expectedMoveAmount and the cursor
+        // is correctly reported as outside the composing word.
+        if (cursorPos < 0) {
+            cursorPos = 0;
+        } else if (cursorPos > codePoints.length) {
+            cursorPos = codePoints.length;
+        }
         if (expectedMoveAmount >= 0) {
             // Moving the cursor forward for the expected amount or until the end of the word has
             // been reached, whichever comes first.
