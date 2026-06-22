@@ -1,0 +1,24 @@
+-dontobfuscate
+-keepattributes SourceFile,LineNumberTable
+
+# --- JNI ---------------------------------------------------------------------
+# libjni_latinime registers a fixed set of classes by literal name (FindClass +
+# RegisterNatives in native/jni/jni_common.cpp) and links native methods by JNI
+# name-mangling. Keep these classes and their native methods from being removed
+# by the shrinker.
+-keepclasseswithmembers,includedescriptorclasses class * {
+    native <methods>;
+}
+
+# --- Reflectively created dictionaries ---------------------------------------
+# DictionaryFacilitatorImpl looks up a static getDictionary(...) factory by name
+# on each ExpandableBinaryDictionary subclass.
+-keepclassmembers class * extends com.android.inputmethod.latin.ExpandableBinaryDictionary {
+    public static *** getDictionary(android.content.Context, java.util.Locale, java.io.File, java.lang.String, java.lang.String);
+}
+
+# --- Preference fragments instantiated by name -------------------------------
+# prefs_*.xml reference fragments via android:fragment="<fully-qualified-name>"
+# and SettingsActivity instantiates them from that string, so the shrinker must
+# not drop them.
+-keep public class * extends androidx.fragment.app.Fragment
