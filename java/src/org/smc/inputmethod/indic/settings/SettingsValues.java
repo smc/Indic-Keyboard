@@ -149,8 +149,7 @@ public class SettingsValues {
         mIncludesOtherImesInLanguageSwitchList = Settings.ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS
                 ? prefs.getBoolean(Settings.PREF_INCLUDE_OTHER_IMES_IN_LANGUAGE_SWITCH_LIST, false)
                 : true /* forcibly */;
-        mShowsLanguageSwitchKey = Settings.ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS
-                ? Settings.readShowsLanguageSwitchKey(prefs) : true /* forcibly */;
+        mShowsLanguageSwitchKey = Settings.readShowsLanguageSwitchKey(prefs);
         mShowsEmojiSwitchKey = Settings.readShowsEmojiSwitchKey(prefs);
         mShowsNumberRow = Settings.readShowsNumberRow(prefs);
         mShowsHints = prefs.getBoolean(Settings.PREF_SHOW_HINTS, false);
