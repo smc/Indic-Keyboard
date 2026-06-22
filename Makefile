@@ -2,20 +2,25 @@
 #
 # Run `make` (or `make help`) to list the available commands.
 #
-# Overridable variables, e.g.:
+# Machine-specific config and release signing live in .env (gitignored), the single
+# place to configure toolchain paths, the NDK version, the emulator AVD and the signing
+# credentials. Copy .env.sample to .env and edit it there. A command-line override still
+# wins, e.g.:
 #   make build ABI=armeabi-v7a
 #   make install DEVICE=adb-XXXX._adb-tls-connect._tcp
 #   make build-native NDK_VERSION=30.0.12345678
+ifeq (,$(wildcard .env))
+$(error No .env found — copy the template and edit it:  cp .env.sample .env)
+endif
+include .env
+export
 
-ANDROID_SDK := $(HOME)/Library/Android/sdk
-JAVA_HOME   := /Applications/Android Studio.app/Contents/jbr/Contents/Home
-NDK_VERSION := 29.0.14206865
-NDK_HOME    := $(ANDROID_SDK)/ndk/$(NDK_VERSION)
+NDK_HOME := $(ANDROID_SDK)/ndk/$(NDK_VERSION)
 # DEVICE is optional: when unset, adb targets the first connected physical device
 # (emulators are skipped — use emulator-install/emulator-run for those).
-DEVICE      ?=
-ABI         ?= arm64-v8a
-AVD         ?= Pixel_10_Pro_XL
+# ABI is the on-the-fly build target, not machine config, so it defaults here.
+DEVICE   ?=
+ABI      ?= arm64-v8a
 
 PKG         := org.smc.inputmethod.indic
 ADB_BASE    := $(ANDROID_SDK)/platform-tools/adb
@@ -87,15 +92,24 @@ test-app-install: test-app-build device-check ## Build, install + launch the inp
 test-app-emulator-install: emulator ## Boot the emulator and install + launch the input test app on it
 	$(MAKE) test-app-install DEVICE=emulator-5554
 
-# Signing config comes from the environment:
+# Signing config is read from .env (see the -include near the top):
 #   INDIC_KEYSTORE, INDIC_KEYSTORE_PASSWORD, INDIC_KEY_ALIAS, INDIC_KEY_PASSWORD
-release: ## Assemble the release APK (needs INDIC_KEYSTORE* env vars)
+RELEASE_APK_DIR := java/build/outputs/apk/release
+AAPT2            = $(shell ls "$(ANDROID_SDK)/build-tools/"*/aapt2 2>/dev/null | sort | tail -1)
+release: ## Assemble the release APK (signing creds in .env)
 	@test -n "$$INDIC_KEYSTORE" -a -f "$$INDIC_KEYSTORE" || { \
-		echo "Release signing not configured."; \
-		echo "Export INDIC_KEYSTORE (path to keystore), INDIC_KEYSTORE_PASSWORD,"; \
-		echo "INDIC_KEY_ALIAS and INDIC_KEY_PASSWORD, then re-run 'make release'."; \
+		echo "Release signing not configured. Set INDIC_KEYSTORE* in .env (see .env.sample)."; \
 		exit 1; }
 	cd java && $(GRADLEW) assembleRelease
+	@echo; echo "Release APKs in $(RELEASE_APK_DIR):"; \
+	for f in $(RELEASE_APK_DIR)/*.apk; do \
+		[ -f "$$f" ] || continue; \
+		ver=$$("$(AAPT2)" dump badging "$$f" 2>/dev/null | \
+			sed -n "s/.*versionCode='\([0-9]*\)' versionName='\([^']*\)'.*/v\2 (build \1)/p"); \
+		bytes=$$(stat -f%z "$$f"); \
+		mb=$$(awk "BEGIN{printf \"%.2f\", $$bytes/1048576}"); \
+		printf "  %-45s %8s MB (%s bytes)  %s\n" "$$(basename "$$f")" "$$mb" "$$bytes" "$$ver"; \
+	done
 
 release-install: release device-check ## Build and install the release APK
 	$(ADB) install -r $(RELEASE_APK)
