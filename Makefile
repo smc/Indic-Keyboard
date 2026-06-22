@@ -35,7 +35,7 @@ TEST_APP_PKG := org.smc.inputtest
 TEST_APP_APK := $(TEST_APP_DIR)/build/outputs/apk/debug/input-test-app-debug.apk
 TEST_APP_ACT := $(TEST_APP_PKG)/.MainActivity
 
-.PHONY: help build install run emulator emulator-install emulator-run release release-install uninstall clear-data clean logcat build-native build-native-x86 keyboard-text dicttool dictionaries dictionaries-en device-check test-app-build test-app-install test-app-emulator-install
+.PHONY: help build install run emulator emulator-install emulator-run release release-install rename-release uninstall clear-data clean logcat build-native build-native-x86 keyboard-text dicttool dictionaries dictionaries-en device-check test-app-build test-app-install test-app-emulator-install
 
 .DEFAULT_GOAL := help
 
@@ -113,6 +113,19 @@ release: ## Assemble the release APK (signing creds in .env)
 
 release-install: release device-check ## Build and install the release APK
 	$(ADB) install -r $(RELEASE_APK)
+
+rename-release: ## Rename built release APKs to <applicationId>_v<version>-<abi>.apk
+	@found=; \
+	for f in $(RELEASE_APK_DIR)/IndicKeyboard-*-release.apk; do \
+		[ -f "$$f" ] || continue; found=1; \
+		abi=$$(basename "$$f"); abi=$${abi#IndicKeyboard-}; abi=$${abi%-release.apk}; \
+		ver=$$("$(AAPT2)" dump badging "$$f" 2>/dev/null | \
+			sed -n "s/.*versionName='\([^']*\)'.*/\1/p"); \
+		new="$(RELEASE_APK_DIR)/$(PKG)_v$$ver-$$abi.apk"; \
+		mv "$$f" "$$new"; \
+		echo "  $$(basename "$$f")  ->  $$(basename "$$new")"; \
+	done; \
+	[ -n "$$found" ] || { echo "No release APKs in $(RELEASE_APK_DIR). Run 'make release' first."; exit 1; }
 
 uninstall: device-check ## Remove the app from the device
 	$(ADB) uninstall $(PKG)
