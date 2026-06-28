@@ -2546,14 +2546,6 @@ public final class InputLogic {
     }
 
     public void enableVarnam (String schemeID, Context context) {
-        // TODO if varnam app (org.smc.inputmethod.indic.varnam) doesn't exist, show Varnam Setup UI
-        // TODO Varnam Setup UI
-        // Varnam UI is similar to Indic Keyboard getting started
-        // Step 1: Install app
-        // Step 2: Select varnam languages to enable (currently only Malayalam) -> Next
-        // Step 3: Initializing the selected languages using varnam.setupScheme(schemeID) & enable those keyboard layouts in Indic Keyboard (`varnam-schemeID`. Eg: `varnam-ml`)
-        // Finished
-
         varnam = VarnamIndicKeyboard.makeVarnam(schemeID, context, new VarnamCallback() {
             @Override
             public void onResult(boolean settingLearn) {
@@ -2567,8 +2559,10 @@ public final class InputLogic {
             public void onError(String err) {
                 isVarnam = false;
                 Log.e("varnam-init-error", err);
-                if (err.equals(Varnam.ERROR_VST_MISSING)) {
+                if (Varnam.ERROR_VST_MISSING.equals(err)) {
                     err = context.getString(R.string.varnam_vst_missing, schemeID);
+                } else if (Varnam.ERROR_ENGINE_MISSING.equals(err)) {
+                    err = context.getString(R.string.varnam_engine_missing);
                 }
                 Toast toast = Toast.makeText(context, err, Toast.LENGTH_LONG);
                 toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0, 0);
@@ -2587,17 +2581,26 @@ public final class InputLogic {
     }
 
     private ArrayList<SuggestedWordInfo> varnamSugsToSugsWordInfo(Suggestion[] sugs) {
-        ArrayList<SuggestedWordInfo> suggestedWords = new ArrayList<SuggestedWordInfo>();
+        // govarnam returns the same word from multiple categories (dictionary + greedy
+        // tokenizer), so dedupe by word keeping the highest-weight occurrence while preserving
+        // first-appearance order.
+        final java.util.LinkedHashMap<String, Integer> bestWeight = new java.util.LinkedHashMap<>();
         for (Suggestion sug : sugs) {
-            final SuggestedWordInfo wordInfo = new SuggestedWordInfo(
-                    sug.Word,
+            final Integer prev = bestWeight.get(sug.Word);
+            if (prev == null || sug.Weight > prev) {
+                bestWeight.put(sug.Word, sug.Weight);
+            }
+        }
+        final ArrayList<SuggestedWordInfo> suggestedWords = new ArrayList<SuggestedWordInfo>();
+        for (final java.util.Map.Entry<String, Integer> e : bestWeight.entrySet()) {
+            suggestedWords.add(new SuggestedWordInfo(
+                    e.getKey(),
                     "" /* prevWordsContext */,
-                    sug.Weight,
+                    e.getValue(),
                     SuggestedWordInfo.KIND_COMPLETION,
                     Dictionary.DICTIONARY_RESUMED,
                     SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
-                    SuggestedWordInfo.NOT_A_CONFIDENCE);
-            suggestedWords.add(wordInfo);
+                    SuggestedWordInfo.NOT_A_CONFIDENCE));
         }
         return suggestedWords;
     }

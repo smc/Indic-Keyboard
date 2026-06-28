@@ -1,197 +1,170 @@
+/*
+ * Copyright 2026, Jishnu Mohan <jishnu7@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.smc.inputmethod.indic.varnam;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Looper;
-import android.os.Message;
-import android.os.Messenger;
-import android.os.Parcelable;
-import android.os.RemoteException;
 import android.util.Log;
 
 import com.varnamproject.govarnam.Suggestion;
+import com.varnamproject.govarnam.VarnamException;
 
+import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+/**
+ * In-process Varnam transliteration, backed by the embedded govarnam engine
+ * ({@link com.varnamproject.govarnam.Varnam}, native {@code libgovarnam_jni.so}). Reads the
+ * {@code .vst} scheme table and {@code .vlf} learnings packs that {@link VarnamDownloadManager}
+ * downloaded into {@code filesDir/varnam/<scheme>/}.
+ *
+ * Keeps the same public surface the old IPC client exposed, so {@code InputLogic} is unchanged:
+ * an async constructor that calls back on init, plus {@link #transliterate}, {@link #learn},
+ * {@link #cancel}, the suggestion-limit setters and {@link #close}.
+ *
+ * The engine handle is not thread-safe, so all engine calls are serialized on a single
+ * background thread; {@link #cancel} is the one exception — it runs inline so it can abort an
+ * in-flight transliterate of the same id.
+ */
 public class Varnam {
-    public final static int MSG_SETUP = 0;
-    public final static int MSG_INIT = 1;
-    public final static int MSG_TRANSLITERATE = 2;
-    public final static int MSG_CANCEL = 3;
-    public final static int MSG_LEARN = 4;
-    public final static int MSG_UNLEARN = 5;
-    public final static int MSG_SET_DICTIONARY_SUGGESTIONS_LIMIT = 6;
-    public final static int MSG_SET_TOKENIZER_SUGGESTIONS_LIMIT = 7;
+    private static final String TAG = "varnam";
 
-    public final static String ERROR_VST_MISSING = "vst-missing";
+    public static final String ERROR_VST_MISSING = "vst-missing";
+    public static final String ERROR_ENGINE_MISSING = "engine-missing";
 
-    private String schemeID;
-    private Messenger messenger;
-    private boolean isBound;
-    private VarnamCallback onConnectCallback;
+    private final String schemeID;
+    private final Context appContext;
+    private final ExecutorService engineThread = Executors.newSingleThreadExecutor();
+    private final Handler main = new Handler(Looper.getMainLooper());
 
-    /** Defines callbacks for service binding, passed to bindService() */
-    private ServiceConnection connection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
-            messenger = new Messenger(service);
-            isBound = true;
+    private com.varnamproject.govarnam.Varnam engine;
 
-            Log.d("varnam", "connected to service");
-            if (onConnectCallback != null) {
-                Bundle data = new Bundle();
-                data.putString("schemeID", schemeID);
-                try {
-                    Message msg = Message.obtain(null, MSG_INIT, data);
-                    msg.replyTo = new Messenger(new Handler(Looper.getMainLooper()) {
-                        @Override
-                        public void handleMessage(Message msg) {
-                            Bundle data = (Bundle) msg.obj;
-                            String error = data.getString("error");
-                            if (error != null) {
-                                Log.d("varnam", error);
-                                onConnectCallback.onError(error);
-                            } else {
-                                Log.d("varnam", "scheme inited");
-                                onConnectCallback.onResult(data.getBoolean("setting_learn"));
-                            }
-                        }
-                    });
-                    messenger.send(msg);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+    public Varnam(final String schemeID, final Context context, final VarnamCallback cb) {
+        this.schemeID = schemeID;
+        this.appContext = context.getApplicationContext();
+        engineThread.execute(() -> init(cb));
+    }
+
+    private void init(final VarnamCallback cb) {
+        final File vst = VarnamDownloadManager.vstFile(appContext, schemeID);
+        if (!vst.exists()) {
+            post(() -> cb.onError(ERROR_VST_MISSING));
+            return;
+        }
+        final File dir = VarnamDownloadManager.schemeDir(appContext, schemeID);
+        final File learnings = new File(dir, schemeID + ".learnings");
+        try {
+            engine = new com.varnamproject.govarnam.Varnam(vst.getAbsolutePath(),
+                    learnings.getAbsolutePath());
+            importLearnings(dir);
+            post(() -> cb.onResult(true /* settingLearn */));
+        } catch (final UnsatisfiedLinkError e) {
+            Log.e(TAG, "govarnam native library missing", e);
+            post(() -> cb.onError(ERROR_ENGINE_MISSING));
+        } catch (final VarnamException e) {
+            Log.e(TAG, "varnam init failed", e);
+            post(() -> cb.onError(e.getMessage()));
+        }
+    }
+
+    /** Imports the downloaded {@code .vlf} packs into the learnings DB once per download. */
+    private void importLearnings(final File dir) {
+        final File marker = VarnamDownloadManager.importMarker(appContext, schemeID);
+        if (marker.exists()) {
+            return;
+        }
+        final File[] vlfs = dir.listFiles((d, name) -> name.endsWith(".vlf"));
+        if (vlfs == null) {
+            return;
+        }
+        boolean ok = true;
+        for (final File vlf : vlfs) {
+            try {
+                engine.importFromFile(vlf.getAbsolutePath());
+            } catch (final VarnamException e) {
+                Log.e(TAG, "import failed: " + vlf.getName(), e);
+                ok = false;
             }
         }
-        @Override
-        public void onServiceDisconnected(ComponentName arg0) {
-            isBound = false;
+        if (ok) {
+            try {
+                marker.createNewFile();
+            } catch (final Exception e) {
+                Log.e(TAG, "could not mark imports done", e);
+            }
         }
-    };
+    }
 
-    // For getting errors from varnam app, need a default replyTo
-    public Messenger getDefaultReplyTo() {
-        return new Messenger(new Handler(Looper.getMainLooper()) {
-            @Override
-            public void handleMessage(Message msg) {
-                Bundle data = (Bundle) msg.obj;
-                data.setClassLoader(Suggestion.class.getClassLoader());
-                String error = data.getString("error");
-                if (error != null) {
-                    new VarnamCallback().onError(error);
-                }
+    public void setDictionarySuggestionsLimit(final int limit) {
+        engineThread.execute(() -> {
+            if (engine != null) engine.setDictionarySuggestionsLimit(limit);
+        });
+    }
+
+    public void setTokenizerSuggestionsLimit(final int limit) {
+        engineThread.execute(() -> {
+            if (engine != null) engine.setTokenizerSuggestionsLimit(limit);
+        });
+    }
+
+    public void transliterate(final int id, final String input, final VarnamCallback cb) {
+        engineThread.execute(() -> {
+            if (engine == null) {
+                return;
+            }
+            try {
+                final Suggestion[] sugs = engine.transliterate(id, input);
+                post(() -> cb.onResult(input, sugs));
+            } catch (final VarnamException e) {
+                post(() -> cb.onError(e.getMessage()));
             }
         });
     }
 
-    public Varnam(String schemeIDx, Context context, VarnamCallback cb) {
-        schemeID = schemeIDx;
-        onConnectCallback = cb;
-        // Bind to the remote service
-        Intent intent = new Intent();
-        intent.setClassName("org.smc.inputmethod.indic.varnam", "org.smc.inputmethod.indic.varnam.VarnamService");
-        context.bindService(intent, connection, Context.BIND_AUTO_CREATE);
-    }
-
-    public void close(Context context) {
-        context.unbindService(connection);
-    }
-
-    // Setup a scheme
-    public void setupScheme(String schemeID) {
-        try {
-            Bundle data = new Bundle();
-            data.putString("schemeID", schemeID);
-            Message msg = Message.obtain(null, MSG_SETUP, data);
-            msg.replyTo = getDefaultReplyTo();
-            this.messenger.send(msg);
-        } catch (RemoteException e) {
-            e.printStackTrace();
+    public void cancel(final int id) {
+        if (engine != null) {
+            engine.cancel(id);
         }
     }
 
-    public void setDictionarySuggestionsLimit(int limit) {
-        try {
-            Bundle data = new Bundle();
-            data.putInt("limit", limit);
-            Message msg = Message.obtain(null, MSG_SET_DICTIONARY_SUGGESTIONS_LIMIT, data);
-            msg.replyTo = getDefaultReplyTo();
-            this.messenger.send(msg);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    public void learn(final String input) {
+        engineThread.execute(() -> {
+            if (engine == null) return;
+            try {
+                engine.learn(input);
+            } catch (final VarnamException e) {
+                Log.e(TAG, "learn failed", e);
+            }
+        });
     }
 
-    public void setTokenizerSuggestionsLimit(int limit) {
-        try {
-            Bundle data = new Bundle();
-            data.putInt("limit", limit);
-            Message msg = Message.obtain(null, MSG_SET_TOKENIZER_SUGGESTIONS_LIMIT, data);
-            msg.replyTo = getDefaultReplyTo();
-            this.messenger.send(msg);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    public void close(final Context context) {
+        engineThread.execute(() -> {
+            if (engine != null) {
+                engine.close();
+                engine = null;
+            }
+        });
+        engineThread.shutdown();
     }
 
-    public void transliterate(int id, String input, VarnamCallback cb) {
-        try {
-            Bundle data = new Bundle();
-            data.putInt("id", id);
-            data.putString("input", input);
-
-            Message msg = Message.obtain(null, MSG_TRANSLITERATE, data);
-            msg.replyTo = new Messenger(new Handler(Looper.getMainLooper()) {
-                @Override
-                public void handleMessage(Message msg) {
-                    Bundle data = (Bundle) msg.obj;
-                    data.setClassLoader(Suggestion.class.getClassLoader());
-                    String error = data.getString("error");
-                    if (error != null) {
-                        cb.onError(error);
-                    } else {
-                        Parcelable[] result = data.getParcelableArray("result");
-                        Suggestion[] sugs = new Suggestion[result.length];
-                        for (int i = 0; i < result.length; i++) {
-                            sugs[i] = (Suggestion) result[i];
-                        }
-                        cb.onResult(input, sugs);
-                    }
-                }
-            });
-            this.messenger.send(msg);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void cancel(int id) {
-        try {
-            Bundle data = new Bundle();
-            data.putInt("id", id);
-
-            Message msg = Message.obtain(null, MSG_CANCEL, data);
-            msg.replyTo = getDefaultReplyTo();
-            this.messenger.send(msg);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void learn(String input) {
-        try {
-            Bundle data = new Bundle();
-            data.putString("input", input);
-
-            Message msg = Message.obtain(null, MSG_LEARN, data);
-            msg.replyTo = getDefaultReplyTo();
-            this.messenger.send(msg);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    private void post(final Runnable r) {
+        main.post(r);
     }
 }

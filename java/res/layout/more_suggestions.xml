@@ -32,5 +32,6 @@
         latin:keyLetterSize="@dimen/config_suggestion_text_size"
         latin:keyLabelSize="@dimen/config_suggestion_text_size"
         latin:keyHintLetterRatio="@fraction/config_more_suggestions_info_ratio"
-        latin:keyHintLetterColor="@android:color/white" />
+        latin:keyHintLetterColor="@android:color/white"
+        latin:keySingleBackground="@null" />
 </LinearLayout>

@@ -17,6 +17,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         coreApp="true">
 
+    <!-- Downloading Varnam language data via DownloadManager (the latter lets the small
+         index.json fetch run without a notification). -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY" />

@@ -7,3 +7,6 @@
 [submodule "dictionaries-indic"]
 	path = dictionaries-indic
 	url = https://github.com/jishnu7/dictionaries.git
+[submodule "govarnam"]
+	path = native/govarnam/govarnam
+	url = https://github.com/varnamproject/govarnam.git

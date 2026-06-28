@@ -21,6 +21,7 @@
     android:key="screen_advanced">
     <PreferenceCategory android:title="Extensions">
       <Preference
+          android:fragment="org.smc.inputmethod.indic.settings.VarnamSettingsFragment"
           android:title="@string/settings_screen_varnam"
           android:summary="@string/settings_screen_varnam_summary"
           android:key="screen_varnam" />

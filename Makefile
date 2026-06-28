@@ -16,6 +16,17 @@ include .env
 export
 
 NDK_HOME := $(ANDROID_SDK)/ndk/$(NDK_VERSION)
+
+# Varnam (govarnam) native engine. govarnam (the govarnam/ submodule, run
+# `git submodule update --init` first) is cross-compiled to a c-shared lib with Go + the NDK
+# clang, then the vendored native/govarnam/jni.c is compiled against it into libgovarnam_jni.so;
+# both land in jniLibs alongside libjni_latinime.so.
+GOVARNAM_SRC_DIR     ?= native/govarnam/govarnam
+GOVARNAM_JNI         ?= native/govarnam/jni.c
+GOVARNAM_BUILD_DIR   ?= build/varnam-native
+GOVARNAM_NDK_VERSION ?= $(NDK_VERSION)
+GOVARNAM_NDK_HOME    := $(ANDROID_SDK)/ndk/$(GOVARNAM_NDK_VERSION)
+GOVARNAM_API         ?= 21
 # DEVICE is optional: when unset, adb targets the first connected physical device
 # (emulators are skipped — use emulator-install/emulator-run for those).
 # ABI is the on-the-fly build target, not machine config, so it defaults here.
@@ -35,7 +46,7 @@ TEST_APP_PKG := org.smc.inputtest
 TEST_APP_APK := $(TEST_APP_DIR)/build/outputs/apk/debug/input-test-app-debug.apk
 TEST_APP_ACT := $(TEST_APP_PKG)/.MainActivity
 
-.PHONY: help build install run emulator emulator-install emulator-run release release-install rename-release uninstall clear-data clean logcat build-native build-native-x86 keyboard-text dicttool dictionaries dictionaries-en device-check test-app-build test-app-install test-app-emulator-install
+.PHONY: help build install run emulator emulator-install emulator-run release release-install rename-release uninstall clear-data clean logcat build-native build-native-x86 varnam-native keyboard-text dicttool dictionaries dictionaries-en device-check test-app-build test-app-install test-app-emulator-install
 
 .DEFAULT_GOAL := help
 
@@ -162,6 +173,39 @@ build-native: ## Rebuild libjni_latinime.so with the NDK (ABI=<list>|all) and co
 build-native-x86: ## Build the x86/x86_64 native libs (not shipped; manual only)
 	$(MAKE) build-native ABI="x86 x86_64"
 
+# Builds the govarnam engine libs (libgovarnam.so + libgovarnam_jni.so) for the shipped
+# ABIs and copies them into jniLibs. Prerequisites: Go toolchain, the govarnam Go source
+# (GOVARNAM_SRC_DIR), govarnam-java (GOVARNAM_JAVA_DIR) and NDK $(GOVARNAM_NDK_VERSION).
+varnam-native: VARNAM_ABI_LIST = armeabi-v7a arm64-v8a
+varnam-native: ## Build govarnam .so from the govarnam/ submodule and copy into jniLibs
+	@command -v go >/dev/null || { echo "Go toolchain not found (needed to build govarnam)."; exit 1; }
+	@test -d "$(GOVARNAM_SRC_DIR)" || { \
+		echo "govarnam Go source not found at $(GOVARNAM_SRC_DIR). Run 'git submodule update --init'."; exit 1; }
+	@test -f "$(GOVARNAM_JNI)" || { echo "JNI bridge not found at $(GOVARNAM_JNI)."; exit 1; }
+	@test -d "$(GOVARNAM_NDK_HOME)" || { \
+		echo "NDK $(GOVARNAM_NDK_VERSION) not found. Pass GOVARNAM_NDK_VERSION=<ver>."; exit 1; }
+	@set -e; \
+	hosttag=$$(ls "$(GOVARNAM_NDK_HOME)/toolchains/llvm/prebuilt" | head -1); \
+	tc="$(GOVARNAM_NDK_HOME)/toolchains/llvm/prebuilt/$$hosttag/bin"; \
+	gvs="$$(cd "$(GOVARNAM_SRC_DIR)" && pwd)"; \
+	jni="$$(cd "$$(dirname "$(GOVARNAM_JNI)")" && pwd)/$$(basename "$(GOVARNAM_JNI)")"; \
+	for abi in $(VARNAM_ABI_LIST); do \
+		case $$abi in \
+			arm64-v8a)   goarch=arm64; goarm=; cc="$$tc/aarch64-linux-android$(GOVARNAM_API)-clang";; \
+			armeabi-v7a) goarch=arm; goarm=7; cc="$$tc/armv7a-linux-androideabi$(GOVARNAM_API)-clang";; \
+			*) echo "unsupported abi $$abi"; exit 1;; \
+		esac; \
+		out="$(CURDIR)/$(GOVARNAM_BUILD_DIR)/$$abi"; mkdir -p "$$out"; \
+		echo "Building libgovarnam.so for $$abi"; \
+		(cd "$$gvs" && GOOS=android GOARCH=$$goarch GOARM=$$goarm CGO_ENABLED=1 CC="$$cc" \
+			go build -tags fts5 -buildmode=c-shared -ldflags "-s -w" -o "$$out/libgovarnam.so" .); \
+		cp "$$gvs"/c*.h "$$out/"; \
+		echo "Building libgovarnam_jni.so for $$abi"; \
+		"$$cc" -shared -fPIC -I"$$out" "$$jni" -L"$$out" -lgovarnam -llog -o "$$out/libgovarnam_jni.so"; \
+		mkdir -p java/jniLibs/$$abi; \
+		cp -v "$$out/libgovarnam.so" "$$out/libgovarnam_jni.so" java/jniLibs/$$abi/; \
+	done
+
 KBD_TEXT_DIR        := tools/make-keyboard-text
 KBD_TEXT_TABLE      := java/src/com/android/inputmethod/keyboard/internal/KeyboardTextsTable.java
 
@@ -200,9 +244,8 @@ dicttool: ## Build tools/dicttool into tools/dicttool/build/dicttool.jar
 		com.android.inputmethod.latin.dicttool.Dicttool -C $(DICTTOOL_BUILD)/classes .
 	@echo "Built $(DICTTOOL_JAR)"
 
-dictionaries: dicttool ## Regenerate java/res/raw/main_<lang>.dict from dictionaries/*_wordlist.combined
-	@for f in dictionaries/*_wordlist.combined; do \
-		case "$$f" in */emoji_search_wordlist.combined) continue;; esac; \
+dictionaries: dicttool ## Regenerate java/res/raw/main_<lang>.dict from dictionaries-indic/*.combined
+	@for f in dictionaries-indic/*_wordlist.combined; do \
 		lang=$$(basename $$f); lang=$${lang%%_*}; \
 		echo "==> java/res/raw/main_$$lang.dict"; \
 		$(DICTTOOL_RUN) makedict -s $$f -d java/res/raw/main_$$lang.dict >/dev/null || exit 1; \
