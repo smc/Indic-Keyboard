@@ -10,6 +10,9 @@
     native <methods>;
 }
 
+# --- govarnam JNI binding ----------------------------------------------------
+-keep class com.varnamproject.govarnam.** { *; }
+
 # --- Reflectively created dictionaries ---------------------------------------
 # DictionaryFacilitatorImpl looks up a static getDictionary(...) factory by name
 # on each ExpandableBinaryDictionary subclass.
