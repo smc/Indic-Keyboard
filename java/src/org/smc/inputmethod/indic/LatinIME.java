@@ -1432,8 +1432,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final int emojiSuggestionsHeight = (mEmojiSuggestionStrip != null
                 && mEmojiSuggestionStrip.getVisibility() == View.VISIBLE)
                 ? mEmojiSuggestionStrip.getHeight() : 0;
-        final int visibleTopY = inputHeight - visibleKeyboardView.getHeight() - suggestionsHeight
-                - searchBarHeight - emojiSuggestionsHeight;
+        final int bottomInset = mInputView.getPaddingBottom();
+        final int visibleTopY = inputHeight - bottomInset - visibleKeyboardView.getHeight()
+                - suggestionsHeight - searchBarHeight - emojiSuggestionsHeight;
         mSuggestionStripView.setMoreSuggestionsHeight(visibleTopY);
         // Need to set expanded touchable region only if a keyboard view is being shown.
         if (visibleKeyboardView.isShown()) {

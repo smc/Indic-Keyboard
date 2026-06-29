@@ -538,6 +538,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 displayContext, KeyboardTheme.getKeyboardTheme(displayContext /* context */));
         mCurrentInputView = (InputView)LayoutInflater.from(mThemeContext).inflate(
                 R.layout.input_view, null);
+        mCurrentInputView.setSystemBarColor(resolveKeyboardBackgroundColor());
         mMainKeyboardFrame = mCurrentInputView.findViewById(R.id.main_keyboard_frame);
         mEmojiPalettesView = (EmojiPalettesView)mCurrentInputView.findViewById(
                 R.id.emoji_palettes_view);
@@ -549,6 +550,20 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 isHardwareAcceleratedDrawingEnabled);
         mEmojiPalettesView.setKeyboardActionListener(mLatinIME);
         return mCurrentInputView;
+    }
+
+    /** The active theme's keyboard-view background color */
+    private int resolveKeyboardBackgroundColor() {
+        final android.util.TypedValue styleValue = new android.util.TypedValue();
+        if (!mThemeContext.getTheme().resolveAttribute(
+                R.attr.keyboardViewStyle, styleValue, true)) {
+            return android.graphics.Color.TRANSPARENT;
+        }
+        final android.content.res.TypedArray bg = mThemeContext.obtainStyledAttributes(
+                styleValue.resourceId, new int[] { android.R.attr.background });
+        final int color = bg.getColor(0, android.graphics.Color.TRANSPARENT);
+        bg.recycle();
+        return color;
     }
 
     public int getKeyboardShiftMode() {

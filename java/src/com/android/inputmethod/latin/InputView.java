@@ -17,11 +17,18 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
+
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.keyboard.MainKeyboardView;
@@ -35,8 +42,17 @@ public final class InputView extends FrameLayout {
     private MoreSuggestionsViewCanceler mMoreSuggestionsViewCanceler;
     private MotionEventForwarder<?, ?> mActiveForwarder;
 
+    private final Paint mSystemBarPaint = new Paint();
+    private int mSystemBarBottom;
+
     public InputView(final Context context, final AttributeSet attrs) {
         super(context, attrs, 0);
+        setWillNotDraw(false);
+    }
+
+    public void setSystemBarColor(final int color) {
+        mSystemBarPaint.setColor(color);
+        invalidate();
     }
 
     @Override
@@ -48,6 +64,31 @@ public final class InputView extends FrameLayout {
                 mMainKeyboardView, suggestionStripView);
         mMoreSuggestionsViewCanceler = new MoreSuggestionsViewCanceler(
                 mMainKeyboardView, suggestionStripView);
+        applyWindowInsetsAsPadding();
+    }
+
+    /**
+     * Keep the keyboard above the system navigation bar.
+     */
+    private void applyWindowInsetsAsPadding() {
+        ViewCompat.setOnApplyWindowInsetsListener(this, (v, windowInsets) -> {
+            final Insets bars = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars()
+                    | WindowInsetsCompat.Type.displayCutout());
+            mSystemBarBottom = bars.bottom;
+            v.setPadding(bars.left, 0, bars.right, bars.bottom);
+            return windowInsets;
+        });
+        ViewCompat.requestApplyInsets(this);
+    }
+
+    @Override
+    protected void dispatchDraw(final Canvas canvas) {
+        super.dispatchDraw(canvas);
+        if (mSystemBarBottom <= 0 || mSystemBarPaint.getColor() == Color.TRANSPARENT) {
+            return;
+        }
+        final int h = getHeight();
+        canvas.drawRect(0, h - mSystemBarBottom, getWidth(), h, mSystemBarPaint);
     }
 
     public void setKeyboardTopPadding(final int keyboardTopPadding) {
