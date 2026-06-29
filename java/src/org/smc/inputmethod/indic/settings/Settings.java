@@ -290,7 +290,7 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     }
 
     public static boolean readShowsEmojiSwitchKey(final SharedPreferences prefs) {
-        return prefs.getBoolean(PREF_SHOW_EMOJI_SWITCH_KEY, false);
+        return prefs.getBoolean(PREF_SHOW_EMOJI_SWITCH_KEY, true);
     }
 
     public static boolean readShowsNumberRow(final SharedPreferences prefs) {

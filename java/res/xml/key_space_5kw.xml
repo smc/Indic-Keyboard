@@ -32,29 +32,49 @@
         <case
             latin:languageSwitchKeyEnabled="true"
             latin:languageCode="be|gu|hi|kn|ml|ne|or|ta|te|ur">
-          <Key
-              latin:keyStyle="spaceKeyStyle"
-              latin:keyWidth="20%p" />
+          <switch>
+            <case latin:emojiSwitchKeyEnabled="true">
+              <Key latin:keyStyle="spaceKeyStyle" latin:keyWidth="20%p" />
+            </case>
+            <default>
+              <Key latin:keyStyle="spaceKeyStyle" latin:keyWidth="30%p" />
+            </default>
+          </switch>
           <Key
               latin:keyStyle="zwnjKeyStyle" />
         </case>
         <case latin:languageCode="be|gu|hi|kn|ml|ne|or|ta|te|ur">
-          <Key
-              latin:keyStyle="spaceKeyStyle"
-              latin:keyWidth="30%p" />
+          <switch>
+            <case latin:emojiSwitchKeyEnabled="true">
+              <Key latin:keyStyle="spaceKeyStyle" latin:keyWidth="30%p" />
+            </case>
+            <default>
+              <Key latin:keyStyle="spaceKeyStyle" latin:keyWidth="40%p" />
+            </default>
+          </switch>
           <Key
               latin:keyStyle="zwnjKeyStyle" />
         </case>
 
         <case latin:languageSwitchKeyEnabled="true">
-          <Key
-            latin:keyStyle="spaceKeyStyle"
-            latin:keyWidth="30%p" />
+          <switch>
+            <case latin:emojiSwitchKeyEnabled="true">
+              <Key latin:keyStyle="spaceKeyStyle" latin:keyWidth="30%p" />
+            </case>
+            <default>
+              <Key latin:keyStyle="spaceKeyStyle" latin:keyWidth="40%p" />
+            </default>
+          </switch>
         </case>
         <default>
-          <Key
-            latin:keyStyle="spaceKeyStyle"
-            latin:keyWidth="40%p" />
+          <switch>
+            <case latin:emojiSwitchKeyEnabled="true">
+              <Key latin:keyStyle="spaceKeyStyle" latin:keyWidth="40%p" />
+            </case>
+            <default>
+              <Key latin:keyStyle="spaceKeyStyle" latin:keyWidth="50%p" />
+            </default>
+          </switch>
         </default>
     </switch>
 </merge>

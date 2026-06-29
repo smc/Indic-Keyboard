@@ -37,6 +37,12 @@
             android:summary="@string/show_language_switch_key_summary"
             android:defaultValue="true"
             android:persistent="true" />
+        <CheckBoxPreference
+            android:key="pref_show_emoji_switch_key"
+            android:title="@string/show_emoji_key"
+            android:summary="@string/show_emoji_key_summary"
+            android:defaultValue="true"
+            android:persistent="true" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_category_layout">
