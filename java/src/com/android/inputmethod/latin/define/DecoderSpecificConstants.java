@@ -32,7 +32,11 @@ public class DecoderSpecificConstants {
 
     public static final boolean SHOULD_VERIFY_MAGIC_NUMBER = true;
     public static final boolean SHOULD_VERIFY_CHECKSUM = true;
-    public static final boolean SHOULD_USE_DICT_VERSION = true;
+    // AOSP gated cached dictionaries to header version >= 18 (the first with allowlist entries).
+    // Our downloaded language packs are the only cached source and don't carry allowlist data,
+    // so the gate would reject every pack regardless of its version. We control the format, so
+    // the check is disabled instead of stamping a fake version on the dictionaries.
+    public static final boolean SHOULD_USE_DICT_VERSION = false;
     public static final boolean SHOULD_AUTO_CORRECT_USING_NON_WHITE_LISTED_SUGGESTION = false;
     public static final boolean SHOULD_REMOVE_PREVIOUSLY_REJECTED_SUGGESTION = true;
 }

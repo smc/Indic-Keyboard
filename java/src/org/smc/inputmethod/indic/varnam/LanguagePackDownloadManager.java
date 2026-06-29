@@ -24,6 +24,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -45,18 +47,21 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 /**
- * Downloads Varnam language data (one zip per language) from the data repo's releases,
- * verifies it, and extracts it into {@code filesDir/varnam/<lang>/} where the in-process
- * engine reads it. Lives in the same app as the IME, so files written here are visible to
- * {@code LatinIME}.
+ * Downloads per-language dictionary packs (one zip per language) from the data repo's releases,
+ * verifies them, and installs their contents:
+ *   - {@code main_<lang>.dict} is placed in the LatinIME cached-dictionary directory so the
+ *     non-transliteration layouts pick it up ({@code filesDir/dicts/<lang>/main:<lang>});
+ *   - for varnam languages, {@code <lang>.vst} + {@code <lang>-*.vlf} are extracted into
+ *     {@code filesDir/varnam/<lang>/} and the {@code .vlf} are imported into the learnings DB.
  *
- * Network access goes through the system {@link DownloadManager}
+ * Lives in the same app as the IME, so files written here are visible to {@code LatinIME}.
+ * Network access goes through the system {@link DownloadManager} (any network).
  */
-public class VarnamDownloadManager {
-    private static final String TAG = "VarnamDownload";
+public class LanguagePackDownloadManager {
+    private static final String TAG = "LangPackDownload";
 
     // Stable "latest release" asset URL for the manifest, published by the dictionaries repo's
-    // release workflow (varnam data lives under varnam/ there).
+    // release workflow.
     public static final String INDEX_URL =
             "https://github.com/jishnu7/dictionaries/releases/latest/download/index.json";
 
@@ -71,6 +76,7 @@ public class VarnamDownloadManager {
         public final long size;
         public final String sha256;
         public final int version;
+        public final boolean hasVarnam;
 
         Scheme(JSONObject o) {
             id = o.optString("id");
@@ -81,6 +87,7 @@ public class VarnamDownloadManager {
             size = o.optLong("size");
             sha256 = o.optString("sha256");
             version = o.optInt("version");
+            hasVarnam = o.optBoolean("has_varnam", true);
         }
     }
 
@@ -105,7 +112,11 @@ public class VarnamDownloadManager {
     private Listener listener;
     private boolean polling;
 
-    public VarnamDownloadManager(Context context) {
+    // One-shot "download packs for already-enabled languages" (upgrade migration) state.
+    private List<String> bootstrapLangs;
+    private int bootstrapVersion;
+
+    public LanguagePackDownloadManager(Context context) {
         appContext = context.getApplicationContext();
         downloadManager = (DownloadManager) appContext.getSystemService(Context.DOWNLOAD_SERVICE);
     }
@@ -124,17 +135,22 @@ public class VarnamDownloadManager {
         return new File(schemeDir(context, lang), lang + ".vst");
     }
 
-    public static boolean isInstalled(Context context, String lang) {
-        return vstFile(context, lang).exists();
-    }
-
-    /** Marker the engine drops once it has imported the {@code .vlf} packs; cleared on update. */
-    public static File importMarker(Context context, String lang) {
-        return new File(schemeDir(context, lang), ".imported");
+    /** Where the downloaded {@code main_<lang>.dict} lands so the layouts' Suggest engine finds it. */
+    public static File dictCacheFile(Context context, String lang) {
+        final String id = DictionaryInfoUtils.getMainDictId(new Locale(lang));
+        return new File(DictionaryInfoUtils.getCacheFileName(id, lang, context));
     }
 
     private static final String PREFS = "varnam";
     private static final String KEY_VERSION = "version_";
+    private static final String KEY_BOOTSTRAP_VERSION = "pack_bootstrap_version";
+
+    /** A pack is installed once its version pref is recorded (set only after a full install). */
+    public static boolean isInstalled(Context context, String lang) {
+        return context.getApplicationContext()
+                .getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+                .contains(KEY_VERSION + lang);
+    }
 
     /** Data version installed for {@code lang}: -1 if not installed, 0 if installed pre-versioning. */
     public static int installedVersion(Context context, String lang) {
@@ -144,6 +160,11 @@ public class VarnamDownloadManager {
         return context.getApplicationContext()
                 .getSharedPreferences(PREFS, Context.MODE_PRIVATE)
                 .getInt(KEY_VERSION + lang, 0);
+    }
+
+    /** Marker the engine drops once it has imported the {@code .vlf} packs; cleared on update. */
+    public static File importMarker(Context context, String lang) {
+        return new File(schemeDir(context, lang), ".imported");
     }
 
     // ---- Manifest ----
@@ -157,6 +178,61 @@ public class VarnamDownloadManager {
     }
 
     // ---- Download ----
+
+    /**
+     * Upgrade migration: download packs for languages the user already has enabled but that
+     * aren't installed yet (e.g. after an update that dropped the bundled dictionaries). Runs at
+     * most once per app version — the version is recorded only after the index loads, so a failed
+     * (offline) attempt retries on the next keyboard start. {@code en} has no pack and is skipped.
+     */
+    public void downloadMissingForEnabledLanguages(final int appVersionCode,
+            final List<String> enabledLangCodes) {
+        final android.content.SharedPreferences prefs =
+                appContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+        if (prefs.getInt(KEY_BOOTSTRAP_VERSION, -1) == appVersionCode) {
+            return;
+        }
+        final List<String> missing = new ArrayList<>();
+        for (final String code : enabledLangCodes) {
+            if (!"en".equals(code) && !isInstalled(appContext, code) && !missing.contains(code)) {
+                missing.add(code);
+            }
+        }
+        if (missing.isEmpty()) {
+            prefs.edit().putInt(KEY_BOOTSTRAP_VERSION, appVersionCode).apply();
+            return;
+        }
+        bootstrapLangs = missing;
+        bootstrapVersion = appVersionCode;
+        loadIndex();  // downloads start in maybeRunBootstrap once the index arrives
+    }
+
+    private void maybeRunBootstrap(final List<Scheme> schemes) {
+        if (bootstrapLangs == null) {
+            return;
+        }
+        final List<String> langs = bootstrapLangs;
+        bootstrapLangs = null;
+        main.post(() -> {
+            for (final Scheme s : schemes) {
+                if (langs.contains(s.lang)) {
+                    ensureDownloaded(s);
+                }
+            }
+        });
+        appContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+                .edit().putInt(KEY_BOOTSTRAP_VERSION, bootstrapVersion).apply();
+    }
+
+    /** Download {@code scheme} only if it isn't installed or a newer version is available. */
+    public boolean ensureDownloaded(final Scheme scheme) {
+        final int installed = installedVersion(appContext, scheme.lang);
+        if (installed >= 0 && scheme.version <= installed) {
+            return false;
+        }
+        download(scheme);
+        return true;
+    }
 
     public void download(final Scheme scheme) {
         final DownloadManager.Request req = new DownloadManager.Request(Uri.parse(scheme.url));
@@ -242,6 +318,7 @@ public class VarnamDownloadManager {
             io.execute(() -> {
                 try {
                     final List<Scheme> schemes = fetchAndCacheIndex(uri);
+                    maybeRunBootstrap(schemes);
                     main.post(() -> {
                         if (listener != null) listener.onIndexLoaded(schemes);
                     });
@@ -318,18 +395,23 @@ public class VarnamDownloadManager {
                 verifySha256(zip, scheme.sha256);
                 // Extract the verified zip to staging first so a failure can't damage an
                 // already-installed pack, then move the pack files into place — keeping the
-                // user's .learnings DB. Dropping the import marker makes the engine re-import
-                // the new .vlf; record the installed version.
+                // user's .learnings DB.
                 deleteRecursive(staging);
                 extractTo(zip, staging);
                 commitStaging(staging, dir);
-                // Import the .vlf into the learnings DB now, at download time, so the first
-                // keyboard activation is instant instead of stalling on a ~100k-word import.
-                importMarker(appContext, scheme.lang).delete();
+                // Make the layouts' dictionary available: copy main_<lang>.dict into the
+                // LatinIME cache dir (the runtime scans it on the next keyboard load).
+                installDict(scheme.lang, dir);
                 main.post(() -> {
                     if (listener != null) listener.onProgress(scheme.lang, INSTALLING);
                 });
-                importPacks(scheme.lang);
+                // For varnam languages, import the .vlf into the learnings DB now, at download
+                // time, so the first keyboard activation is instant. Dropping the marker first
+                // makes the engine (re-)import the new packs.
+                if (scheme.hasVarnam) {
+                    importMarker(appContext, scheme.lang).delete();
+                    importPacks(scheme.lang);
+                }
                 appContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
                         .edit().putInt(KEY_VERSION + scheme.lang, scheme.version).apply();
                 main.post(() -> {
@@ -346,7 +428,7 @@ public class VarnamDownloadManager {
         });
     }
 
-    /** Move extracted pack files (.vst + .vlf) from staging into dir, leaving .learnings intact. */
+    /** Move extracted pack files from staging into dir, leaving .learnings intact. */
     private static void commitStaging(final File staging, final File dir) throws IOException {
         if (!dir.exists() && !dir.mkdirs()) {
             throw new IOException("cannot create " + dir);
@@ -355,17 +437,31 @@ public class VarnamDownloadManager {
         if (files == null || files.length == 0) {
             throw new IOException("nothing extracted");
         }
-        File vst = null;
         for (final File f : files) {
-            // Move the .vst last: isInstalled() keys on it, so it flips only once complete.
-            if (f.getName().endsWith(".vst")) {
-                vst = f;
-                continue;
-            }
             moveInto(f, dir);
         }
-        if (vst != null) {
-            moveInto(vst, dir);
+    }
+
+    /** Copy {@code main_<lang>.dict} into the LatinIME cache (temp + rename for atomicity). */
+    private void installDict(final String lang, final File dir) throws IOException {
+        final File dict = new File(dir, "main_" + lang + ".dict");
+        if (!dict.exists()) {
+            return;
+        }
+        final File dest = dictCacheFile(appContext, lang);
+        final File parent = dest.getParentFile();
+        if (parent != null && !parent.exists() && !parent.mkdirs()) {
+            throw new IOException("cannot create " + parent);
+        }
+        final File tmp = new File(dest.getPath() + ".tmp");
+        try (InputStream in = new FileInputStream(dict);
+             OutputStream os = new FileOutputStream(tmp)) {
+            copy(in, os);
+        }
+        dest.delete();
+        if (!tmp.renameTo(dest)) {
+            tmp.delete();
+            throw new IOException("could not place " + dest.getName());
         }
     }
 
@@ -424,6 +520,7 @@ public class VarnamDownloadManager {
     public void delete(final String lang) {
         io.execute(() -> {
             deleteRecursive(schemeDir(appContext, lang));
+            dictCacheFile(appContext, lang).delete();
             appContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
                     .edit().remove(KEY_VERSION + lang).apply();
         });

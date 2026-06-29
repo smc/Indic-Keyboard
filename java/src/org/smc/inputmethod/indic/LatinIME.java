@@ -124,6 +124,7 @@ import org.smc.inputmethod.indic.settings.ThemeSettingsFragment;
 import org.smc.inputmethod.indic.settings.SettingsValues;
 import org.smc.inputmethod.indic.suggestions.SuggestionStripView;
 import org.smc.inputmethod.indic.suggestions.SuggestionStripViewAccessor;
+import org.smc.inputmethod.indic.varnam.LanguagePackDownloadManager;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -622,6 +623,33 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mIsHardwareAcceleratedDrawingEnabled = true;
     }
 
+    /**
+     * Make sure every already-enabled language has its downloadable pack (dictionary, and varnam
+     * data where applicable). New users get packs via onboarding and the per-language settings
+     * auto-download; this covers users upgrading from a build that bundled the dictionaries.
+     * The manager no-ops once it has run for this app version or when nothing is missing.
+     */
+    private void ensureLanguagePacksForEnabledSubtypes() {
+        final List<String> langCodes = new ArrayList<>();
+        for (final InputMethodSubtype subtype : mRichImm.getMyEnabledInputMethodSubtypeList(true)) {
+            final String code = SubtypeLocaleUtils.getSubtypeLocale(subtype).getLanguage();
+            if (!code.isEmpty() && !langCodes.contains(code)) {
+                langCodes.add(code);
+            }
+        }
+        if (langCodes.isEmpty()) {
+            return;
+        }
+        int versionCode = 0;
+        try {
+            versionCode = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+        } catch (final PackageManager.NameNotFoundException e) {
+            // Leave at 0; the migration still runs once.
+        }
+        new LanguagePackDownloadManager(this)
+                .downloadMissingForEnabledLanguages(versionCode, langCodes);
+    }
+
     private void migrateToMaterialThemeOnUpgrade() {
         final SharedPreferences prefs = PreferenceManagerCompat.getDeviceSharedPreferences(this);
         if (prefs.getBoolean(Settings.PREF_DID_MD3_MIGRATION, false)) {
@@ -661,6 +689,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // {@link #resetDictionaryFacilitatorIfNecessary()}.
         loadSettings();
         resetDictionaryFacilitatorIfNecessary();
+        ensureLanguagePacksForEnabledSubtypes();
 
         // Register to receive ringer mode change.
         final IntentFilter filter = new IntentFilter();

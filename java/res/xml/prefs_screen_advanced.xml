@@ -19,13 +19,6 @@
     xmlns:latin="http://schemas.android.com/apk/res-auto"
     android:title="@string/settings_screen_advanced"
     android:key="screen_advanced">
-    <PreferenceCategory android:title="Extensions">
-      <Preference
-          android:fragment="org.smc.inputmethod.indic.settings.VarnamSettingsFragment"
-          android:title="@string/settings_screen_varnam"
-          android:summary="@string/settings_screen_varnam_summary"
-          android:key="screen_varnam" />
-    </PreferenceCategory>
     <PreferenceCategory android:title="Duration">
       <org.smc.inputmethod.indic.settings.SeekBarDialogPreference
           android:key="pref_vibration_duration_settings"

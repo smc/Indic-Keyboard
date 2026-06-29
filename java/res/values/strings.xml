@@ -583,6 +583,10 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
     <string name="varnam_download_error_title">Download failed</string>
     <string name="varnam_download_error_generic">Could not download the language data. Please try again.</string>
 
+    <!-- Per-language pack download -->
+    <string name="language_pack_section">Language pack</string>
+    <string name="language_pack_unavailable">No download available</string>
+
     <!-- Modern setup wizard -->
     <string name="su_welcome_subtitle">Type in 20+ Indian languages. Setup takes just a moment.</string>
     <string name="su_get_started">Get started</string>
@@ -598,6 +602,14 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
     <string name="su_step4_title">Choose your layouts</string>
     <string name="su_step4_desc">Pick the layouts you want for each language.</string>
     <string name="su_step4_action">Next</string>
+    <string name="su_step_download_title">Getting your languages ready</string>
+    <string name="su_step_download_desc">Downloading language packs so your layouts work right away.</string>
+    <string name="su_downloading_action">Downloading…</string>
+    <string name="su_skip">Skip for now</string>
+    <string name="su_pack_waiting">Waiting…</string>
+    <string name="su_pack_ready">Ready</string>
+    <string name="su_pack_failed">Failed</string>
+    <string name="su_pack_unavailable">No pack</string>
     <string name="su_select_a_language">Pick at least one language</string>
     <string name="su_done_title">You\'re all set</string>
     <string name="su_done_desc">Indic Keyboard is ready. Start typing in your language.</string>

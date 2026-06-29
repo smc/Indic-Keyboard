@@ -31,7 +31,7 @@ import java.util.concurrent.Executors;
 /**
  * In-process Varnam transliteration, backed by the embedded govarnam engine
  * ({@link com.varnamproject.govarnam.Varnam}, native {@code libgovarnam_jni.so}). Reads the
- * {@code .vst} scheme table and {@code .vlf} learnings packs that {@link VarnamDownloadManager}
+ * {@code .vst} scheme table and {@code .vlf} learnings packs that {@link LanguagePackDownloadManager}
  * downloaded into {@code filesDir/varnam/<scheme>/}.
  *
  * Keeps the same public surface the old IPC client exposed, so {@code InputLogic} is unchanged:
@@ -62,12 +62,12 @@ public class Varnam {
     }
 
     private void init(final VarnamCallback cb) {
-        final File vst = VarnamDownloadManager.vstFile(appContext, schemeID);
+        final File vst = LanguagePackDownloadManager.vstFile(appContext, schemeID);
         if (!vst.exists()) {
             post(() -> cb.onError(ERROR_VST_MISSING));
             return;
         }
-        final File dir = VarnamDownloadManager.schemeDir(appContext, schemeID);
+        final File dir = LanguagePackDownloadManager.schemeDir(appContext, schemeID);
         final File learnings = new File(dir, schemeID + ".learnings");
         try {
             engine = new com.varnamproject.govarnam.Varnam(vst.getAbsolutePath(),
@@ -85,7 +85,7 @@ public class Varnam {
 
     /** Imports the downloaded {@code .vlf} packs into the learnings DB once per download. */
     private void importLearnings(final File dir) {
-        final File marker = VarnamDownloadManager.importMarker(appContext, schemeID);
+        final File marker = LanguagePackDownloadManager.importMarker(appContext, schemeID);
         if (marker.exists()) {
             return;
         }

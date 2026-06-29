@@ -43,6 +43,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.android.inputmethod.compat.PreferenceManagerCompat;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
+import com.android.inputmethod.latin.common.LocaleUtils;
 import com.android.inputmethod.latin.utils.KeyboardLanguages;
 import com.android.inputmethod.latin.utils.KeyboardLanguages.Language;
 import com.android.inputmethod.latin.utils.KeyboardLanguages.Layout;
@@ -54,13 +55,17 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.materialswitch.MaterialSwitch;
 
 import org.smc.inputmethod.indic.settings.SettingsActivity;
+import org.smc.inputmethod.indic.varnam.LanguagePackDownloadManager;
+import org.smc.inputmethod.indic.varnam.LanguagePackDownloadManager.Scheme;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
@@ -71,7 +76,8 @@ import javax.annotation.Nonnull;
  * updating its title, description and primary action per step. The underlying step state machine
  * (which system screen to open, and detecting when the user returns) is unchanged.
  */
-public final class SetupWizardActivity extends AppCompatActivity implements View.OnClickListener {
+public final class SetupWizardActivity extends AppCompatActivity
+        implements View.OnClickListener, LanguagePackDownloadManager.Listener {
     static final String TAG = SetupWizardActivity.class.getSimpleName();
 
     private InputMethodManager mImm;
@@ -102,16 +108,27 @@ public final class SetupWizardActivity extends AppCompatActivity implements View
     private static final int STEP_2 = 2;
     private static final int STEP_LANGUAGES = 3;
     private static final int STEP_LAYOUTS = 4;
-    private static final int STEP_DONE = 5;
-    private static final int STEP_LAUNCHING_IME_SETTINGS = 6;
-    private static final int STEP_BACK_FROM_IME_SETTINGS = 7;
+    private static final int STEP_DOWNLOAD = 5;
+    private static final int STEP_DONE = 6;
+    private static final int STEP_LAUNCHING_IME_SETTINGS = 7;
+    private static final int STEP_BACK_FROM_IME_SETTINGS = 8;
 
     private OnBackPressedCallback mBackToPreviousStep;
     private View mLogo;
+    private MaterialButton mSkip;
     private LinearLayout mSelectionList;
     private List<Language> mLanguages;
     private Set<String> mSelectedLocales;
     private Set<String> mEnabledKeys;
+
+    // Language-pack download step state.
+    private LanguagePackDownloadManager mPackManager;
+    private final List<String> mPackLangs = new ArrayList<>();   // language codes to fetch
+    private final Set<String> mPackPending = new HashSet<>();     // still downloading
+    private final Map<String, CharSequence> mPackStatus = new HashMap<>();
+    private final Map<String, TextView> mPackRows = new HashMap<>();
+    private boolean mPackStarted;
+    private boolean mPackIndexLoaded;
 
     private SettingsPoolingHandler mHandler;
 
@@ -174,6 +191,8 @@ public final class SetupWizardActivity extends AppCompatActivity implements View
         mProgress = findViewById(R.id.setup_progress);
         mPrimaryAction = findViewById(R.id.setup_primary_action);
         mPrimaryAction.setOnClickListener(this);
+        mSkip = findViewById(R.id.setup_skip);
+        mSkip.setOnClickListener(this);
 
         mBackToPreviousStep = new OnBackPressedCallback(false) {
             @Override
@@ -266,6 +285,12 @@ public final class SetupWizardActivity extends AppCompatActivity implements View
 
     @Override
     public void onClick(final View v) {
+        if (v == mSkip) {
+            // Leave the downloads running in the background and move on.
+            mStepNumber = STEP_DONE;
+            updateSetupStepView();
+            return;
+        }
         if (v != mPrimaryAction) {
             return;
         }
@@ -291,6 +316,11 @@ public final class SetupWizardActivity extends AppCompatActivity implements View
             break;
         case STEP_LAYOUTS:
             commitSelectedLayouts();
+            mStepNumber = STEP_DOWNLOAD;
+            startPackDownloads();
+            updateSetupStepView();
+            break;
+        case STEP_DOWNLOAD:
             mStepNumber = STEP_DONE;
             updateSetupStepView();
             break;
@@ -402,9 +432,19 @@ public final class SetupWizardActivity extends AppCompatActivity implements View
         stopGreetingAnimation();
     }
 
+    @Override
+    protected void onDestroy() {
+        if (mPackManager != null) {
+            mPackManager.setListener(null);  // downloads continue in the system DownloadManager
+        }
+        super.onDestroy();
+    }
+
     private int previousStep(final int step) {
         switch (step) {
         case STEP_DONE:
+            return STEP_DOWNLOAD;
+        case STEP_DOWNLOAD:
             return STEP_LAYOUTS;
         case STEP_LAYOUTS:
             return STEP_LANGUAGES;
@@ -464,6 +504,13 @@ public final class SetupWizardActivity extends AppCompatActivity implements View
             showProgress = true;
             showList = true;
             break;
+        case STEP_DOWNLOAD:
+            titleRes = R.string.su_step_download_title;
+            descRes = R.string.su_step_download_desc;
+            actionRes = R.string.su_done_action;
+            showProgress = true;
+            showList = true;
+            break;
         case STEP_DONE:
             titleRes = R.string.su_done_title;
             descRes = R.string.su_done_desc;
@@ -495,19 +542,33 @@ public final class SetupWizardActivity extends AppCompatActivity implements View
             if (mStepNumber == STEP_LANGUAGES) {
                 ensureSelectionStateLoaded();
                 buildLanguageList();
-            } else {
+            } else if (mStepNumber == STEP_LAYOUTS) {
                 buildLayoutList();
+            } else {
+                if (!mPackStarted) {  // e.g. after a configuration change
+                    ensureSelectionStateLoaded();
+                    startPackDownloads();
+                }
+                buildDownloadList();
             }
         } else {
             mSelectionList.setVisibility(View.GONE);
         }
         if (showProgress) {
-            final int total = Math.max(1, STEP_LAYOUTS - mFirstStep + 1);
+            final int total = Math.max(1, STEP_DOWNLOAD - mFirstStep + 1);
             final int current = Math.min(total, Math.max(1, mStepNumber - mFirstStep + 1));
             mProgress.setVisibility(View.VISIBLE);
             mProgress.setText(getString(R.string.su_step_progress, current, total));
         } else {
             mProgress.setVisibility(View.GONE);
+        }
+        // The download step blocks the primary action until packs finish, but offers Skip.
+        if (mStepNumber == STEP_DOWNLOAD) {
+            mSkip.setVisibility(View.VISIBLE);
+            updateDownloadPrimary();
+        } else {
+            mSkip.setVisibility(View.GONE);
+            mPrimaryAction.setEnabled(true);
         }
     }
 
@@ -613,6 +674,144 @@ public final class SetupWizardActivity extends AppCompatActivity implements View
         reconcileEnabledWithSelection();
         RichInputMethodManager.init(this);
         RichInputMethodManager.getInstance().setEnabledSubtypeKeys(mEnabledKeys);
+    }
+
+    // ---- Language-pack download step ----
+
+    private void startPackDownloads() {
+        if (mPackStarted) {
+            return;
+        }
+        mPackStarted = true;
+        mPackLangs.clear();
+        for (final Language language : mLanguages) {
+            if (!mSelectedLocales.contains(language.mLocale)) {
+                continue;
+            }
+            final String code =
+                    LocaleUtils.constructLocaleFromString(language.mLocale).getLanguage();
+            // English ships with the app and has no downloadable pack — don't list it.
+            if ("en".equals(code) || mPackLangs.contains(code)) {
+                continue;
+            }
+            mPackLangs.add(code);
+            mPackStatus.put(code, getString(R.string.su_pack_waiting));
+        }
+        if (mPackLangs.isEmpty()) {
+            mPackIndexLoaded = true;
+            return;
+        }
+        mPackManager = new LanguagePackDownloadManager(this);
+        mPackManager.setListener(this);
+        mPackManager.loadIndex();  // schemes arrive in onIndexLoaded, then we download
+    }
+
+    private void buildDownloadList() {
+        mSelectionList.removeAllViews();
+        mPackRows.clear();
+        final LayoutInflater inflater = getLayoutInflater();
+        for (final String code : mPackLangs) {
+            final View row = inflater.inflate(R.layout.setup_selection_row, mSelectionList, false);
+            row.findViewById(R.id.selection_icon).setVisibility(View.GONE);
+            row.findViewById(R.id.selection_switch).setVisibility(View.GONE);
+            final TextView title = row.findViewById(R.id.selection_title);
+            title.setText(downloadRowText(code));
+            mPackRows.put(code, title);
+            mSelectionList.addView(row);
+        }
+    }
+
+    private CharSequence downloadRowText(final String code) {
+        final CharSequence status = mPackStatus.get(code);
+        return langDisplayName(code) + " · " + (status != null ? status : "");
+    }
+
+    private CharSequence langDisplayName(final String code) {
+        for (final Language language : mLanguages) {
+            if (code.equals(LocaleUtils.constructLocaleFromString(language.mLocale).getLanguage())) {
+                return language.mEnglishName;
+            }
+        }
+        return code;
+    }
+
+    private void setPackStatus(final String code, final CharSequence status) {
+        mPackStatus.put(code, status);
+        final TextView row = mPackRows.get(code);
+        if (row != null) {
+            row.setText(downloadRowText(code));
+        }
+    }
+
+    private boolean allPacksDone() {
+        return mPackIndexLoaded && mPackPending.isEmpty();
+    }
+
+    private void updateDownloadPrimary() {
+        final boolean done = allPacksDone();
+        mPrimaryAction.setEnabled(done);
+        mPrimaryAction.setText(done ? R.string.su_done_action : R.string.su_downloading_action);
+    }
+
+    // ---- LanguagePackDownloadManager.Listener ----
+
+    @Override
+    public void onIndexLoaded(final List<Scheme> schemes) {
+        mPackIndexLoaded = true;
+        for (final String code : mPackLangs) {
+            Scheme scheme = null;
+            for (final Scheme s : schemes) {
+                if (code.equals(s.lang)) {
+                    scheme = s;
+                    break;
+                }
+            }
+            if (scheme == null) {
+                setPackStatus(code, getString(R.string.su_pack_unavailable));
+            } else if (mPackManager.ensureDownloaded(scheme)) {
+                mPackPending.add(code);
+                setPackStatus(code, getString(R.string.su_pack_waiting));
+            } else {
+                setPackStatus(code, getString(R.string.su_pack_ready));
+            }
+        }
+        if (mStepNumber == STEP_DOWNLOAD) {
+            updateDownloadPrimary();
+        }
+    }
+
+    @Override
+    public void onProgress(final String lang, final int percent) {
+        if (!mPackLangs.contains(lang)) return;
+        mPackPending.add(lang);
+        if (percent == LanguagePackDownloadManager.INSTALLING) {
+            setPackStatus(lang, getString(R.string.varnam_installing));
+        } else {
+            setPackStatus(lang, getString(R.string.varnam_downloading, percent));
+        }
+        if (mStepNumber == STEP_DOWNLOAD) {
+            updateDownloadPrimary();
+        }
+    }
+
+    @Override
+    public void onInstalled(final String lang) {
+        if (!mPackLangs.contains(lang)) return;
+        mPackPending.remove(lang);
+        setPackStatus(lang, getString(R.string.su_pack_ready));
+        if (mStepNumber == STEP_DOWNLOAD) {
+            updateDownloadPrimary();
+        }
+    }
+
+    @Override
+    public void onError(final String lang, final String message) {
+        if (lang == null || !mPackLangs.contains(lang)) return;
+        mPackPending.remove(lang);
+        setPackStatus(lang, getString(R.string.su_pack_failed));
+        if (mStepNumber == STEP_DOWNLOAD) {
+            updateDownloadPrimary();
+        }
     }
 
     private List<Language> sortedLanguages() {
