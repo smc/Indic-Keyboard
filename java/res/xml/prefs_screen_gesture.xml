@@ -30,7 +30,6 @@
             android:summary="@string/delete_swipe_summary"
             android:defaultValue="true" />
     </PreferenceCategory>
-    <!--
     <PreferenceCategory android:title="Typing">
         <CheckBoxPreference
             android:key="gesture_input"
@@ -52,5 +51,4 @@
             android:defaultValue="true"
             android:persistent="true" />
     </PreferenceCategory>
-    -->
 </PreferenceScreen>

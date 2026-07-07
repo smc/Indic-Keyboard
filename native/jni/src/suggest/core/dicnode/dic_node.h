@@ -90,7 +90,8 @@ class DicNode {
 #if DEBUG_DICT
               mProfiler(),
 #endif
-              mDicNodeProperties(), mDicNodeState(), mIsCachedForNextSuggestion(false) {}
+              mDicNodeProperties(), mDicNodeState(), mIsCachedForNextSuggestion(false),
+              mGestureAlignRank(0) {}
 
     DicNode(const DicNode &dicNode);
     DicNode &operator=(const DicNode &dicNode);
@@ -99,6 +100,7 @@ class DicNode {
     // Init for copy
     void initByCopy(const DicNode *const dicNode) {
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
+        mGestureAlignRank = 0;
         mDicNodeProperties.initByCopy(&dicNode->mDicNodeProperties);
         mDicNodeState.initByCopy(&dicNode->mDicNodeState);
         PROF_NODE_COPY(&dicNode->mProfiler, mProfiler);
@@ -107,6 +109,7 @@ class DicNode {
     // Init for root with prevWordIds which is used for n-gram
     void initAsRoot(const int rootPtNodeArrayPos, const WordIdArrayView prevWordIds) {
         mIsCachedForNextSuggestion = false;
+        mGestureAlignRank = 0;
         mDicNodeProperties.init(rootPtNodeArrayPos, prevWordIds);
         mDicNodeState.init();
         PROF_NODE_RESET(mProfiler);
@@ -115,6 +118,7 @@ class DicNode {
     // Init for root with previous word
     void initAsRootWithPreviousWord(const DicNode *const dicNode, const int rootPtNodeArrayPos) {
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
+        mGestureAlignRank = 0;
         WordIdArray<MAX_PREV_WORD_COUNT_FOR_N_GRAM> newPrevWordIds;
         newPrevWordIds[0] = dicNode->mDicNodeProperties.getWordId();
         dicNode->getPrevWordIds().limit(newPrevWordIds.size() - 1)
@@ -127,6 +131,7 @@ class DicNode {
 
     void initAsPassingChild(const DicNode *parentDicNode) {
         mIsCachedForNextSuggestion = parentDicNode->mIsCachedForNextSuggestion;
+        mGestureAlignRank = 0;
         const int codePoint =
                 parentDicNode->mDicNodeState.mDicNodeStateOutput.getCurrentWordCodePointAt(
                             parentDicNode->getNodeCodePointCount());
@@ -139,6 +144,7 @@ class DicNode {
             const int wordId, const CodePointArrayView mergedCodePoints) {
         uint16_t newDepth = static_cast<uint16_t>(dicNode->getNodeCodePointCount() + 1);
         mIsCachedForNextSuggestion = dicNode->mIsCachedForNextSuggestion;
+        mGestureAlignRank = 0;
         const uint16_t newLeavingDepth = static_cast<uint16_t>(
                 dicNode->mDicNodeProperties.getLeavingDepth() + mergedCodePoints.size());
         mDicNodeProperties.init(childrenPtNodeArrayPos, mergedCodePoints[0],
@@ -171,6 +177,17 @@ class DicNode {
 
     void setCached() {
         mIsCachedForNextSuggestion = true;
+    }
+
+    // Which alignment candidate this node takes on its next weighting; only meaningful between
+    // clone creation in Suggest::expandCurrentDicNodes and the immediately following
+    // getMatchedCost call. See Traversal::getMatchAlignPointCount.
+    int getGestureAlignRank() const {
+        return mGestureAlignRank;
+    }
+
+    void setGestureAlignRank(const int rank) {
+        mGestureAlignRank = rank;
     }
 
     // Check if the current word and the previous word can be considered as a valid multiple word
@@ -449,6 +466,7 @@ class DicNode {
     DicNodeState mDicNodeState;
     // TODO: Remove
     bool mIsCachedForNextSuggestion;
+    int mGestureAlignRank;
 
     AK_FORCE_INLINE int getTotalInputIndex() const {
         int index = 0;

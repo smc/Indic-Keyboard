@@ -46,7 +46,7 @@ TEST_APP_PKG := org.smc.inputtest
 TEST_APP_APK := $(TEST_APP_DIR)/build/outputs/apk/debug/input-test-app-debug.apk
 TEST_APP_ACT := $(TEST_APP_PKG)/.MainActivity
 
-.PHONY: help build install run emulator emulator-install emulator-run release release-install rename-release uninstall clear-data clean logcat build-native build-native-x86 varnam-native keyboard-text dicttool dictionaries-en device-check test-app-build test-app-install test-app-emulator-install
+.PHONY: help build install run emulator emulator-install emulator-run release release-install rename-release uninstall clear-data clean logcat build-native build-native-x86 varnam-native keyboard-text dicttool dictionaries-en device-check test-app-build test-app-install test-app-emulator-install harness harness-corpus harness-run
 
 .DEFAULT_GOAL := help
 
@@ -205,6 +205,26 @@ varnam-native: ## Build govarnam .so from the govarnam/ submodule and copy into 
 		mkdir -p java/jniLibs/$$abi; \
 		cp -v "$$out/libgovarnam.so" "$$out/libgovarnam_jni.so" java/jniLibs/$$abi/; \
 	done
+
+# Host-side gesture replay harness (native/host-harness): compiles the same suggest
+# core sources as the device .so with plain clang++ and replays synthetic or captured
+# swipes against a dictionary offline — no device or JVM involved.
+HARNESS_DIR      := native/host-harness
+HARNESS_BIN      := $(HARNESS_DIR)/gesture-replay
+HARNESS_CORPUS   ?= $(HARNESS_DIR)/corpus.json
+HARNESS_DICT     ?= java/res/raw/main_en.dict
+HARNESS_VARIANTS ?= 3
+HARNESS_SEED     ?= 7
+
+harness: ## Build the host gesture replay tool (native/host-harness/gesture-replay)
+	$(HARNESS_DIR)/build.sh
+
+harness-corpus: ## Generate a synthetic swipe corpus (HARNESS_VARIANTS, HARNESS_SEED, WORDLIST=<file>)
+	python3 $(HARNESS_DIR)/make_corpus.py --variants $(HARNESS_VARIANTS) --seed $(HARNESS_SEED) \
+		$(if $(WORDLIST),--wordlist $(WORDLIST)) --out $(HARNESS_CORPUS)
+
+harness-run: harness ## Replay the corpus through the suggest engine (HARNESS_CORPUS, HARNESS_DICT)
+	$(HARNESS_BIN) $(HARNESS_CORPUS) $(HARNESS_DICT)
 
 KBD_TEXT_DIR        := tools/make-keyboard-text
 KBD_TEXT_TABLE      := java/src/com/android/inputmethod/keyboard/internal/KeyboardTextsTable.java

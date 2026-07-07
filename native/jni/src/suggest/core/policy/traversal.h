@@ -41,6 +41,13 @@ class Traversal {
             const DicNode *const dicNode) const = 0;
     virtual ProximityType getProximityType(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode, const DicNode *const childDicNode) const = 0;
+    // How many alignment candidates the engine should explore for a matched child, one beam
+    // clone per candidate (the clone's rank picks the candidate in getMatchedCost). The
+    // default of 1 is the classic single-expansion behavior; only the gesture policy overrides.
+    virtual int getMatchAlignPointCount(const DicTraverseSession *const traverseSession,
+            const DicNode *const dicNode, const DicNode *const childDicNode) const {
+        return 1;
+    }
     virtual bool needsToTraverseAllUserInput() const = 0;
     virtual float getMaxSpatialDistance() const = 0;
     virtual int getDefaultExpandDicNodeSize() const = 0;

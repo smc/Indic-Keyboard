@@ -24,7 +24,8 @@ DicNode::DicNode(const DicNode &dicNode)
           mProfiler(dicNode.mProfiler),
 #endif
           mDicNodeProperties(dicNode.mDicNodeProperties), mDicNodeState(dicNode.mDicNodeState),
-          mIsCachedForNextSuggestion(dicNode.mIsCachedForNextSuggestion) {
+          mIsCachedForNextSuggestion(dicNode.mIsCachedForNextSuggestion),
+          mGestureAlignRank(dicNode.mGestureAlignRank) {
     /* empty */
 }
 
@@ -35,6 +36,7 @@ DicNode &DicNode::operator=(const DicNode &dicNode) {
     mDicNodeProperties = dicNode.mDicNodeProperties;
     mDicNodeState = dicNode.mDicNodeState;
     mIsCachedForNextSuggestion = dicNode.mIsCachedForNextSuggestion;
+    mGestureAlignRank = dicNode.mGestureAlignRank;
     return *this;
 }
 

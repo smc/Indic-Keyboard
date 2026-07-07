@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 The Android Open Source Project
+ * Copyright 2026, Jishnu Mohan <jishnu7@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
-#include "gesture_suggest_policy_factory.h"
+#include "suggest/policyimpl/gesture/gesture_params.h"
 
 namespace latinime {
-    const SuggestPolicy *(*GestureSuggestPolicyFactory::sGestureSuggestFactoryMethod)() = 0;
+
+const float GestureParams::ALIGN_WEIGHT = 1.0f;
+const float GestureParams::LM_WEIGHT = 6.0f;
+const float GestureParams::DOUBLE_LETTER_COST = 0.15f;
+const int GestureParams::MAX_ALIGN_CANDIDATES = 3;
+const int GestureParams::BEAM_SIZE = 210;
+const float GestureParams::MAX_SPATIAL_DISTANCE = 1.0f;
+const float GestureParams::BASE_OUTPUT_SCORE = 1.0f;
+const float GestureParams::OUTPUT_SCORE_PER_SAMPLE = 0.5f;
 } // namespace latinime

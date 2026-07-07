@@ -195,9 +195,23 @@ void Suggest::expandCurrentDicNodes(DicTraverseSession *traverseSession) const {
                 switch (proximityType) {
                     // TODO: Consider the difference of proximityType here
                     case MATCH_CHAR:
-                    case PROXIMITY_CHAR:
-                        processDicNodeAsMatch(traverseSession, childDicNode);
+                    case PROXIMITY_CHAR: {
+                        // One clone per alignment candidate beyond the first; the beam
+                        // arbitrates between them (rank picks the candidate in the policy's
+                        // getMatchedCost). Typing policies return 1: no clones, original
+                        // single-match behavior.
+                        const int alignPointCount = TRAVERSAL->getMatchAlignPointCount(
+                                traverseSession, &dicNode, childDicNode);
+                        for (int rank = 1; rank < alignPointCount; ++rank) {
+                            correctionDicNode.initByCopy(childDicNode);
+                            correctionDicNode.setGestureAlignRank(rank);
+                            processDicNodeAsMatch(traverseSession, &correctionDicNode);
+                        }
+                        if (alignPointCount > 0) {
+                            processDicNodeAsMatch(traverseSession, childDicNode);
+                        }
                         break;
+                    }
                     case ADDITIONAL_PROXIMITY_CHAR:
                         if (allowsErrorCorrections) {
                             processDicNodeAsAdditionalProximityChar(traverseSession, &dicNode,

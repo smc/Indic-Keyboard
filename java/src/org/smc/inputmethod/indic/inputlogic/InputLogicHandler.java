@@ -163,7 +163,11 @@ class InputLogicHandler implements Handler.Callback {
             mInBatchInput = false;
             // The following call schedules onEndBatchInputInternal
             // to be called on the UI thread.
-            mLatinIME.mHandler.showTailBatchInputResult(suggestedWordsToShowSuggestions);
+            // A gesture that decoded to nothing must commit nothing: the fallback words shown
+            // above may be the punctuation list or a previous word, and committing their first
+            // entry would insert e.g. "!" on a dead swipe.
+            mLatinIME.mHandler.showTailBatchInputResult(suggestedWordsForBatchInput.isEmpty()
+                    ? SuggestedWords.getEmptyInstance() : suggestedWordsToShowSuggestions);
         }
     }
 
