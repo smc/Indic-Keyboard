@@ -241,7 +241,7 @@ dicttool: ## Build tools/dicttool into tools/dicttool/build/dicttool.jar
 	@test -n "$(JSR305_JAR)" || { \
 		echo "jsr305 jar not found in the gradle cache. Run 'make build' once first."; exit 1; }
 	rm -rf $(DICTTOOL_BUILD)/classes && mkdir -p $(DICTTOOL_BUILD)/classes
-	"$(JAVA_HOME)/bin/javac" -nowarn -cp "$(JSR305_JAR)" \
+	"$(JAVA_HOME)/bin/javac" -nowarn --release 11 -cp "$(JSR305_JAR)" \
 		-d $(DICTTOOL_BUILD)/classes \
 		$$(find tools/dicttool/src tools/dicttool/compat \
 			java/src/com/android/inputmethod/latin/makedict \
