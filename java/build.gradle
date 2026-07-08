@@ -49,6 +49,25 @@ android {
         versionName = "4.0-beta2"
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
+    // "online" is the normal build; "offline" bundles every language pack in the APK and
+    // carries no INTERNET permission, for privacy-conscious installs.
+    flavorDimensions = ["distribution"]
+    productFlavors {
+        online {
+            dimension = "distribution"
+            buildConfigField "boolean", "BUNDLED_LANGUAGE_PACKS", "false"
+        }
+        offline {
+            dimension = "distribution"
+            versionNameSuffix = "-offline"
+            buildConfigField "boolean", "BUNDLED_LANGUAGE_PACKS", "true"
+        }
+    }
+
     splits {
       abi {
         enable = true
@@ -67,6 +86,10 @@ android {
             renderscript.srcDirs = ['src']
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
+        }
+        offline {
+            manifest.srcFile 'offline/AndroidManifest.xml'
+            assets.srcDirs = ['offline/assets']
         }
         androidTest.setRoot('tests')
     }

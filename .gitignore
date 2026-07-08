@@ -39,3 +39,5 @@ temp/
 *.DS_Store
 *.patch
 *.diff
+
+java/offline/assets/

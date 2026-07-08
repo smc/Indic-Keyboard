@@ -38,15 +38,15 @@ ADB_BASE    := $(ANDROID_SDK)/platform-tools/adb
 PHYS_DEVICE  = $(shell $(ADB_BASE) devices | awk -F'\t' 'NR>1 && $$2=="device" && $$1 !~ /^emulator-/ {print $$1; exit}')
 ADB          = $(ADB_BASE) -s "$(or $(DEVICE),$(PHYS_DEVICE))"
 GRADLEW     := JAVA_HOME="$(JAVA_HOME)" ./gradlew
-DEBUG_APK   := java/build/outputs/apk/debug/IndicKeyboard-$(ABI)-debug.apk
-RELEASE_APK := java/build/outputs/apk/release/IndicKeyboard-$(ABI)-release.apk
+DEBUG_APK   := java/build/outputs/apk/online/debug/IndicKeyboard-online-$(ABI)-debug.apk
+RELEASE_APK := java/build/outputs/apk/online/release/IndicKeyboard-online-$(ABI)-release.apk
 
 TEST_APP_DIR := input-test-app
 TEST_APP_PKG := org.smc.inputtest
 TEST_APP_APK := $(TEST_APP_DIR)/build/outputs/apk/debug/input-test-app-debug.apk
 TEST_APP_ACT := $(TEST_APP_PKG)/.MainActivity
 
-.PHONY: help build install run emulator emulator-install emulator-run release release-install rename-release uninstall clear-data clean logcat build-native build-native-x86 varnam-native keyboard-text dicttool dictionaries-en device-check test-app-build test-app-install test-app-emulator-install harness harness-corpus harness-run
+.PHONY: help build install run emulator emulator-install emulator-run release release-install offline-assets offline-release rename-release uninstall clear-data clean logcat build-native build-native-x86 varnam-native keyboard-text dicttool dictionaries-en device-check test-app-build test-app-install test-app-emulator-install harness harness-corpus harness-run
 
 .DEFAULT_GOAL := help
 
@@ -59,7 +59,7 @@ help: ## List available commands
 	@echo "Overridable variables: DEVICE=$(if $(DEVICE),$(DEVICE),(auto)) ABI=$(ABI) NDK_VERSION=$(NDK_VERSION)"
 
 build: ## Assemble the debug APK
-	cd java && $(GRADLEW) assembleDebug
+	cd java && $(GRADLEW) assembleOnlineDebug
 
 install: build device-check ## Build and install the debug APK on the device (DEVICE=<serial>)
 	$(ADB) install -r $(DEBUG_APK)
@@ -105,13 +105,13 @@ test-app-emulator-install: emulator ## Boot the emulator and install + launch th
 
 # Signing config is read from .env (see the -include near the top):
 #   INDIC_KEYSTORE, INDIC_KEYSTORE_PASSWORD, INDIC_KEY_ALIAS, INDIC_KEY_PASSWORD
-RELEASE_APK_DIR := java/build/outputs/apk/release
+RELEASE_APK_DIR := java/build/outputs/apk/online/release
 AAPT2            = $(shell ls "$(ANDROID_SDK)/build-tools/"*/aapt2 2>/dev/null | sort | tail -1)
 release: ## Assemble the release APK (signing creds in .env)
 	@test -n "$$INDIC_KEYSTORE" -a -f "$$INDIC_KEYSTORE" || { \
 		echo "Release signing not configured. Set INDIC_KEYSTORE* in .env (see .env.sample)."; \
 		exit 1; }
-	cd java && $(GRADLEW) assembleRelease
+	cd java && $(GRADLEW) assembleOnlineRelease
 	@echo; echo "Release APKs in $(RELEASE_APK_DIR):"; \
 	for f in $(RELEASE_APK_DIR)/*.apk; do \
 		[ -f "$$f" ] || continue; \
@@ -125,18 +125,50 @@ release: ## Assemble the release APK (signing creds in .env)
 release-install: release device-check ## Build and install the release APK
 	$(ADB) install -r $(RELEASE_APK)
 
-rename-release: ## Rename built release APKs to <applicationId>_v<version>-<abi>.apk
+# ---- Offline flavor: every language pack bundled in the APK, no INTERNET permission ----
+
+OFFLINE_ASSETS_DIR      := java/offline/assets/langpacks
+OFFLINE_RELEASE_APK_DIR := java/build/outputs/apk/offline/release
+DICT_DIST               := dictionaries-indic/dist
+
+offline-assets: ## Copy dictionaries-indic/dist packs into the offline flavor's assets
+	@ls $(DICT_DIST)/*.zip >/dev/null 2>&1 || { \
+		echo "No packs in $(DICT_DIST). Run 'make -C dictionaries-indic all' first."; exit 1; }
+	rm -rf $(OFFLINE_ASSETS_DIR)
+	mkdir -p $(OFFLINE_ASSETS_DIR)
+	cp $(DICT_DIST)/*.zip $(DICT_DIST)/index.json $(OFFLINE_ASSETS_DIR)/
+	@echo "Bundled $$(ls $(OFFLINE_ASSETS_DIR)/*.zip | wc -l | tr -d ' ') packs into $(OFFLINE_ASSETS_DIR)"
+
+offline-release: offline-assets ## Assemble the offline release APK (signing creds in .env)
+	@test -n "$$INDIC_KEYSTORE" -a -f "$$INDIC_KEYSTORE" || { \
+		echo "Release signing not configured. Set INDIC_KEYSTORE* in .env (see .env.sample)."; \
+		exit 1; }
+	cd java && $(GRADLEW) assembleOfflineRelease
+	@echo; echo "Offline release APKs in $(OFFLINE_RELEASE_APK_DIR):"; \
+	for f in $(OFFLINE_RELEASE_APK_DIR)/*.apk; do \
+		[ -f "$$f" ] || continue; \
+		ver=$$("$(AAPT2)" dump badging "$$f" 2>/dev/null | \
+			sed -n "s/.*versionCode='\([0-9]*\)' versionName='\([^']*\)'.*/v\2 (build \1)/p"); \
+		bytes=$$(stat -f%z "$$f"); \
+		mb=$$(awk "BEGIN{printf \"%.2f\", $$bytes/1048576}"); \
+		printf "  %-45s %8s MB (%s bytes)  %s\n" "$$(basename "$$f")" "$$mb" "$$bytes" "$$ver"; \
+	done
+
+rename-release: ## Collect release APKs into build/ as <applicationId>_v<version>-<abi>.apk
 	@found=; \
-	for f in $(RELEASE_APK_DIR)/IndicKeyboard-*-release.apk; do \
+	mkdir -p build; \
+	for f in $(RELEASE_APK_DIR)/IndicKeyboard-*-release.apk \
+			$(OFFLINE_RELEASE_APK_DIR)/IndicKeyboard-*-release.apk; do \
 		[ -f "$$f" ] || continue; found=1; \
 		abi=$$(basename "$$f"); abi=$${abi#IndicKeyboard-}; abi=$${abi%-release.apk}; \
+		abi=$${abi#online-}; abi=$${abi#offline-}; \
 		ver=$$("$(AAPT2)" dump badging "$$f" 2>/dev/null | \
 			sed -n "s/.*versionName='\([^']*\)'.*/\1/p"); \
-		new="$(RELEASE_APK_DIR)/$(PKG)_v$$ver-$$abi.apk"; \
+		new="build/$(PKG)_v$$ver-$$abi.apk"; \
 		mv "$$f" "$$new"; \
-		echo "  $$(basename "$$f")  ->  $$(basename "$$new")"; \
+		echo "  $$(basename "$$f")  ->  $$new"; \
 	done; \
-	[ -n "$$found" ] || { echo "No release APKs in $(RELEASE_APK_DIR). Run 'make release' first."; exit 1; }
+	[ -n "$$found" ] || { echo "No release APKs found. Run 'make release' or 'make offline-release' first."; exit 1; }
 
 uninstall: device-check ## Remove the app from the device
 	$(ADB) uninstall $(PKG)

@@ -24,6 +24,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.android.inputmethod.latin.BuildConfig;
 import com.android.inputmethod.latin.utils.DictionaryInfoUtils;
 
 import org.json.JSONArray;
@@ -68,6 +69,8 @@ public class LanguagePackDownloadManager {
             "https://github.com/jishnu7/dictionaries/releases/latest/download/index.json";
 
     private static final String DL_SUBDIR = "langpack-dl";
+
+    private static final String ASSETS_DIR = "langpacks";
 
     public static class Pack {
         public final String id;
@@ -177,11 +180,34 @@ public class LanguagePackDownloadManager {
     // ---- Manifest ----
 
     public void loadIndex() {
+        if (BuildConfig.BUNDLED_LANGUAGE_PACKS) {
+            io.execute(() -> {
+                try {
+                    final List<Pack> packs = bundledPacks();
+                    maybeRunBootstrap(packs);
+                    main.post(() -> {
+                        if (listener != null) listener.onIndexLoaded(packs);
+                    });
+                } catch (final Exception e) {
+                    Log.e(TAG, "bundled index parse failed", e);
+                    postError(null, e.getMessage());
+                }
+            });
+            return;
+        }
         final DownloadManager.Request req = new DownloadManager.Request(Uri.parse(INDEX_URL));
         req.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
         req.setDestinationInExternalFilesDir(appContext, DL_SUBDIR, "index.json");
         indexDownloadId = downloadManager.enqueue(req);
         startPolling();
+    }
+
+    private List<Pack> bundledPacks() throws Exception {
+        try (InputStream in = appContext.getAssets().open(ASSETS_DIR + "/index.json")) {
+            final java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
+            copy(in, bos);
+            return parseIndexJson(bos.toString("UTF-8"));
+        }
     }
 
     // ---- Download ----
@@ -242,6 +268,29 @@ public class LanguagePackDownloadManager {
     }
 
     public void download(final Pack scheme) {
+        if (BuildConfig.BUNDLED_LANGUAGE_PACKS) {
+            main.post(() -> {
+                if (listener != null) listener.onProgress(scheme.lang, INSTALLING);
+            });
+            io.execute(() -> {
+                File zip = null;
+                try {
+                    zip = new File(appContext.getCacheDir(), scheme.lang + ".zip");
+                    try (InputStream in = appContext.getAssets()
+                                 .open(ASSETS_DIR + "/" + scheme.lang + ".zip");
+                         OutputStream os = new FileOutputStream(zip)) {
+                        copy(in, os);
+                    }
+                    installFromZip(zip, scheme);
+                } catch (final Exception e) {
+                    Log.e(TAG, "bundled install failed for " + scheme.lang, e);
+                    postError(scheme.lang, e.getMessage());
+                } finally {
+                    if (zip != null) zip.delete();
+                }
+            });
+            return;
+        }
         final DownloadManager.Request req = new DownloadManager.Request(Uri.parse(scheme.url));
         req.setTitle(scheme.name);
         req.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
@@ -361,6 +410,14 @@ public class LanguagePackDownloadManager {
 
     /** Schemes from the last successfully fetched index, or empty if none cached yet. */
     public List<Pack> cachedPacks() {
+        if (BuildConfig.BUNDLED_LANGUAGE_PACKS) {
+            try {
+                return bundledPacks();
+            } catch (final Exception e) {
+                Log.e(TAG, "could not read bundled index", e);
+                return new ArrayList<>();
+            }
+        }
         final File cache = indexCacheFile();
         if (!cache.exists()) {
             return new ArrayList<>();
@@ -395,44 +452,43 @@ public class LanguagePackDownloadManager {
     private void finishDownload(final long id, final Pack scheme, final Uri localUri) {
         io.execute(() -> {
             File zip = null;
-            final File dir = packDir(appContext, scheme.lang);
-            final File staging = new File(dir.getParentFile(), scheme.lang + ".staging");
             try {
                 zip = copyToCache(localUri, scheme.lang);
-                verifySha256(zip, scheme.sha256);
-                // Extract the verified zip to staging first so a failure can't damage an
-                // already-installed pack, then move the pack files into place — keeping the
-                // user's .learnings DB.
-                deleteRecursive(staging);
-                extractTo(zip, staging);
-                commitStaging(staging, dir);
-                // Make the layouts' dictionary available: copy main_<lang>.dict into the
-                // LatinIME cache dir (the runtime scans it on the next keyboard load).
-                installDict(scheme.lang, dir);
-                main.post(() -> {
-                    if (listener != null) listener.onProgress(scheme.lang, INSTALLING);
-                });
-                // For varnam languages, import the .vlf into the learnings DB now, at download
-                // time, so the first keyboard activation is instant. Dropping the marker first
-                // makes the engine (re-)import the new packs.
-                if (scheme.hasVarnam) {
-                    importMarker(appContext, scheme.lang).delete();
-                    importPacks(scheme.lang);
-                }
-                appContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-                        .edit().putInt(KEY_VERSION + scheme.lang, scheme.version).apply();
-                main.post(() -> {
-                    if (listener != null) listener.onInstalled(scheme.lang);
-                });
+                installFromZip(zip, scheme);
             } catch (final Exception e) {
                 Log.e(TAG, "install failed for " + scheme.lang, e);
                 postError(scheme.lang, e.getMessage());
             } finally {
-                deleteRecursive(staging);
                 downloadManager.remove(id);
                 if (zip != null) zip.delete();
             }
         });
+    }
+
+    private void installFromZip(final File zip, final Pack scheme) throws Exception {
+        final File dir = packDir(appContext, scheme.lang);
+        final File staging = new File(dir.getParentFile(), scheme.lang + ".staging");
+        try {
+            verifySha256(zip, scheme.sha256);
+            deleteRecursive(staging);
+            extractTo(zip, staging);
+            commitStaging(staging, dir);
+            installDict(scheme.lang, dir);
+            main.post(() -> {
+                if (listener != null) listener.onProgress(scheme.lang, INSTALLING);
+            });
+            if (scheme.hasVarnam) {
+                importMarker(appContext, scheme.lang).delete();
+                importPacks(scheme.lang);
+            }
+            appContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+                    .edit().putInt(KEY_VERSION + scheme.lang, scheme.version).apply();
+            main.post(() -> {
+                if (listener != null) listener.onInstalled(scheme.lang);
+            });
+        } finally {
+            deleteRecursive(staging);
+        }
     }
 
     /** Move extracted pack files from staging into dir, leaving .learnings intact. */
