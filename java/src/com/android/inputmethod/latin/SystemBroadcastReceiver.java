@@ -25,6 +25,8 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Process;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -107,7 +109,11 @@ public final class SystemBroadcastReceiver extends BroadcastReceiver {
         if (!isCurrentImeOfCurrentUser) {
             final int myPid = Process.myPid();
             Log.i(TAG, "Killing my process: pid=" + myPid);
-            Process.killProcess(myPid);
+            final PendingResult pendingResult = goAsync();
+            new Handler(Looper.getMainLooper()).post(() -> {
+                pendingResult.finish();
+                Process.killProcess(myPid);
+            });
         }
     }
 
