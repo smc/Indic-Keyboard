@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="md3_dynamic_surface">@android:color/system_neutral1_100</color>
-    <color name="md3_dynamic_key">@android:color/system_neutral1_10</color>
+    <color name="md3_dynamic_surface">@android:color/system_accent2_50</color>
+    <color name="md3_dynamic_key">@android:color/system_neutral1_0</color>
     <color name="md3_dynamic_key_pressed">@android:color/system_accent2_100</color>
-    <color name="md3_dynamic_functional">@android:color/system_accent1_200</color>
-    <color name="md3_dynamic_action">@android:color/system_accent1_300</color>
-    <color name="md3_dynamic_action_pressed">@android:color/system_accent1_400</color>
+    <color name="md3_dynamic_functional">@android:color/system_neutral2_100</color>
+    <color name="md3_dynamic_action">@android:color/system_accent1_600</color>
+    <color name="md3_dynamic_action_pressed">@android:color/system_accent1_500</color>
     <color name="md3_dynamic_on_surface">@android:color/system_neutral1_900</color>
     <color name="md3_dynamic_on_surface_variant">@android:color/system_neutral2_700</color>
     <color name="md3_dynamic_primary">@android:color/system_accent1_600</color>
-    <color name="md3_dynamic_on_primary">@android:color/system_accent1_900</color>
+    <color name="md3_dynamic_on_primary">@android:color/system_accent1_0</color>
 </resources>
