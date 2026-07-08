@@ -1498,12 +1498,8 @@ public final class InputLogic {
             Log.d(TAG, "performUpdateSuggestionStripSync()");
         }
 
-        if (isVarnam) {
+        if (isVarnam && !mWordComposer.getTypedWord().isEmpty()) {
             final String typedWord = mWordComposer.getTypedWord();
-            if (typedWord.isEmpty()) {
-                mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
-                return;
-            }
 
             getVarnamSuggestions(typedWord, new VarnamCallback() {
                 public void onResult(String input, Suggestion[] sugs) {
