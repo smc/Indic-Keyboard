@@ -51,6 +51,8 @@ import java.util.zip.ZipInputStream;
  * verifies them, and installs their contents:
  *   - {@code main_<lang>.dict} is placed in the LatinIME cached-dictionary directory so the
  *     non-transliteration layouts pick it up ({@code filesDir/dicts/<lang>/main:<lang>});
+ *   - {@code xlit_<lang>.dict} (romanized wordlist for gesture typing on transliteration
+ *     layouts) stays in {@code filesDir/varnam/<lang>/}, see {@link #xlitDictFile};
  *   - for varnam languages, {@code <lang>.vst} + {@code <lang>-*.vlf} are extracted into
  *     {@code filesDir/varnam/<lang>/} and the {@code .vlf} are imported into the learnings DB.
  *
@@ -133,6 +135,11 @@ public class LanguagePackDownloadManager {
 
     public static File vstFile(Context context, String lang) {
         return new File(schemeDir(context, lang), lang + ".vst");
+    }
+
+    /** Romanized wordlist used as the gesture-decode dictionary on transliteration layouts. */
+    public static File xlitDictFile(Context context, String lang) {
+        return new File(schemeDir(context, lang), "xlit_" + lang + ".dict");
     }
 
     /** Where the downloaded {@code main_<lang>.dict} lands so the layouts' Suggest engine finds it. */

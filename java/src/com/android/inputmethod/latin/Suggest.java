@@ -69,8 +69,17 @@ public final class Suggest {
     private float mAutoCorrectionThreshold;
     private float mPlausibilityThreshold;
 
+    // On transliteration layouts gestures are swiped over Latin keys while the facilitator's
+    // main dictionary is in the target script, so batch input decodes against this romanized
+    // wordlist dictionary instead when it is set.
+    private volatile Dictionary mGestureOverrideDictionary;
+
     public Suggest(final DictionaryFacilitator dictionaryFacilitator) {
         mDictionaryFacilitator = dictionaryFacilitator;
+    }
+
+    public void setGestureOverrideDictionary(final Dictionary dictionary) {
+        mGestureOverrideDictionary = dictionary;
     }
 
     /**
@@ -291,9 +300,13 @@ public final class Suggest {
             final SettingsValuesForSuggestion settingsValuesForSuggestion,
             final int inputStyle, final int sequenceNumber,
             final OnGetSuggestedWordsCallback callback) {
-        final SuggestionResults suggestionResults = mDictionaryFacilitator.getSuggestionResults(
-                wordComposer.getComposedDataSnapshot(), ngramContext, keyboard,
-                settingsValuesForSuggestion, SESSION_ID_GESTURE, inputStyle);
+        final Dictionary gestureOverrideDictionary = mGestureOverrideDictionary;
+        final SuggestionResults suggestionResults = gestureOverrideDictionary != null
+                ? getOverrideSuggestionResults(gestureOverrideDictionary, wordComposer,
+                        ngramContext, keyboard, settingsValuesForSuggestion)
+                : mDictionaryFacilitator.getSuggestionResults(
+                        wordComposer.getComposedDataSnapshot(), ngramContext, keyboard,
+                        settingsValuesForSuggestion, SESSION_ID_GESTURE, inputStyle);
         // For transforming words that don't come from a dictionary, because it's our best bet
         final Locale locale = mDictionaryFacilitator.getLocale();
         final ArrayList<SuggestedWordInfo> suggestionsContainer =
@@ -343,6 +356,24 @@ public final class Suggest {
                 false /* willAutoCorrect */,
                 false /* isObsoleteSuggestions */,
                 inputStyle, sequenceNumber));
+    }
+
+    private static SuggestionResults getOverrideSuggestionResults(final Dictionary dictionary,
+            final WordComposer wordComposer, final NgramContext ngramContext,
+            final Keyboard keyboard,
+            final SettingsValuesForSuggestion settingsValuesForSuggestion) {
+        final SuggestionResults suggestionResults = new SuggestionResults(
+                SuggestedWords.MAX_SUGGESTIONS, ngramContext.isBeginningOfSentenceContext(),
+                false /* firstSuggestionExceedsConfidenceThreshold */);
+        final ArrayList<SuggestedWordInfo> suggestions = dictionary.getSuggestions(
+                wordComposer.getComposedDataSnapshot(), ngramContext,
+                keyboard.getProximityInfo().getNativeProximityInfo(),
+                settingsValuesForSuggestion, SESSION_ID_GESTURE, 1.0f /* weightForLocale */,
+                new float[] { Dictionary.NOT_A_WEIGHT_OF_LANG_MODEL_VS_SPATIAL_MODEL });
+        if (suggestions != null) {
+            suggestionResults.addAll(suggestions);
+        }
+        return suggestionResults;
     }
 
     private static ArrayList<SuggestedWordInfo> getSuggestionsInfoListWithDebugInfo(

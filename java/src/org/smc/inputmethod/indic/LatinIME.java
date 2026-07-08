@@ -748,6 +748,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             try {
                 String transliterationName = currentSubtype.getExtraValueOf(TRANSLITERATION_METHOD);
                 mInputLogic.enableTransliteration(transliterationName, getApplicationContext());
+                mInputLogic.setGestureXlitDictionary(getApplicationContext(), locale,
+                        "qwerty".equals(currentSubtype.getExtraValueOf(
+                                Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET)));
                 Log.d("IndicKeyboard", "-------------transliteration enabled-----------");
                 return true;
             } catch (Exception e) {
@@ -756,6 +759,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
         mInputLogic.disableTransliteration(getApplicationContext());
+        mInputLogic.setGestureXlitDictionary(getApplicationContext(), null,
+                false /* isLatinLayout */);
         Log.d("IndicKeyboard", "-------------transliteration disabled----------------");
         return false;
     }

@@ -145,6 +145,26 @@ class InputLogicHandler implements Handler.Callback {
 
     void showGestureSuggestionsWithPreviewVisuals(final SuggestedWords suggestedWordsForBatchInput,
             final boolean isTailBatchInput) {
+        // On a transliteration layout the decoder yields Latin words; show (and on tail,
+        // commit) their transliteration instead, so the floating preview and the strip stay
+        // in the target script. Falls back to the Latin words if transliteration yields
+        // nothing.
+        if (!suggestedWordsForBatchInput.isEmpty()
+                && mInputLogic.shouldTransliterateGestureResults()) {
+            mInputLogic.transliterateGestureSuggestions(suggestedWordsForBatchInput,
+                    new OnGetSuggestedWordsCallback() {
+                        @Override
+                        public void onGetSuggestedWords(final SuggestedWords suggestedWords) {
+                            showGestureSuggestions(suggestedWords, isTailBatchInput);
+                        }
+                    });
+            return;
+        }
+        showGestureSuggestions(suggestedWordsForBatchInput, isTailBatchInput);
+    }
+
+    private void showGestureSuggestions(final SuggestedWords suggestedWordsForBatchInput,
+            final boolean isTailBatchInput) {
         final SuggestedWords suggestedWordsToShowSuggestions;
         // We're now inside the callback. This always runs on the Non-UI thread,
         // no matter what thread updateBatchInput was originally called on.

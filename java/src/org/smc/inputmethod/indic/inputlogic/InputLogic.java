@@ -37,6 +37,7 @@ import com.android.inputmethod.event.Event;
 import com.android.inputmethod.event.InputTransaction;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.DictionaryFacilitator;
 import com.android.inputmethod.latin.LastComposedWord;
@@ -66,10 +67,12 @@ import org.smc.inputmethod.indic.settings.SettingsValues;
 import org.smc.inputmethod.indic.settings.SettingsValuesForSuggestion;
 import org.smc.inputmethod.indic.settings.SpacingAndPunctuations;
 import org.smc.inputmethod.indic.suggestions.SuggestionStripViewAccessor;
+import org.smc.inputmethod.indic.varnam.LanguagePackDownloadManager;
 import org.smc.inputmethod.indic.varnam.Varnam;
 import org.smc.inputmethod.indic.varnam.VarnamCallback;
 import org.smc.inputmethod.indic.varnam.VarnamIndicKeyboard;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.TreeSet;
@@ -124,6 +127,10 @@ public final class InputLogic {
     private boolean isIndic;
     private boolean isTransliteration;
     private boolean isVarnam;
+
+    private InputMethod transliterationMethod;
+    private BinaryDictionary gestureXlitDictionary;
+    private String gestureXlitDictPath;
 
     private Varnam varnam;
     private boolean varnamSettingLearn = true; // Should varnam learn words
@@ -2502,17 +2509,18 @@ public final class InputLogic {
         isIndic = flag;
     }
 
-    public void enableTransliteration(String transliterationMethod, Context context) {
+    public void enableTransliteration(String transliterationName, Context context) {
         InputMethod im;
+        this.transliterationMethod = null;
         try {
-            if (transliterationMethod.startsWith("varnam-")) {
-                String schemeID = transliterationMethod.substring(7);
+            if (transliterationName.startsWith("varnam-")) {
+                String schemeID = transliterationName.substring(7);
                 Log.d("varnam", "init varnam input method - " + schemeID);
                 enableVarnam(schemeID, context);
 
-                VarnamIndicKeyboard.Scheme scheme = VarnamIndicKeyboard.schemes.get(transliterationMethod);
+                VarnamIndicKeyboard.Scheme scheme = VarnamIndicKeyboard.schemes.get(transliterationName);
                 im = new InputMethod(
-                        transliterationMethod,
+                        transliterationName,
                         scheme.name,
                         scheme.description,
                         scheme.author,
@@ -2522,7 +2530,8 @@ public final class InputLogic {
                         new ArrayList<InputMethod.InputPattern>()
                 );
             } else {
-                im = InputMethod.fromName(transliterationMethod, context);
+                im = InputMethod.fromName(transliterationName, context);
+                this.transliterationMethod = im;
             }
             mWordComposer.setTransliterationMethod(im);
             mConnection.setTransliterationMethod(im);
@@ -2537,11 +2546,43 @@ public final class InputLogic {
         mWordComposer.setTransliterationMethod(null);
         mConnection.setTransliterationMethod(null);
         isTransliteration = false;
+        transliterationMethod = null;
 
         if (isVarnam) {
             varnam.close(context);
             isVarnam = false;
             varnam = null;
+        }
+    }
+
+    /**
+     * Point gesture decoding at the romanized wordlist for {@code locale}, or back at the main
+     * dictionary. On transliteration layouts the swipe runs over Latin keys while the main
+     * dictionary is in the target script, so the decoder needs {@code xlit_<lang>.dict}
+     * to produce useful romanizations, which are then transliterated for display.
+     */
+    public void setGestureXlitDictionary(final Context context, final Locale locale,
+            final boolean isLatinLayout) {
+        File dictFile = null;
+        if (locale != null && isLatinLayout) {
+            final File f = LanguagePackDownloadManager.xlitDictFile(context, locale.getLanguage());
+            if (f.exists()) {
+                dictFile = f;
+            }
+        }
+        final String path = dictFile == null ? null : dictFile.getAbsolutePath();
+        if (TextUtils.equals(path, gestureXlitDictPath)) {
+            return;
+        }
+        final BinaryDictionary oldDictionary = gestureXlitDictionary;
+        gestureXlitDictionary = dictFile == null ? null
+                : new BinaryDictionary(path, 0 /* offset */, dictFile.length(),
+                        false /* useFullEditDistance */, locale, "xlit" /* dictType */,
+                        false /* isUpdatable */);
+        gestureXlitDictPath = path;
+        mSuggest.setGestureOverrideDictionary(gestureXlitDictionary);
+        if (oldDictionary != null) {
+            oldDictionary.close();
         }
     }
 
@@ -2578,6 +2619,111 @@ public final class InputLogic {
             varnamTransliterationTaskID = 0;
         }
         varnam.transliterate(varnamTransliterationTaskID, word, cb);
+    }
+
+    public boolean isVarnamActive() {
+        return isVarnam && varnam != null;
+    }
+
+    public boolean shouldTransliterateGestureResults() {
+        return isVarnamActive() || transliterationMethod != null;
+    }
+
+    // Gesture batch results decode against a Latin dictionary; replace them with their
+    // transliteration so the floating preview, the strip, and the committed word are all in
+    // the target script. Varnam layouts go through the engine asynchronously, the other
+    // transliteration layouts synchronously through their InputMethod rules. The top Latin
+    // word stays as the last suggestion, and everything falls back to the Latin words on error.
+    public void transliterateGestureSuggestions(final SuggestedWords latinSuggestedWords,
+            final OnGetSuggestedWordsCallback callback) {
+        // Case in words from the xlit dictionary is part of the transliteration scheme
+        // (veeT -> വീട്), so those must not be lowercased.
+        final boolean fromXlitDict = gestureXlitDictionary != null
+                && latinSuggestedWords.getInfo(0).mSourceDict == gestureXlitDictionary;
+        if (!isVarnamActive()) {
+            final InputMethod method = transliterationMethod;
+            callback.onGetSuggestedWords(method == null ? latinSuggestedWords
+                    : inputMethodTransliteratedSuggestions(method, latinSuggestedWords,
+                            fromXlitDict));
+            return;
+        }
+        final String latinWord = fromXlitDict ? latinSuggestedWords.getWord(0)
+                : latinSuggestedWords.getWord(0).toLowerCase(Locale.ROOT);
+        getVarnamSuggestions(latinWord, new VarnamCallback() {
+            @Override
+            public void onResult(final String input, final Suggestion[] sugs) {
+                if (sugs == null || sugs.length == 0) {
+                    callback.onGetSuggestedWords(latinSuggestedWords);
+                    return;
+                }
+                final ArrayList<SuggestedWordInfo> suggestions = varnamSugsToSugsWordInfo(sugs);
+                suggestions.add(new SuggestedWordInfo(
+                        latinWord,
+                        "" /* prevWordsContext */,
+                        SuggestedWordInfo.MAX_SCORE,
+                        SuggestedWordInfo.KIND_TYPED,
+                        Dictionary.DICTIONARY_USER_TYPED,
+                        SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                        SuggestedWordInfo.NOT_A_CONFIDENCE));
+                callback.onGetSuggestedWords(new SuggestedWords(
+                        suggestions,
+                        null /* rawSuggestions */,
+                        suggestions.get(0) /* pseudo typed word, as in batch results */,
+                        true /* typedWordValid */,
+                        false /* willAutoCorrect */,
+                        false /* isObsoleteSuggestions */,
+                        latinSuggestedWords.mInputStyle,
+                        latinSuggestedWords.mSequenceNumber));
+            }
+
+            @Override
+            public void onError(final String err) {
+                callback.onGetSuggestedWords(latinSuggestedWords);
+            }
+        });
+    }
+
+    private SuggestedWords inputMethodTransliteratedSuggestions(final InputMethod method,
+            final SuggestedWords latinSuggestedWords, final boolean keepCase) {
+        // Distinct romanizations can transliterate to the same word, so dedupe while keeping
+        // the decoder's order.
+        final java.util.LinkedHashSet<String> words = new java.util.LinkedHashSet<>();
+        for (int i = 0; i < latinSuggestedWords.size(); i++) {
+            final String latin = keepCase ? latinSuggestedWords.getWord(i)
+                    : latinSuggestedWords.getWord(i).toLowerCase(Locale.ROOT);
+            words.add(method.transliterateAll(latin, null));
+        }
+        final String topLatinWord = latinSuggestedWords.getWord(0);
+        words.remove(topLatinWord);
+        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<>();
+        int score = words.size();
+        for (final String word : words) {
+            suggestions.add(new SuggestedWordInfo(
+                    word,
+                    "" /* prevWordsContext */,
+                    score--,
+                    SuggestedWordInfo.KIND_COMPLETION,
+                    Dictionary.DICTIONARY_RESUMED,
+                    SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                    SuggestedWordInfo.NOT_A_CONFIDENCE));
+        }
+        suggestions.add(new SuggestedWordInfo(
+                topLatinWord,
+                "" /* prevWordsContext */,
+                SuggestedWordInfo.MAX_SCORE,
+                SuggestedWordInfo.KIND_TYPED,
+                Dictionary.DICTIONARY_USER_TYPED,
+                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                SuggestedWordInfo.NOT_A_CONFIDENCE));
+        return new SuggestedWords(
+                suggestions,
+                null /* rawSuggestions */,
+                suggestions.get(0) /* pseudo typed word, as in batch results */,
+                true /* typedWordValid */,
+                false /* willAutoCorrect */,
+                false /* isObsoleteSuggestions */,
+                latinSuggestedWords.mInputStyle,
+                latinSuggestedWords.mSequenceNumber);
     }
 
     private ArrayList<SuggestedWordInfo> varnamSugsToSugsWordInfo(Suggestion[] sugs) {
