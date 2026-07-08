@@ -97,8 +97,8 @@
     <string name="show_language_switch_key_summary">Show when multiple input languages are enabled</string>
     <!-- Option to show the emoji key on the keyboard [CHAR LIMIT=35] -->
     <string name="show_emoji_key">Emoji key</string>
-    <!-- Option summary for showing the emoji key [CHAR LIMIT=65] -->
-    <string name="show_emoji_key_summary">Show or hide permanent emoji icon in keyboard</string>
+    <!-- Option summary for showing the emoji key -->
+    <string name="show_emoji_key_summary">Show a permanent emoji key on the keyboard. When off, long-press the ?123 key for emoji</string>
 
     <!-- Option for the dismiss delay of the key popup [CHAR LIMIT=25] -->
     <string name="key_preview_popup_dismiss_delay">Key popup dismiss delay</string>

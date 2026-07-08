@@ -27,6 +27,12 @@
         <item name="switchPreferenceStyle">@style/M3SwitchPreference</item>
         <item name="checkBoxPreferenceStyle">@style/M3CheckBoxPreference</item>
         <item name="dialogPreferenceStyle">@style/M3DialogPreference</item>
+        <item name="preferenceFragmentCompatStyle">@style/M3PreferenceFragment</item>
+    </style>
+
+    <style name="M3PreferenceFragment" parent="@style/PreferenceFragment.Material">
+        <item name="android:divider">@null</item>
+        <item name="android:dividerHeight">0dp</item>
     </style>
 
     <style name="M3Preference" parent="@style/Preference.Material">

@@ -135,10 +135,14 @@
     <key-style
         latin:styleName="toSymbolKeyStyle"
         latin:keySpec="!text/keylabel_to_symbol|!code/key_switch_alpha_symbol"
+        latin:keyLabelFlags="hasPopupHint"
+        latin:moreKeys="!noPanelAutoMoreKey!,!icon/emoji_normal_key|!code/key_emoji"
         latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
         latin:styleName="toAlphaKeyStyle"
         latin:keySpec="!text/keylabel_to_alpha|!code/key_switch_alpha_symbol"
+        latin:keyLabelFlags="hasPopupHint"
+        latin:moreKeys="!noPanelAutoMoreKey!,!icon/emoji_normal_key|!code/key_emoji"
         latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
         latin:styleName="toMoreSymbolKeyStyle"
