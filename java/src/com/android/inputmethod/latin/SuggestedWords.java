@@ -260,6 +260,7 @@ public class SuggestedWords {
         public static final int KIND_FLAG_EXACT_MATCH = 0x40000000;
         public static final int KIND_FLAG_EXACT_MATCH_WITH_INTENTIONAL_OMISSION = 0x20000000;
         public static final int KIND_FLAG_APPROPRIATE_FOR_AUTO_CORRECTION = 0x10000000;
+        public static final int KIND_FLAG_ALWAYS_SHOW_IN_STRIP = 0x08000000;
 
         public final String mWord;
         public final String mPrevWordsContext;

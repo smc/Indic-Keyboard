@@ -234,10 +234,15 @@ final class SuggestionStripLayoutHelper {
     private int getPositionInSuggestionStrip(final int indexInSuggestedWords,
             final SuggestedWords suggestedWords) {
         final SettingsValues settingsValues = Settings.getInstance().getCurrent();
-        final boolean shouldOmitTypedWord = shouldOmitTypedWord(suggestedWords.mInputStyle,
-                settingsValues.mGestureFloatingPreviewTextEnabled,
-                settingsValues.mShouldShowLxxSuggestionUi);
-        return getPositionInSuggestionStrip(indexInSuggestedWords, suggestedWords.mWillAutoCorrect,
+        final boolean typedWordDemandsDisplay = suggestedWords.size() > 0
+                && (suggestedWords.getInfo(SuggestedWords.INDEX_OF_TYPED_WORD).mKindAndFlags
+                        & SuggestedWordInfo.KIND_FLAG_ALWAYS_SHOW_IN_STRIP) != 0;
+        final boolean shouldOmitTypedWord = !typedWordDemandsDisplay
+                && shouldOmitTypedWord(suggestedWords.mInputStyle,
+                        settingsValues.mGestureFloatingPreviewTextEnabled,
+                        settingsValues.mShouldShowLxxSuggestionUi);
+        return getPositionInSuggestionStrip(indexInSuggestedWords,
+                suggestedWords.mWillAutoCorrect || typedWordDemandsDisplay,
                 settingsValues.mShouldShowLxxSuggestionUi && shouldOmitTypedWord,
                 mCenterPositionInStrip, mTypedWordPositionWhenAutocorrect);
     }

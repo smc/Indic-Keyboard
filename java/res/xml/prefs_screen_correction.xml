@@ -63,6 +63,12 @@
             android:defaultValue="true"
             android:persistent="true" />
         <CheckBoxPreference
+            android:key="pref_show_latin_word_suggestion"
+            android:title="@string/show_latin_word_suggestion"
+            android:summary="@string/show_latin_word_suggestion_summary"
+            android:defaultValue="false"
+            android:persistent="true" />
+        <CheckBoxPreference
             android:key="pref_key_block_potentially_offensive"
             android:title="@string/prefs_block_potentially_offensive_title"
             android:summary="@string/prefs_block_potentially_offensive_summary"

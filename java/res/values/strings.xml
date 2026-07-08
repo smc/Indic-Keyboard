@@ -184,6 +184,10 @@
     <string name="bigram_prediction">Next-word suggestions</string>
     <!-- Description for "next word suggestion" option. This displays suggestions even when there is no input, based on the previous word. -->
     <string name="bigram_prediction_summary">Use the previous word in making suggestions</string>
+    <!-- Option to show the raw Latin key sequence as the first suggestion on transliteration layouts. -->
+    <string name="show_latin_word_suggestion">Show typed Latin word</string>
+    <!-- Description for the "show typed Latin word" option. -->
+    <string name="show_latin_word_suggestion_summary">On transliteration layouts, show the Latin letters you typed as the first suggestion</string>
 
     <!-- Option to enable gesture input. The user can input a word by tracing the letters of a word without releasing the finger from the screen. [CHAR LIMIT=30]-->
     <string name="gesture_input">Enable gesture typing</string>

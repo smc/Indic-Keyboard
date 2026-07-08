@@ -88,6 +88,8 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
     public static final String PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY =
             "pref_key_preview_popup_dismiss_delay";
     public static final String PREF_BIGRAM_PREDICTIONS = "next_word_prediction";
+    public static final String PREF_SHOW_LATIN_WORD_SUGGESTION =
+            "pref_show_latin_word_suggestion";
     public static final String PREF_GESTURE_INPUT = "gesture_input";
     public static final String PREF_VIBRATION_DURATION_SETTINGS =
             "pref_vibration_duration_settings";

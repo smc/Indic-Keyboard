@@ -131,6 +131,7 @@ public final class InputLogic {
     private InputMethod transliterationMethod;
     private BinaryDictionary gestureXlitDictionary;
     private String gestureXlitDictPath;
+    private final StringBuilder rawLatinInput = new StringBuilder();
 
     private Varnam varnam;
     private boolean varnamSettingLearn = true; // Should varnam learn words
@@ -890,6 +891,10 @@ public final class InputLogic {
             resetComposingState(false /* alsoResetLastComposedWord */);
         }
         if (isComposingWord) {
+            if (!mWordComposer.isComposingWord()) {
+                rawLatinInput.setLength(0);
+            }
+            rawLatinInput.appendCodePoint(codePoint);
             mWordComposer.applyProcessedEvent(event);
             // If it's the first letter, make note of auto-caps state
             if (mWordComposer.isSingleLetter()) {
@@ -1507,7 +1512,8 @@ public final class InputLogic {
                         return;
                     }
 
-                    ArrayList<SuggestedWordInfo> suggestedWordsList = new ArrayList<SuggestedWordInfo>();
+                    ArrayList<SuggestedWordInfo> suggestedWordsList =
+                            varnamSugsToSugsWordInfo(sugs);
 
                     final SuggestedWordInfo typedWordInfo = new SuggestedWordInfo(
                             typedWord,
@@ -1517,16 +1523,23 @@ public final class InputLogic {
                             Dictionary.DICTIONARY_USER_TYPED,
                             SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
                             SuggestedWordInfo.NOT_A_CONFIDENCE);
-                    suggestedWordsList.add(typedWordInfo);
-
-                    suggestedWordsList.addAll(varnamSugsToSugsWordInfo(sugs));
+                    // The Latin entry doubles as the strip display and, through
+                    // INDEX_OF_AUTO_CORRECTION, keeps the first varnam suggestion as what a
+                    // separator commits. Without it the first suggestion moves to index 0 and
+                    // must be the typed-word info so setSuggestedWords still records it as
+                    // the word to commit.
+                    final boolean showLatinWord = settingsValues.mShowLatinWordSuggestion
+                            || suggestedWordsList.isEmpty();
+                    if (showLatinWord) {
+                        suggestedWordsList.add(0, typedWordInfo);
+                    }
 
                     SuggestedWords suggestedWords = new SuggestedWords(
                             suggestedWordsList,
                             null,
-                            typedWordInfo,
+                            showLatinWord ? typedWordInfo : suggestedWordsList.get(0),
                             true,
-                            true,
+                            showLatinWord && suggestedWordsList.size() > 1 /* willAutoCorrect */,
                             false,
                             SuggestedWords.INPUT_STYLE_PREDICTION,
                             SuggestedWords.INDEX_OF_AUTO_CORRECTION
@@ -1595,6 +1608,59 @@ public final class InputLogic {
             long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
             Log.d(TAG, "performUpdateSuggestionStripSync() : " + runTimeMillis + " ms to finish");
         }
+    }
+
+    public SuggestedWords withRawTypedWordFirst(final SettingsValues settingsValues,
+            final SuggestedWords suggestedWords) {
+        if (!settingsValues.mShowLatinWordSuggestion || transliterationMethod == null
+                || !mWordComposer.isComposingWord() || suggestedWords.isEmpty()
+                || !suggestedWords.getInfo(0).isKindOf(SuggestedWordInfo.KIND_TYPED)) {
+            return suggestedWords;
+        }
+        final String rawTypedWord = rawLatinForTypedWord(suggestedWords.getWord(0));
+        if (rawTypedWord == null) {
+            return suggestedWords;
+        }
+        final ArrayList<SuggestedWordInfo> suggestions = new ArrayList<>(suggestedWords.size());
+        suggestions.add(new SuggestedWordInfo(
+                rawTypedWord,
+                "" /* prevWordsContext */,
+                SuggestedWordInfo.MAX_SCORE,
+                SuggestedWordInfo.KIND_TYPED
+                        | SuggestedWordInfo.KIND_FLAG_ALWAYS_SHOW_IN_STRIP,
+                Dictionary.DICTIONARY_USER_TYPED,
+                SuggestedWordInfo.NOT_AN_INDEX /* indexOfTouchPointOfSecondWord */,
+                SuggestedWordInfo.NOT_A_CONFIDENCE));
+        for (int i = 1; i < suggestedWords.size(); i++) {
+            suggestions.add(suggestedWords.getInfo(i));
+        }
+        return new SuggestedWords(suggestions, suggestedWords.mRawSuggestions,
+                suggestedWords.mTypedWordInfo, suggestedWords.mTypedWordValid,
+                suggestedWords.mWillAutoCorrect, suggestedWords.mIsObsoleteSuggestions,
+                suggestedWords.mInputStyle, suggestedWords.mSequenceNumber);
+    }
+
+    private String rawLatinForTypedWord(final String typedWord) {
+        final InputMethod method = transliterationMethod;
+        if (method == null || rawLatinInput.length() == 0) {
+            return null;
+        }
+        final String raw = rawLatinInput.toString();
+        if (!isAsciiLetters(raw) || raw.equals(typedWord)
+                || !method.transliterateAll(raw, null).equals(typedWord)) {
+            return null;
+        }
+        return raw;
+    }
+
+    private static boolean isAsciiLetters(final String word) {
+        for (int i = 0; i < word.length(); i++) {
+            final char c = word.charAt(i);
+            if (c >= 0x80 || !Character.isLetter(c)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -1700,7 +1766,8 @@ public final class InputLogic {
         if (isVarnam) {
             getVarnamSuggestions(typedWordString, new VarnamCallback() {
                 public void onResult(String input, Suggestion[] sugs) {
-                    restartSuggestionsOnWordTouchedByCursorUpdateSuggestions(typedWordInfo, varnamSugsToSugsWordInfo(sugs));
+                    restartSuggestionsOnWordTouchedByCursorUpdateSuggestions(typedWordInfo,
+                            varnamSugsToSugsWordInfo(sugs));
                 }
             });
         } else {
@@ -1708,7 +1775,8 @@ public final class InputLogic {
         }
     }
 
-    public void restartSuggestionsOnWordTouchedByCursorUpdateSuggestions (SuggestedWordInfo typedWordInfo, ArrayList<SuggestedWordInfo> suggestions) {
+    public void restartSuggestionsOnWordTouchedByCursorUpdateSuggestions(
+            SuggestedWordInfo typedWordInfo, ArrayList<SuggestedWordInfo> suggestions) {
         if (suggestions.size() <= 1) {
             // If there weren't any suggestion spans on this word, suggestions#size() will be 1
             // if shouldIncludeResumedWordInSuggestions is true, 0 otherwise. In this case, we
