@@ -55,7 +55,10 @@ public class GestureFloatingTextDrawingPreview extends AbstractDrawingPreview {
         private final int mGesturePreviewTextSize;
         private final int mGesturePreviewTextColor;
         private final int mGesturePreviewColor;
+        private final float mGesturePreviewElevation;
         private final Paint mPaint = new Paint();
+
+        private static final int SHADOW_COLOR = 0x40000000;
 
         private static final char[] TEXT_HEIGHT_REFERENCE_CHAR = { 'M' };
 
@@ -74,6 +77,8 @@ public class GestureFloatingTextDrawingPreview extends AbstractDrawingPreview {
                     R.styleable.MainKeyboardView_gestureFloatingPreviewVerticalPadding, 0.0f);
             mGesturePreviewRoundRadius = mainKeyboardViewAttr.getDimension(
                     R.styleable.MainKeyboardView_gestureFloatingPreviewRoundRadius, 0.0f);
+            mGesturePreviewElevation = mainKeyboardViewAttr.getDimension(
+                    R.styleable.MainKeyboardView_gestureFloatingPreviewElevation, 0.0f);
             mDisplayWidth = mainKeyboardViewAttr.getResources().getDisplayMetrics().widthPixels;
 
             final Paint textPaint = getTextPaint();
@@ -87,11 +92,16 @@ public class GestureFloatingTextDrawingPreview extends AbstractDrawingPreview {
             mPaint.setTextAlign(Align.CENTER);
             mPaint.setTextSize(mGesturePreviewTextSize);
             mPaint.setColor(mGesturePreviewTextColor);
+            mPaint.clearShadowLayer();
             return mPaint;
         }
 
         public Paint getBackgroundPaint() {
             mPaint.setColor(mGesturePreviewColor);
+            if (mGesturePreviewElevation > 0.0f) {
+                mPaint.setShadowLayer(mGesturePreviewElevation, 0.0f,
+                        mGesturePreviewElevation / 2.0f, SHADOW_COLOR);
+            }
             return mPaint;
         }
     }

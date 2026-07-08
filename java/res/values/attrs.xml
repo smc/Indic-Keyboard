@@ -175,6 +175,7 @@
         <attr name="gestureFloatingPreviewHorizontalPadding" format="dimension" />
         <attr name="gestureFloatingPreviewVerticalPadding" format="dimension" />
         <attr name="gestureFloatingPreviewRoundRadius" format="dimension" />
+        <attr name="gestureFloatingPreviewElevation" format="dimension" />
         <!-- Static threshold for gesture after fast typing (msec) -->
         <attr name="gestureStaticTimeThresholdAfterFastTyping" format="integer" />
         <!-- Static threshold for starting gesture detection (keyWidth%/sec) -->
