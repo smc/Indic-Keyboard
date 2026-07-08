@@ -55,8 +55,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.materialswitch.MaterialSwitch;
 
 import org.smc.inputmethod.indic.settings.SettingsActivity;
-import org.smc.inputmethod.indic.varnam.LanguagePackDownloadManager;
-import org.smc.inputmethod.indic.varnam.LanguagePackDownloadManager.Scheme;
+import org.smc.inputmethod.indic.languagepack.LanguagePackDownloadManager;
+import org.smc.inputmethod.indic.languagepack.LanguagePackDownloadManager.Pack;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -756,19 +756,19 @@ public final class SetupWizardActivity extends AppCompatActivity
     // ---- LanguagePackDownloadManager.Listener ----
 
     @Override
-    public void onIndexLoaded(final List<Scheme> schemes) {
+    public void onIndexLoaded(final List<Pack> schemes) {
         mPackIndexLoaded = true;
         for (final String code : mPackLangs) {
-            Scheme scheme = null;
-            for (final Scheme s : schemes) {
+            Pack pack = null;
+            for (final Pack s : schemes) {
                 if (code.equals(s.lang)) {
-                    scheme = s;
+                    pack = s;
                     break;
                 }
             }
-            if (scheme == null) {
+            if (pack == null) {
                 setPackStatus(code, getString(R.string.su_pack_unavailable));
-            } else if (mPackManager.ensureDownloaded(scheme)) {
+            } else if (mPackManager.ensureDownloaded(pack)) {
                 mPackPending.add(code);
                 setPackStatus(code, getString(R.string.su_pack_waiting));
             } else {
@@ -785,9 +785,9 @@ public final class SetupWizardActivity extends AppCompatActivity
         if (!mPackLangs.contains(lang)) return;
         mPackPending.add(lang);
         if (percent == LanguagePackDownloadManager.INSTALLING) {
-            setPackStatus(lang, getString(R.string.varnam_installing));
+            setPackStatus(lang, getString(R.string.language_pack_installing));
         } else {
-            setPackStatus(lang, getString(R.string.varnam_downloading, percent));
+            setPackStatus(lang, getString(R.string.language_pack_downloading, percent));
         }
         if (mStepNumber == STEP_DOWNLOAD) {
             updateDownloadPrimary();

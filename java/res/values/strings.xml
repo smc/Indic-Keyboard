@@ -575,21 +575,14 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
     <string name="varnam_engine_missing">Varnam engine is unavailable in this build.</string>
     <string name="settings_screen_varnam">Varnam</string>
     <string name="settings_screen_varnam_summary">Intelligent word-by-word transliteration. Download the language data to use it.</string>
-    <string name="varnam_page_title">Download Language Packs</string>
-    <string name="varnam_manager_info">Varnam transliterates what you type into Indic scripts. Download a language to start using its Varnam layout.</string>
-    <string name="varnam_loading_languages">Loading available languages…</string>
-    <string name="varnam_downloading">Downloading… %d%%</string>
-    <string name="varnam_installing">Installing…</string>
-    <string name="varnam_status_available">%1$s · v%2$d</string>
-    <string name="varnam_status_installed">Installed · v%1$d</string>
-    <string name="varnam_status_update">Update available · %1$s</string>
-    <string name="varnam_download">Download</string>
-    <string name="varnam_update">Update</string>
-    <string name="varnam_delete">Remove</string>
-    <string name="varnam_installed_ready">%1$s ready — enable it under Settings → Languages.</string>
-    <string name="varnam_delete_confirm">Remove the downloaded data for this language?</string>
-    <string name="varnam_download_error_title">Download failed</string>
-    <string name="varnam_download_error_generic">Could not download the language data. Please try again.</string>
+    <string name="language_pack_downloading">Downloading… %d%%</string>
+    <string name="language_pack_installing">Installing…</string>
+    <string name="language_pack_status_available">%1$s · v%2$d</string>
+    <string name="language_pack_status_installed">Installed · v%1$d</string>
+    <string name="language_pack_status_update">Update available · %1$s · v%2$d</string>
+    <string name="language_pack_remove">Remove</string>
+    <string name="language_pack_remove_confirm">Remove the downloaded data for this language?</string>
+    <string name="language_pack_download_error">Could not download the language data. Please try again.</string>
 
     <!-- Per-language pack download -->
     <string name="language_pack_section">Language pack</string>

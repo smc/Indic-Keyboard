@@ -22,6 +22,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.varnamproject.govarnam.Suggestion;
+import org.smc.inputmethod.indic.languagepack.LanguagePackDownloadManager;
 import com.varnamproject.govarnam.VarnamException;
 
 import java.io.File;
@@ -67,7 +68,7 @@ public class Varnam {
             post(() -> cb.onError(ERROR_VST_MISSING));
             return;
         }
-        final File dir = LanguagePackDownloadManager.schemeDir(appContext, schemeID);
+        final File dir = LanguagePackDownloadManager.packDir(appContext, schemeID);
         final File learnings = new File(dir, schemeID + ".learnings");
         try {
             engine = new com.varnamproject.govarnam.Varnam(vst.getAbsolutePath(),

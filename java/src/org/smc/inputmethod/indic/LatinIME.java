@@ -124,7 +124,7 @@ import org.smc.inputmethod.indic.settings.ThemeSettingsFragment;
 import org.smc.inputmethod.indic.settings.SettingsValues;
 import org.smc.inputmethod.indic.suggestions.SuggestionStripView;
 import org.smc.inputmethod.indic.suggestions.SuggestionStripViewAccessor;
-import org.smc.inputmethod.indic.varnam.LanguagePackDownloadManager;
+import org.smc.inputmethod.indic.languagepack.LanguagePackDownloadManager;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;

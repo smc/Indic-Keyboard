@@ -36,8 +36,8 @@ import com.android.inputmethod.latin.utils.KeyboardLanguages.Layout;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import org.smc.inputmethod.indic.varnam.LanguagePackDownloadManager;
-import org.smc.inputmethod.indic.varnam.LanguagePackDownloadManager.Scheme;
+import org.smc.inputmethod.indic.languagepack.LanguagePackDownloadManager;
+import org.smc.inputmethod.indic.languagepack.LanguagePackDownloadManager.Pack;
 
 import java.util.List;
 import java.util.Locale;
@@ -57,7 +57,7 @@ public final class LanguageLayoutSettingsFragment extends SubScreenFragment
 
     private LanguagePackDownloadManager mPackManager;
     private Preference mPackPref;
-    private Scheme mScheme;          // pack metadata from the index, or null until loaded
+    private Pack mPack;          // pack metadata from the index, or null until loaded
     private boolean mDownloading;    // a download for this language is in flight
     private boolean mPendingEnable;  // enable happened before the index was available
 
@@ -139,7 +139,7 @@ public final class LanguageLayoutSettingsFragment extends SubScreenFragment
             layoutsCategory.addPreference(pref);
         }
 
-        mScheme = findScheme(mPackManager.cachedSchemes());
+        mPack = findPack(mPackManager.cachedPacks());
         bindPack();
     }
 
@@ -185,17 +185,17 @@ public final class LanguageLayoutSettingsFragment extends SubScreenFragment
 
     // ---- Pack download ----
 
-    private Scheme findScheme(final List<Scheme> schemes) {
+    private Pack findPack(final List<Pack> schemes) {
         if (mLangCode == null) return null;
-        for (final Scheme s : schemes) {
+        for (final Pack s : schemes) {
             if (mLangCode.equals(s.lang)) return s;
         }
         return null;
     }
 
     private void triggerPackDownload() {
-        if (mScheme != null) {
-            if (mPackManager.ensureDownloaded(mScheme)) {
+        if (mPack != null) {
+            if (mPackManager.ensureDownloaded(mPack)) {
                 mDownloading = true;
                 bindPack();
             }
@@ -207,22 +207,22 @@ public final class LanguageLayoutSettingsFragment extends SubScreenFragment
     }
 
     private void onPackClicked() {
-        if (mDownloading || mScheme == null || getContext() == null) {
+        if (mDownloading || mPack == null || getContext() == null) {
             return;
         }
         final int installed = LanguagePackDownloadManager.installedVersion(getContext(), mLangCode);
-        if (installed >= 0 && mScheme.version <= installed) {
+        if (installed >= 0 && mPack.version <= installed) {
             new MaterialAlertDialogBuilder(getContext())
-                    .setTitle(mScheme.name)
-                    .setMessage(R.string.varnam_delete_confirm)
-                    .setPositiveButton(R.string.varnam_delete, (d, w) -> {
+                    .setTitle(mPack.name)
+                    .setMessage(R.string.language_pack_remove_confirm)
+                    .setPositiveButton(R.string.language_pack_remove, (d, w) -> {
                         mPackManager.delete(mLangCode);
                         bindPack();
                     })
                     .setNegativeButton(android.R.string.cancel, null)
                     .show();
         } else {
-            mPackManager.download(mScheme);
+            mPackManager.download(mPack);
             mDownloading = true;
             bindPack();
         }
@@ -236,7 +236,7 @@ public final class LanguageLayoutSettingsFragment extends SubScreenFragment
         if (mDownloading) {
             return;  // progress callbacks drive the summary while a download is in flight
         }
-        if (mScheme == null) {
+        if (mPack == null) {
             mPackPref.setSummary(R.string.language_pack_unavailable);
             mPackPref.setIcon(null);
             mPackPref.setEnabled(false);
@@ -244,16 +244,16 @@ public final class LanguageLayoutSettingsFragment extends SubScreenFragment
         }
         mPackPref.setEnabled(true);
         final int installed = LanguagePackDownloadManager.installedVersion(getContext(), mLangCode);
-        final String size = formatSize(mScheme.size);
+        final String size = formatSize(mPack.size);
         if (installed < 0) {
-            mPackPref.setSummary(getString(R.string.varnam_status_available, size, mScheme.version));
-            mPackPref.setIcon(R.drawable.ic_varnam_download);
-        } else if (mScheme.version > installed) {
-            mPackPref.setSummary(getString(R.string.varnam_status_update, size));
-            mPackPref.setIcon(R.drawable.ic_varnam_update);
+            mPackPref.setSummary(getString(R.string.language_pack_status_available, size, mPack.version));
+            mPackPref.setIcon(R.drawable.ic_pack_download);
+        } else if (mPack.version > installed) {
+            mPackPref.setSummary(getString(R.string.language_pack_status_update, size, mPack.version));
+            mPackPref.setIcon(R.drawable.ic_pack_update);
         } else {
-            mPackPref.setSummary(getString(R.string.varnam_status_installed, installed));
-            mPackPref.setIcon(R.drawable.ic_varnam_delete);
+            mPackPref.setSummary(getString(R.string.language_pack_status_installed, installed));
+            mPackPref.setIcon(R.drawable.ic_pack_delete);
         }
     }
 
@@ -267,11 +267,11 @@ public final class LanguageLayoutSettingsFragment extends SubScreenFragment
     // ---- LanguagePackDownloadManager.Listener ----
 
     @Override
-    public void onIndexLoaded(final List<Scheme> schemes) {
-        mScheme = findScheme(schemes);
-        if (mPendingEnable && mScheme != null) {
+    public void onIndexLoaded(final List<Pack> schemes) {
+        mPack = findPack(schemes);
+        if (mPendingEnable && mPack != null) {
             mPendingEnable = false;
-            if (mPackManager.ensureDownloaded(mScheme)) {
+            if (mPackManager.ensureDownloaded(mPack)) {
                 mDownloading = true;
             }
         }
@@ -283,9 +283,9 @@ public final class LanguageLayoutSettingsFragment extends SubScreenFragment
         if (!matches(lang) || mPackPref == null) return;
         mDownloading = true;
         if (percent == LanguagePackDownloadManager.INSTALLING) {
-            mPackPref.setSummary(R.string.varnam_installing);
+            mPackPref.setSummary(R.string.language_pack_installing);
         } else {
-            mPackPref.setSummary(getString(R.string.varnam_downloading, percent));
+            mPackPref.setSummary(getString(R.string.language_pack_downloading, percent));
         }
     }
 
@@ -301,7 +301,7 @@ public final class LanguageLayoutSettingsFragment extends SubScreenFragment
         if (lang != null && !matches(lang)) return;
         mDownloading = false;
         if (mPackPref != null) {
-            mPackPref.setSummary(R.string.varnam_download_error_generic);
+            mPackPref.setSummary(R.string.language_pack_download_error);
         }
     }
 

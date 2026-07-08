@@ -67,7 +67,7 @@ import org.smc.inputmethod.indic.settings.SettingsValues;
 import org.smc.inputmethod.indic.settings.SettingsValuesForSuggestion;
 import org.smc.inputmethod.indic.settings.SpacingAndPunctuations;
 import org.smc.inputmethod.indic.suggestions.SuggestionStripViewAccessor;
-import org.smc.inputmethod.indic.varnam.LanguagePackDownloadManager;
+import org.smc.inputmethod.indic.languagepack.LanguagePackDownloadManager;
 import org.smc.inputmethod.indic.varnam.Varnam;
 import org.smc.inputmethod.indic.varnam.VarnamCallback;
 import org.smc.inputmethod.indic.varnam.VarnamIndicKeyboard;

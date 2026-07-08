@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.smc.inputmethod.indic.varnam;
+package org.smc.inputmethod.indic.languagepack;
 
 import android.app.DownloadManager;
 import android.content.Context;
@@ -52,9 +52,9 @@ import java.util.zip.ZipInputStream;
  *   - {@code main_<lang>.dict} is placed in the LatinIME cached-dictionary directory so the
  *     non-transliteration layouts pick it up ({@code filesDir/dicts/<lang>/main:<lang>});
  *   - {@code xlit_<lang>.dict} (romanized wordlist for gesture typing on transliteration
- *     layouts) stays in {@code filesDir/varnam/<lang>/}, see {@link #xlitDictFile};
+ *     layouts) stays in {@code filesDir/langpacks/<lang>/}, see {@link #xlitDictFile};
  *   - for varnam languages, {@code <lang>.vst} + {@code <lang>-*.vlf} are extracted into
- *     {@code filesDir/varnam/<lang>/} and the {@code .vlf} are imported into the learnings DB.
+ *     {@code filesDir/langpacks/<lang>/} and the {@code .vlf} are imported into the learnings DB.
  *
  * Lives in the same app as the IME, so files written here are visible to {@code LatinIME}.
  * Network access goes through the system {@link DownloadManager} (any network).
@@ -67,9 +67,9 @@ public class LanguagePackDownloadManager {
     public static final String INDEX_URL =
             "https://github.com/jishnu7/dictionaries/releases/latest/download/index.json";
 
-    private static final String DL_SUBDIR = "varnam-dl";
+    private static final String DL_SUBDIR = "langpack-dl";
 
-    public static class Scheme {
+    public static class Pack {
         public final String id;
         public final String lang;
         public final String name;
@@ -80,7 +80,7 @@ public class LanguagePackDownloadManager {
         public final int version;
         public final boolean hasVarnam;
 
-        Scheme(JSONObject o) {
+        Pack(JSONObject o) {
             id = o.optString("id");
             lang = o.optString("lang");
             name = o.optString("name");
@@ -97,7 +97,7 @@ public class LanguagePackDownloadManager {
     public static final int INSTALLING = -1;
 
     public interface Listener {
-        void onIndexLoaded(List<Scheme> schemes);
+        void onIndexLoaded(List<Pack> schemes);
         void onProgress(String lang, int percent);
         void onInstalled(String lang);
         void onError(String lang, String message);
@@ -109,7 +109,7 @@ public class LanguagePackDownloadManager {
     private final Handler main = new Handler(Looper.getMainLooper());
 
     // Active language downloads: downloadId -> scheme.
-    private final Map<Long, Scheme> active = new HashMap<>();
+    private final Map<Long, Pack> active = new HashMap<>();
     private long indexDownloadId = -1;
     private Listener listener;
     private boolean polling;
@@ -129,17 +129,17 @@ public class LanguagePackDownloadManager {
 
     // ---- Paths / install state (also used by the engine wrapper) ----
 
-    public static File schemeDir(Context context, String lang) {
-        return new File(new File(context.getFilesDir(), "varnam"), lang);
+    public static File packDir(Context context, String lang) {
+        return new File(new File(context.getFilesDir(), "langpacks"), lang);
     }
 
     public static File vstFile(Context context, String lang) {
-        return new File(schemeDir(context, lang), lang + ".vst");
+        return new File(packDir(context, lang), lang + ".vst");
     }
 
     /** Romanized wordlist used as the gesture-decode dictionary on transliteration layouts. */
     public static File xlitDictFile(Context context, String lang) {
-        return new File(schemeDir(context, lang), "xlit_" + lang + ".dict");
+        return new File(packDir(context, lang), "xlit_" + lang + ".dict");
     }
 
     /** Where the downloaded {@code main_<lang>.dict} lands so the layouts' Suggest engine finds it. */
@@ -148,7 +148,7 @@ public class LanguagePackDownloadManager {
         return new File(DictionaryInfoUtils.getCacheFileName(id, lang, context));
     }
 
-    private static final String PREFS = "varnam";
+    private static final String PREFS = "language_packs";
     private static final String KEY_VERSION = "version_";
     private static final String KEY_BOOTSTRAP_VERSION = "pack_bootstrap_version";
 
@@ -171,7 +171,7 @@ public class LanguagePackDownloadManager {
 
     /** Marker the engine drops once it has imported the {@code .vlf} packs; cleared on update. */
     public static File importMarker(Context context, String lang) {
-        return new File(schemeDir(context, lang), ".imported");
+        return new File(packDir(context, lang), ".imported");
     }
 
     // ---- Manifest ----
@@ -214,14 +214,14 @@ public class LanguagePackDownloadManager {
         loadIndex();  // downloads start in maybeRunBootstrap once the index arrives
     }
 
-    private void maybeRunBootstrap(final List<Scheme> schemes) {
+    private void maybeRunBootstrap(final List<Pack> schemes) {
         if (bootstrapLangs == null) {
             return;
         }
         final List<String> langs = bootstrapLangs;
         bootstrapLangs = null;
         main.post(() -> {
-            for (final Scheme s : schemes) {
+            for (final Pack s : schemes) {
                 if (langs.contains(s.lang)) {
                     ensureDownloaded(s);
                 }
@@ -232,7 +232,7 @@ public class LanguagePackDownloadManager {
     }
 
     /** Download {@code scheme} only if it isn't installed or a newer version is available. */
-    public boolean ensureDownloaded(final Scheme scheme) {
+    public boolean ensureDownloaded(final Pack scheme) {
         final int installed = installedVersion(appContext, scheme.lang);
         if (installed >= 0 && scheme.version <= installed) {
             return false;
@@ -241,7 +241,7 @@ public class LanguagePackDownloadManager {
         return true;
     }
 
-    public void download(final Scheme scheme) {
+    public void download(final Pack scheme) {
         final DownloadManager.Request req = new DownloadManager.Request(Uri.parse(scheme.url));
         req.setTitle(scheme.name);
         req.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
@@ -295,7 +295,7 @@ public class LanguagePackDownloadManager {
             return;
         }
 
-        final Scheme scheme = active.get(id);
+        final Pack scheme = active.get(id);
         if (scheme == null) return;
 
         if (status == DownloadManager.STATUS_RUNNING || status == DownloadManager.STATUS_PENDING) {
@@ -324,7 +324,7 @@ public class LanguagePackDownloadManager {
             final Uri uri = downloadManager.getUriForDownloadedFile(id);
             io.execute(() -> {
                 try {
-                    final List<Scheme> schemes = fetchAndCacheIndex(uri);
+                    final List<Pack> schemes = fetchAndCacheIndex(uri);
                     maybeRunBootstrap(schemes);
                     main.post(() -> {
                         if (listener != null) listener.onIndexLoaded(schemes);
@@ -345,7 +345,7 @@ public class LanguagePackDownloadManager {
     }
 
     /** Read the downloaded index, persist it to the cache file, and parse it. */
-    private List<Scheme> fetchAndCacheIndex(final Uri uri) throws Exception {
+    private List<Pack> fetchAndCacheIndex(final Uri uri) throws Exception {
         final java.io.ByteArrayOutputStream bos = new java.io.ByteArrayOutputStream();
         try (InputStream in = appContext.getContentResolver().openInputStream(uri)) {
             copy(in, bos);
@@ -360,7 +360,7 @@ public class LanguagePackDownloadManager {
     }
 
     /** Schemes from the last successfully fetched index, or empty if none cached yet. */
-    public List<Scheme> cachedSchemes() {
+    public List<Pack> cachedPacks() {
         final File cache = indexCacheFile();
         if (!cache.exists()) {
             return new ArrayList<>();
@@ -376,26 +376,26 @@ public class LanguagePackDownloadManager {
     }
 
     private File indexCacheFile() {
-        final File dir = new File(appContext.getFilesDir(), "varnam");
+        final File dir = new File(appContext.getFilesDir(), "langpacks");
         if (!dir.exists()) {
             dir.mkdirs();
         }
         return new File(dir, "index.json");
     }
 
-    private static List<Scheme> parseIndexJson(final String json) throws Exception {
+    private static List<Pack> parseIndexJson(final String json) throws Exception {
         final JSONArray arr = new JSONObject(json).getJSONArray("schemes");
-        final List<Scheme> schemes = new ArrayList<>(arr.length());
+        final List<Pack> schemes = new ArrayList<>(arr.length());
         for (int i = 0; i < arr.length(); i++) {
-            schemes.add(new Scheme(arr.getJSONObject(i)));
+            schemes.add(new Pack(arr.getJSONObject(i)));
         }
         return schemes;
     }
 
-    private void finishDownload(final long id, final Scheme scheme, final Uri localUri) {
+    private void finishDownload(final long id, final Pack scheme, final Uri localUri) {
         io.execute(() -> {
             File zip = null;
-            final File dir = schemeDir(appContext, scheme.lang);
+            final File dir = packDir(appContext, scheme.lang);
             final File staging = new File(dir.getParentFile(), scheme.lang + ".staging");
             try {
                 zip = copyToCache(localUri, scheme.lang);
@@ -486,7 +486,7 @@ public class LanguagePackDownloadManager {
      * here the marker is left unset and the IME-side wrapper imports lazily as a fallback.
      */
     private void importPacks(final String lang) {
-        final File dir = schemeDir(appContext, lang);
+        final File dir = packDir(appContext, lang);
         final File[] vlfs = dir.listFiles((d, name) -> name.endsWith(".vlf"));
         if (vlfs == null || vlfs.length == 0) {
             return;
@@ -526,7 +526,7 @@ public class LanguagePackDownloadManager {
 
     public void delete(final String lang) {
         io.execute(() -> {
-            deleteRecursive(schemeDir(appContext, lang));
+            deleteRecursive(packDir(appContext, lang));
             dictCacheFile(appContext, lang).delete();
             appContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
                     .edit().remove(KEY_VERSION + lang).apply();
