@@ -57,6 +57,70 @@
             android:textSize="16sp"
             style="?attr/suggestionWordStyle" />
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/clipboard_chip_strip"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:hapticFeedbackEnabled="false"
+        android:soundEffectsEnabled="false"
+        android:contentDescription="@string/clipboard_chip_description" >
+        <View
+            android:layout_width="@dimen/config_suggestions_strip_edge_key_width"
+            android:layout_height="0dip" />
+        <View
+            android:layout_width="0dip"
+            android:layout_weight="1"
+            android:layout_height="0dip" />
+        <LinearLayout
+            android:id="@+id/clipboard_chip_pill"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="8dp"
+            android:paddingRight="16dp" >
+            <ImageView
+                android:id="@+id/clipboard_chip_icon"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_kb_clipboard"
+                android:importantForAccessibility="no" />
+            <ImageView
+                android:id="@+id/clipboard_chip_image"
+                android:layout_width="wrap_content"
+                android:layout_height="24dp"
+                android:adjustViewBounds="true"
+                android:layout_marginStart="8dp"
+                android:contentDescription="@string/clipboard_image_description"
+                android:visibility="gone" />
+            <TextView
+                android:id="@+id/clipboard_chip_text"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:maxWidth="220dp"
+                android:gravity="center_vertical"
+                android:layout_marginStart="8dp"
+                android:textSize="14sp"
+                android:textColor="?attr/md3OnSurfaceVariant"
+                android:singleLine="true"
+                android:ellipsize="end" />
+        </LinearLayout>
+        <View
+            android:layout_width="0dip"
+            android:layout_weight="1"
+            android:layout_height="0dip" />
+        <ImageView
+            android:id="@+id/clipboard_chip_open_history"
+            android:layout_width="@dimen/config_suggestions_strip_edge_key_width"
+            android:layout_height="match_parent"
+            android:scaleType="center"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/clipboard_open_history" />
+    </LinearLayout>
     <ImageButton
         android:id="@+id/suggestions_strip_more_key"
         android:layout_width="@dimen/config_suggestions_strip_edge_key_width"

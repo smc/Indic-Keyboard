@@ -29,5 +29,6 @@
         <item name="iconZwjKey">@drawable/ic_kb_zwj</item>
         <item name="iconEmojiActionKey">@drawable/ic_kb_emoji_action</item>
         <item name="iconEmojiNormalKey">@drawable/ic_kb_emoji</item>
+        <item name="iconClipboardKey">@drawable/ic_kb_clipboard</item>
     </style>
 </resources>

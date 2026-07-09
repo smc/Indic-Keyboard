@@ -53,6 +53,8 @@ public final class KeyboardCodesSet {
         "key_emoji",
         "key_emoji_search",
         "key_alpha_from_emoji",
+        "key_clipboard",
+        "key_alpha_from_clipboard",
         "key_unspecified",
     };
 
@@ -74,6 +76,8 @@ public final class KeyboardCodesSet {
         Constants.CODE_EMOJI,
         Constants.CODE_EMOJI_SEARCH,
         Constants.CODE_ALPHA_FROM_EMOJI,
+        Constants.CODE_CLIPBOARD,
+        Constants.CODE_ALPHA_FROM_CLIPBOARD,
         Constants.CODE_UNSPECIFIED,
     };
 

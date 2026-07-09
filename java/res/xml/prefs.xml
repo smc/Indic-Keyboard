@@ -39,6 +39,11 @@
         android:icon="@drawable/ic_settings_text"
         android:key="screen_correction" />
     <PreferenceScreen
+        android:fragment="org.smc.inputmethod.indic.settings.ClipboardSettingsFragment"
+        android:title="@string/settings_screen_clipboard"
+        android:icon="@drawable/ic_settings_clipboard"
+        android:key="screen_clipboard" />
+    <PreferenceScreen
         android:fragment="org.smc.inputmethod.indic.settings.AdvancedSettingsFragment"
         android:title="@string/settings_screen_advanced"
         android:icon="@drawable/ic_settings_advanced"

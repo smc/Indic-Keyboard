@@ -13,6 +13,7 @@ import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.text.InputType.*
 import android.util.TypedValue
 import android.view.WindowInsets
@@ -205,6 +206,11 @@ class MainActivity : Activity() {
             text = "Copy test image to clipboard"
             setOnClickListener { copyTestImageToClipboard() }
         })
+        addView(Button(context).apply {
+            layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+            text = "Copy sensitive text to clipboard"
+            setOnClickListener { copySensitiveTextToClipboard() }
+        })
     }
 
     private fun imagePasteField(preview: ImageView) = object : EditText(this) {
@@ -247,5 +253,16 @@ class MainActivity : Activity() {
         val uri = Uri.parse("content://org.smc.inputtest.clip/test_image.png")
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboard.setPrimaryClip(ClipData.newUri(contentResolver, "test image", uri))
+    }
+
+    private fun copySensitiveTextToClipboard() {
+        val clip = ClipData.newPlainText("password", "s3cr3t-p4ssw0rd")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            clip.description.extras = PersistableBundle().apply {
+                putBoolean("android.content.extra.IS_SENSITIVE", true)
+            }
+        }
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboard.setPrimaryClip(clip)
     }
 }

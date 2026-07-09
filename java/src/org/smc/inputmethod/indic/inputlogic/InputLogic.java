@@ -291,6 +291,25 @@ public final class InputLogic {
     }
 
     /**
+     * Commit raw clipboard text at the cursor. Unlike {@link #onTextInput} this performs no TLD
+     * processing, phantom-space insertion or stats/learning — pasted content is not typed input.
+     */
+    public void onPasteClipboardText(final SettingsValues settingsValues, final CharSequence text,
+            final LatinIME.UIHandler handler) {
+        mConnection.beginBatchEdit();
+        if (mWordComposer.isComposingWord()) {
+            commitCurrentAutoCorrection(settingsValues, LastComposedWord.NOT_A_SEPARATOR, handler);
+        } else {
+            resetComposingState(true /* alsoResetLastComposedWord */);
+        }
+        mConnection.commitText(text, 1);
+        mConnection.endBatchEdit();
+        mSpaceState = SpaceState.NONE;
+        mWordBeingCorrectedByCursor = null;
+        handler.postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_TYPING);
+    }
+
+    /**
      * A suggestion was picked from the suggestion strip.
      * @param settingsValues the current values of the settings.
      * @param suggestionInfo the suggestion info.
@@ -722,6 +741,11 @@ public final class InputLogic {
                 break;
             case Constants.CODE_ALPHA_FROM_EMOJI:
                 // Note: Switching back from Emoji keyboard to the main keyboard is being
+                // handled in {@link KeyboardState#onEvent(Event,int)}.
+                break;
+            case Constants.CODE_CLIPBOARD:
+            case Constants.CODE_ALPHA_FROM_CLIPBOARD:
+                // Note: Switching to and from the clipboard history keyboard is being
                 // handled in {@link KeyboardState#onEvent(Event,int)}.
                 break;
             case Constants.CODE_SHIFT_ENTER:

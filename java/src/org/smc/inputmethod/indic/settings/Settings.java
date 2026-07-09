@@ -130,6 +130,10 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static final String PREF_SPACE_TRACKPAD = "pref_space_trackpad";
     public static final String PREF_DELETE_SWIPE = "pref_delete_swipe";
+    // Clipboard
+    public static final String PREF_CLIPBOARD_ENABLED = "pref_clipboard_enabled";
+    public static final String PREF_CLIPBOARD_RECENT_CHIP = "pref_clipboard_recent_chip";
+    public static final String PREF_CLIPBOARD_EXPIRY_SECONDS = "pref_clipboard_expiry_seconds";
     // Emoji
     public static final String PREF_EMOJI_RECENT_KEYS = "emoji_recent_keys";
     public static final String PREF_EMOJI_CATEGORY_LAST_TYPED_ID = "emoji_category_last_typed_id";
@@ -404,6 +408,19 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static boolean readDeleteSwipeEnabled(final SharedPreferences prefs) {
         return prefs.getBoolean(PREF_DELETE_SWIPE, true);
+    }
+
+    public static boolean readClipboardEnabled(final SharedPreferences prefs) {
+        return prefs.getBoolean(PREF_CLIPBOARD_ENABLED, true);
+    }
+
+    public static long readClipboardExpiryMillis(final SharedPreferences prefs) {
+        final String seconds = prefs.getString(PREF_CLIPBOARD_EXPIRY_SECONDS, "3600");
+        try {
+            return Long.parseLong(seconds) * 1000;
+        } catch (final NumberFormatException e) {
+            return 3600 * 1000;
+        }
     }
 
     public static boolean readUseFullscreenMode(final Resources res) {

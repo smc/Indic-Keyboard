@@ -177,5 +177,15 @@
                 android:multiprocess="false"
                 android:label="@string/dictionary_provider_name">
         </provider>
+
+        <provider android:name="androidx.core.content.FileProvider"
+                android:authorities="${applicationId}.clipboard.fileprovider"
+                android:exported="false"
+                android:grantUriPermissions="true"
+                android:directBootAware="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/clipboard_file_paths" />
+        </provider>
     </application>
 </manifest>

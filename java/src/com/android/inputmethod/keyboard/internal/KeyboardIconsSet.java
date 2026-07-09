@@ -61,6 +61,7 @@ public final class KeyboardIconsSet {
     public static final String NAME_EMOJI_ACTION_KEY = "emoji_action_key";
     public static final String NAME_EMOJI_NORMAL_KEY = "emoji_normal_key";
     public static final String NAME_BACK_ARROW = "back_arrow";
+    public static final String NAME_CLIPBOARD_KEY = "clipboard_key";
 
     private static final SparseIntArray ATTR_ID_TO_ICON_ID = new SparseIntArray();
 
@@ -93,6 +94,7 @@ public final class KeyboardIconsSet {
         NAME_EMOJI_ACTION_KEY,            R.styleable.Keyboard_iconEmojiActionKey,
         NAME_EMOJI_NORMAL_KEY,            R.styleable.Keyboard_iconEmojiNormalKey,
         NAME_BACK_ARROW,                  R.styleable.Keyboard_iconBackToKeyboardKey,
+        NAME_CLIPBOARD_KEY,               R.styleable.Keyboard_iconClipboardKey,
     };
 
     private static int NUM_ICONS = NAMES_AND_ATTR_IDS.length / 2;

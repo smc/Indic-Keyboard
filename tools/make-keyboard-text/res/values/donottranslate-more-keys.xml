@@ -203,6 +203,7 @@
     <string name="morekeys_symbols_percent">&#x2030;</string>
     <string name="morekeys_am_pm">!fixedColumnOrder!2,!hasLabels!,!text/keylabel_time_am,!text/keylabel_time_pm</string>
     <string name="keyspec_settings">!icon/settings_key|!code/key_settings</string>
+    <string name="keyspec_clipboard">!icon/clipboard_key|!code/key_clipboard</string>
     <string name="keyspec_shortcut">!icon/shortcut_key|!code/key_shortcut</string>
     <string name="keyspec_action_next">!hasLabels!,!text/label_next_key|!code/key_action_next</string>
     <string name="keyspec_action_previous">!hasLabels!,!text/label_previous_key|!code/key_action_previous</string>

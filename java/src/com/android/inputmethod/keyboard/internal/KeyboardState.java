@@ -51,6 +51,7 @@ public final class KeyboardState {
         public void setAlphabetShiftLockedKeyboard();
         public void setAlphabetShiftLockShiftedKeyboard();
         public void setEmojiKeyboard();
+        public void setClipboardKeyboard();
         public void setSymbolsKeyboard();
         public void setSymbolsShiftedKeyboard();
 
@@ -86,6 +87,7 @@ public final class KeyboardState {
     // symbols, and emoji mode.
     private boolean mIsAlphabetMode;
     private boolean mIsEmojiMode;
+    private boolean mIsClipboardMode;
     private AlphabetShiftState mAlphabetShiftState = new AlphabetShiftState();
     private boolean mIsSymbolShifted;
     private boolean mPrevMainKeyboardWasShiftLocked;
@@ -153,12 +155,16 @@ public final class KeyboardState {
 
     public void onSaveKeyboardState() {
         final SavedKeyboardState state = mSavedKeyboardState;
-        state.mIsAlphabetMode = mIsAlphabetMode;
+        // The clipboard panel is transient; save it as the alphabet keyboard it will return to.
+        state.mIsAlphabetMode = mIsAlphabetMode || mIsClipboardMode;
         state.mIsEmojiMode = mIsEmojiMode;
         if (mIsAlphabetMode) {
             state.mIsAlphabetShiftLocked = mAlphabetShiftState.isShiftLocked();
             state.mShiftMode = mAlphabetShiftState.isAutomaticShifted() ? AUTOMATIC_SHIFT
                     : (mAlphabetShiftState.isShiftedOrShiftLocked() ? MANUAL_SHIFT : UNSHIFT);
+        } else if (mIsClipboardMode) {
+            state.mIsAlphabetShiftLocked = mPrevMainKeyboardWasShiftLocked;
+            state.mShiftMode = UNSHIFT;
         } else {
             state.mIsAlphabetShiftLocked = mPrevMainKeyboardWasShiftLocked;
             state.mShiftMode = mIsSymbolShifted ? MANUAL_SHIFT : UNSHIFT;
@@ -306,6 +312,7 @@ public final class KeyboardState {
         mSwitchActions.setAlphabetKeyboard();
         mIsAlphabetMode = true;
         mIsEmojiMode = false;
+        mIsClipboardMode = false;
         mIsSymbolShifted = false;
         mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
         mSwitchState = SWITCH_STATE_ALPHA;
@@ -348,11 +355,26 @@ public final class KeyboardState {
         }
         mIsAlphabetMode = false;
         mIsEmojiMode = true;
+        mIsClipboardMode = false;
         mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
         // Remember caps lock mode and reset alphabet shift state.
         mPrevMainKeyboardWasShiftLocked = mAlphabetShiftState.isShiftLocked();
         mAlphabetShiftState.setShiftLocked(false);
         mSwitchActions.setEmojiKeyboard();
+    }
+
+    private void setClipboardKeyboard() {
+        if (DEBUG_INTERNAL_ACTION) {
+            Log.d(TAG, "setClipboardKeyboard");
+        }
+        mIsAlphabetMode = false;
+        mIsEmojiMode = false;
+        mIsClipboardMode = true;
+        mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
+        // Remember caps lock mode and reset alphabet shift state.
+        mPrevMainKeyboardWasShiftLocked = mAlphabetShiftState.isShiftLocked();
+        mAlphabetShiftState.setShiftLocked(false);
+        mSwitchActions.setClipboardKeyboard();
     }
 
     public void onPressKey(final int code, final boolean isSinglePointer, final int autoCapsFlags,
@@ -649,9 +671,10 @@ public final class KeyboardState {
             }
             break;
         case SWITCH_STATE_SYMBOL_BEGIN:
-            if (mIsEmojiMode) {
-                // When in the Emoji keyboard, we don't want to switch back to the main layout even
-                // after the user hits an emoji letter followed by an enter or a space.
+            if (mIsEmojiMode || mIsClipboardMode) {
+                // When in the Emoji keyboard or clipboard panel, we don't want to switch back to
+                // the main layout even after the user hits an emoji letter followed by an enter
+                // or a space.
                 break;
             }
             if (!isSpaceOrEnter(code) && (Constants.isLetterCode(code)
@@ -675,6 +698,10 @@ public final class KeyboardState {
         } else if (code == Constants.CODE_EMOJI) {
             setEmojiKeyboard();
         } else if (code == Constants.CODE_ALPHA_FROM_EMOJI) {
+            setAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
+        } else if (code == Constants.CODE_CLIPBOARD) {
+            setClipboardKeyboard();
+        } else if (code == Constants.CODE_ALPHA_FROM_CLIPBOARD) {
             setAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
         }
     }

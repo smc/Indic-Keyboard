@@ -39,5 +39,6 @@
         <item name="iconZwjKey">@drawable/ic_kb_sharp_zwj</item>
         <item name="iconEmojiActionKey">@drawable/ic_kb_sharp_emoji</item>
         <item name="iconEmojiNormalKey">@drawable/ic_kb_sharp_emoji</item>
+        <item name="iconClipboardKey">@drawable/ic_kb_sharp_clipboard</item>
     </style>
 </resources>

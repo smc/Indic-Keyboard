@@ -32,6 +32,9 @@
     <attr name="md3OnSurfaceVariant" format="color" />
     <attr name="md3Primary" format="color" />
     <attr name="md3OnPrimary" format="color" />
+    <!-- Whether clipboard surfaces (chip, history cards) use rounded corners. Square-cornered
+         themes (classic, pure black) set this to false. -->
+    <attr name="clipboardSurfacesRounded" format="boolean" />
 
     <declare-styleable name="KeyboardTheme">
         <!-- InputView style -->
@@ -312,6 +315,7 @@
         <attr name="iconImeKey" format="reference" />
         <attr name="iconEmojiActionKey" format="reference" />
         <attr name="iconEmojiNormalKey" format="reference" />
+        <attr name="iconClipboardKey" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_GridRows">

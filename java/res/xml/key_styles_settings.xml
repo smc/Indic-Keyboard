@@ -29,6 +29,8 @@
         >
             <key-style
                 latin:styleName="settingsMoreKeysStyle"
+                latin:keyLabelFlags="hasPopupHint"
+                latin:additionalMoreKeys="!text/keyspec_clipboard"
                 latin:backgroundType="functional"
                 latin:parentStyle="baseSettingsMoreKeysStyle" />
         </case>
@@ -37,7 +39,7 @@
             <key-style
                 latin:styleName="settingsMoreKeysStyle"
                 latin:keyLabelFlags="hasPopupHint"
-                latin:additionalMoreKeys="!text/keyspec_settings"
+                latin:additionalMoreKeys="!text/keyspec_clipboard,!text/keyspec_settings"
                 latin:backgroundType="functional"
                 latin:parentStyle="baseSettingsMoreKeysStyle" />
         </default>

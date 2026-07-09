@@ -50,6 +50,65 @@
     <string name="settings_screen_advanced">Advanced</string>
     <!-- Settings screen title for keyboard theme settings [CHAR LIMIT=33] -->
     <string name="settings_screen_theme">Theme</string>
+    <!-- Settings screen title for clipboard settings [CHAR LIMIT=33] -->
+    <string name="settings_screen_clipboard">Clipboard</string>
+
+    <!-- Option to enable the clipboard history feature [CHAR LIMIT=33] -->
+    <string name="clipboard_enable">Clipboard history</string>
+    <!-- Summary for the clipboard history option [CHAR LIMIT=65] -->
+    <string name="clipboard_enable_summary">Save copied text and images, open with a long press on the comma key</string>
+    <!-- Option to show a suggestion chip with the recently copied item [CHAR LIMIT=33] -->
+    <string name="clipboard_recent_chip">Show recently copied</string>
+    <!-- Summary for the recently copied suggestion option [CHAR LIMIT=65] -->
+    <string name="clipboard_recent_chip_summary">Suggest the last copied item in the suggestion strip for a short while</string>
+    <!-- Option to choose how long clipboard items are kept [CHAR LIMIT=33] -->
+    <string name="clipboard_expiry">Remove items after</string>
+    <!-- Clipboard expiry choices -->
+    <string name="clipboard_expiry_5min">5 minutes</string>
+    <string name="clipboard_expiry_30min">30 minutes</string>
+    <string name="clipboard_expiry_1hour">1 hour</string>
+    <string name="clipboard_expiry_1day">1 day</string>
+    <string name="clipboard_expiry_never">Never</string>
+    <string-array name="clipboard_expiry_entries">
+        <item>@string/clipboard_expiry_5min</item>
+        <item>@string/clipboard_expiry_30min</item>
+        <item>@string/clipboard_expiry_1hour</item>
+        <item>@string/clipboard_expiry_1day</item>
+        <item>@string/clipboard_expiry_never</item>
+    </string-array>
+    <string-array name="clipboard_expiry_values" translatable="false">
+        <item>300</item>
+        <item>1800</item>
+        <item>3600</item>
+        <item>86400</item>
+        <item>0</item>
+    </string-array>
+    <!-- Option to delete all clipboard history items [CHAR LIMIT=33] -->
+    <string name="clipboard_clear_history">Clear clipboard history</string>
+    <!-- Confirmation dialog message shown before clearing the clipboard history [CHAR LIMIT=100] -->
+    <string name="clipboard_clear_history_confirm">Delete all items from the clipboard history?</string>
+    <!-- Button that deletes all clipboard history items [CHAR LIMIT=33] -->
+    <string name="clipboard_clear_all">Clear all</string>
+    <!-- Shown in the clipboard panel when there are no items [CHAR LIMIT=65] -->
+    <string name="clipboard_history_empty">Nothing here yet. Copied text and images will show up here.</string>
+    <!-- Shown in the clipboard panel when the feature is turned off [CHAR LIMIT=65] -->
+    <string name="clipboard_turned_off">Clipboard history is turned off</string>
+    <!-- Button in the clipboard panel that turns the feature on [CHAR LIMIT=33] -->
+    <string name="clipboard_turn_on">Turn on</string>
+    <!-- Button in the clipboard panel that turns the feature off [CHAR LIMIT=33] -->
+    <string name="clipboard_turn_off">Turn off</string>
+    <!-- Accessibility description for the clipboard suggestion chip [CHAR LIMIT=65] -->
+    <string name="clipboard_chip_description">Paste from clipboard</string>
+    <!-- Accessibility description for an image item in the clipboard history [CHAR LIMIT=65] -->
+    <string name="clipboard_image_description">Copied image</string>
+    <!-- Label shown next to the image thumbnail on the clipboard suggestion chip [CHAR LIMIT=20] -->
+    <string name="clipboard_image_label">Image</string>
+    <!-- Accessibility description for the delete button on a clipboard history item [CHAR LIMIT=33] -->
+    <string name="clipboard_delete_item">Delete item</string>
+    <!-- Accessibility description for the back key in the clipboard panel [CHAR LIMIT=33] -->
+    <string name="clipboard_back_to_keyboard">Back to keyboard</string>
+    <!-- Accessibility description for the chevron on the clipboard chip that opens the history [CHAR LIMIT=40] -->
+    <string name="clipboard_open_history">Open clipboard history</string>
 
     <!--  Option for enabling or disabling the split keyboard layout. [CHAR LIMIT=65]-->
     <string name="enable_split_keyboard">Enable split keyboard</string>

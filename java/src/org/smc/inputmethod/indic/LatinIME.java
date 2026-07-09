@@ -21,6 +21,7 @@ import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
+import android.content.ClipDescription;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -37,6 +38,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Debug;
 import android.os.IBinder;
@@ -61,9 +63,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
+
+import androidx.core.view.inputmethod.EditorInfoCompat;
+import androidx.core.view.inputmethod.InputConnectionCompat;
+import androidx.core.view.inputmethod.InputContentInfoCompat;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.annotations.UsedForTesting;
@@ -81,6 +88,7 @@ import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardTheme;
+import com.android.inputmethod.keyboard.clipboard.ClipboardHistoryView;
 import com.android.inputmethod.keyboard.emoji.EmojiSearchController;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager;
@@ -115,6 +123,8 @@ import com.android.inputmethod.latin.utils.StatsUtilsManager;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.ViewLayoutUtils;
 
+import org.smc.inputmethod.indic.clipboard.ClipboardHistoryEntry;
+import org.smc.inputmethod.indic.clipboard.ClipboardHistoryManager;
 import org.smc.inputmethod.indic.inputlogic.InputLogic;
 import org.smc.inputmethod.indic.personalization.PersonalizationHelper;
 import org.smc.inputmethod.indic.settings.Settings;
@@ -145,6 +155,7 @@ import static com.android.inputmethod.latin.common.Constants.ImeOption.NO_MICROP
 public class LatinIME extends InputMethodService implements KeyboardActionListener,
         SuggestionStripView.Listener, SuggestionStripViewAccessor,
         DictionaryFacilitator.DictionaryInitializationListener,
+        ClipboardHistoryView.OnClipboardEntryClickedListener,
         PermissionsManager.PermissionsResultCallback {
     static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean TRACE = false;
@@ -194,6 +205,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private Context mDisplayContext;
 
     private RichInputMethodManager mRichImm;
+    private ClipboardHistoryManager mClipboardHistoryManager;
     @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
     private final SubtypeState mSubtypeState = new SubtypeState();
     private EmojiAltPhysicalKeyDetector mEmojiAltPhysicalKeyDetector;
@@ -680,6 +692,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         AudioAndHapticFeedbackManager.init(this);
         AccessibilityUtils.init(this);
         mStatsUtilsManager.onCreate(this /* context */, mDictionaryFacilitator);
+        mClipboardHistoryManager = ClipboardHistoryManager.init(this);
+        mClipboardHistoryManager.startListening();
         checkForTransliteration();
         super.onCreate();
 
@@ -864,6 +878,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onDestroy() {
+        mClipboardHistoryManager.stopListening();
         mDictionaryFacilitator.closeDictionaries();
         mSettings.onDestroy();
         unregisterReceiver(mHideSoftInputReceiver);
@@ -1231,9 +1246,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             switcher.requestUpdatingShiftState(getCurrentAutoCapsState(),
                     getCurrentRecapitalizeState());
         }
+        // A leftover chip would block the neutral strip update below; re-shown right after if
+        // still eligible for this editor.
+        if (hasSuggestionStripView()) {
+            mSuggestionStripView.dismissClipboardChip();
+        }
         // This will set the punctuation suggestions if next word suggestion is off;
         // otherwise it will clear the suggestion strip.
         setNeutralSuggestionStrip();
+        maybeShowRecentClipboardChip();
 
         mHandler.cancelUpdateSuggestionStrip();
 
@@ -1429,6 +1450,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
         final int suggestionsHeight = (!mKeyboardSwitcher.isShowingEmojiPalettes()
+                && !mKeyboardSwitcher.isShowingClipboardHistory()
                 && mSuggestionStripView.getVisibility() == View.VISIBLE)
                 ? mSuggestionStripView.getHeight() : 0;
         final int searchBarHeight = (mEmojiSearchBar != null
@@ -1683,6 +1705,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mEmojiSearchController.exitSearch();
                 return;
             }
+            // The clipboard panel is not reachable while the emoji search owns the keyboard.
+            if (event.mKeyCode == Constants.CODE_CLIPBOARD) {
+                return;
+            }
             // The language key on the search keyboard returns to the user's previous layout.
             if (event.mKeyCode == Constants.CODE_LANGUAGE_SWITCH) {
                 mEmojiSearchController.exitToKeyboard();
@@ -1695,12 +1721,32 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     getCurrentRecapitalizeState());
             return;
         }
+        if (hasSuggestionStripView() && shouldDismissClipboardChip(event)) {
+            mSuggestionStripView.dismissClipboardChip();
+        }
         final InputTransaction completeInputTransaction =
                 mInputLogic.onCodeInput(mSettings.getCurrent(), event,
                         mKeyboardSwitcher.getKeyboardShiftMode(),
                         mKeyboardSwitcher.getCurrentKeyboardScriptId(), mHandler);
         updateStateAfterInputTransaction(completeInputTransaction);
         mKeyboardSwitcher.onEvent(event, getCurrentAutoCapsState(), getCurrentRecapitalizeState());
+    }
+
+    // The clipboard chip survives mode switches (shift, symbols, emoji palette, clipboard
+    // panel); only events that change the editor content dismiss it.
+    private static boolean shouldDismissClipboardChip(final Event event) {
+        if (!event.isFunctionalKeyEvent()) {
+            return true;
+        }
+        switch (event.mKeyCode) {
+            case Constants.CODE_DELETE:
+            case Constants.CODE_SHIFT_ENTER:
+            case Constants.CODE_ACTION_NEXT:
+            case Constants.CODE_ACTION_PREVIOUS:
+                return true;
+            default:
+                return false;
+        }
     }
 
     // A helper method to split the code point and the key code. Ultimately, they should not be
@@ -1728,6 +1774,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mEmojiSearchController.handleTextInput(rawText);
             return;
         }
+        if (hasSuggestionStripView()) {
+            mSuggestionStripView.dismissClipboardChip();
+        }
         // TODO: have the keyboard pass the correct key code when we need it.
         final Event event = Event.createSoftwareTextEvent(rawText, Constants.CODE_OUTPUT_TEXT);
         final InputTransaction completeInputTransaction =
@@ -1739,6 +1788,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onStartBatchInput() {
+        if (hasSuggestionStripView()) {
+            mSuggestionStripView.dismissClipboardChip();
+        }
         mInputLogic.onStartBatchInput(mSettings.getCurrent(), mKeyboardSwitcher, mHandler);
         mGestureConsumer.onGestureStarted(
                 mRichImm.getCurrentSubtypeLocale(),
@@ -1838,6 +1890,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 return;
             }
         }
+        if (mSuggestionStripView.isShowingClipboardChip()) {
+            // Keep the chip even over the resumed-word suggestions of a pre-filled field; it is
+            // dismissed on any key event, on tap, or when the keyboard opens again.
+            return;
+        }
 
         if (currentSettingsValues.isSuggestionsEnabledPerUserSettings()
                 || currentSettingsValues.isApplicationSpecifiedCompletionsOn()
@@ -1893,6 +1950,94 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mSuggestionStripView != null) {
             mSuggestionStripView.setSuggestions(SuggestedWords.getEmptyInstance(), false);
         }
+    }
+
+    private static final long RECENT_CLIPBOARD_CHIP_WINDOW_MILLIS = TimeUnit.MINUTES.toMillis(1);
+
+    private void maybeShowRecentClipboardChip() {
+        if (!hasSuggestionStripView() || !onEvaluateInputViewShown()) {
+            return;
+        }
+        final SettingsValues currentSettings = mSettings.getCurrent();
+        if (!currentSettings.mClipboardEnabled || !currentSettings.mClipboardRecentChipEnabled
+                || currentSettings.mInputAttributes.mIsPasswordField) {
+            return;
+        }
+        final ClipboardHistoryEntry entry =
+                mClipboardHistoryManager.getRecentEntry(RECENT_CLIPBOARD_CHIP_WINDOW_MILLIS);
+        if (entry == null) {
+            return;
+        }
+        if (entry.isImage() && !editorSupportsImagePaste(entry.mMimeType)) {
+            return;
+        }
+        mSuggestionStripView.updateVisibility(true, isFullscreenMode());
+        mSuggestionStripView.showClipboardChip(entry);
+    }
+
+    // Called from {@link SuggestionStripView} through the {@link SuggestionStripView#Listener}
+    // interface
+    @Override
+    public void onClipboardChipClicked(final ClipboardHistoryEntry entry) {
+        pasteClipboardEntry(entry);
+    }
+
+    // Called from {@link ClipboardHistoryView} through the
+    // {@link ClipboardHistoryView.OnClipboardEntryClickedListener} interface
+    @Override
+    public void onClipboardEntryClicked(final ClipboardHistoryEntry entry) {
+        pasteClipboardEntry(entry);
+        if (mKeyboardSwitcher.isShowingClipboardHistory()) {
+            onCodeInput(Constants.CODE_ALPHA_FROM_CLIPBOARD, Constants.NOT_A_COORDINATE,
+                    Constants.NOT_A_COORDINATE, false /* isKeyRepeat */);
+        }
+    }
+
+    private void pasteClipboardEntry(final ClipboardHistoryEntry entry) {
+        if (hasSuggestionStripView()) {
+            mSuggestionStripView.dismissClipboardChip();
+        }
+        if (entry.isImage()) {
+            commitClipboardImage(entry);
+        } else if (entry.mText != null) {
+            mInputLogic.onPasteClipboardText(mSettings.getCurrent(), entry.mText, mHandler);
+        }
+    }
+
+    private boolean editorSupportsImagePaste(final String mimeType) {
+        final EditorInfo editorInfo = getCurrentInputEditorInfo();
+        if (editorInfo == null || mimeType == null) {
+            return false;
+        }
+        for (final String supported : EditorInfoCompat.getContentMimeTypes(editorInfo)) {
+            if (ClipDescription.compareMimeTypes(mimeType, supported)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void commitClipboardImage(final ClipboardHistoryEntry entry) {
+        final EditorInfo editorInfo = getCurrentInputEditorInfo();
+        final InputConnection inputConnection = getCurrentInputConnection();
+        if (editorInfo == null || inputConnection == null) {
+            return;
+        }
+        final Uri contentUri = mClipboardHistoryManager.contentUriFor(entry);
+        final InputContentInfoCompat inputContentInfo = new InputContentInfoCompat(contentUri,
+                new ClipDescription(getString(R.string.clipboard_image_description),
+                        new String[] { entry.mMimeType }),
+                null /* linkUri */);
+        int flags = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            flags |= InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION;
+        } else {
+            // Below API 25 the androidx protocol cannot grant on our behalf.
+            grantUriPermission(editorInfo.packageName, contentUri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+        InputConnectionCompat.commitContent(inputConnection, editorInfo, inputContentInfo, flags,
+                null /* opts */);
     }
 
     // This will show either an empty suggestion strip (if prediction is enabled) or
