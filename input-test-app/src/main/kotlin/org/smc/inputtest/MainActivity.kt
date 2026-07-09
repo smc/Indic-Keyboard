@@ -1,9 +1,16 @@
 package org.smc.inputtest
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType.*
@@ -12,10 +19,16 @@ import android.view.WindowInsets
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputConnection
+import android.view.inputmethod.InputConnectionWrapper
+import android.view.inputmethod.InputContentInfo
+import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
+import java.io.File
 
 /**
  * One screen with an [EditText] for every [android.text.InputType] variant (and a few IME-action
@@ -90,6 +103,8 @@ class MainActivity : Activity() {
             column.addView(header(title, topGap = if (index == 0) dp(8) else dp(24)))
             column.addView(card(fields))
         }
+        column.addView(header("Rich content", topGap = dp(24)))
+        column.addView(richContentCard())
 
         val scroll = ScrollView(this).apply {
             clipToPadding = false
@@ -157,4 +172,80 @@ class MainActivity : Activity() {
     }
 
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
+
+    // An EditText advertising image mime types via EditorInfo.contentMimeTypes; images the IME
+    // commits via commitContent are shown in a preview below. The button puts a generated PNG on
+    // the clipboard through TestImageProvider so the IME's clipboard capture can be exercised
+    // without leaving the app.
+    private fun richContentCard() = LinearLayout(this).apply {
+        orientation = LinearLayout.VERTICAL
+        layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+        setPadding(dp(16), dp(16), dp(16), dp(16))
+        elevation = dp(2).toFloat()
+        background = GradientDrawable().apply {
+            setColor(Color.WHITE)
+            cornerRadius = dp(12).toFloat()
+        }
+        val preview = ImageView(context).apply {
+            layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, dp(120))
+                .apply { topMargin = dp(8) }
+            scaleType = ImageView.ScaleType.FIT_CENTER
+            setBackgroundColor(Color.parseColor("#EEEEEE"))
+        }
+        addView(TextView(context).apply {
+            text = "Image paste (accepts image/*)"
+            setTextColor(Color.parseColor("#888888"))
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+        })
+        addView(imagePasteField(preview))
+        addView(preview)
+        addView(Button(context).apply {
+            layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+                .apply { topMargin = dp(8) }
+            text = "Copy test image to clipboard"
+            setOnClickListener { copyTestImageToClipboard() }
+        })
+    }
+
+    private fun imagePasteField(preview: ImageView) = object : EditText(this) {
+        override fun onCreateInputConnection(outAttrs: EditorInfo): InputConnection? {
+            val ic = super.onCreateInputConnection(outAttrs) ?: return null
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N_MR1) return ic
+            outAttrs.contentMimeTypes = arrayOf("image/*")
+            return object : InputConnectionWrapper(ic, false) {
+                override fun commitContent(info: InputContentInfo, flags: Int,
+                        opts: Bundle?): Boolean {
+                    return try {
+                        if (flags and InputConnection.INPUT_CONTENT_GRANT_READ_URI_PERMISSION
+                                != 0) {
+                            info.requestPermission()
+                        }
+                        preview.setImageURI(info.contentUri)
+                        info.releasePermission()
+                        true
+                    } catch (e: Exception) {
+                        false
+                    }
+                }
+            }
+        }
+    }.apply {
+        layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+        inputType = TYPE_CLASS_TEXT
+        hint = "Image paste"
+    }
+
+    private fun copyTestImageToClipboard() {
+        val bitmap = Bitmap.createBitmap(400, 300, Bitmap.Config.ARGB_8888)
+        Canvas(bitmap).apply {
+            drawColor(Color.parseColor("#00695C"))
+            drawCircle(200f, 150f, 90f, Paint().apply { color = Color.parseColor("#FFD54F") })
+        }
+        val file = File(cacheDir, "clip/test_image.png")
+        file.parentFile?.mkdirs()
+        file.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+        val uri = Uri.parse("content://org.smc.inputtest.clip/test_image.png")
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboard.setPrimaryClip(ClipData.newUri(contentResolver, "test image", uri))
+    }
 }
