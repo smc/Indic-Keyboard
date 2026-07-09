@@ -569,7 +569,7 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
     <string name="space_trackpad_summary">Swipe on the spacebar to move the cursor</string>
     <string name="incognito_icon_description">Incognito Mode Active</string>
     <string name="prefs_gray_out_suggestions_incognito_title">Dim suggestions in incognito</string>
-    <string name="prefs_gray_out_suggestions_incognito_summary">Gray out the suggestion strip instead of showing the incognito icon when not learning from your typing</string>
+    <string name="prefs_gray_out_suggestions_incognito_summary">Gray out the suggestion strip when not learning from your typing</string>
 
     <string name="varnam_vst_missing">Varnam data for "%1$s" is not downloaded yet. Open Settings → Advanced → Varnam to download it.</string>
     <string name="varnam_engine_missing">Varnam engine is unavailable in this build.</string>
