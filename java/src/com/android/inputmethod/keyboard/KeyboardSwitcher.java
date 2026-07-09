@@ -350,8 +350,9 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mEmojiPalettesView.setVisibility(View.GONE);
         mEmojiPalettesView.stopEmojiPalettes();
         mClipboardHistoryView.setTotalHeight(frameHeight > 0 ? frameHeight
-                : keyboard.mOccupiedHeight + mThemeContext.getResources()
-                        .getDimensionPixelSize(R.dimen.config_suggestions_strip_height));
+                : keyboard.mOccupiedHeight + mKeyboardView.getPaddingBottom()
+                        + mThemeContext.getResources()
+                                .getDimensionPixelSize(R.dimen.config_suggestions_strip_height));
         mClipboardHistoryView.startClipboardHistory();
         mClipboardHistoryView.setVisibility(View.VISIBLE);
     }
@@ -371,6 +372,10 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
             mSavedKeyboardLayoutSet = mKeyboardLayoutSet;
             mKeyboardLayoutSet = buildEmojiSearchLayoutSet();
             isEmojiSearch = true;
+            if (mKeyboardView != null) {
+                mKeyboardView.setGestureHandlingEnabledByUser(false /* inputEnabled */,
+                        false /* trailEnabled */, false /* floatingPreviewEnabled */);
+            }
         }
         resetKeyboardStateToAlphabet(WordComposer.CAPS_MODE_OFF,
                 RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE);
@@ -381,6 +386,13 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
             mKeyboardLayoutSet = mSavedKeyboardLayoutSet;
             mSavedKeyboardLayoutSet = null;
             isEmojiSearch = false;
+            final SettingsValues settingsValues = Settings.getInstance().getCurrent();
+            if (mKeyboardView != null) {
+                mKeyboardView.setGestureHandlingEnabledByUser(
+                        settingsValues.mGestureInputEnabled,
+                        settingsValues.mGestureTrailEnabled,
+                        settingsValues.mGestureFloatingPreviewTextEnabled);
+            }
         }
     }
 
@@ -578,7 +590,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
                 displayContext, KeyboardTheme.getKeyboardTheme(displayContext /* context */));
         mCurrentInputView = (InputView)LayoutInflater.from(mThemeContext).inflate(
                 R.layout.input_view, null);
-        mCurrentInputView.setSystemBarColor(resolveKeyboardBackgroundColor());
         mMainKeyboardFrame = mCurrentInputView.findViewById(R.id.main_keyboard_frame);
         mEmojiPalettesView = (EmojiPalettesView)mCurrentInputView.findViewById(
                 R.id.emoji_palettes_view);
@@ -594,25 +605,6 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mClipboardHistoryView.setKeyboardActionListener(mLatinIME);
         mClipboardHistoryView.setOnClipboardEntryClickedListener(mLatinIME);
         return mCurrentInputView;
-    }
-
-    /** The active theme's keyboard-view background color */
-    private int resolveKeyboardBackgroundColor() {
-        final android.util.TypedValue styleValue = new android.util.TypedValue();
-        if (!mThemeContext.getTheme().resolveAttribute(
-                R.attr.keyboardViewStyle, styleValue, true)) {
-            return android.graphics.Color.TRANSPARENT;
-        }
-        final android.content.res.TypedArray bg = mThemeContext.obtainStyledAttributes(
-                styleValue.resourceId, new int[] { android.R.attr.background });
-        // Non-MD3 themes use a bitmap background here; getColor would throw on those.
-        final android.util.TypedValue value = bg.peekValue(0);
-        final int color = (value != null
-                && value.type >= android.util.TypedValue.TYPE_FIRST_COLOR_INT
-                && value.type <= android.util.TypedValue.TYPE_LAST_COLOR_INT)
-                ? value.data : android.graphics.Color.TRANSPARENT;
-        bg.recycle();
-        return color;
     }
 
     public int getKeyboardShiftMode() {

@@ -17,9 +17,6 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -32,27 +29,21 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.keyboard.MainKeyboardView;
+import com.android.inputmethod.keyboard.clipboard.ClipboardHistoryView;
 import org.smc.inputmethod.indic.suggestions.MoreSuggestionsView;
 import org.smc.inputmethod.indic.suggestions.SuggestionStripView;
 
 public final class InputView extends FrameLayout {
     private final Rect mInputViewRect = new Rect();
     private MainKeyboardView mMainKeyboardView;
+    private View mEmojiPalettesView;
+    private ClipboardHistoryView mClipboardHistoryView;
     private KeyboardTopPaddingForwarder mKeyboardTopPaddingForwarder;
     private MoreSuggestionsViewCanceler mMoreSuggestionsViewCanceler;
     private MotionEventForwarder<?, ?> mActiveForwarder;
 
-    private final Paint mSystemBarPaint = new Paint();
-    private int mSystemBarBottom;
-
     public InputView(final Context context, final AttributeSet attrs) {
         super(context, attrs, 0);
-        setWillNotDraw(false);
-    }
-
-    public void setSystemBarColor(final int color) {
-        mSystemBarPaint.setColor(color);
-        invalidate();
     }
 
     @Override
@@ -60,6 +51,8 @@ public final class InputView extends FrameLayout {
         final SuggestionStripView suggestionStripView =
                 (SuggestionStripView)findViewById(R.id.suggestion_strip_view);
         mMainKeyboardView = (MainKeyboardView)findViewById(R.id.keyboard_view);
+        mEmojiPalettesView = findViewById(R.id.emoji_palettes_view);
+        mClipboardHistoryView = (ClipboardHistoryView)findViewById(R.id.clipboard_history_view);
         mKeyboardTopPaddingForwarder = new KeyboardTopPaddingForwarder(
                 mMainKeyboardView, suggestionStripView);
         mMoreSuggestionsViewCanceler = new MoreSuggestionsViewCanceler(
@@ -68,27 +61,53 @@ public final class InputView extends FrameLayout {
     }
 
     /**
-     * Keep the keyboard above the system navigation bar.
+     * Keep the keyboard clear of the system navigation bar.
      */
     private void applyWindowInsetsAsPadding() {
         ViewCompat.setOnApplyWindowInsetsListener(this, (v, windowInsets) -> {
-            final Insets bars = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars()
-                    | WindowInsetsCompat.Type.displayCutout());
-            mSystemBarBottom = bars.bottom;
-            v.setPadding(bars.left, 0, bars.right, bars.bottom);
+            applyInsets(windowInsets);
             return windowInsets;
         });
         ViewCompat.requestApplyInsets(this);
     }
 
     @Override
-    protected void dispatchDraw(final Canvas canvas) {
-        super.dispatchDraw(canvas);
-        if (mSystemBarBottom <= 0 || mSystemBarPaint.getColor() == Color.TRANSPARENT) {
-            return;
+    protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
+        // InputMethodService windows don't reliably dispatch window insets to view listeners
+        // (the listener above never fires on some platform versions), so pull the insets from
+        // the attached window on every measure. Padding only mutates when a value changed.
+        final WindowInsetsCompat rootInsets = ViewCompat.getRootWindowInsets(this);
+        if (rootInsets != null) {
+            applyInsets(rootInsets);
         }
-        final int h = getHeight();
-        canvas.drawRect(0, h - mSystemBarBottom, getWidth(), h, mSystemBarPaint);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    /**
+     * Coordinator for navigation-bar clearance. Default: each panel gets the inset as
+     * its own bottom padding, so its content rises while its background fills the band behind
+     * the bar. Panels that want content behind the bar (clipboard history) opt out and handle
+     * the inset internally.
+     */
+    private void applyInsets(final WindowInsetsCompat windowInsets) {
+        final Insets bars = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars()
+                | WindowInsetsCompat.Type.displayCutout());
+        if (getPaddingLeft() != bars.left || getPaddingRight() != bars.right
+                || getPaddingBottom() != 0) {
+            setPadding(bars.left, 0, bars.right, 0);
+        }
+        applyBottomClearance(mMainKeyboardView, bars.bottom);
+        applyBottomClearance(mEmojiPalettesView, bars.bottom);
+        if (mClipboardHistoryView != null) {
+            mClipboardHistoryView.setNavigationBarInset(bars.bottom);
+        }
+    }
+
+    private static void applyBottomClearance(final View view, final int bottom) {
+        if (view != null && view.getPaddingBottom() != bottom) {
+            view.setPadding(view.getPaddingLeft(), view.getPaddingTop(),
+                    view.getPaddingRight(), bottom);
+        }
     }
 
     public void setKeyboardTopPadding(final int keyboardTopPadding) {

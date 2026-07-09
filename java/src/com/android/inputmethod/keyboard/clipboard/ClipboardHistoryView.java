@@ -59,6 +59,9 @@ public final class ClipboardHistoryView extends LinearLayout implements
     private ClipboardHistoryManager mClipboardHistoryManager;
     private ClipboardHistoryAdapter mAdapter;
     private int mTotalHeight;
+    private int mNavigationBarInset;
+    private int mHistoryListBasePaddingBottom;
+    private int mEmptyViewBasePaddingBottom;
 
     private ImageButton mBackKey;
     private ImageButton mToggleButton;
@@ -86,7 +89,8 @@ public final class ClipboardHistoryView extends LinearLayout implements
         final int height = (mTotalHeight > 0
                 ? mTotalHeight
                 : ResourceUtils.getDefaultKeyboardHeight(res)
-                        + res.getDimensionPixelSize(R.dimen.config_suggestions_strip_height))
+                        + res.getDimensionPixelSize(R.dimen.config_suggestions_strip_height)
+                        + mNavigationBarInset)
                 + getPaddingTop() + getPaddingBottom();
         super.onMeasure(
                 MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
@@ -101,6 +105,18 @@ public final class ClipboardHistoryView extends LinearLayout implements
         }
     }
 
+    public void setNavigationBarInset(final int inset) {
+        if (inset == mNavigationBarInset) {
+            return;
+        }
+        mNavigationBarInset = inset;
+        mHistoryList.setPadding(mHistoryList.getPaddingLeft(), mHistoryList.getPaddingTop(),
+                mHistoryList.getPaddingRight(), mHistoryListBasePaddingBottom + inset);
+        mEmptyView.setPadding(mEmptyView.getPaddingLeft(), mEmptyView.getPaddingTop(),
+                mEmptyView.getPaddingRight(), mEmptyViewBasePaddingBottom + inset);
+        requestLayout();
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -113,10 +129,12 @@ public final class ClipboardHistoryView extends LinearLayout implements
         mClearAllButton = findViewById(R.id.clipboard_clear_all_button);
         mClearAllButton.setOnClickListener(this);
         mHistoryList = findViewById(R.id.clipboard_history_list);
+        mHistoryListBasePaddingBottom = mHistoryList.getPaddingBottom();
         mHistoryList.setLayoutManager(new GridLayoutManager(getContext(), 2));
         mAdapter = new ClipboardHistoryAdapter(mClipboardHistoryManager, this);
         mHistoryList.setAdapter(mAdapter);
         mEmptyView = findViewById(R.id.clipboard_empty_view);
+        mEmptyViewBasePaddingBottom = mEmptyView.getPaddingBottom();
         mEmptyText = findViewById(R.id.clipboard_empty_text);
         mTurnOnButton = findViewById(R.id.clipboard_turn_on_button);
         mTurnOnButton.setBackground(createRoundedBackground(getContext(), 18));

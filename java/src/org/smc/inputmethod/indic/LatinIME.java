@@ -983,53 +983,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     this, mKeyboardSwitcher, mSuggestionStripView, mEmojiSearchBar);
             mKeyboardSwitcher.setEmojiSearchController(mEmojiSearchController);
         }
-        keepKeyboardClearOfTheNavigationBar(view);
-    }
-
-    /**
-     * Since Android 15's edge-to-edge enforcement the IME window extends behind the navigation
-     * bar. Pad the bottom of the keyboard views by the navigation bar inset so the keys sit
-     * above it; the keyboard background fills the padded strip behind the bar.
-     */
-    private static void keepKeyboardClearOfTheNavigationBar(final View inputView) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            return;
-        }
-        final View keyboardView = inputView.findViewById(R.id.keyboard_view);
-        final View emojiPalettesView = inputView.findViewById(R.id.emoji_palettes_view);
-        inputView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
-            @Override
-            public android.view.WindowInsets onApplyWindowInsets(final View v,
-                    final android.view.WindowInsets insets) {
-                final int bottomInset = insets.getInsets(
-                        android.view.WindowInsets.Type.navigationBars()
-                                | android.view.WindowInsets.Type.displayCutout()).bottom;
-                for (final View target : new View[] { keyboardView, emojiPalettesView }) {
-                    if (target != null && target.getPaddingBottom() != bottomInset) {
-                        target.setPadding(target.getPaddingLeft(), target.getPaddingTop(),
-                                target.getPaddingRight(), bottomInset);
-                    }
-                }
-                return insets;
-            }
-        });
-        // Replacing the input view (e.g. on theme change) while the keyboard is showing does
-        // not trigger a fresh inset dispatch on its own, so request one once it is attached.
-        if (inputView.isAttachedToWindow()) {
-            inputView.requestApplyInsets();
-        } else {
-            inputView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-                @Override
-                public void onViewAttachedToWindow(final View v) {
-                    v.removeOnAttachStateChangeListener(this);
-                    v.requestApplyInsets();
-                }
-                @Override
-                public void onViewDetachedFromWindow(final View v) {
-                    v.removeOnAttachStateChangeListener(this);
-                }
-            });
-        }
     }
 
     @Override
@@ -1788,6 +1741,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onStartBatchInput() {
+        if (mEmojiSearchController != null && mEmojiSearchController.isActive()) {
+            return;
+        }
         if (hasSuggestionStripView()) {
             mSuggestionStripView.dismissClipboardChip();
         }
@@ -1799,11 +1755,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onUpdateBatchInput(final InputPointers batchPointers) {
+        if (mEmojiSearchController != null && mEmojiSearchController.isActive()) {
+            return;
+        }
         mInputLogic.onUpdateBatchInput(batchPointers);
     }
 
     @Override
     public void onEndBatchInput(final InputPointers batchPointers) {
+        if (mEmojiSearchController != null && mEmojiSearchController.isActive()) {
+            return;
+        }
         mInputLogic.onEndBatchInput(batchPointers);
         mGestureConsumer.onGestureCompleted(batchPointers);
     }
