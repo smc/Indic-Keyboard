@@ -16,5 +16,10 @@
         <item name="colorOnSurface">?attr/md3OnSurface</item>
         <item name="colorOnSurfaceVariant">?attr/md3OnSurfaceVariant</item>
         <item name="android:colorBackground">?attr/md3Surface</item>
+        <item name="colorSurfaceContainer">?attr/md3KeyColor</item>
+        <item name="colorSurfaceContainerHigh">?attr/md3KeyColor</item>
+        <item name="colorSurfaceContainerHighest">?attr/md3KeyColor</item>
+        <item name="android:textColorPrimary">?attr/md3OnSurface</item>
+        <item name="android:textColorSecondary">?attr/md3OnSurfaceVariant</item>
     </style>
 </resources>

@@ -2372,6 +2372,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             row.setCompoundDrawablePadding(dpToPx(context, 12));
             row.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, check, null);
         } else {
+            row.setTextColor(resolveColor(context,
+                    com.google.android.material.R.attr.colorOnSurface));
             row.setBackgroundResource(
                     resolveAttr(context, android.R.attr.selectableItemBackground));
         }
@@ -2394,6 +2396,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final TextView label = new TextView(context);
         label.setText(text);
         label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        label.setTextColor(resolveColor(context,
+                com.google.android.material.R.attr.colorOnSurface));
         row.addView(label, new LinearLayout.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1f));
         caret.setColorFilter(label.getCurrentTextColor());
         row.addView(caret);
