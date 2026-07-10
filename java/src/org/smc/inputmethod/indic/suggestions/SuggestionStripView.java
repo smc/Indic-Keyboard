@@ -292,7 +292,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             mStripVisibilityGroup.showInlineSuggestionsStrip();
         }
 
-        if (mSuggestedWords.size() <= mStartIndexOfMoreSuggestions) {
+        if (mSuggestedWords.size() <= mStartIndexOfMoreSuggestions
+                || mStripVisibilityGroup.isShowingInlineSuggestionsStrip()) {
             mMoreSuggestionsKey.setVisibility(GONE);
         } else {
             mMoreSuggestionsKey.setVisibility(VISIBLE);
@@ -385,6 +386,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         // A live clipboard chip keeps priority; the inline strip takes over once it is dismissed.
         if (mClipboardChipEntry == null) {
             mStripVisibilityGroup.showInlineSuggestionsStrip();
+            mMoreSuggestionsKey.setVisibility(GONE);
+            mVoiceKey.setVisibility(GONE);
         }
     }
 
@@ -441,6 +444,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mInlineSuggestionsContainer.removeAllViews();
         if (mStripVisibilityGroup.isShowingInlineSuggestionsStrip()) {
             mStripVisibilityGroup.showSuggestionsStrip();
+            updateKeys();
         }
     }
 

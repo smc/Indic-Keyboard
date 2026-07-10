@@ -1013,6 +1013,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onStartInputView(final EditorInfo editorInfo, final boolean restarting) {
+        mInlineSuggestionsGeneration++;
+        if (hasSuggestionStripView()) {
+            mSuggestionStripView.dismissInlineSuggestions();
+        }
         mHandler.onStartInputView(editorInfo, restarting);
         mStatsUtilsManager.onStartInputView();
     }
@@ -1039,6 +1043,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 keyboardView != null ? keyboardView.getContext() : this);
     }
 
+    // Bumped whenever inline suggestions become stale (editor change, keyboard hidden) so
+    // that in-flight inflations from the previous editor cannot resurface their chips.
+    private int mInlineSuggestionsGeneration;
+
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
     public boolean onInlineSuggestionsResponse(final InlineSuggestionsResponse response) {
@@ -1050,8 +1058,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSuggestionStripView.dismissInlineSuggestions();
             return true;
         }
+        final int generation = mInlineSuggestionsGeneration;
         InlineAutofillUtils.inflate(suggestions, this, (views, pinnedView) -> {
-            if (hasSuggestionStripView() && !(views.isEmpty() && pinnedView == null)) {
+            if (generation == mInlineSuggestionsGeneration && hasSuggestionStripView()
+                    && !(views.isEmpty() && pinnedView == null)) {
                 mSuggestionStripView.showInlineSuggestions(views, pinnedView);
             }
         });
@@ -1253,7 +1263,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // still eligible for this editor.
         if (hasSuggestionStripView()) {
             mSuggestionStripView.dismissClipboardChip();
-            mSuggestionStripView.dismissInlineSuggestions();
         }
         // This will set the punctuation suggestions if next word suggestion is off;
         // otherwise it will clear the suggestion strip.
@@ -1288,6 +1297,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mainKeyboardView != null) {
             mainKeyboardView.closing();
         }
+        mInlineSuggestionsGeneration++;
         if (hasSuggestionStripView()) {
             mSuggestionStripView.dismissInlineSuggestions();
         }
