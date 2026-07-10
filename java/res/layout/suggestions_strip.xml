@@ -125,8 +125,6 @@
         android:id="@+id/inline_suggestions_strip"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/config_suggestions_strip_horizontal_margin"
-        android:layout_marginRight="@dimen/config_suggestions_strip_horizontal_margin"
         android:scrollbars="none"
         android:fillViewport="true"
         android:hapticFeedbackEnabled="false"
@@ -136,8 +134,8 @@
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
             android:gravity="center_vertical" />
     </HorizontalScrollView>
     <ImageButton

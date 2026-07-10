@@ -28,6 +28,7 @@ import android.view.inputmethod.InlineSuggestion;
 import android.view.inputmethod.InlineSuggestionsRequest;
 import android.widget.inline.InlinePresentationSpec;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.autofill.inline.UiVersions;
 import androidx.autofill.inline.common.ImageViewStyle;
@@ -41,7 +42,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 @RequiresApi(api = Build.VERSION_CODES.R)
 public final class InlineAutofillUtils {
@@ -56,13 +56,12 @@ public final class InlineAutofillUtils {
     }
 
     public static InlineSuggestionsRequest createRequest(final Context context) {
-        final int chipColor = resolveColor(context, R.attr.md3KeyColor, 0xFFECEDF1);
         final int titleColor = resolveColor(context, R.attr.md3OnSurface, 0xFF1B1B21);
         final int subtitleColor = resolveColor(context, R.attr.md3OnSurfaceVariant, 0xFF46464F);
 
         final Icon chipBackground = Icon.createWithResource(context,
-                R.drawable.inline_autofill_chip_background);
-        chipBackground.setTint(chipColor);
+                com.android.inputmethod.keyboard.clipboard.ClipboardHistoryView
+                        .assistChipBackgroundRes(context));
         final ViewStyle chipStyle = new ViewStyle.Builder()
                 .setBackground(chipBackground)
                 .setPadding(dp(context, 12), 0, dp(context, 12), 0)
@@ -99,13 +98,17 @@ public final class InlineAutofillUtils {
                 .build();
     }
 
+    public interface InflatedViewsCallback {
+        void onViewsReady(ArrayList<View> suggestionViews, @Nullable View pinnedView);
+    }
+
     /**
      * Inflates every suggestion and hands the surviving views to {@code onViewsReady} on the
      * main thread, preserving the response order. Suggestion content stays invisible to the
      * IME; each view is rendered by the autofill service in its own surface.
      */
     public static void inflate(final List<InlineSuggestion> suggestions, final Context context,
-            final Consumer<ArrayList<View>> onViewsReady) {
+            final InflatedViewsCallback callback) {
         final int count = suggestions.size();
         final View[] views = new View[count];
         final AtomicInteger pending = new AtomicInteger(count);
@@ -118,12 +121,18 @@ public final class InlineAutofillUtils {
                 views[index] = view;
                 if (pending.decrementAndGet() == 0) {
                     final ArrayList<View> inflated = new ArrayList<>(count);
-                    for (final View v : views) {
-                        if (v != null) {
-                            inflated.add(v);
+                    View pinned = null;
+                    for (int j = 0; j < count; j++) {
+                        if (views[j] == null) {
+                            continue;
+                        }
+                        if (suggestions.get(j).getInfo().isPinned()) {
+                            pinned = views[j];
+                        } else {
+                            inflated.add(views[j]);
                         }
                     }
-                    onViewsReady.accept(inflated);
+                    callback.onViewsReady(inflated, pinned);
                 }
             });
         }

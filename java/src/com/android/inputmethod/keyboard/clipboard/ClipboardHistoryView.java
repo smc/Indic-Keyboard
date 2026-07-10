@@ -19,7 +19,10 @@ package com.android.inputmethod.keyboard.clipboard;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -261,12 +264,23 @@ public final class ClipboardHistoryView extends LinearLayout implements
         return background;
     }
 
+    public static int assistChipBackgroundRes(final Context context) {
+        final int ink = resolveOnSurfaceVariant(context);
+        final double luminance = (0.299 * Color.red(ink) + 0.587 * Color.green(ink)
+                + 0.114 * Color.blue(ink)) / 255;
+        return luminance > 0.5 ? R.drawable.assist_chip_background_light
+                : R.drawable.assist_chip_background;
+    }
+
     /** M3 assist chip container: subtle fill plus a 1dp outline. */
-    public static GradientDrawable createChipBackground(final Context context) {
-        final GradientDrawable chip = createRoundedBackground(context, 8);
-        final float density = context.getResources().getDisplayMetrics().density;
-        chip.setStroke(Math.max(1, (int) density),
-                (resolveOnSurfaceVariant(context) & 0x00FFFFFF) | 0x80000000 /* 50% alpha */);
+    public static Drawable createChipBackground(final Context context) {
+        final LayerDrawable chip = (LayerDrawable) context.getDrawable(
+                assistChipBackgroundRes(context)).mutate();
+        if (resolveCornerRadius(context, 8) == 0) {
+            for (int i = 0; i < chip.getNumberOfLayers(); i++) {
+                ((GradientDrawable) chip.getDrawable(i)).setCornerRadius(0);
+            }
+        }
         return chip;
     }
 
@@ -291,9 +305,14 @@ public final class ClipboardHistoryView extends LinearLayout implements
 
     private static int resolveOnSurfaceVariant(final Context context) {
         final TypedValue value = new TypedValue();
-        context.getTheme().resolveAttribute(R.attr.md3OnSurfaceVariant, value, true);
-        return (value.type >= TypedValue.TYPE_FIRST_COLOR_INT
-                && value.type <= TypedValue.TYPE_LAST_COLOR_INT)
-                ? value.data : context.getResources().getColor(value.resourceId);
+        if (!context.getTheme().resolveAttribute(R.attr.md3OnSurfaceVariant, value, true)) {
+            return 0xFF46464F;
+        }
+        if (value.type >= TypedValue.TYPE_FIRST_COLOR_INT
+                && value.type <= TypedValue.TYPE_LAST_COLOR_INT) {
+            return value.data;
+        }
+        return value.resourceId != 0
+                ? context.getResources().getColor(value.resourceId) : 0xFF46464F;
     }
 }

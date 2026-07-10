@@ -1050,9 +1050,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSuggestionStripView.dismissInlineSuggestions();
             return true;
         }
-        InlineAutofillUtils.inflate(suggestions, this, views -> {
-            if (hasSuggestionStripView() && !views.isEmpty()) {
-                mSuggestionStripView.showInlineSuggestions(views);
+        InlineAutofillUtils.inflate(suggestions, this, (views, pinnedView) -> {
+            if (hasSuggestionStripView() && !(views.isEmpty() && pinnedView == null)) {
+                mSuggestionStripView.showInlineSuggestions(views, pinnedView);
             }
         });
         return true;
@@ -1287,6 +1287,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         if (mainKeyboardView != null) {
             mainKeyboardView.closing();
+        }
+        if (hasSuggestionStripView()) {
+            mSuggestionStripView.dismissInlineSuggestions();
         }
         setNavigationBarVisibility(false);
     }

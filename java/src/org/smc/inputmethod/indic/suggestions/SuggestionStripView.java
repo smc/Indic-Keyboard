@@ -78,7 +78,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private final View mImportantNoticeStrip;
     private final View mClipboardChipStrip;
     private final android.widget.HorizontalScrollView mInlineSuggestionsStrip;
-    private final ViewGroup mInlineSuggestionsContainer;
+    private final android.widget.LinearLayout mInlineSuggestionsContainer;
     private boolean mInlineSuggestionsShowing;
     private final View mClipboardChipPill;
     private final View mClipboardChipOpenHistory;
@@ -209,6 +209,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mClipboardChipOpenHistory.setOnClickListener(this);
         mInlineSuggestionsStrip = findViewById(R.id.inline_suggestions_strip);
         mInlineSuggestionsContainer = findViewById(R.id.inline_suggestions_container);
+        mInlineSuggestionsStrip.getViewTreeObserver().addOnScrollChangedListener(
+                this::updateInlineSuggestionsFades);
         mStripVisibilityGroup = new StripVisibilityGroup(this, mSuggestionsStrip,
                 mImportantNoticeStrip, mClipboardChipStrip, mInlineSuggestionsStrip);
 
@@ -361,33 +363,74 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         return mStripVisibilityGroup.isShowingClipboardChipStrip();
     }
 
-    public void showInlineSuggestions(final ArrayList<View> suggestionViews) {
+    public void showInlineSuggestions(final ArrayList<View> suggestionViews,
+            final View pinnedView) {
         if (isShowingMoreSuggestionPanel()) {
             dismissMoreSuggestionsPanel();
         }
         mInlineSuggestionsContainer.removeAllViews();
+        mInlineSuggestionsContainer.setGravity(suggestionViews.size() <= 1
+                ? android.view.Gravity.CENTER
+                : android.view.Gravity.START | android.view.Gravity.CENTER_VERTICAL);
         final int margin = (int) (getResources().getDisplayMetrics().density * 4);
         for (final View view : suggestionViews) {
-            // The platform delivers each InlineContentView with exact layout params matching
-            // the remotely rendered surface; the view cannot measure itself, so keep them.
-            final android.view.ViewGroup.LayoutParams delivered = view.getLayoutParams();
-            final android.widget.LinearLayout.LayoutParams params =
-                    new android.widget.LinearLayout.LayoutParams(
-                            delivered != null ? delivered.width
-                                    : android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
-                            delivered != null ? delivered.height
-                                    : android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
-            params.gravity = android.view.Gravity.CENTER_VERTICAL;
-            params.leftMargin = margin;
-            params.rightMargin = margin;
-            mInlineSuggestionsContainer.addView(view, params);
+            addInlineChip(view, margin);
+        }
+        if (pinnedView != null) {
+            addInlineChip(pinnedView, margin);
         }
         mInlineSuggestionsShowing = true;
         mInlineSuggestionsStrip.scrollTo(0, 0);
+        mInlineSuggestionsContainer.post(this::updateInlineSuggestionsFades);
         // A live clipboard chip keeps priority; the inline strip takes over once it is dismissed.
         if (mClipboardChipEntry == null) {
             mStripVisibilityGroup.showInlineSuggestionsStrip();
         }
+    }
+
+    private void updateInlineSuggestionsFades() {
+        if (!mInlineSuggestionsShowing) {
+            return;
+        }
+        final int viewportLeft = mInlineSuggestionsStrip.getScrollX();
+        final int viewportRight = viewportLeft + mInlineSuggestionsStrip.getWidth();
+        for (int i = 0; i < mInlineSuggestionsContainer.getChildCount(); i++) {
+            final View chip = mInlineSuggestionsContainer.getChildAt(i);
+            final int width = chip.getWidth();
+            if (width == 0) {
+                continue;
+            }
+            final int visible = Math.min(chip.getRight(), viewportRight)
+                    - Math.max(chip.getLeft(), viewportLeft);
+            setChipAlpha(chip, Math.max(0f, Math.min(1f, visible / (float) width)));
+        }
+    }
+
+    private static void setChipAlpha(final View view, final float alpha) {
+        view.setAlpha(alpha);
+        if (view instanceof android.view.SurfaceView) {
+            return;
+        }
+        if (view instanceof ViewGroup) {
+            final ViewGroup group = (ViewGroup) view;
+            for (int i = 0; i < group.getChildCount(); i++) {
+                setChipAlpha(group.getChildAt(i), alpha);
+            }
+        }
+    }
+
+    private void addInlineChip(final View view, final int margin) {
+        final android.view.ViewGroup.LayoutParams delivered = view.getLayoutParams();
+        final android.widget.LinearLayout.LayoutParams params =
+                new android.widget.LinearLayout.LayoutParams(
+                        delivered != null ? delivered.width
+                                : android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+                        delivered != null ? delivered.height
+                                : android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.gravity = android.view.Gravity.CENTER_VERTICAL;
+        params.leftMargin = margin;
+        params.rightMargin = margin;
+        mInlineSuggestionsContainer.addView(view, params);
     }
 
     public void dismissInlineSuggestions() {
