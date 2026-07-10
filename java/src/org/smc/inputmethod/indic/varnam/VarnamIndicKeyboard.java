@@ -41,12 +41,18 @@ public class VarnamIndicKeyboard {
     }
 
     public static final HashMap<String, Scheme> schemes = new HashMap<String, Scheme>() {{
-//        put("varnam-bn", new Scheme("bn", "bn", "Bangla", "", "0.1", ""));
-//        put("varnam-kn", new Scheme("kn", "kn", "Kannada", "", "0.1", ""));
-//        put("varnam-gu", new Scheme("gu", "gu", "Gujarati", "", "0.1", ""));
-//        put("varnam-hi", new Scheme("hi", "hi", "Hindi", "", "0.1", ""));
+        put("varnam-as", new Scheme("as", "as", "Assamese", "", "0.1", ""));
+        put("varnam-bn", new Scheme("bn", "bn", "Bangla", "", "0.1", ""));
+        put("varnam-gu", new Scheme("gu", "gu", "Gujarati", "", "0.1", ""));
+        put("varnam-hi", new Scheme("hi", "hi", "Hindi", "", "0.1", ""));
+        put("varnam-kn", new Scheme("kn", "kn", "Kannada", "", "0.1", ""));
         put("varnam-ml", new Scheme("ml", "ml", "Malayalam", "", "0.1", ""));
-//        put("varnam-ta", new Scheme("ta", "ta", "Tamil", "", "0.1", ""));
-//        put("varnam-te", new Scheme("te", "te", "Telugu", "", "0.1", ""));
+        put("varnam-mr", new Scheme("mr", "mr", "Marathi", "", "0.1", ""));
+        put("varnam-ne", new Scheme("ne", "ne", "Nepali", "", "0.1", ""));
+        put("varnam-or", new Scheme("or", "or", "Odia", "", "0.1", ""));
+        put("varnam-pa", new Scheme("pa", "pa", "Punjabi", "", "0.1", ""));
+        put("varnam-sa", new Scheme("sa", "sa", "Sanskrit", "", "0.1", ""));
+        put("varnam-ta", new Scheme("ta", "ta", "Tamil", "", "0.1", ""));
+        put("varnam-te", new Scheme("te", "te", "Telugu", "", "0.1", ""));
     }};
 }

@@ -24,12 +24,14 @@
     <language locale="as_IN" englishName="Assamese" autonym="অসমীয়া" glyph="অ">
         <layout name="Inscript" layoutSet="assamese_inscript" />
         <layout name="প্ৰতিৰূপান্তৰণ" layoutSet="qwerty" translit="as-transliteration" />
+        <layout name="Varnam" layoutSet="qwerty" translit="varnam-as" />
     </language>
     <language locale="bn_IN" englishName="Bangla" autonym="বাংলা" glyph="ব">
         <layout name="Standard" layoutSet="bengali" />
         <layout name="Probhat" layoutSet="bengali_probhat" />
         <layout name="Inscript" layoutSet="bengali_inscript" />
         <layout name="Avro" layoutSet="qwerty" translit="bn-avro" />
+        <layout name="Varnam" layoutSet="qwerty" translit="varnam-bn" />
     </language>
     <language locale="my" englishName="Burmese" autonym="မြန်မာ" glyph="မ">
         <layout name="Standard" layoutSet="burmese" />
@@ -41,12 +43,14 @@
         <layout name="Standard" layoutSet="gujarati" />
         <layout name="Inscript" layoutSet="gujarati_inscript" />
         <layout name="Transliteration" layoutSet="qwerty" translit="gu-transliteration" />
+        <layout name="Varnam" layoutSet="qwerty" translit="varnam-gu" />
     </language>
     <language locale="hi_IN" englishName="Hindi" autonym="हिन्दी" glyph="ह">
         <layout name="Standard" layoutSet="hindi" />
         <layout name="Inscript" layoutSet="hindi_inscript" />
         <layout name="Soni" layoutSet="qwerty" translit="hi-soni" />
         <layout name="लिप्यंतरण" layoutSet="qwerty" translit="hi-transliteration" />
+        <layout name="Varnam" layoutSet="qwerty" translit="varnam-hi" />
     </language>
     <language locale="kn_IN" englishName="Kannada" autonym="ಕನ್ನಡ" glyph="ಕ">
         <layout name="Standard" layoutSet="kannada" />
@@ -54,6 +58,7 @@
         <layout name="Compact" layoutSet="kannada_compact" />
         <layout name="Inscript Mobile" layoutSet="kannada_anysoft_inscript" />
         <layout name="ಲಿಪ್ಯಂತರಣ" layoutSet="qwerty" translit="kn-transliteration" />
+        <layout name="Varnam" layoutSet="qwerty" translit="varnam-kn" />
     </language>
     <language locale="ks_IN" englishName="Kashmiri" autonym="کٲشُر" glyph="ک">
         <layout name="Inscript" layoutSet="kashmiri_inscript" />
@@ -77,6 +82,7 @@
     </language>
     <language locale="mr_IN" englishName="Marathi" autonym="मराठी" glyph="म">
         <layout name="अक्षरांतरण" layoutSet="qwerty" translit="mr-transliteration" />
+        <layout name="Varnam" layoutSet="qwerty" translit="varnam-mr" />
     </language>
     <language locale="mnw" englishName="Mon" autonym="ဘာသာမန်" glyph="ဘ">
         <layout name="Standard" layoutSet="mon" />
@@ -86,19 +92,23 @@
         <layout name="Traditional" layoutSet="nepali_traditional" />
         <layout name="Inscript" layoutSet="nepali_inscript" />
         <layout name="Transliteration" layoutSet="qwerty" translit="ne-transliteration" />
+        <layout name="Varnam" layoutSet="qwerty" translit="varnam-ne" />
     </language>
     <language locale="or_IN" englishName="Odia" autonym="ଓଡ଼ିଆ" glyph="ଓ">
         <layout name="Inscript" layoutSet="oriya_inscript" />
         <layout name="Transliteration" layoutSet="qwerty" translit="or-transliteration" />
         <layout name="Lekhani" layoutSet="qwerty" translit="or-lekhani" />
+        <layout name="Varnam" layoutSet="qwerty" translit="varnam-or" />
     </language>
     <language locale="pa_IN" englishName="Punjabi" autonym="ਪੰਜਾਬੀ" glyph="ਪ">
         <layout name="Standard" layoutSet="punjabi" />
         <layout name="Inscript" layoutSet="punjabi_inscript" />
         <layout name="Transliteration" layoutSet="qwerty" translit="pa-transliteration" />
+        <layout name="Varnam" layoutSet="qwerty" translit="varnam-pa" />
     </language>
     <language locale="sa_IN" englishName="Sanskrit" autonym="संस्कृतम्" glyph="स">
         <layout name="Transliteration" layoutSet="qwerty" translit="sa-transliteration" />
+        <layout name="Varnam" layoutSet="qwerty" translit="varnam-sa" />
     </language>
     <language locale="sat_IN" englishName="Santali" autonym="ᱥᱟᱱᱛᱟᱲᱤ" glyph="ᱥ">
         <layout name="Inscript" layoutSet="santali_inscript" />
@@ -114,6 +124,7 @@
         <layout name="Compact" layoutSet="tamil_compact" />
         <layout name="Inscript" layoutSet="tamil_inscript" />
         <layout name="எழுத்துப்பெயர்ப்பு" layoutSet="qwerty" translit="ta-transliteration" />
+        <layout name="Varnam" layoutSet="qwerty" translit="varnam-ta" />
     </language>
     <language locale="te_IN" englishName="Telugu" autonym="తెలుగు" glyph="త">
         <layout name="Standard" layoutSet="telugu" />
@@ -121,6 +132,7 @@
         <layout name="Compact" layoutSet="telugu_compact" />
         <layout name="Inscript" layoutSet="telugu_inscript" />
         <layout name="లిప్యంతరీకరణ" layoutSet="qwerty" translit="te-transliteration" />
+        <layout name="Varnam" layoutSet="qwerty" translit="varnam-te" />
     </language>
     <language locale="ur_IN" englishName="Urdu" autonym="اردو" glyph="ا">
         <layout name="Standard" layoutSet="urdu" />
