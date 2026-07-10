@@ -63,11 +63,15 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InlineSuggestion;
+import android.view.inputmethod.InlineSuggestionsRequest;
+import android.view.inputmethod.InlineSuggestionsResponse;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.view.inputmethod.EditorInfoCompat;
 import androidx.core.view.inputmethod.InputConnectionCompat;
 import androidx.core.view.inputmethod.InputContentInfoCompat;
@@ -1026,6 +1030,34 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mHandler.onFinishInput();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    @Override
+    public InlineSuggestionsRequest onCreateInlineSuggestionsRequest(final android.os.Bundle
+            uiExtras) {
+        final View keyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        return InlineAutofillUtils.createRequest(
+                keyboardView != null ? keyboardView.getContext() : this);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    @Override
+    public boolean onInlineSuggestionsResponse(final InlineSuggestionsResponse response) {
+        if (!hasSuggestionStripView()) {
+            return false;
+        }
+        final List<InlineSuggestion> suggestions = response.getInlineSuggestions();
+        if (suggestions.isEmpty()) {
+            mSuggestionStripView.dismissInlineSuggestions();
+            return true;
+        }
+        InlineAutofillUtils.inflate(suggestions, this, views -> {
+            if (hasSuggestionStripView() && !views.isEmpty()) {
+                mSuggestionStripView.showInlineSuggestions(views);
+            }
+        });
+        return true;
+    }
+
     @Override
     public void onCurrentInputMethodSubtypeChanged(final InputMethodSubtype subtype) {
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
@@ -1221,6 +1253,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // still eligible for this editor.
         if (hasSuggestionStripView()) {
             mSuggestionStripView.dismissClipboardChip();
+            mSuggestionStripView.dismissInlineSuggestions();
         }
         // This will set the punctuation suggestions if next word suggestion is off;
         // otherwise it will clear the suggestion strip.

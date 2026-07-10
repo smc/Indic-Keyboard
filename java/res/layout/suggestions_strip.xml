@@ -121,6 +121,25 @@
             android:focusable="true"
             android:contentDescription="@string/clipboard_open_history" />
     </LinearLayout>
+    <HorizontalScrollView
+        android:id="@+id/inline_suggestions_strip"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/config_suggestions_strip_horizontal_margin"
+        android:layout_marginRight="@dimen/config_suggestions_strip_horizontal_margin"
+        android:scrollbars="none"
+        android:fillViewport="true"
+        android:hapticFeedbackEnabled="false"
+        android:soundEffectsEnabled="false" >
+        <LinearLayout
+            android:id="@+id/inline_suggestions_container"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:gravity="center_vertical" />
+    </HorizontalScrollView>
     <ImageButton
         android:id="@+id/suggestions_strip_more_key"
         android:layout_width="@dimen/config_suggestions_strip_edge_key_width"

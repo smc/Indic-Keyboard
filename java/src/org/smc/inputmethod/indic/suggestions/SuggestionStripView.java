@@ -77,6 +77,9 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private final ImageButton mMoreSuggestionsKey;
     private final View mImportantNoticeStrip;
     private final View mClipboardChipStrip;
+    private final android.widget.HorizontalScrollView mInlineSuggestionsStrip;
+    private final ViewGroup mInlineSuggestionsContainer;
+    private boolean mInlineSuggestionsShowing;
     private final View mClipboardChipPill;
     private final View mClipboardChipOpenHistory;
     private final android.widget.ImageView mClipboardChipImage;
@@ -104,14 +107,16 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         private final View mSuggestionsStrip;
         private final View mImportantNoticeStrip;
         private final View mClipboardChipStrip;
+        private final View mInlineSuggestionsStrip;
 
         public StripVisibilityGroup(final View suggestionStripView,
                 final ViewGroup suggestionsStrip, final View importantNoticeStrip,
-                final View clipboardChipStrip) {
+                final View clipboardChipStrip, final View inlineSuggestionsStrip) {
             mSuggestionStripView = suggestionStripView;
             mSuggestionsStrip = suggestionsStrip;
             mImportantNoticeStrip = importantNoticeStrip;
             mClipboardChipStrip = clipboardChipStrip;
+            mInlineSuggestionsStrip = inlineSuggestionsStrip;
             showSuggestionsStrip();
         }
 
@@ -122,24 +127,35 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             ViewCompat.setLayoutDirection(mSuggestionsStrip, layoutDirection);
             ViewCompat.setLayoutDirection(mImportantNoticeStrip, layoutDirection);
             ViewCompat.setLayoutDirection(mClipboardChipStrip, layoutDirection);
+            ViewCompat.setLayoutDirection(mInlineSuggestionsStrip, layoutDirection);
         }
 
         public void showSuggestionsStrip() {
             mSuggestionsStrip.setVisibility(VISIBLE);
             mImportantNoticeStrip.setVisibility(INVISIBLE);
             mClipboardChipStrip.setVisibility(INVISIBLE);
+            mInlineSuggestionsStrip.setVisibility(INVISIBLE);
         }
 
         public void showImportantNoticeStrip() {
             mSuggestionsStrip.setVisibility(INVISIBLE);
             mImportantNoticeStrip.setVisibility(VISIBLE);
             mClipboardChipStrip.setVisibility(INVISIBLE);
+            mInlineSuggestionsStrip.setVisibility(INVISIBLE);
         }
 
         public void showClipboardChipStrip() {
             mSuggestionsStrip.setVisibility(INVISIBLE);
             mImportantNoticeStrip.setVisibility(INVISIBLE);
             mClipboardChipStrip.setVisibility(VISIBLE);
+            mInlineSuggestionsStrip.setVisibility(INVISIBLE);
+        }
+
+        public void showInlineSuggestionsStrip() {
+            mSuggestionsStrip.setVisibility(INVISIBLE);
+            mImportantNoticeStrip.setVisibility(INVISIBLE);
+            mClipboardChipStrip.setVisibility(INVISIBLE);
+            mInlineSuggestionsStrip.setVisibility(VISIBLE);
         }
 
         public boolean isShowingImportantNoticeStrip() {
@@ -148,6 +164,10 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
         public boolean isShowingClipboardChipStrip() {
             return mClipboardChipStrip.getVisibility() == VISIBLE;
+        }
+
+        public boolean isShowingInlineSuggestionsStrip() {
+            return mInlineSuggestionsStrip.getVisibility() == VISIBLE;
         }
     }
 
@@ -187,8 +207,10 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mClipboardChipStrip.setOnClickListener(this);
         mClipboardChipOpenHistory = findViewById(R.id.clipboard_chip_open_history);
         mClipboardChipOpenHistory.setOnClickListener(this);
+        mInlineSuggestionsStrip = findViewById(R.id.inline_suggestions_strip);
+        mInlineSuggestionsContainer = findViewById(R.id.inline_suggestions_container);
         mStripVisibilityGroup = new StripVisibilityGroup(this, mSuggestionsStrip,
-                mImportantNoticeStrip, mClipboardChipStrip);
+                mImportantNoticeStrip, mClipboardChipStrip, mInlineSuggestionsStrip);
 
         for (int pos = 0; pos < SuggestedWords.MAX_SUGGESTIONS; pos++) {
             final TextView word = new TextView(context, null, R.attr.suggestionWordStyle);
@@ -264,6 +286,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             // The chip outlives strip clears from panel exits; only an explicit dismissal
             // (typing, paste, keyboard reopen) removes it.
             mStripVisibilityGroup.showClipboardChipStrip();
+        } else if (mInlineSuggestionsShowing) {
+            mStripVisibilityGroup.showInlineSuggestionsStrip();
         }
 
         if (mSuggestedWords.size() <= mStartIndexOfMoreSuggestions) {
@@ -325,12 +349,56 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         }
         mClipboardChipEntry = null;
         if (mStripVisibilityGroup.isShowingClipboardChipStrip()) {
-            mStripVisibilityGroup.showSuggestionsStrip();
+            if (mInlineSuggestionsShowing) {
+                mStripVisibilityGroup.showInlineSuggestionsStrip();
+            } else {
+                mStripVisibilityGroup.showSuggestionsStrip();
+            }
         }
     }
 
     public boolean isShowingClipboardChip() {
         return mStripVisibilityGroup.isShowingClipboardChipStrip();
+    }
+
+    public void showInlineSuggestions(final ArrayList<View> suggestionViews) {
+        if (isShowingMoreSuggestionPanel()) {
+            dismissMoreSuggestionsPanel();
+        }
+        mInlineSuggestionsContainer.removeAllViews();
+        final int margin = (int) (getResources().getDisplayMetrics().density * 4);
+        for (final View view : suggestionViews) {
+            // The platform delivers each InlineContentView with exact layout params matching
+            // the remotely rendered surface; the view cannot measure itself, so keep them.
+            final android.view.ViewGroup.LayoutParams delivered = view.getLayoutParams();
+            final android.widget.LinearLayout.LayoutParams params =
+                    new android.widget.LinearLayout.LayoutParams(
+                            delivered != null ? delivered.width
+                                    : android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                            delivered != null ? delivered.height
+                                    : android.widget.LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.gravity = android.view.Gravity.CENTER_VERTICAL;
+            params.leftMargin = margin;
+            params.rightMargin = margin;
+            mInlineSuggestionsContainer.addView(view, params);
+        }
+        mInlineSuggestionsShowing = true;
+        mInlineSuggestionsStrip.scrollTo(0, 0);
+        // A live clipboard chip keeps priority; the inline strip takes over once it is dismissed.
+        if (mClipboardChipEntry == null) {
+            mStripVisibilityGroup.showInlineSuggestionsStrip();
+        }
+    }
+
+    public void dismissInlineSuggestions() {
+        if (!mInlineSuggestionsShowing) {
+            return;
+        }
+        mInlineSuggestionsShowing = false;
+        mInlineSuggestionsContainer.removeAllViews();
+        if (mStripVisibilityGroup.isShowingInlineSuggestionsStrip()) {
+            mStripVisibilityGroup.showSuggestionsStrip();
+        }
     }
 
     private android.graphics.Bitmap decodeChipThumbnail(final ClipboardHistoryEntry entry) {
