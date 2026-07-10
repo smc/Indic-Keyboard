@@ -33,3 +33,9 @@ android {
         versionName = '1.0'
     }
 }
+
+dependencies {
+    // Only for TestAutofillService's inline-presentation slices.
+    implementation 'androidx.autofill:autofill:1.1.0'
+    implementation 'androidx.annotation:annotation:1.5.0'
+}

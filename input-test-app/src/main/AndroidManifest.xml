@@ -18,5 +18,17 @@
             android:authorities="org.smc.inputtest.clip"
             android:exported="false"
             android:grantUriPermissions="true" />
+        <service
+            android:name=".TestAutofillService"
+            android:label="Indic Test Autofill"
+            android:permission="android.permission.BIND_AUTOFILL_SERVICE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.autofill.AutofillService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.autofill"
+                android:resource="@xml/test_autofill_service" />
+        </service>
     </application>
 </manifest>
