@@ -38,6 +38,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.smc.inputmethod.indic.languagepack.LanguagePackDownloadManager;
 import org.smc.inputmethod.indic.languagepack.LanguagePackDownloadManager.Pack;
+import org.smc.inputmethod.indic.varnam.VarnamIndicKeyboard;
 
 import java.util.List;
 import java.util.Locale;
@@ -120,6 +121,8 @@ public final class LanguageLayoutSettingsFragment extends SubScreenFragment
 
         addPackSection(context, screen);
 
+        addCompanionLanguageSection(context, screen, target);
+
         final PreferenceCategory layoutsCategory = new PreferenceCategory(context);
         layoutsCategory.setTitle(R.string.language_section_layouts);
         layoutsCategory.setIconSpaceReserved(false);
@@ -141,6 +144,39 @@ public final class LanguageLayoutSettingsFragment extends SubScreenFragment
 
         mPack = findPack(mPackManager.cachedPacks());
         bindPack();
+    }
+
+    private void addCompanionLanguageSection(final Context context,
+            final PreferenceScreen screen, final Language target) {
+        if (!VarnamIndicKeyboard.schemes.containsKey("varnam-" + mLangCode)) {
+            return;
+        }
+        final PreferenceCategory category = new PreferenceCategory(context);
+        category.setTitle(R.string.language_section_companion);
+        category.setIconSpaceReserved(false);
+        screen.addPreference(category);
+
+        final SwitchPreferenceCompat pref = new SwitchPreferenceCompat(context);
+        pref.setWidgetLayoutResource(R.layout.preference_material_switch);
+        pref.setPersistent(false);
+        pref.setIconSpaceReserved(false);
+        pref.setTitle(R.string.companion_language_suggestions);
+        pref.setSummary(getString(R.string.companion_language_suggestions_summary,
+                target.mAutonym));
+        pref.setChecked(mLangCode.equals(
+                Settings.readCompanionLanguage(getSharedPreferences())));
+        pref.setOnPreferenceChangeListener((preference, newValue) -> {
+            final boolean checked = (Boolean) newValue;
+            getSharedPreferences().edit()
+                    .putString(Settings.PREF_COMPANION_LANGUAGE,
+                            checked ? mLangCode : "")
+                    .apply();
+            if (checked) {
+                triggerPackDownload();
+            }
+            return true;
+        });
+        category.addPreference(pref);
     }
 
     private void addPackSection(final Context context, final PreferenceScreen screen) {

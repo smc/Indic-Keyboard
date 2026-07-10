@@ -130,6 +130,10 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static final String PREF_SPACE_TRACKPAD = "pref_space_trackpad";
     public static final String PREF_DELETE_SWIPE = "pref_delete_swipe";
+    // Language whose Varnam transliterations are suggested while typing on the English
+    // keyboard; empty = feature off.
+    public static final String PREF_COMPANION_LANGUAGE =
+            "pref_companion_language";
     // Clipboard
     public static final String PREF_CLIPBOARD_ENABLED = "pref_clipboard_enabled";
     public static final String PREF_CLIPBOARD_RECENT_CHIP = "pref_clipboard_recent_chip";
@@ -412,6 +416,10 @@ public final class Settings implements SharedPreferences.OnSharedPreferenceChang
 
     public static boolean readClipboardEnabled(final SharedPreferences prefs) {
         return prefs.getBoolean(PREF_CLIPBOARD_ENABLED, true);
+    }
+
+    public static String readCompanionLanguage(final SharedPreferences prefs) {
+        return prefs.getString(PREF_COMPANION_LANGUAGE, "");
     }
 
     public static long readClipboardExpiryMillis(final SharedPreferences prefs) {

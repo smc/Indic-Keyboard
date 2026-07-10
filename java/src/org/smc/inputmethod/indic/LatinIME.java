@@ -765,6 +765,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mInputLogic.setGestureXlitDictionary(getApplicationContext(), locale,
                         "qwerty".equals(currentSubtype.getExtraValueOf(
                                 Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET)));
+                mInputLogic.disableCompanionVarnam(getApplicationContext());
                 Log.d("IndicKeyboard", "-------------transliteration enabled-----------");
                 return true;
             } catch (Exception e) {
@@ -775,8 +776,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInputLogic.disableTransliteration(getApplicationContext());
         mInputLogic.setGestureXlitDictionary(getApplicationContext(), null,
                 false /* isLatinLayout */);
+        updateCompanionVarnam(locale);
         Log.d("IndicKeyboard", "-------------transliteration disabled----------------");
         return false;
+    }
+
+    private void updateCompanionVarnam(final Locale locale) {
+        final String lang = Settings.readCompanionLanguage(
+                PreferenceManagerCompat.getDeviceSharedPreferences(this));
+        if (!lang.isEmpty() && "en".equals(locale.getLanguage())) {
+            mInputLogic.enableCompanionVarnam(lang, getApplicationContext());
+        } else {
+            mInputLogic.disableCompanionVarnam(getApplicationContext());
+        }
     }
 
     // Has to be package-visible for unit tests
@@ -1053,6 +1065,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // also wouldn't be consuming gesture data.
         mGestureConsumer = GestureConsumer.NULL_GESTURE_CONSUMER;
         mRichImm.refreshSubtypeCaches();
+        // The companion language pref can change in settings while the IME stays alive, so
+        // re-evaluate on every field focus; enableCompanionVarnam no-ops when unchanged.
+        if (!mRichImm.getCurrentSubtype().getRawSubtype()
+                .containsExtraValueKey(TRANSLITERATION_METHOD)) {
+            updateCompanionVarnam(mRichImm.getCurrentSubtypeLocale());
+        }
         if (!restarting) {
             mRichImm.ensureCurrentSubtypeEnabled(
                     getWindow().getWindow().getAttributes().token);

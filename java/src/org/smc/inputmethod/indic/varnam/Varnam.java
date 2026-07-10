@@ -22,6 +22,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.varnamproject.govarnam.Suggestion;
+import com.varnamproject.govarnam.TransliterationResult;
 import org.smc.inputmethod.indic.languagepack.LanguagePackDownloadManager;
 import com.varnamproject.govarnam.VarnamException;
 
@@ -134,6 +135,30 @@ public class Varnam {
                 post(() -> cb.onResult(input, sugs));
             } catch (final VarnamException e) {
                 post(() -> cb.onError(e.getMessage()));
+            }
+        });
+    }
+
+    /** Receives the categorized result of {@link #transliterateAdvanced}. */
+    public interface TransliterationResultCallback {
+        void onResult(String input, TransliterationResult result);
+    }
+
+    /**
+     * Like {@link #transliterate} but keeps the engine's categories (exact matches, dictionary
+     * words, tokenizer guesses) separate, so callers can judge confidence.
+     */
+    public void transliterateAdvanced(final int id, final String input,
+            final TransliterationResultCallback cb) {
+        engineThread.execute(() -> {
+            if (engine == null) {
+                return;
+            }
+            try {
+                final TransliterationResult result = engine.transliterateAdvanced(id, input);
+                post(() -> cb.onResult(input, result));
+            } catch (final VarnamException e) {
+                Log.w(TAG, "transliterateAdvanced failed", e);
             }
         });
     }

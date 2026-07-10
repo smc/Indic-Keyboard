@@ -110,6 +110,13 @@
     <!-- Accessibility description for the chevron on the clipboard chip that opens the history [CHAR LIMIT=40] -->
     <string name="clipboard_open_history">Open clipboard history</string>
 
+    <!-- Section header on the per-language settings page for the companion language option [CHAR LIMIT=33] -->
+    <string name="language_section_companion">Companion language</string>
+    <!-- Option to blend this language's transliterations into the English keyboard's suggestions [CHAR LIMIT=48] -->
+    <string name="companion_language_suggestions">Use as companion language</string>
+    <!-- Summary; %1$s is the language's own name [CHAR LIMIT=100] -->
+    <string name="companion_language_suggestions_summary">Show %1$s words in the suggestion bar when they match what you type on the English keyboard</string>
+
     <!--  Option for enabling or disabling the split keyboard layout. [CHAR LIMIT=65]-->
     <string name="enable_split_keyboard">Enable split keyboard</string>
 

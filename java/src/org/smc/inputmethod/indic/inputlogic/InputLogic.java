@@ -60,6 +60,7 @@ import com.android.inputmethod.latin.utils.ScriptUtils;
 import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.TextRange;
 import com.varnamproject.govarnam.Suggestion;
+import com.varnamproject.govarnam.TransliterationResult;
 
 import org.smc.ime.InputMethod;
 import org.smc.inputmethod.indic.LatinIME;
@@ -74,11 +75,14 @@ import org.smc.inputmethod.indic.varnam.VarnamIndicKeyboard;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * This class manages the input logic.
@@ -136,6 +140,17 @@ public final class InputLogic {
     private Varnam varnam;
     private boolean varnamSettingLearn = true; // Should varnam learn words
     private int varnamTransliterationTaskID = 0; // For IDying parallel varnam suggestion fetch task
+
+    // Companion engine: blends high-confidence transliterations of the configured language into
+    // the Latin suggestion strip while the user types on the plain English keyboard.
+    private Varnam companionVarnam;
+    private String companionVarnamLang;
+    private boolean companionVarnamReady;
+    // Task ids share one global cancellation registry with the main engine; keep the ranges apart.
+    private static final int COMPANION_TASK_ID_BASE = 64;
+    private int companionVarnamTaskId = COMPANION_TASK_ID_BASE;
+    private static final int COMPANION_MAX_SUGGESTIONS = 1;
+    private static final int COMPANION_MIN_WORD_LENGTH = 2;
 
     /**
      * Create a new instance of the input logic.
@@ -1625,6 +1640,7 @@ public final class InputLogic {
                 Constants.GET_SUGGESTED_WORDS_TIMEOUT);
         if (suggestedWords != null) {
             mSuggestionStripViewAccessor.showSuggestionStrip(suggestedWords);
+            maybeShowCompanionTransliterations();
         } else {
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
         }
@@ -2707,6 +2723,213 @@ public final class InputLogic {
             varnamTransliterationTaskID = 0;
         }
         varnam.transliterate(varnamTransliterationTaskID, word, cb);
+    }
+
+    public void enableCompanionVarnam(final String lang, final Context context) {
+        if (companionVarnam != null && lang.equals(companionVarnamLang)) {
+            return;
+        }
+        disableCompanionVarnam(context);
+        if (!VarnamIndicKeyboard.schemes.containsKey("varnam-" + lang)) {
+            return;
+        }
+        companionVarnamLang = lang;
+        companionVarnam = VarnamIndicKeyboard.makeVarnam(lang, context, new VarnamCallback() {
+            @Override
+            public void onResult(final boolean settingLearn) {
+                if (companionVarnam == null) {
+                    return;
+                }
+                // Wider than the injection cap: the tokenizer-intersection filter below needs
+                // a few candidates from each category to find an overlap.
+                companionVarnam.setDictionarySuggestionsLimit(5);
+                companionVarnam.setTokenizerSuggestionsLimit(3);
+                companionVarnamReady = true;
+                Log.d("varnam", "companion varnam ready - " + lang);
+            }
+
+            @Override
+            public void onError(final String err) {
+                // Unlike the dedicated Varnam layout this runs quietly behind the English
+                // keyboard, so no toast — typically the language pack isn't downloaded yet.
+                Log.w(TAG, "companion varnam unavailable: " + err);
+                disableCompanionVarnam(context);
+            }
+        });
+    }
+
+    public void disableCompanionVarnam(final Context context) {
+        if (companionVarnam != null) {
+            companionVarnam.close(context);
+            companionVarnam = null;
+        }
+        companionVarnamLang = null;
+        companionVarnamReady = false;
+    }
+
+    private void getCompanionVarnamSuggestions(final String word,
+            final Varnam.TransliterationResultCallback cb) {
+        companionVarnam.cancel(companionVarnamTaskId);
+        if (++companionVarnamTaskId >= COMPANION_TASK_ID_BASE + 64) {
+            companionVarnamTaskId = COMPANION_TASK_ID_BASE;
+        }
+        companionVarnam.transliterateAdvanced(companionVarnamTaskId, word, cb);
+    }
+
+    // Fired after the dictionary suggestions are shown: transliterate the typed word and, when
+    // the engine knows it (exact/dictionary match — not a mere tokenizer guess), re-show the
+    // strip with the transliterations blended in after the auto-correction slot.
+    private void maybeShowCompanionTransliterations() {
+        if (!companionVarnamReady || isVarnam || transliterationMethod != null) {
+            return;
+        }
+        final String typedWord = mWordComposer.getTypedWord();
+        if (typedWord.length() < COMPANION_MIN_WORD_LENGTH) {
+            return;
+        }
+        getCompanionVarnamSuggestions(typedWord, (input, result) -> {
+            if (result == null || !mWordComposer.getTypedWord().equals(input)) {
+                return;
+            }
+            final ArrayList<SuggestedWordInfo> transliterations =
+                    highConfidenceCompanionSuggestions(result);
+            if (transliterations.isEmpty()) {
+                return;
+            }
+            final SuggestedWords merged =
+                    withCompanionSuggestions(mSuggestedWords, input, transliterations);
+            if (merged != null) {
+                mSuggestionStripViewAccessor.showSuggestionStrip(merged);
+            }
+        });
+    }
+
+    private static ArrayList<SuggestedWordInfo> highConfidenceCompanionSuggestions(
+            final TransliterationResult result) {
+        final ArrayList<Suggestion> dictionaryBacked = new ArrayList<>();
+        if (result.ExactMatches != null) {
+            Collections.addAll(dictionaryBacked, result.ExactMatches);
+        }
+        if (result.PatternDictionarySuggestions != null) {
+            Collections.addAll(dictionaryBacked, result.PatternDictionarySuggestions);
+        }
+        // DictionarySuggestions can be composites: when the dictionary walk doesn't consume the
+        // whole input, the engine appends the tokenized leftover to the longest dictionary-word
+        // prefix, and the fake word inherits that prefix's corpus weight. A dictionary entry is
+        // only a real word for this input when the engine's own tokenization also produces it.
+        final HashSet<String> tokenized = new HashSet<>();
+        if (result.TokenizerSuggestions != null) {
+            for (final Suggestion sug : result.TokenizerSuggestions) {
+                tokenized.add(sug.Word);
+            }
+        }
+        if (result.GreedyTokenized != null) {
+            for (final Suggestion sug : result.GreedyTokenized) {
+                tokenized.add(sug.Word);
+            }
+        }
+        if (result.DictionarySuggestions != null) {
+            for (final Suggestion sug : result.DictionarySuggestions) {
+                if (tokenized.contains(sug.Word)) {
+                    dictionaryBacked.add(sug);
+                }
+            }
+        }
+        final ArrayList<SuggestedWordInfo> infos = new ArrayList<>();
+        final HashSet<String> seen = new HashSet<>();
+        for (final Suggestion sug : dictionaryBacked) {
+            if (sug.Word == null || sug.Word.isEmpty() || !seen.add(sug.Word)) {
+                continue;
+            }
+            if (!isCompleteIndicWord(sug.Word) || isPrefixNode(sug, result)) {
+                continue;
+            }
+            infos.add(new SuggestedWordInfo(sug.Word, "" /* prevWordsContext */, sug.Weight,
+                    SuggestedWordInfo.KIND_COMPLETION, Dictionary.DICTIONARY_RESUMED,
+                    SuggestedWordInfo.NOT_AN_INDEX, SuggestedWordInfo.NOT_A_CONFIDENCE));
+            if (infos.size() >= COMPANION_MAX_SUGGESTIONS) {
+                break;
+            }
+        }
+        return infos;
+    }
+
+    // For partial input the corpus lookup returns word fragments whose trailing consonant
+    // cluster is still open ("wis" -> വിശ്): a trailing virama marks those.
+    private static boolean isCompleteIndicWord(final String word) {
+        int end = word.length();
+        while (end > 0) {
+            final char c = word.charAt(end - 1);
+            if (c != '\u200C' && c != '\u200D') {
+                break;
+            }
+            end--;
+        }
+        if (end == 0 || word.codePointCount(0, word.length()) < 2) {
+            return false;
+        }
+        final int last = word.codePointBefore(end);
+        // Every Indic block keeps its virama at offset 0x4D.
+        return last < 0x0900 || last > 0x0D7F || (last & 0x7F) != 0x4D;
+    }
+
+    // The corpus also stores bare prefixes ("wi" -> വി) whose weight is exactly the weight of
+    // their best completion — that signature tells them apart from real words that merely
+    // prefix a longer, differently-weighted word.
+    private static boolean isPrefixNode(final Suggestion sug, final TransliterationResult result) {
+        return hasEqualWeightExtension(sug, result.ExactMatches)
+                || hasEqualWeightExtension(sug, result.DictionarySuggestions);
+    }
+
+    private static boolean hasEqualWeightExtension(final Suggestion sug, final Suggestion[] sugs) {
+        if (sugs == null) {
+            return false;
+        }
+        for (final Suggestion other : sugs) {
+            if (other.Weight == sug.Weight && other.Word != null
+                    && other.Word.length() > sug.Word.length()
+                    && other.Word.startsWith(sug.Word)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Nullable
+    private static SuggestedWords withCompanionSuggestions(final SuggestedWords base,
+            final String typedWord, final ArrayList<SuggestedWordInfo> transliterations) {
+        // Only blend onto a strip that is still showing suggestions for the same typed word.
+        if (base == null || base.isEmpty() || base.mTypedWordInfo == null
+                || !typedWord.equals(base.mTypedWordInfo.mWord)) {
+            return null;
+        }
+        final ArrayList<SuggestedWordInfo> list = new ArrayList<>();
+        final HashSet<String> injected = new HashSet<>();
+        for (final SuggestedWordInfo info : transliterations) {
+            injected.add(info.mWord);
+        }
+        for (int i = 0; i < base.size(); i++) {
+            final SuggestedWordInfo info = base.getInfo(i);
+            if (!injected.contains(info.mWord)) {
+                list.add(info);
+            }
+        }
+        // Index 2 renders off-center in both strip styles (the typing style hides index 0 and
+        // centers index 1), keeping English front and center. With fewer entries the
+        // transliteration would land in the center slot, so skip it.
+        if (list.size() < 2) {
+            return null;
+        }
+        list.addAll(2, transliterations);
+        return new SuggestedWords(
+                list,
+                base.mRawSuggestions,
+                base.mTypedWordInfo,
+                base.mTypedWordValid,
+                base.mWillAutoCorrect,
+                base.mIsObsoleteSuggestions,
+                base.mInputStyle,
+                base.mSequenceNumber);
     }
 
     public boolean isVarnamActive() {
