@@ -4,13 +4,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TransliterationResult {
+    public Suggestion[] ExactWords;
     public Suggestion[] ExactMatches;
     public Suggestion[] DictionarySuggestions;
     public Suggestion[] PatternDictionarySuggestions;
     public Suggestion[] TokenizerSuggestions;
     public Suggestion[] GreedyTokenized;
 
-    public TransliterationResult(Suggestion[] e, Suggestion[] d, Suggestion[] p, Suggestion[] t, Suggestion[] g) {
+    public TransliterationResult(Suggestion[] w, Suggestion[] e, Suggestion[] d, Suggestion[] p, Suggestion[] t, Suggestion[] g) {
+        this.ExactWords = w;
         this.ExactMatches = e;
         this.DictionarySuggestions = d;
         this.PatternDictionarySuggestions = p;

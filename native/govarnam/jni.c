@@ -140,6 +140,7 @@ Java_com_varnamproject_govarnam_Varnam_varnam_1transliterate_1advanced(JNIEnv *e
         return NULL;
     }
 
+    jobjectArray ExactWords = makeJavaSuggestionArray(env, result->ExactWords);
     jobjectArray ExactMatches = makeJavaSuggestionArray(env, result->ExactMatches);
     jobjectArray DictionarySuggestions = makeJavaSuggestionArray(env, result->DictionarySuggestions);
     jobjectArray PatternDictionarySuggestions = makeJavaSuggestionArray(env, result->PatternDictionarySuggestions);
@@ -148,15 +149,16 @@ Java_com_varnamproject_govarnam_Varnam_varnam_1transliterate_1advanced(JNIEnv *e
 
     jclass jTRclass = (*env)->FindClass(env, "com/varnamproject/govarnam/TransliterationResult");
     jmethodID constructorID = (*env)->GetMethodID(env, jTRclass, "<init>",
-                                        "([Lcom/varnamproject/govarnam/Suggestion;[Lcom/varnamproject/govarnam/Suggestion;[Lcom/varnamproject/govarnam/Suggestion;[Lcom/varnamproject/govarnam/Suggestion;[Lcom/varnamproject/govarnam/Suggestion;)V");
+                                        "([Lcom/varnamproject/govarnam/Suggestion;[Lcom/varnamproject/govarnam/Suggestion;[Lcom/varnamproject/govarnam/Suggestion;[Lcom/varnamproject/govarnam/Suggestion;[Lcom/varnamproject/govarnam/Suggestion;[Lcom/varnamproject/govarnam/Suggestion;)V");
 
-    int size = 5;
+    int size = 6;
     jvalue* args = malloc(size * sizeof(jvalue));
-    args[0].l = ExactMatches;
-    args[1].l = DictionarySuggestions;
-    args[2].l = PatternDictionarySuggestions;
-    args[3].l = TokenizerSuggestions;
-    args[4].l = GreedyTokenized;
+    args[0].l = ExactWords;
+    args[1].l = ExactMatches;
+    args[2].l = DictionarySuggestions;
+    args[3].l = PatternDictionarySuggestions;
+    args[4].l = TokenizerSuggestions;
+    args[5].l = GreedyTokenized;
 
     return (*env)->NewObjectA(env, jTRclass, constructorID, args);
 }

@@ -2807,41 +2807,16 @@ public final class InputLogic {
     private static ArrayList<SuggestedWordInfo> highConfidenceCompanionSuggestions(
             final TransliterationResult result) {
         final ArrayList<Suggestion> dictionaryBacked = new ArrayList<>();
-        if (result.ExactMatches != null) {
-            Collections.addAll(dictionaryBacked, result.ExactMatches);
+        if (result.ExactWords != null) {
+            Collections.addAll(dictionaryBacked, result.ExactWords);
         }
         if (result.PatternDictionarySuggestions != null) {
             Collections.addAll(dictionaryBacked, result.PatternDictionarySuggestions);
-        }
-        // DictionarySuggestions can be composites: when the dictionary walk doesn't consume the
-        // whole input, the engine appends the tokenized leftover to the longest dictionary-word
-        // prefix, and the fake word inherits that prefix's corpus weight. A dictionary entry is
-        // only a real word for this input when the engine's own tokenization also produces it.
-        final HashSet<String> tokenized = new HashSet<>();
-        if (result.TokenizerSuggestions != null) {
-            for (final Suggestion sug : result.TokenizerSuggestions) {
-                tokenized.add(sug.Word);
-            }
-        }
-        if (result.GreedyTokenized != null) {
-            for (final Suggestion sug : result.GreedyTokenized) {
-                tokenized.add(sug.Word);
-            }
-        }
-        if (result.DictionarySuggestions != null) {
-            for (final Suggestion sug : result.DictionarySuggestions) {
-                if (tokenized.contains(sug.Word)) {
-                    dictionaryBacked.add(sug);
-                }
-            }
         }
         final ArrayList<SuggestedWordInfo> infos = new ArrayList<>();
         final HashSet<String> seen = new HashSet<>();
         for (final Suggestion sug : dictionaryBacked) {
             if (sug.Word == null || sug.Word.isEmpty() || !seen.add(sug.Word)) {
-                continue;
-            }
-            if (!isCompleteIndicWord(sug.Word) || isPrefixNode(sug, result)) {
                 continue;
             }
             infos.add(new SuggestedWordInfo(sug.Word, "" /* prevWordsContext */, sug.Weight,
@@ -2852,47 +2827,6 @@ public final class InputLogic {
             }
         }
         return infos;
-    }
-
-    // For partial input the corpus lookup returns word fragments whose trailing consonant
-    // cluster is still open ("wis" -> വിശ്): a trailing virama marks those.
-    private static boolean isCompleteIndicWord(final String word) {
-        int end = word.length();
-        while (end > 0) {
-            final char c = word.charAt(end - 1);
-            if (c != '\u200C' && c != '\u200D') {
-                break;
-            }
-            end--;
-        }
-        if (end == 0 || word.codePointCount(0, word.length()) < 2) {
-            return false;
-        }
-        final int last = word.codePointBefore(end);
-        // Every Indic block keeps its virama at offset 0x4D.
-        return last < 0x0900 || last > 0x0D7F || (last & 0x7F) != 0x4D;
-    }
-
-    // The corpus also stores bare prefixes ("wi" -> വി) whose weight is exactly the weight of
-    // their best completion — that signature tells them apart from real words that merely
-    // prefix a longer, differently-weighted word.
-    private static boolean isPrefixNode(final Suggestion sug, final TransliterationResult result) {
-        return hasEqualWeightExtension(sug, result.ExactMatches)
-                || hasEqualWeightExtension(sug, result.DictionarySuggestions);
-    }
-
-    private static boolean hasEqualWeightExtension(final Suggestion sug, final Suggestion[] sugs) {
-        if (sugs == null) {
-            return false;
-        }
-        for (final Suggestion other : sugs) {
-            if (other.Weight == sug.Weight && other.Word != null
-                    && other.Word.length() > sug.Word.length()
-                    && other.Word.startsWith(sug.Word)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Nullable
