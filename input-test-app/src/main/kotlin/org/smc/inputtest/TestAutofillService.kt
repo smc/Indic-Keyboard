@@ -45,12 +45,14 @@ import androidx.autofill.inline.v1.InlineSuggestionUi
 @RequiresApi(Build.VERSION_CODES.O)
 class TestAutofillService : AutofillService() {
 
-    private val values = listOf(
-        "user@example.com",
-        "second.user@example.com",
+    // The field's hint is baked into every suggestion so a chip leaking onto another field is
+    // immediately attributable.
+    private fun valuesFor(fieldTag: String) = listOf(
+        "$fieldTag user@example.com",
+        "$fieldTag second.user@example.com",
         "9876543210",
-        "Fourth suggestion",
-        "Fifth suggestion",
+        "$fieldTag fourth",
+        "$fieldTag fifth",
     )
 
     override fun onFillRequest(
@@ -65,6 +67,7 @@ class TestAutofillService : AutofillService() {
             return
         }
         val focusedId = focused.autofillId!!
+        val values = valuesFor(focused.hint ?: "?")
         // Password fields get a single suggestion, so the keyboard's centered
         // one-chip layout can be exercised too.
         val fieldValues = if (focused.hint?.contains("password", ignoreCase = true) == true) {

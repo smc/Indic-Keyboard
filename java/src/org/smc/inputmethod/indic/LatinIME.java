@@ -1013,10 +1013,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onStartInputView(final EditorInfo editorInfo, final boolean restarting) {
-        mInlineSuggestionsGeneration++;
-        if (hasSuggestionStripView()) {
-            mSuggestionStripView.dismissInlineSuggestions();
-        }
+        dismissInlineSuggestions(false /* blockUntilRefocus */);
         mHandler.onStartInputView(editorInfo, restarting);
         mStatsUtilsManager.onStartInputView();
     }
@@ -1043,9 +1040,22 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 keyboardView != null ? keyboardView.getContext() : this);
     }
 
-    // Bumped whenever inline suggestions become stale (editor change, keyboard hidden) so
-    // that in-flight inflations from the previous editor cannot resurface their chips.
+    // Bumped whenever inline suggestions become stale (editor change, keyboard hidden, user
+    // typing, newer response) so that in-flight inflations cannot resurface their chips.
     private int mInlineSuggestionsGeneration;
+    // Some services attach datasets with no filter text, which
+    // survive the platform's typing filter and get re-delivered after every keystroke, so a
+    // one-shot dismissal on the keystroke is immediately undone. Once the user edits the
+    // field, responses are ignored outright until the next field focus or keyboard show.
+    private boolean mInlineSuggestionsBlocked;
+
+    private void dismissInlineSuggestions(final boolean blockUntilRefocus) {
+        mInlineSuggestionsGeneration++;
+        mInlineSuggestionsBlocked = blockUntilRefocus;
+        if (hasSuggestionStripView()) {
+            mSuggestionStripView.dismissInlineSuggestions();
+        }
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.R)
     @Override
@@ -1053,15 +1063,32 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (!hasSuggestionStripView()) {
             return false;
         }
+        if (mInlineSuggestionsBlocked) {
+            return true;
+        }
+        final int generation = ++mInlineSuggestionsGeneration;
         final List<InlineSuggestion> suggestions = response.getInlineSuggestions();
-        if (suggestions.isEmpty()) {
+        // A response with no credential entries is what the platform's typing filter leaves
+        // behind (the service's pinned entry always survives it): revert to word suggestions
+        // rather than keeping a lone "open the service" chip up.
+        boolean hasCredentials = false;
+        for (final InlineSuggestion suggestion : suggestions) {
+            if (!suggestion.getInfo().isPinned()) {
+                hasCredentials = true;
+                break;
+            }
+        }
+        if (!hasCredentials) {
             mSuggestionStripView.dismissInlineSuggestions();
             return true;
         }
-        final int generation = mInlineSuggestionsGeneration;
         InlineAutofillUtils.inflate(suggestions, this, (views, pinnedView) -> {
-            if (generation == mInlineSuggestionsGeneration && hasSuggestionStripView()
-                    && !(views.isEmpty() && pinnedView == null)) {
+            if (generation != mInlineSuggestionsGeneration || !hasSuggestionStripView()) {
+                return;
+            }
+            if (views.isEmpty()) {
+                mSuggestionStripView.dismissInlineSuggestions();
+            } else {
                 mSuggestionStripView.showInlineSuggestions(views, pinnedView);
             }
         });
@@ -1297,10 +1324,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mainKeyboardView != null) {
             mainKeyboardView.closing();
         }
-        mInlineSuggestionsGeneration++;
-        if (hasSuggestionStripView()) {
-            mSuggestionStripView.dismissInlineSuggestions();
-        }
+        dismissInlineSuggestions(false /* blockUntilRefocus */);
         setNavigationBarVisibility(false);
     }
 
@@ -1738,8 +1762,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     getCurrentRecapitalizeState());
             return;
         }
-        if (hasSuggestionStripView() && shouldDismissClipboardChip(event)) {
-            mSuggestionStripView.dismissClipboardChip();
+        if (shouldDismissSuggestionChips(event)) {
+            dismissInlineSuggestions(true /* blockUntilRefocus */);
+            if (hasSuggestionStripView()) {
+                mSuggestionStripView.dismissClipboardChip();
+            }
         }
         final InputTransaction completeInputTransaction =
                 mInputLogic.onCodeInput(mSettings.getCurrent(), event,
@@ -1749,9 +1776,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mKeyboardSwitcher.onEvent(event, getCurrentAutoCapsState(), getCurrentRecapitalizeState());
     }
 
-    // The clipboard chip survives mode switches (shift, symbols, emoji palette, clipboard
-    // panel); only events that change the editor content dismiss it.
-    private static boolean shouldDismissClipboardChip(final Event event) {
+    // The clipboard chip and autofill chips survive mode switches (shift, symbols, emoji
+    // palette, clipboard panel); only events that change the editor content dismiss them.
+    private static boolean shouldDismissSuggestionChips(final Event event) {
         if (!event.isFunctionalKeyEvent()) {
             return true;
         }
@@ -1791,6 +1818,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mEmojiSearchController.handleTextInput(rawText);
             return;
         }
+        dismissInlineSuggestions(true /* blockUntilRefocus */);
         if (hasSuggestionStripView()) {
             mSuggestionStripView.dismissClipboardChip();
         }
@@ -1808,6 +1836,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mEmojiSearchController != null && mEmojiSearchController.isActive()) {
             return;
         }
+        dismissInlineSuggestions(true /* blockUntilRefocus */);
         if (hasSuggestionStripView()) {
             mSuggestionStripView.dismissClipboardChip();
         }
