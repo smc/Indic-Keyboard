@@ -2778,7 +2778,9 @@ public final class InputLogic {
 
     // Fired after the dictionary suggestions are shown: transliterate the typed word and, when
     // the engine knows it (exact/dictionary match — not a mere tokenizer guess), re-show the
-    // strip with the transliterations blended in after the auto-correction slot.
+    // strip with the transliterations blended in after the auto-correction slot. When English
+    // has nothing worthwhile either, the input is most probably a companion-language word, so
+    // the engine's best guess is shown even without a full-input dictionary match.
     private void maybeShowCompanionTransliterations() {
         if (!companionVarnamReady || isVarnam || transliterationMethod != null) {
             return;
@@ -2787,21 +2789,66 @@ public final class InputLogic {
         if (typedWord.length() < COMPANION_MIN_WORD_LENGTH) {
             return;
         }
-        getCompanionVarnamSuggestions(typedWord, (input, result) -> {
-            if (result == null || !mWordComposer.getTypedWord().equals(input)) {
+        final String query = mWordComposer.wasAutoCapitalized()
+                ? typedWord.substring(0, 1).toLowerCase(Locale.ROOT) + typedWord.substring(1)
+                : typedWord;
+        getCompanionVarnamSuggestions(query, (input, result) -> {
+            if (result == null || !mWordComposer.getTypedWord().equals(typedWord)) {
                 return;
             }
-            final ArrayList<SuggestedWordInfo> transliterations =
+            ArrayList<SuggestedWordInfo> transliterations =
                     highConfidenceCompanionSuggestions(result);
+            if (transliterations.isEmpty() && hasNoWorthwhileEnglishSuggestions(mSuggestedWords)) {
+                transliterations = bestGuessCompanionSuggestions(result);
+            }
             if (transliterations.isEmpty()) {
                 return;
             }
             final SuggestedWords merged =
-                    withCompanionSuggestions(mSuggestedWords, input, transliterations);
+                    withCompanionSuggestions(mSuggestedWords, typedWord, transliterations);
             if (merged != null) {
                 mSuggestionStripViewAccessor.showSuggestionStrip(merged);
             }
         });
+    }
+
+    private static boolean hasNoWorthwhileEnglishSuggestions(final SuggestedWords base) {
+        return base != null && !base.isEmpty() && !base.mTypedWordValid && !base.mWillAutoCorrect;
+    }
+
+    private static ArrayList<SuggestedWordInfo> bestGuessCompanionSuggestions(
+            final TransliterationResult result) {
+        final ArrayList<SuggestedWordInfo> infos = new ArrayList<>();
+        final Suggestion[][] sources = {
+                result.DictionarySuggestions, result.GreedyTokenized, result.TokenizerSuggestions,
+        };
+        for (final Suggestion[] source : sources) {
+            if (source == null) {
+                continue;
+            }
+            for (final Suggestion sug : source) {
+                if (sug.Word == null || sug.Word.isEmpty() || containsLatinLetter(sug.Word)) {
+                    continue;
+                }
+                infos.add(new SuggestedWordInfo(sug.Word, "" /* prevWordsContext */, sug.Weight,
+                        SuggestedWordInfo.KIND_COMPLETION, Dictionary.DICTIONARY_RESUMED,
+                        SuggestedWordInfo.NOT_AN_INDEX, SuggestedWordInfo.NOT_A_CONFIDENCE));
+                if (infos.size() >= COMPANION_MAX_SUGGESTIONS) {
+                    return infos;
+                }
+            }
+        }
+        return infos;
+    }
+
+    private static boolean containsLatinLetter(final String word) {
+        for (int i = 0; i < word.length(); i++) {
+            final char c = word.charAt(i);
+            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static ArrayList<SuggestedWordInfo> highConfidenceCompanionSuggestions(
@@ -2849,12 +2896,13 @@ public final class InputLogic {
             }
         }
         // Index 2 renders off-center in both strip styles (the typing style hides index 0 and
-        // centers index 1), keeping English front and center. With fewer entries the
-        // transliteration would land in the center slot, so skip it.
-        if (list.size() < 2) {
+        // centers index 1), keeping English front and center. On a sparser strip that would
+        // put the transliteration in the center slot — acceptable only when English produced
+        // nothing worth defending.
+        if (list.size() < 2 && !hasNoWorthwhileEnglishSuggestions(base)) {
             return null;
         }
-        list.addAll(2, transliterations);
+        list.addAll(Math.min(2, list.size()), transliterations);
         return new SuggestedWords(
                 list,
                 base.mRawSuggestions,
