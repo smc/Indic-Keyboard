@@ -24,6 +24,10 @@
 
     <dimen name="config_key_hysteresis_distance">8.0dp</dimen>
 
+    <!-- Keys stop growing past this width; wider windows get centering gutters. Effectively
+         unbounded on phones, overridden for sw600dp+. -->
+    <dimen name="config_keyboard_max_content_width">9999dp</dimen>
+
     <!-- Preferable keyboard height in absolute scale: 1.285in -->
     <!-- This config_default_keyboard_height value should match with keyboard-heights.xml -->
     <dimen name="config_default_keyboard_height">205.6dp</dimen>

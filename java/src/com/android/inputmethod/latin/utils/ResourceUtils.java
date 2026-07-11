@@ -204,6 +204,21 @@ public final class ResourceUtils {
         return dm.widthPixels;
     }
 
+    /**
+     * Width of the key block. On wide screens (tablets in landscape) keys stop growing at
+     * {@code config_keyboard_max_content_width}; the remainder becomes the centering gutters.
+     */
+    public static int getKeyboardContentWidth(final Context context) {
+        final int windowWidth = getDefaultKeyboardWidth(context);
+        final int maxWidth = context.getResources().getDimensionPixelSize(
+                R.dimen.config_keyboard_max_content_width);
+        return Math.min(windowWidth, maxWidth);
+    }
+
+    public static int getKeyboardGutterWidth(final Context context) {
+        return (getDefaultKeyboardWidth(context) - getKeyboardContentWidth(context)) / 2;
+    }
+
     public static int getKeyboardHeight(final Resources res, final SettingsValues settingsValues) {
         final int defaultKeyboardHeight = getDefaultKeyboardHeight(res);
         if (settingsValues.mHasKeyboardResize) {

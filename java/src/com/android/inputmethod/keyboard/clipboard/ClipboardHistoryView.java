@@ -89,7 +89,7 @@ public final class ClipboardHistoryView extends LinearLayout implements
     @Override
     protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         final Resources res = getContext().getResources();
-        final int width = ResourceUtils.getDefaultKeyboardWidth(getContext())
+        final int width = ResourceUtils.getKeyboardContentWidth(getContext())
                 + getPaddingLeft() + getPaddingRight();
         final int height = (mTotalHeight > 0
                 ? mTotalHeight
@@ -125,6 +125,8 @@ public final class ClipboardHistoryView extends LinearLayout implements
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        final int gutter = ResourceUtils.getKeyboardGutterWidth(getContext());
+        setPadding(gutter, getPaddingTop(), gutter, getPaddingBottom());
         mBackKey = findViewById(R.id.clipboard_back_key);
         mBackKey.setTag(Constants.CODE_ALPHA_FROM_CLIPBOARD);
         mBackKey.setOnTouchListener(this);
@@ -296,6 +298,7 @@ public final class ClipboardHistoryView extends LinearLayout implements
                 R.attr.md3KeyColor, value, true)
                 && value.type >= TypedValue.TYPE_FIRST_COLOR_INT
                 && value.type <= TypedValue.TYPE_LAST_COLOR_INT;
+        // MD3 buttons are stadium-shaped: radius = half the 32dp button height.
         final float radiusDp = md3Keys ? 16 : 8;
         final int fill = md3Keys ? value.data
                 : isLightInk(context) ? 0x26FFFFFF : Color.WHITE;

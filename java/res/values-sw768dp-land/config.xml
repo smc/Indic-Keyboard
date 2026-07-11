@@ -20,18 +20,16 @@
 
 <!-- Configuration values for Large Tablet Landscape. -->
 <resources>
-    <!-- Preferable keyboard height in absolute scale: 58.0mm -->
-    <!-- This config_default_keyboard_height value should match with keyboard-heights.xml -->
-    <dimen name="config_default_keyboard_height">365.4dp</dimen>
-    <fraction name="config_min_keyboard_height">35%p</fraction>
+    <dimen name="config_default_keyboard_height">220dp</dimen>
+    <fraction name="config_min_keyboard_height">25%p</fraction>
 
     <fraction name="config_keyboard_top_padding_holo">1.896%p</fraction>
     <fraction name="config_keyboard_bottom_padding_holo">0.0%p</fraction>
     <fraction name="config_key_vertical_gap_holo">3.690%p</fraction>
     <fraction name="config_key_horizontal_gap_holo">1.030%p</fraction>
 
-    <dimen name="config_more_keys_keyboard_key_height">81.9dp</dimen>
-    <dimen name="config_more_keys_keyboard_key_height_md3">80dp</dimen>
+    <dimen name="config_more_keys_keyboard_key_height">62dp</dimen>
+    <dimen name="config_more_keys_keyboard_key_height_md3">60dp</dimen>
 
     <fraction name="config_key_letter_ratio_holo">43%</fraction>
     <fraction name="config_key_letter_ratio_lxx">50%</fraction>
@@ -53,7 +51,7 @@
     <fraction name="config_key_shifted_letter_hint_ratio_5row">30%</fraction>
 
     <dimen name="config_suggestions_strip_height">44dp</dimen>
-    <dimen name="config_suggestions_strip_horizontal_margin">340dp</dimen>
+    <dimen name="config_suggestions_strip_horizontal_margin">54dp</dimen>
     <dimen name="config_suggestions_strip_edge_key_width">54dp</dimen>
     <fraction name="config_min_more_suggestions_width">50%</fraction>
 

@@ -42,7 +42,7 @@ final class EmojiLayoutParams {
     public EmojiLayoutParams(final Context context) {
         final Resources res = context.getResources();
         final int defaultKeyboardHeight = ResourceUtils.getDefaultKeyboardHeight(res);
-        final int defaultKeyboardWidth = ResourceUtils.getDefaultKeyboardWidth(context);
+        final int defaultKeyboardWidth = ResourceUtils.getKeyboardContentWidth(context);
         mKeyVerticalGap = (int) res.getFraction(R.fraction.config_key_vertical_gap_holo,
                 defaultKeyboardHeight, defaultKeyboardHeight);
         mBottomPadding = (int) res.getFraction(R.fraction.config_keyboard_bottom_padding_holo,

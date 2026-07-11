@@ -62,6 +62,7 @@ import org.smc.inputmethod.indic.settings.Settings;
 import org.smc.inputmethod.indic.settings.SettingsValues;
 import org.smc.inputmethod.indic.suggestions.MoreSuggestionsView.MoreSuggestionsListener;
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
+import com.android.inputmethod.latin.utils.ResourceUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -217,6 +218,9 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
         final LayoutInflater inflater = LayoutInflater.from(context);
         inflater.inflate(R.layout.suggestions_strip, this);
+
+        final int gutter = ResourceUtils.getKeyboardGutterWidth(context);
+        setPadding(gutter, getPaddingTop(), gutter, getPaddingBottom());
 
         mSuggestionsStrip = (ViewGroup)findViewById(R.id.suggestions_strip);
         mVoiceKey = (ImageButton)findViewById(R.id.suggestions_strip_voice_key);

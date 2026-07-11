@@ -126,7 +126,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(
                 mThemeContext, editorInfo);
         final Resources res = mThemeContext.getResources();
-        final int keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(mThemeContext);
+        final int keyboardWidth = ResourceUtils.getKeyboardContentWidth(mThemeContext);
         final int keyboardHeight = ResourceUtils.getKeyboardHeight(res, settingsValues);
         builder.setKeyboardGeometry(keyboardWidth, keyboardHeight);
         builder.setSubtype(mRichImm.getCurrentSubtype());
@@ -406,7 +406,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(
                 mThemeContext, mLatinIME.getCurrentInputEditorInfo());
         final Resources res = mThemeContext.getResources();
-        builder.setKeyboardGeometry(ResourceUtils.getDefaultKeyboardWidth(mThemeContext),
+        builder.setKeyboardGeometry(ResourceUtils.getKeyboardContentWidth(mThemeContext),
                 ResourceUtils.getKeyboardHeight(res, settingsValues));
         builder.setSubtype(RichInputMethodSubtype.getEmojiSearchSubtype());
         builder.setVoiceInputKeyEnabled(false);
@@ -597,6 +597,9 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         mKeyboardView = (MainKeyboardView) mCurrentInputView.findViewById(R.id.keyboard_view);
         mKeyboardView.setHardwareAcceleratedDrawingEnabled(isHardwareAcceleratedDrawingEnabled);
         mKeyboardView.setKeyboardActionListener(mLatinIME);
+        final int gutter = ResourceUtils.getKeyboardGutterWidth(mThemeContext);
+        mKeyboardView.setPadding(gutter, mKeyboardView.getPaddingTop(),
+                gutter, mKeyboardView.getPaddingBottom());
         mEmojiPalettesView.setHardwareAcceleratedDrawingEnabled(
                 isHardwareAcceleratedDrawingEnabled);
         mEmojiPalettesView.setKeyboardActionListener(mLatinIME);

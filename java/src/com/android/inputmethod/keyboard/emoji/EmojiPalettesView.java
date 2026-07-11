@@ -119,7 +119,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
         final Resources res = context.getResources();
         mEmojiLayoutParams = new EmojiLayoutParams(context);
         builder.setSubtype(RichInputMethodSubtype.getEmojiSubtype());
-        builder.setKeyboardGeometry(ResourceUtils.getDefaultKeyboardWidth(context),
+        builder.setKeyboardGeometry(ResourceUtils.getKeyboardContentWidth(context),
                 mEmojiLayoutParams.mEmojiKeyboardHeight);
         final KeyboardLayoutSet layoutSet = builder.build();
         final TypedArray emojiPalettesViewAttr = context.obtainStyledAttributes(attrs,
@@ -143,7 +143,7 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
     @Override
     protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         final Resources res = getContext().getResources();
-        final int width = ResourceUtils.getDefaultKeyboardWidth(getContext())
+        final int width = ResourceUtils.getKeyboardContentWidth(getContext())
                 + getPaddingLeft() + getPaddingRight();
         final int mainKeyboardHeight = mMainKeyboardHeight > 0
                 ? mMainKeyboardHeight : ResourceUtils.getDefaultKeyboardHeight(res);
@@ -183,6 +183,8 @@ public final class EmojiPalettesView extends LinearLayout implements OnTabChange
 
     @Override
     protected void onFinishInflate() {
+        final int gutter = ResourceUtils.getKeyboardGutterWidth(getContext());
+        setPadding(gutter, getPaddingTop(), gutter, getPaddingBottom());
         mTabHost = findViewById(R.id.emoji_category_tabhost);
         mTabHost.setup();
         for (final EmojiCategory.CategoryProperties properties
