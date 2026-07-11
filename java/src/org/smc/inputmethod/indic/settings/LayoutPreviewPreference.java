@@ -17,9 +17,11 @@
 package org.smc.inputmethod.indic.settings;
 
 import android.content.Context;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodSubtype;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import androidx.preference.PreferenceViewHolder;
 import androidx.preference.SwitchPreferenceCompat;
@@ -29,12 +31,12 @@ import com.android.inputmethod.keyboard.KeyboardTheme;
 import com.android.inputmethod.latin.R;
 
 /**
- * A layout-enable switch rendered as its own card: a live preview of the layout in the user's
- * current keyboard theme, with the layout name and switch on a footer row.
+ * A layout-enable switch row that expands on tap to show a live preview of the layout in the
+ * user's current keyboard theme. Only the switch itself toggles the layout.
  */
-public final class LayoutPreviewPreference extends SwitchPreferenceCompat
-        implements CardedPreferenceGroupAdapter.Standalone {
+public final class LayoutPreviewPreference extends SwitchPreferenceCompat {
     private final InputMethodSubtype mSubtype;
+    private boolean mExpanded;
 
     public LayoutPreviewPreference(final Context context, final InputMethodSubtype subtype) {
         super(context);
@@ -43,15 +45,30 @@ public final class LayoutPreviewPreference extends SwitchPreferenceCompat
         setWidgetLayoutResource(R.layout.preference_material_switch);
     }
 
+    // Row taps expand/collapse the preview instead of toggling the switch.
+    @Override
+    protected void onClick() {
+        mExpanded = !mExpanded;
+        notifyChanged();
+    }
+
     @Override
     public void onBindViewHolder(final PreferenceViewHolder holder) {
         super.onBindViewHolder(holder);
-        // The card background (set by CardedPreferenceGroupAdapter) has rounded corners; clip
-        // the edge-to-edge preview to them.
-        holder.itemView.setClipToOutline(true);
+        // The switch handles its own taps (the library listener is attached in
+        // super.onBindViewHolder); the widget layout ships non-clickable for rows
+        // where the whole row toggles.
+        final View switchView = holder.findViewById(androidx.preference.R.id.switchWidget);
+        switchView.setClickable(true);
+        switchView.setFocusable(true);
+        final ImageView indicator =
+                (ImageView) holder.findViewById(R.id.layout_expand_indicator);
+        indicator.setRotation(mExpanded ? 180f : 0f);
         final FrameLayout previewHolder =
                 (FrameLayout) holder.findViewById(R.id.layout_preview_holder);
-        if (previewHolder.getTag() != mSubtype) {
+        previewHolder.setVisibility(mExpanded ? View.VISIBLE : View.GONE);
+        previewHolder.setClipToOutline(true);
+        if (mExpanded && previewHolder.getTag() != mSubtype) {
             previewHolder.removeAllViews();
             previewHolder.addView(KeyboardPreviewView.create(getContext(),
                     KeyboardTheme.getKeyboardTheme(getContext()), mSubtype),

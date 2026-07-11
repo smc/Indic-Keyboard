@@ -42,9 +42,6 @@ import com.google.android.material.color.MaterialColors;
  * as one continuous rounded surface, with category titles sitting above their card.
  */
 public class CardedPreferenceGroupAdapter extends PreferenceGroupAdapter {
-    /** Marker for preferences that render as their own card instead of merging into the group. */
-    public interface Standalone {}
-
     private final int mInset;
     private final int mGap;
 
@@ -104,19 +101,11 @@ public class CardedPreferenceGroupAdapter extends PreferenceGroupAdapter {
     }
 
     private boolean isCardTop(final int position) {
-        if (getItem(position) instanceof Standalone || position == 0) {
-            return true;
-        }
-        final Preference previous = getItem(position - 1);
-        return previous instanceof PreferenceCategory || previous instanceof Standalone;
+        return position == 0 || getItem(position - 1) instanceof PreferenceCategory;
     }
 
     private boolean isCardBottom(final int position) {
-        if (getItem(position) instanceof Standalone || position == getItemCount() - 1) {
-            return true;
-        }
-        final Preference next = getItem(position + 1);
-        return next instanceof PreferenceCategory || next instanceof Standalone;
+        return position == getItemCount() - 1 || getItem(position + 1) instanceof PreferenceCategory;
     }
 
     boolean hasDividerBelow(final int position) {
