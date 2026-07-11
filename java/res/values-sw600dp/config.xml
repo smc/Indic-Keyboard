@@ -29,6 +29,9 @@
     <fraction name="config_min_keyboard_height">-35.0%p</fraction>
 
     <dimen name="config_more_keys_keyboard_key_height">63.0dp</dimen>
+    <dimen name="config_more_keys_keyboard_key_height_md3">57dp</dimen>
+    <dimen name="config_more_keys_keyboard_offset_md3">22dp</dimen>
+    <dimen name="config_more_suggestions_hover_inset_md3">5dp</dimen>
     <dimen name="config_more_keys_keyboard_key_horizontal_padding">6dp</dimen>
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
     <!-- config_more_keys_keyboard_key_height x 1.2 -->

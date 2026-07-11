@@ -31,6 +31,7 @@
     <fraction name="config_key_horizontal_gap_holo">1.030%p</fraction>
 
     <dimen name="config_more_keys_keyboard_key_height">81.9dp</dimen>
+    <dimen name="config_more_keys_keyboard_key_height_md3">80dp</dimen>
 
     <fraction name="config_key_letter_ratio_holo">43%</fraction>
     <fraction name="config_key_letter_ratio_lxx">50%</fraction>
