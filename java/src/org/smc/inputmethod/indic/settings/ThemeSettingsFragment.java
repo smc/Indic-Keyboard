@@ -145,6 +145,7 @@ public final class ThemeSettingsFragment extends Fragment {
         private final MaterialCardView mCard;
         private final FrameLayout mPreviewHolder;
         private final TextView mName;
+        private final View mSelectedIcon;
         private final int mCheckedStrokeColor;
         private final int mUncheckedStrokeColor;
         private int mBoundThemeId = -1;
@@ -154,6 +155,7 @@ public final class ThemeSettingsFragment extends Fragment {
             mCard = itemView.findViewById(R.id.theme_card);
             mPreviewHolder = itemView.findViewById(R.id.theme_preview_holder);
             mName = itemView.findViewById(R.id.theme_name);
+            mSelectedIcon = itemView.findViewById(R.id.theme_selected_icon);
             mCard.setClipToOutline(true);
             mCheckedStrokeColor = MaterialColors.getColor(mCard,
                     androidx.appcompat.R.attr.colorPrimary);
@@ -172,6 +174,7 @@ public final class ThemeSettingsFragment extends Fragment {
                 mBoundThemeId = themeId;
             }
             mName.setText(name);
+            mSelectedIcon.setVisibility(selected ? View.VISIBLE : View.GONE);
             mCard.setChecked(selected);
             mCard.setStrokeWidth(dp(selected ? 2 : 1));
             mCard.setStrokeColor(selected ? mCheckedStrokeColor : mUncheckedStrokeColor);
