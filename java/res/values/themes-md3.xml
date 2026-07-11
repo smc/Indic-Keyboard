@@ -77,7 +77,6 @@
         <item name="colorAutoCorrect">?attr/md3Primary</item>
         <item name="colorSuggested">?attr/md3OnSurfaceVariant</item>
         <item name="alphaObsoleted">70%</item>
-        <item name="voiceKeyBackground">@drawable/suggestion_strip_voice_card</item>
     </style>
 
     <style name="SuggestionWord.MD3" parent="SuggestionWord">

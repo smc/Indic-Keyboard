@@ -73,6 +73,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         public void pickSuggestionManually(SuggestedWordInfo word);
         public void onCodeInput(int primaryCode, int x, int y, boolean isKeyRepeat);
         public void onClipboardChipClicked(ClipboardHistoryEntry entry);
+        public void launchSettings();
     }
 
     static final boolean DBG = DebugFlags.DEBUG_ENABLED;
@@ -290,14 +291,9 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
                 R.styleable.Keyboard, defStyle, R.style.SuggestionStripView);
         final Drawable iconVoice = keyboardAttr.getDrawable(R.styleable.Keyboard_iconShortcutKey);
         final Drawable iconMore = keyboardAttr.getDrawable(R.styleable.Keyboard_iconMoreSuggestionsKey);
-        final Drawable voiceKeyBackground =
-                keyboardAttr.getDrawable(R.styleable.Keyboard_voiceKeyBackground);
         keyboardAttr.recycle();
 
         mVoiceKey.setImageDrawable(iconVoice);
-        if (voiceKeyBackground != null) {
-            mVoiceKey.setBackground(voiceKeyBackground);
-        }
         mVoiceKey.setOnClickListener(this);
 
         mMoreSuggestionsKey.setImageDrawable(iconMore);
@@ -921,9 +917,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             return;
         }
         if (view == mToolboxSettingsKey) {
-            mListener.onCodeInput(Constants.CODE_SETTINGS,
-                    Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE,
-                    false /* isKeyRepeat */);
+            mListener.launchSettings();
             return;
         }
         if (view == mToolboxClipboardKey) {

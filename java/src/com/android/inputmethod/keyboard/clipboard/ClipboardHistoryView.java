@@ -291,25 +291,23 @@ public final class ClipboardHistoryView extends LinearLayout implements
     }
 
     public static Drawable createKeyButtonBackground(final Context context) {
+        final TypedValue value = new TypedValue();
+        final boolean md3Keys = context.getTheme().resolveAttribute(
+                R.attr.md3KeyColor, value, true)
+                && value.type >= TypedValue.TYPE_FIRST_COLOR_INT
+                && value.type <= TypedValue.TYPE_LAST_COLOR_INT;
+        final float radiusDp = md3Keys ? 16 : 8;
+        final int fill = md3Keys ? value.data
+                : isLightInk(context) ? 0x26FFFFFF : Color.WHITE;
         final GradientDrawable key = new GradientDrawable();
-        key.setCornerRadius(resolveCornerRadius(context, 8));
-        key.setColor(resolveKeyColor(context));
+        key.setCornerRadius(resolveCornerRadius(context, radiusDp));
+        key.setColor(fill);
         final GradientDrawable mask = new GradientDrawable();
-        mask.setCornerRadius(resolveCornerRadius(context, 8));
+        mask.setCornerRadius(resolveCornerRadius(context, radiusDp));
         mask.setColor(Color.WHITE);
         final int ink = resolveOnSurfaceVariant(context);
         return new RippleDrawable(
                 ColorStateList.valueOf((ink & 0x00FFFFFF) | 0x33000000), key, mask);
-    }
-
-    private static int resolveKeyColor(final Context context) {
-        final TypedValue value = new TypedValue();
-        if (context.getTheme().resolveAttribute(R.attr.md3KeyColor, value, true)
-                && value.type >= TypedValue.TYPE_FIRST_COLOR_INT
-                && value.type <= TypedValue.TYPE_LAST_COLOR_INT) {
-            return value.data;
-        }
-        return isLightInk(context) ? 0x26FFFFFF : Color.WHITE;
     }
 
     public static GradientDrawable createRoundedBorder(final Context context,
