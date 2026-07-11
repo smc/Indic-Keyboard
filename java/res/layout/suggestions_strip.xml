@@ -138,6 +138,49 @@
             android:paddingRight="4dp"
             android:gravity="center_vertical" />
     </HorizontalScrollView>
+    <LinearLayout
+        android:id="@+id/suggestions_strip_toolbox"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:hapticFeedbackEnabled="false"
+        android:soundEffectsEnabled="false"
+        android:visibility="invisible" >
+        <ImageButton
+            android:id="@+id/toolbox_settings_key"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/ic_kb_settings"
+            android:scaleType="fitCenter"
+            android:padding="10dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/spoken_description_settings" />
+        <ImageButton
+            android:id="@+id/toolbox_clipboard_key"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/ic_kb_clipboard"
+            android:scaleType="fitCenter"
+            android:padding="10dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/settings_screen_clipboard" />
+        <ImageButton
+            android:id="@+id/toolbox_emoji_key"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/ic_kb_emoji"
+            android:scaleType="fitCenter"
+            android:padding="10dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/spoken_description_emoji" />
+    </LinearLayout>
     <ImageButton
         android:id="@+id/suggestions_strip_more_key"
         android:layout_width="@dimen/config_suggestions_strip_edge_key_width"

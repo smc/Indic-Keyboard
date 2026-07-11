@@ -1014,6 +1014,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onStartInputView(final EditorInfo editorInfo, final boolean restarting) {
         dismissInlineSuggestions(false /* blockUntilRefocus */);
+        if (hasSuggestionStripView()) {
+            mSuggestionStripView.resetToolbox();
+        }
         mHandler.onStartInputView(editorInfo, restarting);
         mStatsUtilsManager.onStartInputView();
     }
@@ -1766,6 +1769,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             dismissInlineSuggestions(true /* blockUntilRefocus */);
             if (hasSuggestionStripView()) {
                 mSuggestionStripView.dismissClipboardChip();
+                mSuggestionStripView.dismissToolbox();
             }
         }
         final InputTransaction completeInputTransaction =
@@ -1821,6 +1825,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         dismissInlineSuggestions(true /* blockUntilRefocus */);
         if (hasSuggestionStripView()) {
             mSuggestionStripView.dismissClipboardChip();
+            mSuggestionStripView.dismissToolbox();
         }
         // TODO: have the keyboard pass the correct key code when we need it.
         final Event event = Event.createSoftwareTextEvent(rawText, Constants.CODE_OUTPUT_TEXT);
@@ -1839,6 +1844,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         dismissInlineSuggestions(true /* blockUntilRefocus */);
         if (hasSuggestionStripView()) {
             mSuggestionStripView.dismissClipboardChip();
+            mSuggestionStripView.dismissToolbox();
         }
         mInputLogic.onStartBatchInput(mSettings.getCurrent(), mKeyboardSwitcher, mHandler);
         mGestureConsumer.onGestureStarted(

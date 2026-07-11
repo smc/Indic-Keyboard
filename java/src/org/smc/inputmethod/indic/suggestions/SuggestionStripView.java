@@ -80,6 +80,11 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private final android.widget.HorizontalScrollView mInlineSuggestionsStrip;
     private final android.widget.LinearLayout mInlineSuggestionsContainer;
     private boolean mInlineSuggestionsShowing;
+    private boolean mToolboxDismissed;
+    private final View mToolboxStrip;
+    private final View mToolboxSettingsKey;
+    private final View mToolboxClipboardKey;
+    private final View mToolboxEmojiKey;
     private final View mClipboardChipPill;
     private final View mClipboardChipOpenHistory;
     private final android.widget.ImageView mClipboardChipImage;
@@ -108,15 +113,18 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         private final View mImportantNoticeStrip;
         private final View mClipboardChipStrip;
         private final View mInlineSuggestionsStrip;
+        private final View mToolboxStrip;
 
         public StripVisibilityGroup(final View suggestionStripView,
                 final ViewGroup suggestionsStrip, final View importantNoticeStrip,
-                final View clipboardChipStrip, final View inlineSuggestionsStrip) {
+                final View clipboardChipStrip, final View inlineSuggestionsStrip,
+                final View toolboxStrip) {
             mSuggestionStripView = suggestionStripView;
             mSuggestionsStrip = suggestionsStrip;
             mImportantNoticeStrip = importantNoticeStrip;
             mClipboardChipStrip = clipboardChipStrip;
             mInlineSuggestionsStrip = inlineSuggestionsStrip;
+            mToolboxStrip = toolboxStrip;
             showSuggestionsStrip();
         }
 
@@ -128,6 +136,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             ViewCompat.setLayoutDirection(mImportantNoticeStrip, layoutDirection);
             ViewCompat.setLayoutDirection(mClipboardChipStrip, layoutDirection);
             ViewCompat.setLayoutDirection(mInlineSuggestionsStrip, layoutDirection);
+            ViewCompat.setLayoutDirection(mToolboxStrip, layoutDirection);
         }
 
         public void showSuggestionsStrip() {
@@ -135,6 +144,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             mImportantNoticeStrip.setVisibility(INVISIBLE);
             mClipboardChipStrip.setVisibility(INVISIBLE);
             mInlineSuggestionsStrip.setVisibility(INVISIBLE);
+            mToolboxStrip.setVisibility(INVISIBLE);
         }
 
         public void showImportantNoticeStrip() {
@@ -142,6 +152,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             mImportantNoticeStrip.setVisibility(VISIBLE);
             mClipboardChipStrip.setVisibility(INVISIBLE);
             mInlineSuggestionsStrip.setVisibility(INVISIBLE);
+            mToolboxStrip.setVisibility(INVISIBLE);
         }
 
         public void showClipboardChipStrip() {
@@ -149,6 +160,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             mImportantNoticeStrip.setVisibility(INVISIBLE);
             mClipboardChipStrip.setVisibility(VISIBLE);
             mInlineSuggestionsStrip.setVisibility(INVISIBLE);
+            mToolboxStrip.setVisibility(INVISIBLE);
         }
 
         public void showInlineSuggestionsStrip() {
@@ -156,6 +168,15 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             mImportantNoticeStrip.setVisibility(INVISIBLE);
             mClipboardChipStrip.setVisibility(INVISIBLE);
             mInlineSuggestionsStrip.setVisibility(VISIBLE);
+            mToolboxStrip.setVisibility(INVISIBLE);
+        }
+
+        public void showToolboxStrip() {
+            mSuggestionsStrip.setVisibility(INVISIBLE);
+            mImportantNoticeStrip.setVisibility(INVISIBLE);
+            mClipboardChipStrip.setVisibility(INVISIBLE);
+            mInlineSuggestionsStrip.setVisibility(INVISIBLE);
+            mToolboxStrip.setVisibility(VISIBLE);
         }
 
         public boolean isShowingImportantNoticeStrip() {
@@ -211,8 +232,16 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mInlineSuggestionsContainer = findViewById(R.id.inline_suggestions_container);
         mInlineSuggestionsStrip.getViewTreeObserver().addOnScrollChangedListener(
                 this::updateInlineSuggestionsFades);
+        mToolboxStrip = findViewById(R.id.suggestions_strip_toolbox);
+        mToolboxSettingsKey = findViewById(R.id.toolbox_settings_key);
+        mToolboxSettingsKey.setOnClickListener(this);
+        mToolboxClipboardKey = findViewById(R.id.toolbox_clipboard_key);
+        mToolboxClipboardKey.setOnClickListener(this);
+        mToolboxEmojiKey = findViewById(R.id.toolbox_emoji_key);
+        mToolboxEmojiKey.setOnClickListener(this);
         mStripVisibilityGroup = new StripVisibilityGroup(this, mSuggestionsStrip,
-                mImportantNoticeStrip, mClipboardChipStrip, mInlineSuggestionsStrip);
+                mImportantNoticeStrip, mClipboardChipStrip, mInlineSuggestionsStrip,
+                mToolboxStrip);
 
         for (int pos = 0; pos < SuggestedWords.MAX_SUGGESTIONS; pos++) {
             final TextView word = new TextView(context, null, R.attr.suggestionWordStyle);
@@ -283,7 +312,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mSuggestedWords = suggestedWords;
         mStartIndexOfMoreSuggestions = mLayoutHelper.layoutAndReturnStartIndexOfMoreSuggestions(
                 getContext(), mSuggestedWords, mSuggestionsStrip, this);
-        mStripVisibilityGroup.showSuggestionsStrip();
+        showSuggestionsOrToolbox();
         if (mClipboardChipEntry != null) {
             // The chip outlives strip clears from panel exits; only an explicit dismissal
             // (typing, paste, keyboard reopen) removes it.
@@ -355,9 +384,28 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             if (mInlineSuggestionsShowing) {
                 mStripVisibilityGroup.showInlineSuggestionsStrip();
             } else {
-                mStripVisibilityGroup.showSuggestionsStrip();
+                showSuggestionsOrToolbox();
             }
         }
+    }
+
+    private void showSuggestionsOrToolbox() {
+        if (mSuggestedWords.isEmpty() && !mToolboxDismissed) {
+            mStripVisibilityGroup.showToolboxStrip();
+        } else {
+            mStripVisibilityGroup.showSuggestionsStrip();
+        }
+    }
+
+    public void dismissToolbox() {
+        mToolboxDismissed = true;
+        if (mToolboxStrip.getVisibility() == VISIBLE) {
+            mStripVisibilityGroup.showSuggestionsStrip();
+        }
+    }
+
+    public void resetToolbox() {
+        mToolboxDismissed = false;
     }
 
     public boolean isShowingClipboardChip() {
@@ -443,7 +491,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mInlineSuggestionsShowing = false;
         mInlineSuggestionsContainer.removeAllViews();
         if (mStripVisibilityGroup.isShowingInlineSuggestionsStrip()) {
-            mStripVisibilityGroup.showSuggestionsStrip();
+            showSuggestionsOrToolbox();
             updateKeys();
         }
     }
@@ -701,6 +749,24 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         }
         if (view == mVoiceKey) {
             mListener.onCodeInput(Constants.CODE_SHORTCUT,
+                    Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE,
+                    false /* isKeyRepeat */);
+            return;
+        }
+        if (view == mToolboxSettingsKey) {
+            mListener.onCodeInput(Constants.CODE_SETTINGS,
+                    Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE,
+                    false /* isKeyRepeat */);
+            return;
+        }
+        if (view == mToolboxClipboardKey) {
+            mListener.onCodeInput(Constants.CODE_CLIPBOARD,
+                    Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE,
+                    false /* isKeyRepeat */);
+            return;
+        }
+        if (view == mToolboxEmojiKey) {
+            mListener.onCodeInput(Constants.CODE_EMOJI,
                     Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE,
                     false /* isKeyRepeat */);
             return;
