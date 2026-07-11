@@ -1,7 +1,7 @@
-<!-- Material Icons (Round) "shield" - generated from @material-design-icons/svg/round/shield.svg -->
+<!-- Material Symbols (Rounded) "shield" - generated from fonts.gstatic.com render, opsz 24 / wght 400 / FILL 0 / GRAD 0 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp" android:height="24dp"
     android:viewportWidth="24" android:viewportHeight="24">
     <path android:fillColor="@color/settings_icon_tint"
-        android:pathData="M11.19 1.36l-7 3.11C3.47 4.79 3 5.51 3 6.3V11c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V6.3c0-.79-.47-1.51-1.19-1.83l-7-3.11c-.51-.23-1.11-.23-1.62 0z"/>
+        android:pathData="M11.68,21.88Q11.53,21.85 11.38,21.8Q8,20.68 6,17.64T4,11.1V6.38Q4,5.75 4.36,5.25Q4.73,4.75 5.3,4.52l6,-2.25Q11.65,2.15 12,2.15t0.7,0.13l6,2.25q0.58,0.23 0.94,0.73T20,6.38V11.1q0,3.5 -2,6.54q-2,3.04 -5.38,4.16q-0.15,0.05 -0.3,0.07T12,21.9T11.68,21.88ZM12,19.9q2.6,-0.82 4.3,-3.3T18,11.1V6.38L12,4.13L6,6.38V11.1q0,3.03 1.7,5.5T12,19.9ZM12,12Z"/>
 </vector>

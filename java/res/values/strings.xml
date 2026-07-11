@@ -102,7 +102,7 @@
     <!-- Title of the privacy settings screen [CHAR LIMIT=33] -->
     <string name="settings_screen_privacy">Privacy</string>
     <!-- Statement shown at the top of the privacy settings screen -->
-    <string name="privacy_statement">Indic Keyboard is free and open source — no ads, no analytics, no tracking; nothing you type ever leaves your device.</string>
+    <string name="privacy_statement">Indic Keyboard is free and open source - no ads, no analytics, no tracking; nothing you type ever leaves your device.</string>
     <!-- Privacy screen section header for learned-word controls [CHAR LIMIT=33] -->
     <string name="privacy_section_learned">Learned words</string>
     <!-- Privacy screen section header for history controls [CHAR LIMIT=33] -->
@@ -126,7 +126,7 @@
     <!-- Confirmation dialog message before clearing recent emojis -->
     <string name="privacy_clear_emojis_confirm">Clear the recently used emojis?</string>
     <!-- Summary of the clear clipboard history option on the privacy screen [CHAR LIMIT=65] -->
-    <string name="privacy_clear_clipboard_summary">Deletes all clips, including pinned ones</string>
+    <string name="privacy_clear_clipboard_summary">Deletes entire clipboard contents</string>
     <!-- Confirmation dialog button that deletes the data [CHAR LIMIT=33] -->
     <string name="privacy_delete">Delete</string>
     <!-- Toast shown after data was deleted from a privacy screen action [CHAR LIMIT=33] -->
