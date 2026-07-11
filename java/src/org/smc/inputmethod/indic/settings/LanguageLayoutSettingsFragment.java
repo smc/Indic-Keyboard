@@ -131,10 +131,9 @@ public final class LanguageLayoutSettingsFragment extends SubScreenFragment
         final Set<String> enabled = Settings.readEnabledSubtypeKeys(getSharedPreferences());
         for (final Layout layout : target.mLayouts) {
             final String key = SubtypeLocaleUtils.getSubtypeKey(layout.mSubtype);
-            final SwitchPreferenceCompat pref = new SwitchPreferenceCompat(context);
-            pref.setWidgetLayoutResource(R.layout.preference_material_switch);
+            final LayoutPreviewPreference pref =
+                    new LayoutPreviewPreference(context, layout.mSubtype);
             pref.setPersistent(false);
-            pref.setIconSpaceReserved(false);
             pref.setKey(key);
             pref.setTitle(layout.mName);
             pref.setChecked(enabled.contains(key));
