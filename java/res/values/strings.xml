@@ -131,6 +131,12 @@
     <string name="privacy_delete">Delete</string>
     <!-- Toast shown after data was deleted from a privacy screen action [CHAR LIMIT=33] -->
     <string name="privacy_deleted">Deleted</string>
+    <!-- App bar action that deletes all learned words [CHAR LIMIT=33] -->
+    <string name="learned_words_delete_all">Delete all</string>
+    <!-- Hint of the search field on the learned words screen [CHAR LIMIT=33] -->
+    <string name="learned_words_search_hint">Search words</string>
+    <!-- Shown on the learned words screen when there is nothing to list [CHAR LIMIT=65] -->
+    <string name="learned_words_empty">No learned words yet</string>
     <!-- Button in the clipboard panel that turns the feature off [CHAR LIMIT=33] -->
     <string name="clipboard_turn_off">Turn off</string>
     <!-- Accessibility description for the clipboard suggestion chip [CHAR LIMIT=65] -->

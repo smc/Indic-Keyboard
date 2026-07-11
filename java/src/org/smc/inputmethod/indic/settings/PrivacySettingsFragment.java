@@ -28,7 +28,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.smc.inputmethod.indic.clipboard.ClipboardHistoryManager;
 import org.smc.inputmethod.indic.languagepack.LanguagePackDownloadManager;
-import org.smc.inputmethod.indic.personalization.PersonalizationHelper;
 import org.smc.inputmethod.indic.varnam.VarnamIndicKeyboard;
 
 import java.io.File;
@@ -43,8 +42,6 @@ public final class PrivacySettingsFragment extends SubScreenFragment {
         super.onCreatePreferences(savedInstanceState, rootKey);
         addPreferencesFromResource(R.xml.prefs_screen_privacy);
 
-        confirmOnClick("pref_privacy_delete_typed", R.string.privacy_learned_typing_confirm,
-                R.string.privacy_delete, this::deleteLearnedWords);
         confirmOnClick("pref_privacy_delete_varnam", R.string.privacy_learned_varnam_confirm,
                 R.string.privacy_delete, this::deleteVarnamLearnings);
         confirmOnClick("pref_privacy_clear_emojis", R.string.privacy_clear_emojis_confirm,
@@ -81,10 +78,6 @@ public final class PrivacySettingsFragment extends SubScreenFragment {
                     .show();
             return true;
         });
-    }
-
-    private void deleteLearnedWords() {
-        PersonalizationHelper.removeAllUserHistoryDictionaries(requireContext());
     }
 
     private void deleteVarnamLearnings() {

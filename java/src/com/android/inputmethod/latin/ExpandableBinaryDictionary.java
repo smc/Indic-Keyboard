@@ -17,6 +17,9 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
+import android.os.Handler;
+import android.text.TextUtils;
+import android.os.Looper;
 import android.util.Log;
 
 import com.android.inputmethod.annotations.UsedForTesting;
@@ -691,6 +694,47 @@ abstract public class ExpandableBinaryDictionary extends Dictionary {
             final Map<String, String> attributeMap) {
         mAdditionalAttributeMap = attributeMap;
         clear();
+    }
+
+    public interface WordsCallback {
+        void onWordsAvailable(ArrayList<String> words);
+    }
+
+    /** Collects every valid unigram off the dictionary's own executor; callback on main. */
+    public void getAllWordsAsync(final WordsCallback callback) {
+        reloadDictionaryIfRequired();
+        final Handler handler = new Handler(Looper.getMainLooper());
+        asyncExecuteTaskWithLock(mLock.readLock(), new Runnable() {
+            @Override
+            public void run() {
+                final ArrayList<String> words = new ArrayList<>();
+                final BinaryDictionary binaryDictionary = getBinaryDictionary();
+                if (binaryDictionary != null) {
+                    int token = 0;
+                    do {
+                        final BinaryDictionary.GetNextWordPropertyResult result =
+                                binaryDictionary.getNextWordProperty(token);
+                        final WordProperty wordProperty = result.mWordProperty;
+                        if (wordProperty == null) {
+                            break;
+                        }
+                        // Words typed once sit at a low forgetting-curve level and can carry
+                        // the not-a-word flag, so only structural entries are skipped here.
+                        if (!wordProperty.mIsBeginningOfSentence
+                                && !TextUtils.isEmpty(wordProperty.mWord)) {
+                            words.add(wordProperty.mWord);
+                        }
+                        token = result.mNextToken;
+                    } while (token != 0);
+                }
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.onWordsAvailable(words);
+                    }
+                });
+            }
+        });
     }
 
     public void dumpAllWordsForDebug() {

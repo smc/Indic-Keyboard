@@ -31,9 +31,10 @@
         app:iconSpaceReserved="false">
         <Preference
             android:key="pref_privacy_delete_typed"
+            android:fragment="org.smc.inputmethod.indic.settings.LearnedWordsFragment"
             android:title="@string/privacy_learned_typing"
             android:summary="@string/privacy_learned_typing_summary"
-            android:icon="@drawable/ic_settings_delete"
+            android:icon="@drawable/ic_settings_text"
             android:persistent="false" />
         <Preference
             android:key="pref_privacy_delete_varnam"
