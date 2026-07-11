@@ -41,7 +41,7 @@
             android:key="pref_show_emoji_switch_key"
             android:title="@string/show_emoji_key"
             android:summary="@string/show_emoji_key_summary"
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:persistent="true" />
     </PreferenceCategory>
 
