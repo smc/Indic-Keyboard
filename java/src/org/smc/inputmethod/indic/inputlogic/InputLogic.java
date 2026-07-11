@@ -145,6 +145,7 @@ public final class InputLogic {
     // the Latin suggestion strip while the user types on the plain English keyboard.
     private Varnam companionVarnam;
     private String companionVarnamLang;
+    private int companionVarnamGeneration;
     private boolean companionVarnamReady;
     // Task ids share one global cancellation registry with the main engine; keep the ranges apart.
     private static final int COMPANION_TASK_ID_BASE = 64;
@@ -2726,7 +2727,8 @@ public final class InputLogic {
     }
 
     public void enableCompanionVarnam(final String lang, final Context context) {
-        if (companionVarnam != null && lang.equals(companionVarnamLang)) {
+        if (companionVarnam != null && lang.equals(companionVarnamLang)
+                && companionVarnamGeneration == VarnamIndicKeyboard.learningsGeneration()) {
             return;
         }
         disableCompanionVarnam(context);
@@ -2734,6 +2736,7 @@ public final class InputLogic {
             return;
         }
         companionVarnamLang = lang;
+        companionVarnamGeneration = VarnamIndicKeyboard.learningsGeneration();
         companionVarnam = VarnamIndicKeyboard.makeVarnam(lang, context, new VarnamCallback() {
             @Override
             public void onResult(final boolean settingLearn) {

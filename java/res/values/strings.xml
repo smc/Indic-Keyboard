@@ -99,6 +99,38 @@
     <string name="clipboard_turned_off">Clipboard history is turned off</string>
     <!-- Button in the clipboard panel that turns the feature on [CHAR LIMIT=33] -->
     <string name="clipboard_turn_on">Turn on</string>
+    <!-- Title of the privacy settings screen [CHAR LIMIT=33] -->
+    <string name="settings_screen_privacy">Privacy</string>
+    <!-- Statement shown at the top of the privacy settings screen -->
+    <string name="privacy_statement">Indic Keyboard is free and open source — no ads, no analytics, no tracking; nothing you type ever leaves your device.</string>
+    <!-- Privacy screen section header for learned-word controls [CHAR LIMIT=33] -->
+    <string name="privacy_section_learned">Learned words</string>
+    <!-- Privacy screen section header for history controls [CHAR LIMIT=33] -->
+    <string name="privacy_section_history">History</string>
+    <!-- Option to delete words the keyboard learned from typing [CHAR LIMIT=40] -->
+    <string name="privacy_learned_typing">Words learned from your typing</string>
+    <!-- Summary of the learned-from-typing option [CHAR LIMIT=65] -->
+    <string name="privacy_learned_typing_summary">Picked up as you type and select suggestions</string>
+    <!-- Confirmation dialog message before deleting words learned from typing -->
+    <string name="privacy_learned_typing_confirm">Words the keyboard learned from your typing will be deleted from this device. Dictionaries from language packs are not affected.</string>
+    <!-- Option to delete words the Varnam transliteration engine learned [CHAR LIMIT=40] -->
+    <string name="privacy_learned_varnam">Words learned by Varnam</string>
+    <!-- Summary of the Varnam learned-words option [CHAR LIMIT=65] -->
+    <string name="privacy_learned_varnam_summary">Learned by the transliteration engine as you type</string>
+    <!-- Confirmation dialog message before deleting Varnam learned words -->
+    <string name="privacy_learned_varnam_confirm">Words Varnam learned from your typing will be deleted. Word packs downloaded with the language pack are kept.</string>
+    <!-- Option to clear the recently used emojis [CHAR LIMIT=40] -->
+    <string name="privacy_clear_emojis">Clear recent emojis</string>
+    <!-- Summary of the clear recent emojis option [CHAR LIMIT=65] -->
+    <string name="privacy_clear_emojis_summary">Empties the recents row in the emoji palette</string>
+    <!-- Confirmation dialog message before clearing recent emojis -->
+    <string name="privacy_clear_emojis_confirm">Clear the recently used emojis?</string>
+    <!-- Summary of the clear clipboard history option on the privacy screen [CHAR LIMIT=65] -->
+    <string name="privacy_clear_clipboard_summary">Deletes all clips, including pinned ones</string>
+    <!-- Confirmation dialog button that deletes the data [CHAR LIMIT=33] -->
+    <string name="privacy_delete">Delete</string>
+    <!-- Toast shown after data was deleted from a privacy screen action [CHAR LIMIT=33] -->
+    <string name="privacy_deleted">Deleted</string>
     <!-- Button in the clipboard panel that turns the feature off [CHAR LIMIT=33] -->
     <string name="clipboard_turn_off">Turn off</string>
     <!-- Accessibility description for the clipboard suggestion chip [CHAR LIMIT=65] -->

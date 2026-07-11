@@ -12,6 +12,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class VarnamIndicKeyboard {
+    // Long-lived engines (the companion engine survives across inputs) hold an open handle to
+    // the learnings DB, so deleting the file alone doesn't affect them. Bumping the generation
+    // makes their owners re-create the engine on next use.
+    private static volatile int sLearningsGeneration = 0;
+
+    public static void onLearningsCleared() {
+        sLearningsGeneration++;
+    }
+
+    public static int learningsGeneration() {
+        return sLearningsGeneration;
+    }
+
     /**
      * Make a varnam handle according to Indic Keyboard
      * @param schemeID The scheme/varnam symbol table identifier

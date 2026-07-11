@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+ * Copyright 2026, Jishnu Mohan <jishnu7@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/settings_screen_privacy"
+    android:key="screen_privacy">
+
+    <PreferenceCategory
+        android:layout="@layout/privacy_statement"
+        android:selectable="false" />
+
+    <PreferenceCategory
+        android:title="@string/privacy_section_learned"
+        app:iconSpaceReserved="false">
+        <Preference
+            android:key="pref_privacy_delete_typed"
+            android:title="@string/privacy_learned_typing"
+            android:summary="@string/privacy_learned_typing_summary"
+            android:icon="@drawable/ic_settings_delete"
+            android:persistent="false" />
+        <Preference
+            android:key="pref_privacy_delete_varnam"
+            android:title="@string/privacy_learned_varnam"
+            android:summary="@string/privacy_learned_varnam_summary"
+            android:icon="@drawable/ic_settings_delete"
+            android:persistent="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/privacy_section_history"
+        app:iconSpaceReserved="false">
+        <Preference
+            android:key="pref_privacy_clear_emojis"
+            android:title="@string/privacy_clear_emojis"
+            android:summary="@string/privacy_clear_emojis_summary"
+            android:icon="@drawable/ic_settings_recents"
+            android:persistent="false" />
+        <Preference
+            android:key="pref_privacy_clear_clipboard"
+            android:title="@string/clipboard_clear_history"
+            android:summary="@string/privacy_clear_clipboard_summary"
+            android:icon="@drawable/ic_settings_clipboard"
+            android:persistent="false" />
+    </PreferenceCategory>
+</PreferenceScreen>
