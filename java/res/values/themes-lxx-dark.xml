@@ -20,6 +20,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="KeyboardTheme.LXX_Dark" parent="KeyboardIcons.MD3">
+        <item name="md3OnSurface">@color/key_text_color_lxx_dark</item>
         <item name="md3OnSurfaceVariant">@color/key_text_color_lxx_dark</item>
         <item name="md3OnPrimary">@color/key_text_color_lxx_dark</item>
         <item name="inputViewStyle">@style/InputView.LXX</item>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
     <style name="KeyboardTheme.LXX_Light_Border" parent="KeyboardIcons.MD3">
+        <item name="md3OnSurface">@color/key_text_color_lxx_light</item>
         <item name="md3OnSurfaceVariant">@color/key_text_color_lxx_light</item>
         <item name="md3OnPrimary">@color/key_text_color_lxx_light</item>
         <item name="inputViewStyle">@style/InputView.LXX</item>
