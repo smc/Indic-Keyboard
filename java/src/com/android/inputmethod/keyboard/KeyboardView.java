@@ -494,13 +494,14 @@ public class KeyboardView extends View {
 
         // Draw key icon.
         if (label == null && icon != null) {
+            final float iconScale = getKeyIconScale();
             final int iconWidth;
             if (key.getCode() == Constants.CODE_SPACE && icon instanceof NinePatchDrawable) {
                 iconWidth = (int)(keyWidth * mSpacebarIconWidthRatio);
             } else {
-                iconWidth = Math.min(icon.getIntrinsicWidth(), keyWidth);
+                iconWidth = Math.min((int)(icon.getIntrinsicWidth() * iconScale), keyWidth);
             }
-            final int iconHeight = icon.getIntrinsicHeight();
+            final int iconHeight = (int)(icon.getIntrinsicHeight() * iconScale);
             final int iconY;
             if (key.isAlignIconToBottom()) {
                 iconY = keyHeight - iconHeight;
@@ -514,6 +515,12 @@ public class KeyboardView extends View {
         if (key.hasPopupHint() && key.getMoreKeys() != null) {
             drawKeyPopupHint(key, canvas, paint, params);
         }
+    }
+
+    // Icon drawables have fixed intrinsic sizes; scaled-down renderings (settings previews)
+    // override this so icons shrink with the keys.
+    protected float getKeyIconScale() {
+        return 1.0f;
     }
 
     // Draw popup hint "..." at the bottom right corner of the key.

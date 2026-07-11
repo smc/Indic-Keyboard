@@ -82,6 +82,13 @@ public final class KeyboardPreviewView extends KeyboardView {
         buildKeyboardIfNeeded();
     }
 
+    @Override
+    protected float getKeyIconScale() {
+        return mBuiltWidth <= 0 ? 1.0f
+                : Math.min(1.0f, mBuiltWidth
+                        / (float) ResourceUtils.getKeyboardContentWidth(getContext()));
+    }
+
     private void buildKeyboardIfNeeded() {
         final int width = getWidth() - getPaddingLeft() - getPaddingRight();
         final int height = getHeight() - getPaddingTop() - getPaddingBottom();
