@@ -41,8 +41,4 @@
         android:defaultValue="3600"
         android:persistent="true"
         app:useSimpleSummaryProvider="true" />
-    <Preference
-        android:key="pref_clipboard_clear_history"
-        android:dependency="pref_clipboard_enabled"
-        android:title="@string/clipboard_clear_history" />
 </PreferenceScreen>
