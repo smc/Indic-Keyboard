@@ -61,16 +61,24 @@ public final class KeyboardPreviewView extends KeyboardView {
     @Override
     protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec) {
         final int width = MeasureSpec.getSize(widthMeasureSpec);
-        final int contentWidth = width - getPaddingLeft() - getPaddingRight();
+        final int deviceContentWidth = ResourceUtils.getKeyboardContentWidth(getContext());
+        final int contentWidth = Math.min(width, deviceContentWidth);
         final float aspectRatio = ResourceUtils.getDefaultKeyboardHeight(getResources())
-                / (float) ResourceUtils.getKeyboardContentWidth(getContext());
+                / (float) deviceContentWidth;
         final int contentHeight = Math.max(0, Math.round(contentWidth * aspectRatio));
-        setMeasuredDimension(width, contentHeight + getPaddingTop() + getPaddingBottom());
+        setMeasuredDimension(width, contentHeight);
     }
 
     @Override
     protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
+        // Wider than the real keyboard's content cap: keep keys at their real size and center
+        // them in side gutters, like the actual tablet keyboard.
+        final int gutter = Math.max(0,
+                (w - ResourceUtils.getKeyboardContentWidth(getContext())) / 2);
+        if (gutter != getPaddingLeft()) {
+            setPadding(gutter, 0, gutter, 0);
+        }
         buildKeyboardIfNeeded();
     }
 
