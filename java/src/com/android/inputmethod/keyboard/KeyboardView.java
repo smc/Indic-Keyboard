@@ -39,6 +39,7 @@ import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.utils.TypefaceUtils;
 
 import org.smc.inputmethod.indic.settings.Settings;
+import org.smc.inputmethod.indic.settings.SettingsValues;
 
 import java.util.HashSet;
 
@@ -288,7 +289,9 @@ public class KeyboardView extends View {
             return;
         }
 
-        mShowsHints = Settings.getInstance().getCurrent().mShowsHints;
+        // Null until the IME loads settings; settings-activity previews render before that.
+        final SettingsValues settingsValues = Settings.getInstance().getCurrent();
+        mShowsHints = settingsValues == null || settingsValues.mShowsHints;
         final Paint paint = mPaint;
         final Drawable background = getBackground();
         // Calculate clip region and set.

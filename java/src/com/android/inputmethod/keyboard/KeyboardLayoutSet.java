@@ -123,6 +123,7 @@ public final class KeyboardLayoutSet {
         boolean mNumberRowEnabled;
         RichInputMethodSubtype mSubtype;
         boolean mIsSpellChecker;
+        boolean mNoKeyboardCache;
         int mKeyboardWidth;
         int mKeyboardHeight;
         int mScriptId = ScriptUtils.SCRIPT_LATIN;
@@ -212,6 +213,16 @@ public final class KeyboardLayoutSet {
 
     @Nonnull
     private Keyboard getKeyboard(final ElementParams elementParams, final KeyboardId id) {
+        if (mParams.mNoKeyboardCache) {
+            final KeyboardBuilder<KeyboardParams> builder =
+                    new KeyboardBuilder<>(mContext, new KeyboardParams(sUniqueKeysCache));
+            sUniqueKeysCache.setEnabled(false);
+            builder.setAllowRedundantMoreKes(elementParams.mAllowRedundantMoreKeys);
+            builder.load(elementParams.mKeyboardXmlId, id);
+            builder.setProximityCharsCorrectionEnabled(
+                    elementParams.mProximityCharsCorrectionEnabled);
+            return builder.build();
+        }
         final SoftReference<Keyboard> ref = sKeyboardCache.get(id);
         final Keyboard cachedKeyboard = (ref == null) ? null : ref.get();
         if (cachedKeyboard != null) {
@@ -316,6 +327,14 @@ public final class KeyboardLayoutSet {
 
         public Builder setIsSpellChecker(final boolean isSpellChecker) {
             mParams.mIsSpellChecker = isSpellChecker;
+            return this;
+        }
+
+        // The static keyboard cache is keyed by KeyboardId, which doesn't encode the theme.
+        // Builds whose themed context differs from the IME's current theme (settings previews)
+        // must bypass it, or same-sized builds would share one theme's keyboards.
+        public Builder disableKeyboardCache() {
+            mParams.mNoKeyboardCache = true;
             return this;
         }
 

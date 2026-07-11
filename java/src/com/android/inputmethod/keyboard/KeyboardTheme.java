@@ -170,6 +170,10 @@ public final class KeyboardTheme implements Comparable<KeyboardTheme> {
         return theme.mThemeName;
     }
 
+    public static KeyboardTheme getKeyboardTheme(final int themeId) {
+        return searchKeyboardThemeById(themeId, KEYBOARD_THEMES);
+    }
+
     public static void saveKeyboardThemeId(final int themeId, final SharedPreferences prefs) {
         saveKeyboardThemeId(themeId, prefs, BuildCompatUtils.EFFECTIVE_SDK_INT);
     }
