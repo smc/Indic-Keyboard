@@ -53,6 +53,10 @@
     <!-- Settings screen title for clipboard settings [CHAR LIMIT=33] -->
     <string name="settings_screen_clipboard">Clipboard</string>
 
+    <!-- Accessibility description for the suggestion strip's sticky menu key that opens the
+         toolbox (settings/clipboard/emoji shortcuts) [CHAR LIMIT=33] -->
+    <string name="suggestion_strip_toolbox_menu">Toolbox</string>
+
     <!-- Option to enable the clipboard history feature [CHAR LIMIT=33] -->
     <string name="clipboard_enable">Clipboard history</string>
     <!-- Summary for the clipboard history option [CHAR LIMIT=65] -->

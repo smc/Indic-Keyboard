@@ -18,11 +18,13 @@ package com.android.inputmethod.keyboard.clipboard;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.RippleDrawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
@@ -265,11 +267,15 @@ public final class ClipboardHistoryView extends LinearLayout implements
     }
 
     public static int assistChipBackgroundRes(final Context context) {
+        return isLightInk(context) ? R.drawable.assist_chip_background_light
+                : R.drawable.assist_chip_background;
+    }
+
+    private static boolean isLightInk(final Context context) {
         final int ink = resolveOnSurfaceVariant(context);
         final double luminance = (0.299 * Color.red(ink) + 0.587 * Color.green(ink)
                 + 0.114 * Color.blue(ink)) / 255;
-        return luminance > 0.5 ? R.drawable.assist_chip_background_light
-                : R.drawable.assist_chip_background;
+        return luminance > 0.5;
     }
 
     /** M3 assist chip container: subtle fill plus a 1dp outline. */
@@ -282,6 +288,28 @@ public final class ClipboardHistoryView extends LinearLayout implements
             }
         }
         return chip;
+    }
+
+    public static Drawable createKeyButtonBackground(final Context context) {
+        final GradientDrawable key = new GradientDrawable();
+        key.setCornerRadius(resolveCornerRadius(context, 8));
+        key.setColor(resolveKeyColor(context));
+        final GradientDrawable mask = new GradientDrawable();
+        mask.setCornerRadius(resolveCornerRadius(context, 8));
+        mask.setColor(Color.WHITE);
+        final int ink = resolveOnSurfaceVariant(context);
+        return new RippleDrawable(
+                ColorStateList.valueOf((ink & 0x00FFFFFF) | 0x33000000), key, mask);
+    }
+
+    private static int resolveKeyColor(final Context context) {
+        final TypedValue value = new TypedValue();
+        if (context.getTheme().resolveAttribute(R.attr.md3KeyColor, value, true)
+                && value.type >= TypedValue.TYPE_FIRST_COLOR_INT
+                && value.type <= TypedValue.TYPE_LAST_COLOR_INT) {
+            return value.data;
+        }
+        return isLightInk(context) ? 0x26FFFFFF : Color.WHITE;
     }
 
     public static GradientDrawable createRoundedBorder(final Context context,

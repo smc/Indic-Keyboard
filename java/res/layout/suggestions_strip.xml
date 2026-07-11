@@ -36,7 +36,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/config_suggestions_strip_horizontal_margin"
+        android:layout_marginStart="@dimen/config_suggestions_strip_edge_key_width"
         android:layout_marginRight="@dimen/config_suggestions_strip_horizontal_margin"
         android:hapticFeedbackEnabled="false"
         android:soundEffectsEnabled="false" />
@@ -45,7 +45,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/config_suggestions_strip_horizontal_margin"
+        android:layout_marginStart="@dimen/config_suggestions_strip_edge_key_width"
         android:layout_marginRight="@dimen/config_suggestions_strip_horizontal_margin"
         android:hapticFeedbackEnabled="false"
         android:soundEffectsEnabled="false" >
@@ -125,6 +125,7 @@
         android:id="@+id/inline_suggestions_strip"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/config_suggestions_strip_edge_key_width"
         android:scrollbars="none"
         android:fillViewport="true"
         android:hapticFeedbackEnabled="false"
@@ -138,49 +139,63 @@
             android:paddingRight="4dp"
             android:gravity="center_vertical" />
     </HorizontalScrollView>
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/suggestions_strip_toolbox"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/config_suggestions_strip_edge_key_width"
+        android:layout_marginEnd="@dimen/config_suggestions_strip_edge_key_width"
+        android:visibility="invisible" >
+    <LinearLayout
+        android:id="@+id/suggestions_strip_toolbox_row"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
+        android:gravity="center_vertical"
         android:hapticFeedbackEnabled="false"
-        android:soundEffectsEnabled="false"
-        android:visibility="invisible" >
+        android:soundEffectsEnabled="false" >
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="0dp" />
         <ImageButton
             android:id="@+id/toolbox_settings_key"
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_width="64dp"
+            android:layout_height="32dp"
             android:src="@drawable/ic_kb_settings"
             android:scaleType="fitCenter"
-            android:padding="10dp"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:padding="6dp"
             android:contentDescription="@string/spoken_description_settings" />
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="0dp" />
         <ImageButton
             android:id="@+id/toolbox_clipboard_key"
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_width="64dp"
+            android:layout_height="32dp"
             android:src="@drawable/ic_kb_clipboard"
             android:scaleType="fitCenter"
-            android:padding="10dp"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:padding="6dp"
             android:contentDescription="@string/settings_screen_clipboard" />
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="0dp" />
         <ImageButton
             android:id="@+id/toolbox_emoji_key"
-            android:layout_width="48dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_width="64dp"
+            android:layout_height="32dp"
             android:src="@drawable/ic_kb_emoji"
             android:scaleType="fitCenter"
-            android:padding="10dp"
-            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:padding="6dp"
             android:contentDescription="@string/spoken_description_emoji" />
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="0dp" />
     </LinearLayout>
+    </FrameLayout>
     <ImageButton
         android:id="@+id/suggestions_strip_more_key"
         android:layout_width="@dimen/config_suggestions_strip_edge_key_width"
@@ -189,5 +204,14 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:contentDescription="@string/spoken_description_more"
+        style="?attr/suggestionWordStyle" />
+    <ImageButton
+        android:id="@+id/suggestions_strip_menu_key"
+        android:layout_width="@dimen/config_suggestions_strip_edge_key_width"
+        android:layout_height="fill_parent"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_kb_menu"
+        android:contentDescription="@string/suggestion_strip_toolbox_menu"
         style="?attr/suggestionWordStyle" />
 </merge>

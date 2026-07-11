@@ -87,8 +87,10 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private final android.widget.HorizontalScrollView mInlineSuggestionsStrip;
     private final android.widget.LinearLayout mInlineSuggestionsContainer;
     private boolean mInlineSuggestionsShowing;
-    private boolean mToolboxDismissed;
+    private boolean mToolboxOpen;
+    private final ImageButton mMenuKey;
     private final View mToolboxStrip;
+    private final View mToolboxRow;
     private final View mToolboxSettingsKey;
     private final View mToolboxClipboardKey;
     private final View mToolboxEmojiKey;
@@ -240,12 +242,18 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mInlineSuggestionsStrip.getViewTreeObserver().addOnScrollChangedListener(
                 this::updateInlineSuggestionsFades);
         mToolboxStrip = findViewById(R.id.suggestions_strip_toolbox);
+        mToolboxRow = findViewById(R.id.suggestions_strip_toolbox_row);
+        mMenuKey = findViewById(R.id.suggestions_strip_menu_key);
+        mMenuKey.setOnClickListener(this);
         mToolboxSettingsKey = findViewById(R.id.toolbox_settings_key);
         mToolboxSettingsKey.setOnClickListener(this);
+        mToolboxSettingsKey.setBackground(createToolboxButtonBackground(context));
         mToolboxClipboardKey = findViewById(R.id.toolbox_clipboard_key);
         mToolboxClipboardKey.setOnClickListener(this);
+        mToolboxClipboardKey.setBackground(createToolboxButtonBackground(context));
         mToolboxEmojiKey = findViewById(R.id.toolbox_emoji_key);
         mToolboxEmojiKey.setOnClickListener(this);
+        mToolboxEmojiKey.setBackground(createToolboxButtonBackground(context));
         mStripVisibilityGroup = new StripVisibilityGroup(this, mSuggestionsStrip,
                 mImportantNoticeStrip, mClipboardChipStrip, mInlineSuggestionsStrip,
                 mToolboxStrip);
@@ -319,6 +327,9 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mSuggestedWords = suggestedWords;
         mStartIndexOfMoreSuggestions = mLayoutHelper.layoutAndReturnStartIndexOfMoreSuggestions(
                 getContext(), mSuggestedWords, mSuggestionsStrip, this);
+        if (mClipboardChipEntry != null || mInlineSuggestionsShowing) {
+            closeToolbox(false /* animate */);
+        }
         showSuggestionsOrToolbox();
         if (mClipboardChipEntry != null) {
             // The chip outlives strip clears from panel exits; only an explicit dismissal
@@ -328,8 +339,13 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             mStripVisibilityGroup.showInlineSuggestionsStrip();
         }
 
+        updateMoreSuggestionsKey();
+    }
+
+    private void updateMoreSuggestionsKey() {
         if (mSuggestedWords.size() <= mStartIndexOfMoreSuggestions
-                || mStripVisibilityGroup.isShowingInlineSuggestionsStrip()) {
+                || mStripVisibilityGroup.isShowingInlineSuggestionsStrip()
+                || mToolboxOpen) {
             mMoreSuggestionsKey.setVisibility(GONE);
         } else {
             mMoreSuggestionsKey.setVisibility(VISIBLE);
@@ -359,6 +375,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         if (isShowingMoreSuggestionPanel()) {
             dismissMoreSuggestionsPanel();
         }
+        closeToolbox(false /* animate */);
         mLayoutHelper.layoutImportantNotice(mImportantNoticeStrip, importantNoticeTitle);
         mStripVisibilityGroup.showImportantNoticeStrip();
         mImportantNoticeStrip.setOnClickListener(this);
@@ -369,6 +386,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         if (isShowingMoreSuggestionPanel()) {
             dismissMoreSuggestionsPanel();
         }
+        closeToolbox(false /* animate */);
         mClipboardChipEntry = entry;
         if (entry.isImage()) {
             mClipboardChipText.setText(getResources().getString(
@@ -397,18 +415,88 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     }
 
     private void showSuggestionsOrToolbox() {
-        if (mSuggestedWords.isEmpty() && !mToolboxDismissed) {
+        if (mToolboxOpen) {
             mStripVisibilityGroup.showToolboxStrip();
         } else {
             mStripVisibilityGroup.showSuggestionsStrip();
         }
     }
 
-    private void dismissToolbox() {
-        mToolboxDismissed = true;
-        if (mToolboxStrip.getVisibility() == VISIBLE) {
+    private static Drawable createToolboxButtonBackground(final Context context) {
+        final TypedValue value = new TypedValue();
+        if (context.getTheme().resolveAttribute(
+                R.attr.suggestionToolboxKeyBackground, value, true) && value.data == 0) {
+            final TypedArray a = context.obtainStyledAttributes(null,
+                    new int[] { android.R.attr.background }, R.attr.suggestionWordStyle, 0);
+            final Drawable background = a.getDrawable(0);
+            a.recycle();
+            return background;
+        }
+        return ClipboardHistoryView.createKeyButtonBackground(context);
+    }
+
+    private void toggleToolbox() {
+        if (mToolboxOpen) {
+            closeToolbox(true /* animate */);
+        } else {
+            openToolbox();
+        }
+    }
+
+    private void openToolbox() {
+        if (isShowingMoreSuggestionPanel()) {
+            dismissMoreSuggestionsPanel();
+        }
+        mToolboxOpen = true;
+        morphMenuIcon(true /* open */);
+        updateMoreSuggestionsKey();
+        mStripVisibilityGroup.showToolboxStrip();
+        mToolboxRow.animate().cancel();
+        mToolboxRow.setTranslationX(-getWidth() / 4f);
+        mToolboxRow.setAlpha(0f);
+        mToolboxRow.animate().translationX(0f).alpha(1f).setDuration(150).start();
+    }
+
+    private void closeToolbox(final boolean animate) {
+        if (!mToolboxOpen) {
+            return;
+        }
+        mToolboxOpen = false;
+        morphMenuIcon(false /* open */);
+        mToolboxRow.animate().cancel();
+        if (animate && mToolboxStrip.getVisibility() == VISIBLE) {
+            mToolboxRow.animate().translationX(-getWidth() / 4f).alpha(0f).setDuration(150)
+                    .withEndAction(this::finishToolboxClose).start();
+        } else {
+            finishToolboxClose();
+        }
+    }
+
+    private void finishToolboxClose() {
+        mToolboxRow.setTranslationX(0f);
+        mToolboxRow.setAlpha(1f);
+        updateMoreSuggestionsKey();
+        if (mToolboxStrip.getVisibility() != VISIBLE) {
+            return;
+        }
+        if (mClipboardChipEntry != null) {
+            mStripVisibilityGroup.showClipboardChipStrip();
+        } else if (mInlineSuggestionsShowing) {
+            mStripVisibilityGroup.showInlineSuggestionsStrip();
+        } else {
             mStripVisibilityGroup.showSuggestionsStrip();
         }
+    }
+
+    private void morphMenuIcon(final boolean open) {
+        mMenuKey.animate().cancel();
+        mMenuKey.animate().alpha(0f).rotation(open ? 90f : -90f).setDuration(90)
+                .withEndAction(() -> {
+                    mMenuKey.setImageResource(open
+                            ? R.drawable.ic_kb_menu_open : R.drawable.ic_kb_menu);
+                    mMenuKey.setRotation(open ? -90f : 90f);
+                    mMenuKey.animate().alpha(1f).rotation(0f).setDuration(90).start();
+                }).start();
     }
 
     private int mInlineSuggestionsGeneration;
@@ -416,11 +504,12 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
 
     public void onStartInputView() {
         invalidateInlineSuggestions(false /* blockUntilRefocus */);
-        mToolboxDismissed = false;
+        closeToolbox(false /* animate */);
     }
 
     public void onWindowHidden() {
         invalidateInlineSuggestions(false /* blockUntilRefocus */);
+        closeToolbox(false /* animate */);
     }
 
     public void onCodeInputEvent(final Event event) {
@@ -441,7 +530,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     public void dismissTransientStrips() {
         invalidateInlineSuggestions(true /* blockUntilRefocus */);
         dismissClipboardChip();
-        dismissToolbox();
+        closeToolbox(true /* animate */);
     }
 
     private void invalidateInlineSuggestions(final boolean blockUntilRefocus) {
@@ -490,6 +579,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         if (isShowingMoreSuggestionPanel()) {
             dismissMoreSuggestionsPanel();
         }
+        closeToolbox(false /* animate */);
         mInlineSuggestionsContainer.removeAllViews();
         mInlineSuggestionsContainer.setGravity(suggestionViews.size() <= 1
                 ? android.view.Gravity.CENTER
@@ -824,6 +914,10 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             mListener.onCodeInput(Constants.CODE_SHORTCUT,
                     Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE,
                     false /* isKeyRepeat */);
+            return;
+        }
+        if (view == mMenuKey) {
+            toggleToolbox();
             return;
         }
         if (view == mToolboxSettingsKey) {

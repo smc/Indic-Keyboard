@@ -35,6 +35,9 @@
     <!-- Whether clipboard surfaces (chip, history cards) use rounded corners. Square-cornered
          themes (classic, pure black) set this to false. -->
     <attr name="clipboardSurfacesRounded" format="boolean" />
+    <!-- Whether the suggestion-strip toolbox buttons draw a key-look background. Themes whose
+         keys are flat (no visible key surface) set this to false to get bare icons instead. -->
+    <attr name="suggestionToolboxKeyBackground" format="boolean" />
 
     <declare-styleable name="KeyboardTheme">
         <!-- InputView style -->
