@@ -21,10 +21,14 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import androidx.annotation.RequiresApi;
 import androidx.core.view.ViewCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.inputmethod.InlineSuggestion;
+import android.view.inputmethod.InlineSuggestionsResponse;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -39,6 +43,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
+import com.android.inputmethod.event.Event;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.MainKeyboardView;
 import com.android.inputmethod.keyboard.MoreKeysPanel;
@@ -50,6 +55,7 @@ import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.define.DebugFlags;
 import com.android.inputmethod.keyboard.clipboard.ClipboardHistoryView;
 
+import org.smc.inputmethod.indic.InlineAutofillUtils;
 import org.smc.inputmethod.indic.clipboard.ClipboardHistoryEntry;
 import org.smc.inputmethod.indic.clipboard.ClipboardHistoryManager;
 import org.smc.inputmethod.indic.settings.Settings;
@@ -58,6 +64,7 @@ import org.smc.inputmethod.indic.suggestions.MoreSuggestionsView.MoreSuggestions
 import com.android.inputmethod.latin.utils.ImportantNoticeUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public final class SuggestionStripView extends RelativeLayout implements OnClickListener,
         OnLongClickListener {
@@ -397,22 +404,88 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         }
     }
 
-    public void dismissToolbox() {
+    private void dismissToolbox() {
         mToolboxDismissed = true;
         if (mToolboxStrip.getVisibility() == VISIBLE) {
             mStripVisibilityGroup.showSuggestionsStrip();
         }
     }
 
-    public void resetToolbox() {
+    private int mInlineSuggestionsGeneration;
+    private boolean mInlineSuggestionsBlocked;
+
+    public void onStartInputView() {
+        invalidateInlineSuggestions(false /* blockUntilRefocus */);
         mToolboxDismissed = false;
+    }
+
+    public void onWindowHidden() {
+        invalidateInlineSuggestions(false /* blockUntilRefocus */);
+    }
+
+    public void onCodeInputEvent(final Event event) {
+        if (event.isFunctionalKeyEvent()) {
+            switch (event.mKeyCode) {
+                case Constants.CODE_DELETE:
+                case Constants.CODE_SHIFT_ENTER:
+                case Constants.CODE_ACTION_NEXT:
+                case Constants.CODE_ACTION_PREVIOUS:
+                    break;
+                default:
+                    return;
+            }
+        }
+        dismissTransientStrips();
+    }
+
+    public void dismissTransientStrips() {
+        invalidateInlineSuggestions(true /* blockUntilRefocus */);
+        dismissClipboardChip();
+        dismissToolbox();
+    }
+
+    private void invalidateInlineSuggestions(final boolean blockUntilRefocus) {
+        mInlineSuggestionsGeneration++;
+        mInlineSuggestionsBlocked = blockUntilRefocus;
+        dismissInlineSuggestions();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    public boolean onInlineSuggestionsResponse(final InlineSuggestionsResponse response) {
+        if (mInlineSuggestionsBlocked) {
+            return true;
+        }
+        final int generation = ++mInlineSuggestionsGeneration;
+        final List<InlineSuggestion> suggestions = response.getInlineSuggestions();
+        boolean hasCredentials = false;
+        for (final InlineSuggestion suggestion : suggestions) {
+            if (!suggestion.getInfo().isPinned()) {
+                hasCredentials = true;
+                break;
+            }
+        }
+        if (!hasCredentials) {
+            dismissInlineSuggestions();
+            return true;
+        }
+        InlineAutofillUtils.inflate(suggestions, getContext(), (views, pinnedView) -> {
+            if (generation != mInlineSuggestionsGeneration) {
+                return;
+            }
+            if (views.isEmpty()) {
+                dismissInlineSuggestions();
+            } else {
+                showInlineSuggestions(views, pinnedView);
+            }
+        });
+        return true;
     }
 
     public boolean isShowingClipboardChip() {
         return mStripVisibilityGroup.isShowingClipboardChipStrip();
     }
 
-    public void showInlineSuggestions(final ArrayList<View> suggestionViews,
+    private void showInlineSuggestions(final ArrayList<View> suggestionViews,
             final View pinnedView) {
         if (isShowingMoreSuggestionPanel()) {
             dismissMoreSuggestionsPanel();
@@ -484,7 +557,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mInlineSuggestionsContainer.addView(view, params);
     }
 
-    public void dismissInlineSuggestions() {
+    private void dismissInlineSuggestions() {
         if (!mInlineSuggestionsShowing) {
             return;
         }
