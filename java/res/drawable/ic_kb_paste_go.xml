@@ -1,0 +1,7 @@
+<!-- Material Symbols (Rounded) "content_paste_go" - generated from fonts.gstatic.com render, opsz 24 / wght 400 / FILL 0 / GRAD 0 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <path android:fillColor="?attr/md3OnSurfaceVariant"
+        android:pathData="M18.18,18H13q-0.42,0 -0.71,-0.29Q12,17.43 12,17t0.29,-0.71T13,16h5.18l-0.9,-0.9Q17,14.83 17,14.41T17.3,13.7q0.28,-0.27 0.7,-0.27t0.7,0.28l2.6,2.6q0.3,0.3 0.3,0.7t-0.3,0.7l-2.6,2.6q-0.3,0.3 -0.7,0.29q-0.4,-0.01 -0.7,-0.32q-0.27,-0.3 -0.29,-0.7q-0.01,-0.41 0.29,-0.71L18.18,18ZM5,21q-0.82,0 -1.41,-0.59T3,19V5q0,-0.83 0.59,-1.41T5,3h4.18q0.27,-0.87 1.07,-1.44T12,1q1,0 1.79,0.56T14.85,3H19q0.83,0 1.41,0.59T21,5v5q0,0.42 -0.29,0.71T20,11t-0.71,-0.29Q19,10.43 19,10V5h-2v2q0,0.43 -0.29,0.71T16,8H8Q7.58,8 7.29,7.71Q7,7.43 7,7V5H5v14h4q0.43,0 0.71,0.29T10,20t-0.29,0.71T9,21H5ZM12.71,4.71Q13,4.42 13,4q0,-0.43 -0.29,-0.71T12,3t-0.71,0.29T11,4q0,0.42 0.29,0.71T12,5t0.71,-0.29Z"/>
+</vector>
