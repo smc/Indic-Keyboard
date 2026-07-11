@@ -19,32 +19,35 @@ package org.smc.inputmethod.indic.settings;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodSubtype;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.preference.Preference;
-import androidx.preference.PreferenceScreen;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.inputmethod.compat.PreferenceManagerCompat;
+import com.android.inputmethod.keyboard.KeyboardPreviewView;
 import com.android.inputmethod.keyboard.KeyboardTheme;
 import com.android.inputmethod.latin.R;
-import org.smc.inputmethod.indic.settings.RadioButtonPreference.OnRadioButtonClickedListener;
+import com.android.inputmethod.latin.RichInputMethodManager;
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.color.MaterialColors;
 
 /**
- * "Keyboard theme" settings sub screen.
+ * "Keyboard theme" settings sub screen: a grid of live keyboard previews, one per theme,
+ * rendered with the user's current layout. Tapping a card applies the theme immediately.
  */
-public final class ThemeSettingsFragment extends SubScreenFragment
-        implements OnRadioButtonClickedListener {
+public final class ThemeSettingsFragment extends Fragment {
     private int mSelectedThemeId;
-
-    static class KeyboardThemePreference extends RadioButtonPreference {
-        final int mThemeId;
-
-        KeyboardThemePreference(final Context context, final String name, final int id) {
-            super(context);
-            setTitle(name);
-            mThemeId = id;
-        }
-    }
 
     static void updateKeyboardThemeSummary(final Preference pref) {
         final Context context = pref.getContext();
@@ -61,31 +64,21 @@ public final class ThemeSettingsFragment extends SubScreenFragment
     }
 
     @Override
-    public void onCreatePreferences(final Bundle savedInstanceState, final String rootKey) {
-        super.onCreatePreferences(savedInstanceState, rootKey);
-        addPreferencesFromResource(R.xml.prefs_screen_theme);
-        final PreferenceScreen screen = getPreferenceScreen();
-        final Context context = getActivity();
-        final Resources res = getResources();
-        final String[] keyboardThemeNames = res.getStringArray(R.array.keyboard_theme_names);
-        final int[] keyboardThemeIds = res.getIntArray(R.array.keyboard_theme_ids);
-        for (int index = 0; index < keyboardThemeNames.length; index++) {
-            final KeyboardThemePreference pref = new KeyboardThemePreference(
-                    context, keyboardThemeNames[index], keyboardThemeIds[index]);
-            screen.addPreference(pref);
-            pref.setOnRadioButtonClickedListener(this);
-        }
-        final KeyboardTheme keyboardTheme = KeyboardTheme.getKeyboardTheme(context);
-        mSelectedThemeId = keyboardTheme.mThemeId;
-    }
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
+            final Bundle savedInstanceState) {
+        final Context context = requireContext();
+        RichInputMethodManager.init(context);
+        mSelectedThemeId = KeyboardTheme.getKeyboardTheme(context).mThemeId;
 
-    @Override
-    public void onRadioButtonClicked(final RadioButtonPreference preference) {
-        if (preference instanceof KeyboardThemePreference) {
-            final KeyboardThemePreference pref = (KeyboardThemePreference)preference;
-            mSelectedThemeId = pref.mThemeId;
-            updateSelected();
-        }
+        final RecyclerView grid = new RecyclerView(context);
+        final int padding = dp(6);
+        grid.setPadding(padding, padding, padding, padding);
+        grid.setClipToPadding(false);
+        final int spanCount = Math.max(2,
+                getResources().getConfiguration().screenWidthDp / 280);
+        grid.setLayoutManager(new GridLayoutManager(context, spanCount));
+        grid.setAdapter(new ThemeAdapter(context));
+        return grid;
     }
 
     @Override
@@ -97,25 +90,92 @@ public final class ThemeSettingsFragment extends SubScreenFragment
                 actionBar.setTitle(R.string.settings_screen_theme);
             }
         }
-        updateSelected();
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        KeyboardTheme.saveKeyboardThemeId(mSelectedThemeId, getSharedPreferences());
+    private int dp(final int value) {
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value,
+                getResources().getDisplayMetrics()));
     }
 
-    private void updateSelected() {
-        final PreferenceScreen screen = getPreferenceScreen();
-        final int count = screen.getPreferenceCount();
-        for (int index = 0; index < count; index++) {
-            final Preference preference = screen.getPreference(index);
-            if (preference instanceof KeyboardThemePreference) {
-                final KeyboardThemePreference pref = (KeyboardThemePreference)preference;
-                final boolean selected = (mSelectedThemeId == pref.mThemeId);
-                pref.setSelected(selected);
+    private final class ThemeAdapter extends RecyclerView.Adapter<ThemeViewHolder> {
+        private final String[] mNames;
+        private final int[] mThemeIds;
+        private final InputMethodSubtype mSubtype;
+
+        ThemeAdapter(final Context context) {
+            final Resources res = context.getResources();
+            mNames = res.getStringArray(R.array.keyboard_theme_names);
+            mThemeIds = res.getIntArray(R.array.keyboard_theme_ids);
+            mSubtype = RichInputMethodManager.getInstance().getCurrentSubtype().getRawSubtype();
+        }
+
+        @Override
+        public ThemeViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
+            final View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.keyboard_theme_item, parent, false);
+            return new ThemeViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(final ThemeViewHolder holder, final int position) {
+            final int themeId = mThemeIds[position];
+            holder.bind(themeId, mNames[position], mSubtype, themeId == mSelectedThemeId);
+            holder.itemView.setOnClickListener(v -> selectTheme(themeId));
+        }
+
+        @Override
+        public int getItemCount() {
+            return mThemeIds.length;
+        }
+
+        private void selectTheme(final int themeId) {
+            if (themeId == mSelectedThemeId) {
+                return;
             }
+            mSelectedThemeId = themeId;
+            KeyboardTheme.saveKeyboardThemeId(themeId,
+                    PreferenceManagerCompat.getDeviceSharedPreferences(requireContext()));
+            for (int index = 0; index < mThemeIds.length; index++) {
+                notifyItemChanged(index);
+            }
+        }
+    }
+
+    private final class ThemeViewHolder extends RecyclerView.ViewHolder {
+        private final MaterialCardView mCard;
+        private final FrameLayout mPreviewHolder;
+        private final TextView mName;
+        private final int mCheckedStrokeColor;
+        private final int mUncheckedStrokeColor;
+        private int mBoundThemeId = -1;
+
+        ThemeViewHolder(final View itemView) {
+            super(itemView);
+            mCard = itemView.findViewById(R.id.theme_card);
+            mPreviewHolder = itemView.findViewById(R.id.theme_preview_holder);
+            mName = itemView.findViewById(R.id.theme_name);
+            mCard.setClipToOutline(true);
+            mCheckedStrokeColor = MaterialColors.getColor(mCard,
+                    androidx.appcompat.R.attr.colorPrimary);
+            mUncheckedStrokeColor = MaterialColors.getColor(mCard,
+                    com.google.android.material.R.attr.colorOutlineVariant);
+        }
+
+        void bind(final int themeId, final String name, final InputMethodSubtype subtype,
+                final boolean selected) {
+            if (themeId != mBoundThemeId) {
+                mPreviewHolder.removeAllViews();
+                mPreviewHolder.addView(KeyboardPreviewView.create(itemView.getContext(),
+                        KeyboardTheme.getKeyboardTheme(themeId), subtype),
+                        new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT));
+                mBoundThemeId = themeId;
+            }
+            mName.setText(name);
+            mCard.setChecked(selected);
+            mCard.setStrokeWidth(dp(selected ? 2 : 1));
+            mCard.setStrokeColor(selected ? mCheckedStrokeColor : mUncheckedStrokeColor);
+            mCard.setContentDescription(name);
         }
     }
 }
