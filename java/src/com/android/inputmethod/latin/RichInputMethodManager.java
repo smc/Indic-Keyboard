@@ -227,6 +227,20 @@ public class RichInputMethodManager {
         return getSelfManagedEnabledSubtypes();
     }
 
+    /** Cycles the self-managed enabled subtypes without ever leaving this IME. */
+    public void switchToNextSubtypeInThisIme(final IBinder token) {
+        final InputMethodSubtype currentSubtype = mImm.getCurrentInputMethodSubtype();
+        final List<InputMethodSubtype> enabledSubtypes = getMyEnabledInputMethodSubtypeList(
+                true /* allowsImplicitlySelectedSubtypes */);
+        if (enabledSubtypes.size() < 2) {
+            return;
+        }
+        final int currentIndex = getSubtypeIndexInList(currentSubtype, enabledSubtypes);
+        final int nextIndex = (currentIndex == INDEX_NOT_FOUND) ? 0
+                : (currentIndex + 1) % enabledSubtypes.size();
+        setInputMethodAndSubtype(token, enabledSubtypes.get(nextIndex));
+    }
+
     public boolean switchToNextInputMethod(final IBinder token, final boolean onlyCurrentIme) {
         if (mImm.switchToNextInputMethod(token, onlyCurrentIme)) {
             return true;

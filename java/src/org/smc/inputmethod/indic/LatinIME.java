@@ -619,7 +619,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 richImm.setInputMethodAndSubtype(token, lastActiveSubtype);
                 return;
             }
-            richImm.switchToNextInputMethod(token, true /* onlyCurrentIme */);
+            richImm.switchToNextSubtypeInThisIme(token);
         }
     }
 
@@ -1648,14 +1648,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mRichImm.setInputMethodAndSubtype(token, subtype);
     }
 
-    // TODO: Revise the language switch key behavior to make it much smarter and more reasonable.
     public void switchToNextSubtype() {
         final IBinder token = getWindow().getWindow().getAttributes().token;
-        // Temporary fix for samsung devices. They are always returning true.
-        //if (shouldSwitchToOtherInputMethods()) {
-        //    mRichImm.switchToNextInputMethod(token, false /* onlyCurrentIme */);
-        //    return;
-        //}
+        // The framework's should-offer hint is unreliable (always true on some OEMs), so the
+        // user preference alone decides whether the globe key may leave this keyboard.
+        if (mSettings.getCurrent().mIncludesOtherImesInLanguageSwitchList) {
+            mRichImm.switchToNextInputMethod(token, false /* onlyCurrentIme */);
+            return;
+        }
         mSubtypeState.switchSubtype(token, mRichImm);
     }
 

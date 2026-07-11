@@ -38,6 +38,13 @@
             android:defaultValue="true"
             android:persistent="true" />
         <CheckBoxPreference
+            android:key="pref_include_other_imes_in_language_switch_list"
+            android:dependency="pref_show_language_switch_key"
+            android:title="@string/include_other_imes_in_language_switch_list"
+            android:summary="@string/include_other_imes_in_language_switch_list_summary"
+            android:defaultValue="false"
+            android:persistent="true" />
+        <CheckBoxPreference
             android:key="pref_show_emoji_switch_key"
             android:title="@string/show_emoji_key"
             android:summary="@string/show_emoji_key_summary"

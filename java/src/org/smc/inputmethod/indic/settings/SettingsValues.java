@@ -299,7 +299,9 @@ public class SettingsValues {
         if (mIncludesOtherImesInLanguageSwitchList) {
             return imm.hasMultipleEnabledIMEsOrSubtypes(false /* include aux subtypes */);
         }
-        return imm.hasMultipleEnabledSubtypesInThisIme(false /* include aux subtypes */);
+        // Layouts are self-managed (language settings pages), not system-enabled subtypes.
+        return imm.getMyEnabledInputMethodSubtypeList(
+                true /* allowsImplicitlySelectedSubtypes */).size() > 1;
     }
 
     public boolean isEmojiSwitchKeyEnabled() {
