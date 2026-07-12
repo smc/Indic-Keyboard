@@ -139,10 +139,12 @@
     <string name="learned_words_empty">No learned words yet</string>
     <!-- Section header on the language details page for numeral options [CHAR LIMIT=33] -->
     <string name="language_section_numbers">Numbers</string>
+    <!-- Section header grouping the per-language preference toggles [CHAR LIMIT=33] -->
+    <string name="language_section_preferences">Preferences</string>
     <!-- Option to use the language\'s own numerals on the number row [CHAR LIMIT=40] -->
     <string name="native_numerals">Use local numerals</string>
     <!-- Summary of the local numerals option; %1$s is a sample of the digits [CHAR LIMIT=100] -->
-    <string name="native_numerals_summary">%1$s… on the number row and 1 2 3 on the symbols keyboard; when off, the other way around</string>
+    <string name="native_numerals_summary">%1$s on the number row, not 1 2 3</string>
     <!-- Button in the clipboard panel that turns the feature off [CHAR LIMIT=33] -->
     <string name="clipboard_turn_off">Turn off</string>
     <!-- Accessibility description for the clipboard suggestion chip [CHAR LIMIT=65] -->
@@ -163,7 +165,7 @@
     <!-- Option to blend this language's transliterations into the English keyboard's suggestions [CHAR LIMIT=48] -->
     <string name="companion_language_suggestions">Use as companion language</string>
     <!-- Summary; %1$s is the language's own name [CHAR LIMIT=100] -->
-    <string name="companion_language_suggestions_summary">Show %1$s words in the suggestion bar when they match what you type on the English keyboard</string>
+    <string name="companion_language_suggestions_summary">Suggest %1$s words while typing in English</string>
 
     <!--  Option for enabling or disabling the split keyboard layout. [CHAR LIMIT=65]-->
     <string name="enable_split_keyboard">Enable split keyboard</string>
@@ -701,8 +703,10 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
     <string name="language_pack_installing">Installing…</string>
     <string name="language_pack_status_available">%1$s · v%2$d</string>
     <string name="language_pack_status_installed">Installed · v%1$d</string>
-    <string name="language_pack_status_update">Update available · %1$s · v%2$d</string>
+    <string name="language_pack_status_update">%1$s · v%2$d</string>
     <string name="language_pack_remove">Remove</string>
+    <string name="language_pack_download">Download</string>
+    <string name="language_pack_update">Update</string>
     <string name="language_pack_remove_confirm">Remove the downloaded data for this language?</string>
     <string name="language_pack_download_error">Could not download the language data. Please try again.</string>
 

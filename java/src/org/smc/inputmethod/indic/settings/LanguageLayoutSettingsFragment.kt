@@ -18,13 +18,19 @@ package org.smc.inputmethod.indic.settings
 
 import android.content.Context
 import android.os.Bundle
+import android.text.TextUtils
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceScreen
+import androidx.preference.PreferenceViewHolder
 import androidx.preference.SwitchPreferenceCompat
+
+import com.google.android.material.color.MaterialColors
 
 import com.android.inputmethod.keyboard.KeyboardLayoutSet
 import com.android.inputmethod.keyboard.internal.NativeNumerals
@@ -54,7 +60,7 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
     private var langCode: String? = null
 
     private lateinit var packManager: LanguagePackDownloadManager
-    private var packPref: Preference? = null
+    private var packPref: PackPreference? = null
     private var pack: Pack? = null            // pack metadata from the index, or null until loaded
     private var downloading = false           // a download for this language is in flight
     private var pendingEnable = false         // enable happened before the index was available
@@ -100,8 +106,7 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
         hero.isIconSpaceReserved = false
         screen.addPreference(hero)
 
-        addPackSection(context, screen)
-        addCompanionLanguageSection(context, screen, target)
+        addPreferencesSection(context, screen, target)
 
         val layoutsCategory = PreferenceCategory(context)
         layoutsCategory.setTitle(R.string.language_section_layouts)
@@ -120,21 +125,36 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
             layoutsCategory.addPreference(pref)
         }
 
-        addNumeralsSection(context, screen, target)
+        addPackSection(context, screen)
 
         pack = findPack(packManager.cachedPacks())
         bindPack()
     }
 
-    private fun addNumeralsSection(context: Context, screen: PreferenceScreen, target: Language) {
+    /** The two per-language toggles (numerals, companion), grouped in one "Preferences" card. */
+    private fun addPreferencesSection(context: Context, screen: PreferenceScreen, target: Language) {
         val locale = LocaleUtils.constructLocaleFromString(target.mLocale)
-        val digits = NativeNumerals.nativeDigits(locale) ?: return
+        val digits = NativeNumerals.nativeDigits(locale)
+        val hasCompanion = VarnamIndicKeyboard.schemes.containsKey("varnam-$langCode")
+        if (digits == null && !hasCompanion) return
+
         val category = PreferenceCategory(context)
-        category.setTitle(R.string.language_section_numbers)
+        category.setTitle(R.string.language_section_preferences)
         category.isIconSpaceReserved = false
         screen.addPreference(category)
 
-        val pref = SwitchPreferenceCompat(context)
+        if (hasCompanion) {
+            category.addPreference(buildCompanionPref(context, target))
+        }
+        if (digits != null) {
+            category.addPreference(buildNumeralsPref(context, locale, digits))
+        }
+    }
+
+    private fun buildNumeralsPref(
+        context: Context, locale: Locale, digits: Array<String>
+    ): SwitchPreferenceCompat {
+        val pref = OneLineSwitchPreference(context)
         pref.widgetLayoutResource = R.layout.preference_material_switch
         pref.isPersistent = false
         pref.isIconSpaceReserved = false
@@ -150,21 +170,11 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
             KeyboardLayoutSet.onNumeralPreferenceChanged()
             true
         }
-        category.addPreference(pref)
+        return pref
     }
 
-    private fun addCompanionLanguageSection(
-        context: Context, screen: PreferenceScreen, target: Language
-    ) {
-        if (!VarnamIndicKeyboard.schemes.containsKey("varnam-$langCode")) {
-            return
-        }
-        val category = PreferenceCategory(context)
-        category.setTitle(R.string.language_section_companion)
-        category.isIconSpaceReserved = false
-        screen.addPreference(category)
-
-        val pref = SwitchPreferenceCompat(context)
+    private fun buildCompanionPref(context: Context, target: Language): SwitchPreferenceCompat {
+        val pref = OneLineSwitchPreference(context)
         pref.widgetLayoutResource = R.layout.preference_material_switch
         pref.isPersistent = false
         pref.isIconSpaceReserved = false
@@ -179,7 +189,7 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
             if (checked) triggerPackDownload()
             true
         }
-        category.addPreference(pref)
+        return pref
     }
 
     private fun addPackSection(context: Context, screen: PreferenceScreen) {
@@ -188,13 +198,8 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
         category.isIconSpaceReserved = false
         screen.addPreference(category)
 
-        val pref = Preference(context)
-        pref.isIconSpaceReserved = false
+        val pref = PackPreference(context)
         pref.setTitle(R.string.language_pack_section)
-        pref.setOnPreferenceClickListener {
-            onPackClicked()
-            true
-        }
         packPref = pref
         category.addPreference(pref)
     }
@@ -224,8 +229,7 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
         val pack = pack
         if (pack != null) {
             if (packManager.ensureDownloaded(pack)) {
-                downloading = true
-                bindPack()
+                showDownloadingState()
             }
         } else {
             // Index not cached yet — fetch it, then download once it arrives.
@@ -234,26 +238,30 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
         }
     }
 
-    private fun onPackClicked() {
-        val pack = pack
-        val ctx = context
-        if (downloading || pack == null || ctx == null) return
-        val installed = LanguagePackDownloadManager.installedVersion(ctx, langCode)
-        if (installed >= 0 && pack.version <= installed) {
-            MaterialAlertDialogBuilder(ctx)
-                .setTitle(pack.name)
-                .setMessage(R.string.language_pack_remove_confirm)
-                .setPositiveButton(R.string.language_pack_remove) { _, _ ->
-                    packManager.delete(langCode)
-                    bindPack()
-                }
-                .setNegativeButton(android.R.string.cancel, null)
-                .show()
-        } else {
-            packManager.download(pack)
-            downloading = true
-            bindPack()
-        }
+    private fun startDownload() {
+        val pack = pack ?: return
+        packManager.download(pack)
+        showDownloadingState()
+    }
+
+    private fun showDownloadingState() {
+        downloading = true
+        packPref?.setAction(null, 0, null)
+        packPref?.summary = getString(R.string.language_pack_downloading, 0)
+    }
+
+    private fun confirmRemove() {
+        val ctx = context ?: return
+        val pack = pack ?: return
+        MaterialAlertDialogBuilder(ctx)
+            .setTitle(pack.name)
+            .setMessage(R.string.language_pack_remove_confirm)
+            .setPositiveButton(R.string.language_pack_remove) { _, _ ->
+                packManager.delete(langCode)
+                bindPack()
+            }
+            .setNegativeButton(android.R.string.cancel, null)
+            .show()
     }
 
     /** Render the pack row from current install state + index metadata. */
@@ -266,23 +274,25 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
             pref.setSummary(R.string.language_pack_unavailable)
             pref.icon = null
             pref.isEnabled = false
+            pref.setAction(null, 0, null)
             return
         }
         pref.isEnabled = true
+        pref.setIcon(R.drawable.ic_language_pack)
         val installed = LanguagePackDownloadManager.installedVersion(ctx, langCode)
         val size = formatSize(pack.size)
         when {
             installed < 0 -> {
                 pref.summary = getString(R.string.language_pack_status_available, size, pack.version)
-                pref.setIcon(R.drawable.ic_pack_download)
+                pref.setAction(getString(R.string.language_pack_download), ACTION_ACCENT) { startDownload() }
             }
             pack.version > installed -> {
                 pref.summary = getString(R.string.language_pack_status_update, size, pack.version)
-                pref.setIcon(R.drawable.ic_pack_update)
+                pref.setAction(getString(R.string.language_pack_update), ACTION_ACCENT) { startDownload() }
             }
             else -> {
                 pref.summary = getString(R.string.language_pack_status_installed, installed)
-                pref.setIcon(R.drawable.ic_pack_delete)
+                pref.setAction(getString(R.string.language_pack_remove), ACTION_DESTRUCTIVE) { confirmRemove() }
             }
         }
     }
@@ -321,13 +331,70 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
     override fun onError(lang: String?, message: String?) {
         if (lang != null && !matches(lang)) return
         downloading = false
-        packPref?.setSummary(R.string.language_pack_download_error)
+        val pref = packPref ?: return
+        pref.setSummary(R.string.language_pack_download_error)
+        if (pack != null) {
+            pref.setAction(getString(R.string.language_pack_download), ACTION_ACCENT) { startDownload() }
+        }
     }
 
     private fun matches(lang: String?): Boolean = langCode != null && langCode == lang
 
+    /** [SwitchPreferenceCompat] whose summary is clamped to a single ellipsised line. */
+    private class OneLineSwitchPreference(context: Context) : SwitchPreferenceCompat(context) {
+        override fun onBindViewHolder(holder: PreferenceViewHolder) {
+            super.onBindViewHolder(holder)
+            (holder.findViewById(android.R.id.summary) as? TextView)?.apply {
+                maxLines = 1
+                ellipsize = TextUtils.TruncateAt.END
+            }
+        }
+    }
+
+    /**
+     * Language-pack row with a trailing text button (Download / Update / Remove) in place of the
+     * old delete-icon-as-affordance. The button is hidden while a download is in flight.
+     */
+    private class PackPreference(context: Context) : Preference(context) {
+        private var actionText: CharSequence? = null
+        private var actionColorAttr = 0
+        private var action: (() -> Unit)? = null
+
+        init {
+            widgetLayoutResource = R.layout.pref_pack_action
+            isSelectable = false
+            isIconSpaceReserved = false
+        }
+
+        fun setAction(text: CharSequence?, colorAttr: Int, onClick: (() -> Unit)?) {
+            actionText = text
+            actionColorAttr = colorAttr
+            action = onClick
+            notifyChanged()
+        }
+
+        override fun onBindViewHolder(holder: PreferenceViewHolder) {
+            super.onBindViewHolder(holder)
+            val button = holder.findViewById(R.id.pack_action_button) as TextView
+            val text = actionText
+            if (text == null) {
+                button.visibility = View.GONE
+                button.setOnClickListener(null)
+                return
+            }
+            button.visibility = View.VISIBLE
+            button.text = text
+            button.setTextColor(MaterialColors.getColor(button, actionColorAttr, button.currentTextColor))
+            val onClick = action
+            button.setOnClickListener { onClick?.invoke() }
+        }
+    }
+
     companion object {
         const val EXTRA_LOCALE = "locale"
+
+        private val ACTION_ACCENT = androidx.appcompat.R.attr.colorPrimary
+        private val ACTION_DESTRUCTIVE = com.google.android.material.R.attr.colorError
 
         private fun formatSize(bytes: Long): String =
             if (bytes < 1024 * 1024) {
