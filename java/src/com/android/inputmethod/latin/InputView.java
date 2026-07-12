@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -90,8 +91,16 @@ public final class InputView extends FrameLayout {
      * the inset internally.
      */
     private void applyInsets(final WindowInsetsCompat windowInsets) {
-        final Insets bars = windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars()
-                | WindowInsetsCompat.Type.displayCutout());
+        // Android 15+ lays IME windows out edge-to-edge (behind the system bars), so the keyboard
+        // must inset itself. Earlier platforms already position the IME window above the navigation
+        // bar, so adding our own inset there would double the gap. tappableElement (unioned with
+        // navigationBars and the cutout) is the region the system actually reserves at the bottom;
+        // it is the honest value even where the navigationBars type is reported smaller for IMEs.
+        final Insets bars = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM)
+                ? windowInsets.getInsets(WindowInsetsCompat.Type.navigationBars()
+                        | WindowInsetsCompat.Type.tappableElement()
+                        | WindowInsetsCompat.Type.displayCutout())
+                : Insets.NONE;
         if (getPaddingLeft() != bars.left || getPaddingRight() != bars.right
                 || getPaddingBottom() != 0) {
             setPadding(bars.left, 0, bars.right, 0);
