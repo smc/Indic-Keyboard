@@ -24,7 +24,10 @@ import android.os.Bundle
 import android.provider.Settings
 import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.view.inputmethod.InputMethodSubtype
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -38,6 +41,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 
 import com.android.inputmethod.compat.PreferenceManagerCompat
+import com.android.inputmethod.keyboard.KeyboardPreviewView
+import com.android.inputmethod.keyboard.KeyboardTheme
 import com.android.inputmethod.latin.R
 import com.android.inputmethod.latin.RichInputMethodManager
 import com.android.inputmethod.latin.common.LocaleUtils
@@ -473,6 +478,39 @@ class SetupWizardActivity : AppCompatActivity(), LanguagePackDownloadManager.Lis
         return row
     }
 
+    /** A layout row whose header expands on tap to show a live preview; the switch toggles it. */
+    private fun addLayoutRow(
+        name: CharSequence,
+        subtype: InputMethodSubtype,
+        checked: Boolean,
+        onToggle: (Boolean) -> Unit
+    ) {
+        val row = layoutInflater.inflate(R.layout.setup_layout_row, selectionList, false)
+        row.findViewById<TextView>(R.id.selection_title).text = name
+        val toggle = row.findViewById<MaterialSwitch>(R.id.selection_switch)
+        toggle.isChecked = checked
+        toggle.setOnCheckedChangeListener { _, isChecked -> onToggle(isChecked) }
+        val chevron = row.findViewById<ImageView>(R.id.layout_expand_indicator)
+        val previewHolder = row.findViewById<FrameLayout>(R.id.layout_preview_holder)
+        previewHolder.clipToOutline = true
+        row.findViewById<View>(R.id.layout_row_header).setOnClickListener {
+            val expand = previewHolder.visibility != View.VISIBLE
+            chevron.rotation = if (expand) 180f else 0f
+            previewHolder.visibility = if (expand) View.VISIBLE else View.GONE
+            if (expand && previewHolder.tag !== subtype) {
+                previewHolder.removeAllViews()
+                previewHolder.addView(
+                    KeyboardPreviewView.create(this, KeyboardTheme.getKeyboardTheme(this), subtype),
+                    FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
+                    )
+                )
+                previewHolder.tag = subtype
+            }
+        }
+        selectionList.addView(row)
+    }
+
     private fun buildLanguageList() {
         selectionList.removeAllViews()
         for (language in sortedLanguages()) {
@@ -501,7 +539,7 @@ class SetupWizardActivity : AppCompatActivity(), LanguagePackDownloadManager.Lis
             selectionList.addView(header)
             for (layout in language.mLayouts) {
                 val key = SubtypeLocaleUtils.getSubtypeKey(layout.mSubtype)
-                addSelectionRow(layout.mName, checked = enabledKeys.contains(key)) { checked ->
+                addLayoutRow(layout.mName, layout.mSubtype, enabledKeys.contains(key)) { checked ->
                     if (checked) enabledKeys.add(key) else enabledKeys.remove(key)
                 }
             }
