@@ -16,14 +16,23 @@
 
 package org.smc.inputmethod.indic.settings
 
+import android.content.SharedPreferences
 import android.os.Bundle
 
+import com.android.inputmethod.keyboard.KeyboardLayoutSet
+import com.android.inputmethod.keyboard.internal.EmojiSkinTone
 import com.android.inputmethod.latin.R
 
-/** "Emoji" settings sub screen: emoji key visibility and the physical-keyboard emoji shortcut. */
+/** "Emoji" settings sub screen: emoji key visibility, default skin tone and the physical-key shortcut. */
 class EmojiSettingsFragment : SubScreenFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
         addPreferencesFromResource(R.xml.prefs_screen_emoji)
+    }
+
+    override fun onSharedPreferenceChanged(prefs: SharedPreferences, key: String?) {
+        if (key == EmojiSkinTone.PREF_KEY) {
+            KeyboardLayoutSet.onEmojiSkinTonePreferenceChanged()
+        }
     }
 }

@@ -420,6 +420,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         final int counts = array.length;
         final float keyWidth = gridRows.getKeyWidth(null, 0.0f);
         final int numColumns = (int)(mParams.mOccupiedWidth / keyWidth);
+        final int emojiSkinTone = EmojiSkinTone.read(mContext);
         for (int index = 0; index < counts; index += numColumns) {
             final KeyboardRow row = new KeyboardRow(mResources, mParams, parser, mCurrentY);
             startRow(row);
@@ -428,9 +429,9 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 if (i >= counts) {
                     break;
                 }
-                final String label;
-                final int code;
-                final String outputText;
+                String label;
+                int code;
+                String outputText;
                 final int supportedMinSdkVersion;
                 String[] variations = null;
                 if (codesArrayId != 0) {
@@ -461,10 +462,26 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 final int height = row.getRowHeight();
                 MoreKeySpec[] moreKeys = null;
                 if (variations != null) {
-                    moreKeys = new MoreKeySpec[variations.length];
-                    for (int v = 0; v < variations.length; v++) {
-                        moreKeys[v] = new MoreKeySpec(variations[v], false /* needsToUpperCase */,
-                                Locale.ROOT);
+                    // With a default skin tone chosen, the key itself shows that tone; the neutral
+                    // base and every tone stay available on long-press.
+                    if (emojiSkinTone > 0 && emojiSkinTone <= variations.length) {
+                        final String toned = variations[emojiSkinTone - 1];
+                        code = Constants.CODE_OUTPUT_TEXT;
+                        outputText = toned;
+                        final String[] moreKeyLabels =
+                                EmojiSkinTone.moreKeyLabels(label, variations, emojiSkinTone);
+                        label = toned;
+                        moreKeys = new MoreKeySpec[moreKeyLabels.length];
+                        for (int v = 0; v < moreKeyLabels.length; v++) {
+                            moreKeys[v] = new MoreKeySpec(moreKeyLabels[v],
+                                    false /* needsToUpperCase */, Locale.ROOT);
+                        }
+                    } else {
+                        moreKeys = new MoreKeySpec[variations.length];
+                        for (int v = 0; v < variations.length; v++) {
+                            moreKeys[v] = new MoreKeySpec(variations[v],
+                                    false /* needsToUpperCase */, Locale.ROOT);
+                        }
                     }
                 }
                 final Key key = new Key(label, KeyboardIconsSet.ICON_UNDEFINED, code, outputText,

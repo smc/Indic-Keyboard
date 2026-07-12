@@ -150,6 +150,10 @@ public final class KeyboardLayoutSet {
         clearKeyboardCache();
     }
 
+    public static void onEmojiSkinTonePreferenceChanged() {
+        clearKeyboardCache();
+    }
+
     private static void clearKeyboardCache() {
         sKeyboardCache.clear();
         sUniqueKeysCache.clear();

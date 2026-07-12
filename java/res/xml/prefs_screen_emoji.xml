@@ -24,6 +24,14 @@
         android:summary="@string/show_emoji_key_summary"
         android:defaultValue="false"
         android:persistent="true" />
+    <ListPreference
+        android:key="pref_emoji_skin_tone"
+        android:title="@string/emoji_skin_tone"
+        android:entries="@array/emoji_skin_tone_entries"
+        android:entryValues="@array/emoji_skin_tone_values"
+        android:defaultValue="0"
+        android:summary="%s"
+        android:persistent="true" />
     <CheckBoxPreference
         android:key="pref_enable_emoji_alt_physical_key"
         android:title="@string/prefs_enable_emoji_alt_physical_key"
