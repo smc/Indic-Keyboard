@@ -1,0 +1,52 @@
+/*
+ * Copyright 2026, Jishnu Mohan <jishnu@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.smc.inputmethod.indic.settings
+
+/** Collection of device-specific preference constants. */
+object LocalSettingsConstants {
+    // Preference file for storing preferences that are tied to a device and are not backed up.
+    const val PREFS_FILE = "local_prefs"
+
+    // Preference key for the current account. Do not restore.
+    const val PREF_ACCOUNT_NAME = "pref_account_name"
+
+    // Preference key for enabling cloud sync feature. Do not restore.
+    const val PREF_ENABLE_CLOUD_SYNC = "pref_enable_cloud_sync"
+
+    // Preference keys to skip when the backup agent restores: they are tied to a device and hence
+    // should not be restored (e.g. account name). Ideally these would live in a separate,
+    // non-backed-up file, but the preference UI only deals with the default shared preferences,
+    // which makes moving them out non-trivial.
+    @JvmField
+    val PREFS_TO_SKIP_RESTORING = arrayOf(
+        PREF_ACCOUNT_NAME,
+        PREF_ENABLE_CLOUD_SYNC,
+        // The debug settings are not restored on a new device. A feature relying on these must
+        // ensure its defaults are correct so it works on a new device.
+        DebugSettings.PREF_DEBUG_MODE,
+        DebugSettings.PREF_FORCE_NON_DISTINCT_MULTITOUCH,
+        DebugSettings.PREF_HAS_CUSTOM_KEY_PREVIEW_ANIMATION_PARAMS,
+        DebugSettings.PREF_KEY_PREVIEW_DISMISS_DURATION,
+        DebugSettings.PREF_KEY_PREVIEW_DISMISS_END_X_SCALE,
+        DebugSettings.PREF_KEY_PREVIEW_DISMISS_END_Y_SCALE,
+        DebugSettings.PREF_KEY_PREVIEW_SHOW_UP_DURATION,
+        DebugSettings.PREF_KEY_PREVIEW_SHOW_UP_START_X_SCALE,
+        DebugSettings.PREF_KEY_PREVIEW_SHOW_UP_START_Y_SCALE,
+        DebugSettings.PREF_SHOULD_SHOW_LXX_SUGGESTION_UI,
+        DebugSettings.PREF_SLIDING_KEY_INPUT_PREVIEW
+    )
+}
