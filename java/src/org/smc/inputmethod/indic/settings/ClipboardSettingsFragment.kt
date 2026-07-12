@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.smc.inputmethod.indic.settings;
+package org.smc.inputmethod.indic.settings
 
-import android.os.Bundle;
+import android.os.Bundle
 
-import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.R
 
-public final class ClipboardSettingsFragment extends SubScreenFragment {
-    @Override
-    public void onCreatePreferences(final Bundle savedInstanceState, final String rootKey) {
-        super.onCreatePreferences(savedInstanceState, rootKey);
-        addPreferencesFromResource(R.xml.prefs_screen_clipboard);
+class ClipboardSettingsFragment : SubScreenFragment() {
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        super.onCreatePreferences(savedInstanceState, rootKey)
+        addPreferencesFromResource(R.xml.prefs_screen_clipboard)
     }
 }
