@@ -18,7 +18,6 @@ package org.smc.inputmethod.indic.settings
 
 import android.content.Context
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,10 +54,10 @@ class ThemeSettingsFragment : Fragment() {
         selectedThemeId = KeyboardTheme.getKeyboardTheme(context).mThemeId
 
         val grid = RecyclerView(context)
-        val padding = dp(6)
+        val padding = resources.dpToPx(6)
         grid.setPadding(padding, padding, padding, padding)
         grid.clipToPadding = false
-        val spanCount = Math.max(2, resources.configuration.screenWidthDp / 280)
+        val spanCount = (resources.configuration.screenWidthDp / 280).coerceAtLeast(2)
         val layoutManager = GridLayoutManager(context, spanCount)
         val adapter = ThemeAdapter(context)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -74,13 +73,7 @@ class ThemeSettingsFragment : Fragment() {
         (activity as? AppCompatActivity)?.supportActionBar?.setTitle(R.string.settings_screen_theme)
     }
 
-    private fun dp(value: Int): Int = Math.round(
-        TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, value.toFloat(), resources.displayMetrics
-        )
-    )
-
-    private class Item(
+    private data class Item(
         val header: Boolean,
         val themeId: Int,
         val label: String,
@@ -140,12 +133,15 @@ class ThemeSettingsFragment : Fragment() {
 
         private fun selectTheme(themeId: Int) {
             if (themeId == selectedThemeId) return
+            val previousThemeId = selectedThemeId
             selectedThemeId = themeId
             KeyboardTheme.saveKeyboardThemeId(
                 themeId, PreferenceManagerCompat.getDeviceSharedPreferences(requireContext())
             )
-            for (index in items.indices) {
-                if (!items[index].header) notifyItemChanged(index)
+            items.forEachIndexed { index, item ->
+                if (!item.header && (item.themeId == previousThemeId || item.themeId == themeId)) {
+                    notifyItemChanged(index)
+                }
             }
         }
     }
@@ -191,7 +187,7 @@ class ThemeSettingsFragment : Fragment() {
             name.text = label
             selectedIcon.visibility = if (selected) View.VISIBLE else View.GONE
             card.isChecked = selected
-            card.strokeWidth = dp(if (selected) 2 else 1)
+            card.strokeWidth = resources.dpToPx(if (selected) 2 else 1)
             card.setStrokeColor(if (selected) checkedStrokeColor else uncheckedStrokeColor)
             card.contentDescription = label
         }
@@ -201,7 +197,6 @@ class ThemeSettingsFragment : Fragment() {
         private const val VIEW_TYPE_HEADER = 0
         private const val VIEW_TYPE_THEME = 1
 
-        @JvmStatic
         fun updateKeyboardThemeSummary(pref: Preference) {
             val res = pref.context.resources
             val keyboardTheme = KeyboardTheme.getKeyboardTheme(pref.context)

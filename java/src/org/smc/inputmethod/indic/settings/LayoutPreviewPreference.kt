@@ -60,9 +60,9 @@ class LayoutPreviewPreference(
             isClickable = true
             isFocusable = true
         }
-        (holder.findViewById(R.id.layout_expand_indicator) as ImageView).rotation =
+        holder.itemView.findViewById<ImageView>(R.id.layout_expand_indicator).rotation =
             if (expanded) 180f else 0f
-        val previewHolder = holder.findViewById(R.id.layout_preview_holder) as FrameLayout
+        val previewHolder = holder.itemView.findViewById<FrameLayout>(R.id.layout_preview_holder)
         previewHolder.visibility = if (expanded) View.VISIBLE else View.GONE
         previewHolder.clipToOutline = true
         if (expanded && previewHolder.tag !== subtype) {

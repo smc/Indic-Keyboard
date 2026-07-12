@@ -28,6 +28,8 @@ import com.android.inputmethod.latin.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.slider.Slider
 
+import kotlin.math.roundToInt
+
 /**
  * Dialog hosting the Material slider for [SeekBarDialogPreference]. The data and value logic live
  * on the preference; this fragment only drives the dialog UI (androidx splits the two).
@@ -63,11 +65,11 @@ class SeekBarDialogPreferenceFragment : PreferenceDialogFragmentCompat() {
 
     private fun clipValue(value: Int): Int {
         val pref = pref()
-        val clipped = Math.min(pref.maxValue, Math.max(pref.minValue, value))
+        val clipped = value.coerceIn(pref.minValue, pref.maxValue)
         return if (pref.stepValue <= 1) clipped else clipped - (clipped % pref.stepValue)
     }
 
-    private fun sliderValue(): Int = clipValue(Math.round(slider.value))
+    private fun sliderValue(): Int = clipValue(slider.value.roundToInt())
 
     override fun onBindDialogView(view: View) {
         super.onBindDialogView(view)
@@ -81,9 +83,9 @@ class SeekBarDialogPreferenceFragment : PreferenceDialogFragmentCompat() {
         val rawValue = proxy.readValue(pref.key)
         valueView.text = proxy.getValueText(rawValue)
         slider.value = clipValue(rawValue).toFloat()
-        slider.setLabelFormatter { value -> proxy.getValueText(clipValue(Math.round(value))) }
+        slider.setLabelFormatter { value -> proxy.getValueText(clipValue(value.roundToInt())) }
         slider.addOnChangeListener { _, value, _ ->
-            valueView.text = proxy.getValueText(clipValue(Math.round(value)))
+            valueView.text = proxy.getValueText(clipValue(value.roundToInt()))
         }
         slider.addOnSliderTouchListener(object : Slider.OnSliderTouchListener {
             override fun onStartTrackingTouch(slider: Slider) {}
@@ -117,7 +119,6 @@ class SeekBarDialogPreferenceFragment : PreferenceDialogFragmentCompat() {
         // Mirrors PreferenceDialogFragmentCompat.ARG_KEY (protected in the base class).
         private const val ARG_KEY = "key"
 
-        @JvmStatic
         fun newInstance(key: String): SeekBarDialogPreferenceFragment =
             SeekBarDialogPreferenceFragment().apply {
                 arguments = Bundle(1).apply { putString(ARG_KEY, key) }

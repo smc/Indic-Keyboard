@@ -17,8 +17,6 @@
 package org.smc.inputmethod.indic.settings
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -29,8 +27,11 @@ import android.widget.EditText
 import android.widget.TextView
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 
 import com.android.inputmethod.latin.R
@@ -73,13 +74,7 @@ class LearnedWordsFragment : Fragment() {
         list.layoutManager = LinearLayoutManager(requireContext())
         adapter = WordsAdapter()
         list.adapter = adapter
-        search.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable) {
-                adapter.filter(s.toString())
-            }
-        })
+        search.doAfterTextChanged { adapter.filter(it?.toString().orEmpty()) }
         buildLanguageChips()
         return root
     }
@@ -190,20 +185,25 @@ class LearnedWordsFragment : Fragment() {
         adapter.filter(search.text.toString())
     }
 
-    private inner class WordsAdapter : RecyclerView.Adapter<WordViewHolder>() {
-        private val filtered = ArrayList<String>()
-
+    private inner class WordsAdapter : ListAdapter<String, WordViewHolder>(DIFF) {
         fun filter(query: String) {
-            filtered.clear()
-            if (query.isEmpty()) {
-                filtered.addAll(words)
+            val list = if (query.isEmpty()) {
+                words.toList()
             } else {
                 val locale = selectedLocale ?: Locale.getDefault()
                 val needle = query.lowercase(locale)
-                words.filterTo(filtered) { it.lowercase(locale).contains(needle) }
+                words.filter { it.lowercase(locale).contains(needle) }
             }
-            notifyDataSetChanged()
-            updateEmptyState()
+            submitList(list) {
+                updateEmptyState()
+                // Corners depend on adapter position, so refresh the ends: after a delete DiffUtil
+                // won't rebind the unchanged row that just became the new first/last and needs
+                // its rounded corner.
+                if (itemCount > 0) {
+                    notifyItemChanged(0)
+                    notifyItemChanged(itemCount - 1)
+                }
+            }
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordViewHolder {
@@ -213,15 +213,13 @@ class LearnedWordsFragment : Fragment() {
         }
 
         override fun onBindViewHolder(holder: WordViewHolder, position: Int) {
-            val word = filtered[position]
+            val word = getItem(position)
             holder.wordText.text = word
             val top = position == 0
             val bottom = position == itemCount - 1
             holder.itemView.setBackgroundResource(cardBackground(top, bottom))
             holder.deleteButton.setOnClickListener { deleteWord(word) }
         }
-
-        override fun getItemCount(): Int = filtered.size
     }
 
     private class WordViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -234,11 +232,9 @@ class LearnedWordsFragment : Fragment() {
         private const val DICT_FILE_SUFFIX = ".dict"
         private val MENU_DELETE_ALL = Menu.FIRST
 
-        private fun cardBackground(top: Boolean, bottom: Boolean): Int = when {
-            top && bottom -> R.drawable.pref_card_single
-            top -> R.drawable.pref_card_top
-            bottom -> R.drawable.pref_card_bottom
-            else -> R.drawable.pref_card_middle
+        private val DIFF = object : DiffUtil.ItemCallback<String>() {
+            override fun areItemsTheSame(oldItem: String, newItem: String) = oldItem == newItem
+            override fun areContentsTheSame(oldItem: String, newItem: String) = oldItem == newItem
         }
     }
 }

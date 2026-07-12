@@ -17,7 +17,6 @@
 package org.smc.inputmethod.indic.settings
 
 import android.content.Context
-import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.TypedValue
@@ -31,7 +30,6 @@ import androidx.preference.PreferenceGroupAdapter
 import androidx.preference.PreferenceViewHolder
 import androidx.recyclerview.widget.RecyclerView
 
-import com.android.inputmethod.latin.R
 import com.google.android.material.color.MaterialColors
 
 /**
@@ -47,8 +45,8 @@ class CardedPreferenceGroupAdapter(preferenceGroup: PreferenceGroup) :
 
     init {
         val res = preferenceGroup.context.resources
-        inset = dp(res, 16)
-        gap = dp(res, 10)
+        inset = res.dpToPx(16)
+        gap = res.dpToPx(10)
     }
 
     override fun onBindViewHolder(holder: PreferenceViewHolder, position: Int) {
@@ -86,8 +84,8 @@ class CardedPreferenceGroupAdapter(preferenceGroup: PreferenceGroup) :
 
     class CardDivider(context: Context) : RecyclerView.ItemDecoration() {
         private val paint = Paint()
-        private val thickness = Math.max(1, dp(context.resources, 1))
-        private val inset = dp(context.resources, 16)
+        private val thickness = context.resources.dpToPx(1).coerceAtLeast(1)
+        private val inset = context.resources.dpToPx(16)
 
         init {
             val outline = MaterialColors.getColor(
@@ -113,21 +111,8 @@ class CardedPreferenceGroupAdapter(preferenceGroup: PreferenceGroup) :
     }
 
     companion object {
-        private fun dp(res: Resources, value: Int): Int = Math.round(
-            TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, value.toFloat(), res.displayMetrics
-            )
-        )
-
-        private fun cardBackground(top: Boolean, bottom: Boolean): Int = when {
-            top && bottom -> R.drawable.pref_card_single
-            top -> R.drawable.pref_card_top
-            bottom -> R.drawable.pref_card_bottom
-            else -> R.drawable.pref_card_middle
-        }
-
         private fun styleCategoryTitle(holder: PreferenceViewHolder) {
-            val title = holder.findViewById(android.R.id.title) as? TextView ?: return
+            val title = holder.itemView.findViewById<TextView>(android.R.id.title) ?: return
             val tv = TypedValue()
             if (title.context.theme.resolveAttribute(
                     com.google.android.material.R.attr.textAppearanceTitleSmall, tv, true

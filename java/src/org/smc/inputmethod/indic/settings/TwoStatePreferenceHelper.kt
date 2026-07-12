@@ -17,7 +17,6 @@
 package org.smc.inputmethod.indic.settings
 
 import androidx.preference.CheckBoxPreference
-import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
 import androidx.preference.SwitchPreferenceCompat
 
@@ -26,12 +25,8 @@ import com.android.inputmethod.latin.R
 object TwoStatePreferenceHelper {
     private const val EMPTY_TEXT = ""
 
-    @JvmStatic
     fun replaceCheckBoxPreferencesBySwitchPreferences(group: PreferenceGroup) {
-        val preferences = ArrayList<Preference>(group.preferenceCount)
-        for (index in 0 until group.preferenceCount) {
-            preferences.add(group.getPreference(index))
-        }
+        val preferences = (0 until group.preferenceCount).map { group.getPreference(it) }
         group.removeAll()
         for (preference in preferences) {
             if (preference is CheckBoxPreference) {
