@@ -31,13 +31,15 @@
         android:layout_centerVertical="true"
         android:contentDescription="@string/spoken_description_mic"
         style="?attr/suggestionWordStyle" />
+    <!-- Center area, always inset by one edge-key slot on each side so its contents stay centered
+         regardless of whether the right sticky slot shows the voice/more key. -->
     <LinearLayout
         android:id="@+id/suggestions_strip"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/config_suggestions_strip_edge_key_width"
-        android:layout_marginRight="@dimen/config_suggestions_strip_horizontal_margin"
+        android:layout_marginEnd="@dimen/config_suggestions_strip_edge_key_width"
         android:hapticFeedbackEnabled="false"
         android:soundEffectsEnabled="false" />
     <LinearLayout
@@ -46,7 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/config_suggestions_strip_edge_key_width"
-        android:layout_marginRight="@dimen/config_suggestions_strip_horizontal_margin"
+        android:layout_marginEnd="@dimen/config_suggestions_strip_edge_key_width"
         android:hapticFeedbackEnabled="false"
         android:soundEffectsEnabled="false" >
         <TextView

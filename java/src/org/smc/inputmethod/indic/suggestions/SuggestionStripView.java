@@ -80,6 +80,12 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     static final boolean DBG = DebugFlags.DEBUG_ENABLED;
     private static final float DEBUG_INFO_TEXT_SIZE_IN_DIP = 6.0f;
     private static final float INCOGNITO_GRAY_OUT_ALPHA = 0.5f;
+    // Cross-fade for swapping the voice / more key in the right sticky slot.
+    private static final long RIGHT_SLOT_ANIM_DURATION_MS = 140;
+    private static final float RIGHT_SLOT_ENTER_SCALE = 0.6f;
+
+    // The key currently occupying the right sticky slot (mVoiceKey, mMoreSuggestionsKey or null).
+    private View mRightSlotKey;
 
     private final ViewGroup mSuggestionsStrip;
     private final ImageButton mVoiceKey;
@@ -300,7 +306,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mVoiceKey.setImageDrawable(iconVoice);
         mVoiceKey.setOnClickListener(this);
 
-        mMoreSuggestionsKey.setImageDrawable(iconMore);
+        mMoreSuggestionsKey.setImageResource(R.drawable.ic_more_horiz);
         mMoreSuggestionsKey.setOnClickListener(this);
 
         ((android.widget.ImageView) mClipboardChipOpenHistory).setImageDrawable(iconMore);
@@ -339,17 +345,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             mStripVisibilityGroup.showInlineSuggestionsStrip();
         }
 
-        updateMoreSuggestionsKey();
-    }
-
-    private void updateMoreSuggestionsKey() {
-        if (mSuggestedWords.size() <= mStartIndexOfMoreSuggestions
-                || mStripVisibilityGroup.isShowingInlineSuggestionsStrip()
-                || mToolboxOpen) {
-            mMoreSuggestionsKey.setVisibility(GONE);
-        } else {
-            mMoreSuggestionsKey.setVisibility(VISIBLE);
-        }
+        updateKeys();
     }
 
     public void setMoreSuggestionsHeight(final int remainingHeight) {
@@ -449,7 +445,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         }
         mToolboxOpen = true;
         morphMenuIcon(true /* open */);
-        updateMoreSuggestionsKey();
+        updateKeys();
         mStripVisibilityGroup.showToolboxStrip();
         mToolboxRow.animate().cancel();
         mToolboxRow.setTranslationX(-getWidth() / 4f);
@@ -475,7 +471,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private void finishToolboxClose() {
         mToolboxRow.setTranslationX(0f);
         mToolboxRow.setAlpha(1f);
-        updateMoreSuggestionsKey();
+        updateKeys();
         if (mToolboxStrip.getVisibility() != VISIBLE) {
             return;
         }
@@ -597,8 +593,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         // A live clipboard chip keeps priority; the inline strip takes over once it is dismissed.
         if (mClipboardChipEntry == null) {
             mStripVisibilityGroup.showInlineSuggestionsStrip();
-            mMoreSuggestionsKey.setVisibility(GONE);
-            mVoiceKey.setVisibility(GONE);
+            updateKeys();
         }
     }
 
@@ -681,7 +676,6 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         removeAllDebugInfoViews();
         mStripVisibilityGroup.showSuggestionsStrip();
         dismissMoreSuggestionsPanel();
-        mMoreSuggestionsKey.setVisibility(INVISIBLE);
     }
 
     private void removeAllDebugInfoViews() {
@@ -974,34 +968,76 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         }
     }
 
+    // The right sticky slot holds at most one of the voice / more-suggestions keys. Its space is
+    // always reserved by the center strip's symmetric margins, so the center stays put regardless.
     private void updateKeys() {
         final SettingsValues currentSettingsValues = Settings.getInstance().getCurrent();
-        final boolean grayOut = currentSettingsValues.mIncognitoModeEnabled
+        final boolean grayOut = currentSettingsValues != null
+                && currentSettingsValues.mIncognitoModeEnabled
                 && currentSettingsValues.mGrayOutSuggestionsInIncognito;
-        mVoiceKey.setVisibility(currentSettingsValues.mShowsVoiceInputKey ? VISIBLE : GONE);
         mSuggestionsStrip.setAlpha(grayOut ? INCOGNITO_GRAY_OUT_ALPHA : 1.0f);
-        positionRightKeys();
+
+        final boolean voiceEnabled = currentSettingsValues != null
+                && currentSettingsValues.mShowsVoiceInputKey;
+        final boolean suggestionsActive = mSuggestionsStrip.getVisibility() == VISIBLE
+                && !mToolboxOpen;
+        final boolean moreAvailable = suggestionsActive && mSuggestedWords != null
+                && mSuggestedWords.size() > mStartIndexOfMoreSuggestions;
+        // Only suggestions for a word being typed get the "more" affordance; predictions and
+        // punctuation are non-related, so voice input keeps the slot there when it is enabled.
+        final boolean typedWordSuggestions = mSuggestedWords != null
+                && !mSuggestedWords.isPrediction() && !mSuggestedWords.isPunctuationSuggestions();
+
+        final View rightKey;
+        if (!suggestionsActive) {
+            rightKey = null;
+        } else if (moreAvailable && typedWordSuggestions) {
+            rightKey = mMoreSuggestionsKey;
+        } else if (voiceEnabled) {
+            rightKey = mVoiceKey;
+        } else if (moreAvailable) {
+            rightKey = mMoreSuggestionsKey;
+        } else {
+            rightKey = null;
+        }
+        if (rightKey == mRightSlotKey) {
+            // Same content as before (typing keeps re-running this per keystroke) — snap the key
+            // to its shown pose in case clear()/relayout disturbed it, but don't replay the
+            // entrance animation, which would flash on every character.
+            if (rightKey != null) {
+                rightKey.animate().cancel();
+                rightKey.setVisibility(VISIBLE);
+                rightKey.setAlpha(1f);
+                rightKey.setScaleX(1f);
+                rightKey.setScaleY(1f);
+            }
+            return;
+        }
+        mRightSlotKey = rightKey;
+        // Animate only on an actual swap (voice <-> more <-> none).
+        animateRightSlotKey(mVoiceKey, rightKey == mVoiceKey);
+        animateRightSlotKey(mMoreSuggestionsKey, rightKey == mMoreSuggestionsKey);
     }
 
-    private void positionRightKeys() {
-        final boolean voiceShown = mVoiceKey.getVisibility() == VISIBLE;
-        final int edge = getResources().getDimensionPixelSize(
-                R.dimen.config_suggestions_strip_edge_key_width);
-        final int baseMargin = getResources().getDimensionPixelSize(
-                R.dimen.config_suggestions_strip_horizontal_margin);
-        final int moreMargin = voiceShown ? edge : 0;
-        final int stripMargin = baseMargin + (voiceShown ? edge : 0);
-        final RelativeLayout.LayoutParams moreLp =
-                (RelativeLayout.LayoutParams) mMoreSuggestionsKey.getLayoutParams();
-        if (moreLp.rightMargin != moreMargin) {
-            moreLp.rightMargin = moreMargin;
-            mMoreSuggestionsKey.setLayoutParams(moreLp);
-        }
-        final RelativeLayout.LayoutParams stripLp =
-                (RelativeLayout.LayoutParams) mSuggestionsStrip.getLayoutParams();
-        if (stripLp.rightMargin != stripMargin) {
-            stripLp.rightMargin = stripMargin;
-            mSuggestionsStrip.setLayoutParams(stripLp);
+    private void animateRightSlotKey(final View key, final boolean show) {
+        key.animate().cancel();
+        if (show) {
+            if (key.getVisibility() != VISIBLE) {
+                key.setVisibility(VISIBLE);
+                key.setAlpha(0f);
+                key.setScaleX(RIGHT_SLOT_ENTER_SCALE);
+                key.setScaleY(RIGHT_SLOT_ENTER_SCALE);
+            }
+            key.animate().alpha(1f).scaleX(1f).scaleY(1f)
+                    .setDuration(RIGHT_SLOT_ANIM_DURATION_MS).start();
+        } else if (key.getVisibility() == VISIBLE) {
+            key.animate().alpha(0f).scaleX(RIGHT_SLOT_ENTER_SCALE).scaleY(RIGHT_SLOT_ENTER_SCALE)
+                    .setDuration(RIGHT_SLOT_ANIM_DURATION_MS)
+                    .withEndAction(() -> {
+                        if (key.getAlpha() == 0f) {
+                            key.setVisibility(GONE);
+                        }
+                    }).start();
         }
     }
 }
