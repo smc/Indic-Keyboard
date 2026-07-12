@@ -18,6 +18,8 @@ package org.smc.inputmethod.indic.settings
 
 import android.content.res.Resources
 
+import androidx.core.os.ConfigurationCompat
+
 import com.android.inputmethod.annotations.UsedForTesting
 import com.android.inputmethod.keyboard.internal.MoreKeySpec
 import com.android.inputmethod.latin.PunctuationSuggestions
@@ -62,8 +64,8 @@ class SpacingAndPunctuations private constructor(
         res.getBoolean(R.bool.current_language_has_spaces),
         // Heuristic: American Typography rules are the most common across English variants;
         // German rules (not "German typography") also have small gotchas.
-        Locale.ENGLISH.language == res.configuration.locale.language,
-        Locale.GERMAN.language == res.configuration.locale.language
+        Locale.ENGLISH.language == localeOf(res).language,
+        Locale.GERMAN.language == localeOf(res).language
     )
 
     @UsedForTesting
@@ -120,3 +122,6 @@ class SpacingAndPunctuations private constructor(
         append("\n   mUsesGermanRules = $mUsesGermanRules")
     }
 }
+
+private fun localeOf(res: Resources): Locale =
+    ConfigurationCompat.getLocales(res.configuration).get(0) ?: Locale.getDefault()

@@ -18,8 +18,12 @@ package org.smc.inputmethod.indic.userdictionary
 
 import android.content.Context
 
+import androidx.core.os.ConfigurationCompat
+
 import com.android.inputmethod.latin.R
 import com.android.inputmethod.latin.common.LocaleUtils
+
+import java.util.Locale
 
 /** Utilities for the user dictionary settings. */
 object UserDictionarySettingsUtils {
@@ -30,7 +34,8 @@ object UserDictionarySettingsUtils {
             return context.resources.getString(R.string.user_dict_settings_all_languages)
         }
         val locale = LocaleUtils.constructLocaleFromString(localeStr)
-        val systemLocale = context.resources.configuration.locale
+        val systemLocale = ConfigurationCompat.getLocales(context.resources.configuration).get(0)
+            ?: Locale.getDefault()
         return locale.getDisplayName(systemLocale)
     }
 }

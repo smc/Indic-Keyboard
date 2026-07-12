@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
+
 package org.smc.inputmethod.indic.userdictionary
 
 import android.app.ListFragment
@@ -42,7 +44,6 @@ import java.util.Locale
 // Caveat: this class is basically taken from
 // packages/apps/Settings/src/com/android/settings/inputmethod/UserDictionarySettings.java
 // in order to deal with some devices that have issues with the user dictionary handling.
-@Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
 class UserDictionarySettings : ListFragment() {
 
     private var cursor: Cursor? = null

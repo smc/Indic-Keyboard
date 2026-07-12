@@ -24,6 +24,7 @@ import android.util.Log
 import android.view.inputmethod.EditorInfo
 
 import androidx.core.content.edit
+import androidx.core.os.ConfigurationCompat
 
 import com.android.inputmethod.compat.AppWorkaroundsUtils
 import com.android.inputmethod.latin.InputAttributes
@@ -120,7 +121,7 @@ open class SettingsValues(
     @JvmField val mAccount: String?
 
     init {
-        mLocale = res.configuration.locale
+        mLocale = ConfigurationCompat.getLocales(res.configuration).get(0) ?: Locale.getDefault()
         // Get the resources
         mDelayInMillisecondsToUpdateOldSuggestions =
             res.getInteger(R.integer.config_delay_in_milliseconds_to_update_old_suggestions)
@@ -233,11 +234,17 @@ open class SettingsValues(
         if (null != packageInfo) {
             mAppWorkarounds.set(AppWorkaroundsUtils(packageInfo))
         } else {
-            TargetPackageInfoGetterTask(context, mAppWorkarounds)
-                .execute(mInputAttributes.mTargetApplicationPackageName)
+            fetchAppWorkarounds(context)
         }
         mSpaceTrackpadEnabled = Settings.readSpaceTrackpadEnabled(prefs)
         mDeleteSwipeEnabled = Settings.readDeleteSwipeEnabled(prefs)
+    }
+
+    // TargetPackageInfoGetterTask is an AsyncTask (a deprecated Java helper we still rely on).
+    @Suppress("DEPRECATION")
+    private fun fetchAppWorkarounds(context: Context) {
+        TargetPackageInfoGetterTask(context, mAppWorkarounds)
+            .execute(mInputAttributes.mTargetApplicationPackageName)
     }
 
     open fun isMetricsLoggingEnabled(): Boolean = mEnableMetricsLogging

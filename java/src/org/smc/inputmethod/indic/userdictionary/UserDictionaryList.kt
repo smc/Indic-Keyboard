@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
+
 package org.smc.inputmethod.indic.userdictionary
 
 import android.app.Activity
@@ -36,7 +38,6 @@ import java.util.TreeSet
 // Caveat: this class is basically taken from
 // packages/apps/Settings/src/com/android/settings/inputmethod/UserDictionaryList.java
 // in order to deal with some devices that have issues with the user dictionary handling.
-@Suppress("DEPRECATION")
 class UserDictionaryList : PreferenceFragment() {
 
     override fun onCreate(icicle: Bundle?) {

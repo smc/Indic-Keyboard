@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
+
 package org.smc.inputmethod.indic.userdictionary
 
 import android.app.Fragment
@@ -44,7 +46,6 @@ import java.util.Locale
  * Fragment to add a word/shortcut to the user dictionary. Unlike the UserDictionaryActivity, this
  * is only invoked within Settings from UserDictionarySettings.
  */
-@Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
 class UserDictionaryAddWordFragment : Fragment(),
     AdapterView.OnItemSelectedListener, LocationChangedListener {
 
