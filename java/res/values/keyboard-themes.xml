@@ -18,14 +18,15 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- For keyboard color scheme option dialog. -->
+    <!-- The three parallel arrays below are index-aligned: name, theme id, and family heading
+         for each entry, listed in the order the picker renders them (grouped by family). -->
     <string-array name="keyboard_theme_names" translatable="false">
         <item>@string/keyboard_theme_md3_dynamic</item>
         <item>@string/keyboard_theme_md3_light</item>
         <item>@string/keyboard_theme_md3_dark</item>
-        <item>@string/keyboard_theme_light_border</item>
         <item>@string/keyboard_theme_material_light</item>
         <item>@string/keyboard_theme_material_dark</item>
+        <item>@string/keyboard_theme_light_border</item>
         <item>@string/keyboard_theme_dark_border</item>
         <item>@string/keyboard_theme_amoled_border</item>
         <item>@string/keyboard_theme_holo_white</item>
@@ -37,12 +38,51 @@
         <item>10</item>
         <item>8</item>
         <item>9</item>
-        <item>5</item>
         <item>3</item>
         <item>4</item>
+        <item>5</item>
         <item>6</item>
         <item>7</item>
         <item>2</item>
         <item>0</item>
     </integer-array>
+    <!-- Card labels on the picker: the family term is dropped since the section header
+         already carries it. Index-aligned with the arrays above; the full names in
+         keyboard_theme_names are still used for the settings summary line. -->
+    <string-array name="keyboard_theme_short_names" translatable="false">
+        <item>Dynamic</item>
+        <item>Light</item>
+        <item>Dark</item>
+        <item>Light</item>
+        <item>Dark</item>
+        <item>Light Bordered</item>
+        <item>Dark Bordered</item>
+        <item>Pure Black</item>
+        <item>Holo White</item>
+        <item>Holo Black</item>
+    </string-array>
+    <string-array name="keyboard_theme_groups" translatable="false">
+        <item>@string/keyboard_theme_group_material</item>
+        <item>@string/keyboard_theme_group_material</item>
+        <item>@string/keyboard_theme_group_material</item>
+        <item>@string/keyboard_theme_group_modern</item>
+        <item>@string/keyboard_theme_group_modern</item>
+        <item>@string/keyboard_theme_group_modern</item>
+        <item>@string/keyboard_theme_group_modern</item>
+        <item>@string/keyboard_theme_group_modern</item>
+        <item>@string/keyboard_theme_group_classic</item>
+        <item>@string/keyboard_theme_group_classic</item>
+    </string-array>
+    <string-array name="keyboard_theme_group_descs" translatable="false">
+        <item>@string/keyboard_theme_group_material_desc</item>
+        <item>@string/keyboard_theme_group_material_desc</item>
+        <item>@string/keyboard_theme_group_material_desc</item>
+        <item>@string/keyboard_theme_group_modern_desc</item>
+        <item>@string/keyboard_theme_group_modern_desc</item>
+        <item>@string/keyboard_theme_group_modern_desc</item>
+        <item>@string/keyboard_theme_group_modern_desc</item>
+        <item>@string/keyboard_theme_group_modern_desc</item>
+        <item>@string/keyboard_theme_group_classic_desc</item>
+        <item>@string/keyboard_theme_group_classic_desc</item>
+    </string-array>
 </resources>

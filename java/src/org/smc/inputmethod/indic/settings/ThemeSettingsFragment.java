@@ -42,6 +42,9 @@ import com.android.inputmethod.latin.RichInputMethodManager;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.color.MaterialColors;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * "Keyboard theme" settings sub screen: a grid of live keyboard previews, one per theme,
  * rendered with the user's current layout. Tapping a card applies the theme immediately.
@@ -76,8 +79,16 @@ public final class ThemeSettingsFragment extends Fragment {
         grid.setClipToPadding(false);
         final int spanCount = Math.max(2,
                 getResources().getConfiguration().screenWidthDp / 280);
-        grid.setLayoutManager(new GridLayoutManager(context, spanCount));
-        grid.setAdapter(new ThemeAdapter(context));
+        final GridLayoutManager layoutManager = new GridLayoutManager(context, spanCount);
+        final ThemeAdapter adapter = new ThemeAdapter(context);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(final int position) {
+                return adapter.isHeader(position) ? spanCount : 1;
+            }
+        });
+        grid.setLayoutManager(layoutManager);
+        grid.setAdapter(adapter);
         return grid;
     }
 
@@ -97,35 +108,81 @@ public final class ThemeSettingsFragment extends Fragment {
                 getResources().getDisplayMetrics()));
     }
 
-    private final class ThemeAdapter extends RecyclerView.Adapter<ThemeViewHolder> {
-        private final String[] mNames;
-        private final int[] mThemeIds;
+    private static final int VIEW_TYPE_HEADER = 0;
+    private static final int VIEW_TYPE_THEME = 1;
+
+    private static final class Item {
+        final boolean header;
+        final int themeId;
+        final String label;
+        final String description;
+
+        Item(final boolean header, final int themeId, final String label,
+                final String description) {
+            this.header = header;
+            this.themeId = themeId;
+            this.label = label;
+            this.description = description;
+        }
+    }
+
+    private final class ThemeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+        private final List<Item> mItems = new ArrayList<>();
         private final InputMethodSubtype mSubtype;
 
         ThemeAdapter(final Context context) {
             final Resources res = context.getResources();
-            mNames = res.getStringArray(R.array.keyboard_theme_names);
-            mThemeIds = res.getIntArray(R.array.keyboard_theme_ids);
+            final String[] names = res.getStringArray(R.array.keyboard_theme_short_names);
+            final int[] themeIds = res.getIntArray(R.array.keyboard_theme_ids);
+            final String[] groups = res.getStringArray(R.array.keyboard_theme_groups);
+            final String[] groupDescs = res.getStringArray(R.array.keyboard_theme_group_descs);
+            String currentGroup = null;
+            for (int index = 0; index < themeIds.length; index++) {
+                if (!groups[index].equals(currentGroup)) {
+                    currentGroup = groups[index];
+                    mItems.add(new Item(true, -1, currentGroup, groupDescs[index]));
+                }
+                mItems.add(new Item(false, themeIds[index], names[index], null));
+            }
             mSubtype = RichInputMethodManager.getInstance().getCurrentSubtype().getRawSubtype();
         }
 
-        @Override
-        public ThemeViewHolder onCreateViewHolder(final ViewGroup parent, final int viewType) {
-            final View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.keyboard_theme_item, parent, false);
-            return new ThemeViewHolder(view);
+        boolean isHeader(final int position) {
+            return mItems.get(position).header;
         }
 
         @Override
-        public void onBindViewHolder(final ThemeViewHolder holder, final int position) {
-            final int themeId = mThemeIds[position];
-            holder.bind(themeId, mNames[position], mSubtype, themeId == mSelectedThemeId);
-            holder.itemView.setOnClickListener(v -> selectTheme(themeId));
+        public int getItemViewType(final int position) {
+            return mItems.get(position).header ? VIEW_TYPE_HEADER : VIEW_TYPE_THEME;
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(final ViewGroup parent,
+                final int viewType) {
+            final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            if (viewType == VIEW_TYPE_HEADER) {
+                return new HeaderViewHolder(
+                        inflater.inflate(R.layout.keyboard_theme_group_header, parent, false));
+            }
+            return new ThemeViewHolder(
+                    inflater.inflate(R.layout.keyboard_theme_item, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
+            final Item item = mItems.get(position);
+            if (item.header) {
+                ((HeaderViewHolder) holder).bind(item.label, item.description);
+                return;
+            }
+            final ThemeViewHolder themeHolder = (ThemeViewHolder) holder;
+            themeHolder.bind(item.themeId, item.label, mSubtype, item.themeId == mSelectedThemeId);
+            themeHolder.itemView.setOnClickListener(v -> selectTheme(item.themeId));
         }
 
         @Override
         public int getItemCount() {
-            return mThemeIds.length;
+            return mItems.size();
         }
 
         private void selectTheme(final int themeId) {
@@ -135,9 +192,27 @@ public final class ThemeSettingsFragment extends Fragment {
             mSelectedThemeId = themeId;
             KeyboardTheme.saveKeyboardThemeId(themeId,
                     PreferenceManagerCompat.getDeviceSharedPreferences(requireContext()));
-            for (int index = 0; index < mThemeIds.length; index++) {
-                notifyItemChanged(index);
+            for (int index = 0; index < mItems.size(); index++) {
+                if (!mItems.get(index).header) {
+                    notifyItemChanged(index);
+                }
             }
+        }
+    }
+
+    private static final class HeaderViewHolder extends RecyclerView.ViewHolder {
+        private final TextView mTitle;
+        private final TextView mDescription;
+
+        HeaderViewHolder(final View itemView) {
+            super(itemView);
+            mTitle = itemView.findViewById(R.id.theme_group_title);
+            mDescription = itemView.findViewById(R.id.theme_group_desc);
+        }
+
+        void bind(final String label, final String description) {
+            mTitle.setText(label);
+            mDescription.setText(description);
         }
     }
 

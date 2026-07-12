@@ -498,9 +498,9 @@ mobile devices. [CHAR LIMIT=25] -->
     <!-- Title of the preference settings for switching keyboard theme [CHAR LIMIT=35] -->
     <string name="keyboard_theme">Keyboard theme</string>
     <!-- The keyboard theme name, Holo White. This is marked as translatable="false" because this is a proper name of system-wide UI Theme. -->
-    <string name="keyboard_theme_holo_white" translatable="false">Classic White</string>
-    <!-- The keyboard theme name, Holo Blue. This is marked as translatable="false" because this is a proper name of system-wide UI Theme.  -->
-    <string name="keyboard_theme_holo_blue" translatable="false">Classic Blue</string>
+    <string name="keyboard_theme_holo_white" translatable="false">Holo White</string>
+    <!-- The keyboard theme name, Holo Black. This is marked as translatable="false" because this is a proper name of system-wide UI Theme.  -->
+    <string name="keyboard_theme_holo_blue" translatable="false">Holo Black</string>
     <!-- The keyboard theme name, Material Dark. This is marked as translatable="false" because this is a proper name of system-wide UI Theme.  -->
     <string name="keyboard_theme_material_dark" translatable="false">Modern Dark</string>
     <!-- The keyboard theme name, Material Light. This is marked as translatable="false" because this is a proper name of system-wide UI Theme.  -->
@@ -511,6 +511,14 @@ mobile devices. [CHAR LIMIT=25] -->
     <string name="keyboard_theme_md3_dynamic" translatable="false">Material You (Dynamic)</string>
     <string name="keyboard_theme_md3_light" translatable="false">Material 3 Light</string>
     <string name="keyboard_theme_md3_dark" translatable="false">Material 3 Dark</string>
+    <!-- Theme family headings on the theme picker. Proper names, so translatable="false". -->
+    <string name="keyboard_theme_group_material" translatable="false">Material</string>
+    <string name="keyboard_theme_group_modern" translatable="false">Modern</string>
+    <string name="keyboard_theme_group_classic" translatable="false">Classic</string>
+    <!-- One-line descriptions shown under each theme family heading. -->
+    <string name="keyboard_theme_group_material_desc">Material 3 / Material You</string>
+    <string name="keyboard_theme_group_modern_desc">The clean, flat family</string>
+    <string name="keyboard_theme_group_classic_desc">The original Holo looks</string>
     <!-- Title of the settings for keypress vibration duration [CHAR LIMIT=35] -->
     <string name="prefs_keypress_vibration_duration_settings">Keypress vibration duration</string>
     <!-- Title of the settings for keypress sound volume [CHAR LIMIT=35] -->
