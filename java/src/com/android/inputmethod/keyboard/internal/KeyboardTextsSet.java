@@ -36,10 +36,17 @@ public final class KeyboardTextsSet {
     private static final char BACKSLASH = Constants.CODE_BACKSLASH;
     private static final int MAX_REFERENCE_INDIRECTION = 10;
 
+    private static final String KEYSPEC_SYMBOLS_PREFIX = "keyspec_symbols_";
+    private static final String ADDITIONAL_MOREKEYS_SYMBOLS_PREFIX =
+            "additional_morekeys_symbols_";
+    private static final String SWITCH_TO_SYMBOL_KEY_LABEL = "keylabel_to_symbol";
+
     private Resources mResources;
     private Locale mResourceLocale;
     private String mResourcePackageName;
     private String[] mTextsTable;
+    private String[] mNumberDigits;
+    private String[] mNumberMoreKeys;
 
     public void setLocale(final Locale locale, final Context context) {
         final Resources res = context.getResources();
@@ -59,7 +66,38 @@ public final class KeyboardTextsSet {
         mTextsTable = KeyboardTextsTable.getTextsTable(locale);
     }
 
+    /** Overrides what the number keyspecs and their long-press digits resolve to. */
+    public void setNumberDigits(final String[] digits, final String[] moreKeys) {
+        mNumberDigits = digits;
+        mNumberMoreKeys = moreKeys;
+    }
+
+    private static int digitIndex(final String name, final String prefix) {
+        if (name.length() != prefix.length() + 1 || !name.startsWith(prefix)) {
+            return -1;
+        }
+        final char digit = name.charAt(prefix.length());
+        if (digit == '0') {
+            return 9;
+        }
+        return (digit >= '1' && digit <= '9') ? digit - '1' : -1;
+    }
+
     public String getText(final String name) {
+        if (mNumberDigits != null) {
+            int index = digitIndex(name, KEYSPEC_SYMBOLS_PREFIX);
+            if (index >= 0) {
+                return mNumberDigits[index];
+            }
+            index = digitIndex(name, ADDITIONAL_MOREKEYS_SYMBOLS_PREFIX);
+            if (index >= 0) {
+                return mNumberMoreKeys[index];
+            }
+            if (SWITCH_TO_SYMBOL_KEY_LABEL.equals(name)) {
+                return "1".equals(mNumberMoreKeys[0]) ? "?123"
+                        : mNumberMoreKeys[0] + mNumberMoreKeys[1] + mNumberMoreKeys[2];
+            }
+        }
         return KeyboardTextsTable.getText(name, mTextsTable);
     }
 

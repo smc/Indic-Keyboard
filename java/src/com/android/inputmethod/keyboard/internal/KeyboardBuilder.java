@@ -282,6 +282,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             params.mThemeId = keyboardAttr.getInt(R.styleable.Keyboard_themeId, 0);
             params.mIconsSet.loadIcons(keyboardAttr);
             params.mTextsSet.setLocale(params.mId.getLocale(), mContext);
+            NativeNumerals.apply(mContext, params.mId.getLocale(), params.mTextsSet,
+                    params.mId.mElementId);
 
             final int resourceId = keyboardAttr.getResourceId(
                     R.styleable.Keyboard_touchPositionCorrectionData, 0);

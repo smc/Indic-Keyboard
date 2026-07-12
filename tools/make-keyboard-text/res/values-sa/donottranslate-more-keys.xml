@@ -20,4 +20,24 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- U+0915 U+0916 U+0917: Devanagari letters ka, kha, ga (Sanskrit) -->
     <string name="keylabel_to_alpha">&#x0915;&#x0916;&#x0917;</string>
+    <!-- U+0967: "१" DEVANAGARI DIGIT ONE -->
+    <string name="additional_morekeys_symbols_1">&#x0967;</string>
+    <!-- U+0968: "२" DEVANAGARI DIGIT TWO -->
+    <string name="additional_morekeys_symbols_2">&#x0968;</string>
+    <!-- U+0969: "३" DEVANAGARI DIGIT THREE -->
+    <string name="additional_morekeys_symbols_3">&#x0969;</string>
+    <!-- U+096A: "४" DEVANAGARI DIGIT FOUR -->
+    <string name="additional_morekeys_symbols_4">&#x096A;</string>
+    <!-- U+096B: "५" DEVANAGARI DIGIT FIVE -->
+    <string name="additional_morekeys_symbols_5">&#x096B;</string>
+    <!-- U+096C: "६" DEVANAGARI DIGIT SIX -->
+    <string name="additional_morekeys_symbols_6">&#x096C;</string>
+    <!-- U+096D: "७" DEVANAGARI DIGIT SEVEN -->
+    <string name="additional_morekeys_symbols_7">&#x096D;</string>
+    <!-- U+096E: "८" DEVANAGARI DIGIT EIGHT -->
+    <string name="additional_morekeys_symbols_8">&#x096E;</string>
+    <!-- U+096F: "९" DEVANAGARI DIGIT NINE -->
+    <string name="additional_morekeys_symbols_9">&#x096F;</string>
+    <!-- U+0966: "०" DEVANAGARI DIGIT ZERO -->
+    <string name="additional_morekeys_symbols_0">&#x0966;</string>
 </resources>

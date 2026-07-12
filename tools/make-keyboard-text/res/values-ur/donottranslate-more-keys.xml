@@ -20,4 +20,24 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- U+0627 U+0628 U+067E: Perso-Arabic letters alif, be, pe (Urdu) -->
     <string name="keylabel_to_alpha">&#x0627;&#x0628;&#x067E;</string>
+    <!-- U+06F1: "۱" EXTENDED ARABIC-INDIC DIGIT ONE -->
+    <string name="additional_morekeys_symbols_1">&#x06F1;</string>
+    <!-- U+06F2: "۲" EXTENDED ARABIC-INDIC DIGIT TWO -->
+    <string name="additional_morekeys_symbols_2">&#x06F2;</string>
+    <!-- U+06F3: "۳" EXTENDED ARABIC-INDIC DIGIT THREE -->
+    <string name="additional_morekeys_symbols_3">&#x06F3;</string>
+    <!-- U+06F4: "۴" EXTENDED ARABIC-INDIC DIGIT FOUR -->
+    <string name="additional_morekeys_symbols_4">&#x06F4;</string>
+    <!-- U+06F5: "۵" EXTENDED ARABIC-INDIC DIGIT FIVE -->
+    <string name="additional_morekeys_symbols_5">&#x06F5;</string>
+    <!-- U+06F6: "۶" EXTENDED ARABIC-INDIC DIGIT SIX -->
+    <string name="additional_morekeys_symbols_6">&#x06F6;</string>
+    <!-- U+06F7: "۷" EXTENDED ARABIC-INDIC DIGIT SEVEN -->
+    <string name="additional_morekeys_symbols_7">&#x06F7;</string>
+    <!-- U+06F8: "۸" EXTENDED ARABIC-INDIC DIGIT EIGHT -->
+    <string name="additional_morekeys_symbols_8">&#x06F8;</string>
+    <!-- U+06F9: "۹" EXTENDED ARABIC-INDIC DIGIT NINE -->
+    <string name="additional_morekeys_symbols_9">&#x06F9;</string>
+    <!-- U+06F0: "۰" EXTENDED ARABIC-INDIC DIGIT ZERO -->
+    <string name="additional_morekeys_symbols_0">&#x06F0;</string>
 </resources>

@@ -84,16 +84,16 @@ public final class KeyboardTextsTable {
     private static final String[] NAMES = {
     //  /* index:histogram */ "name",
         /*   0:24 */ "keylabel_to_alpha",
-        /*   1:13 */ "additional_morekeys_symbols_1",
-        /*   2:13 */ "additional_morekeys_symbols_2",
-        /*   3:13 */ "additional_morekeys_symbols_3",
-        /*   4:13 */ "additional_morekeys_symbols_4",
-        /*   5:13 */ "additional_morekeys_symbols_5",
-        /*   6:13 */ "additional_morekeys_symbols_6",
-        /*   7:13 */ "additional_morekeys_symbols_7",
-        /*   8:13 */ "additional_morekeys_symbols_8",
-        /*   9:13 */ "additional_morekeys_symbols_9",
-        /*  10:13 */ "additional_morekeys_symbols_0",
+        /*   1:23 */ "additional_morekeys_symbols_1",
+        /*   2:23 */ "additional_morekeys_symbols_2",
+        /*   3:23 */ "additional_morekeys_symbols_3",
+        /*   4:23 */ "additional_morekeys_symbols_4",
+        /*   5:23 */ "additional_morekeys_symbols_5",
+        /*   6:23 */ "additional_morekeys_symbols_6",
+        /*   7:23 */ "additional_morekeys_symbols_7",
+        /*   8:23 */ "additional_morekeys_symbols_8",
+        /*   9:23 */ "additional_morekeys_symbols_9",
+        /*  10:23 */ "additional_morekeys_symbols_0",
         /*  11:12 */ "keylabel_to_symbol",
         /*  12:11 */ "keyspec_symbols_1",
         /*  13:11 */ "keyspec_symbols_2",
@@ -475,9 +475,28 @@ public final class KeyboardTextsTable {
     private static final String[] TEXTS_ar = {
         // U+0627 U+0628 U+062A: Arabic letters alif, ba, ta
         /* keylabel_to_alpha */ "\u0627\u0628\u062A",
-        /* additional_morekeys_symbols_1 ~ */
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null,
+        // U+0661: "١" ARABIC-INDIC DIGIT ONE
+        /* additional_morekeys_symbols_1 */ "\u0661",
+        // U+0662: "٢" ARABIC-INDIC DIGIT TWO
+        /* additional_morekeys_symbols_2 */ "\u0662",
+        // U+0663: "٣" ARABIC-INDIC DIGIT THREE
+        /* additional_morekeys_symbols_3 */ "\u0663",
+        // U+0664: "٤" ARABIC-INDIC DIGIT FOUR
+        /* additional_morekeys_symbols_4 */ "\u0664",
+        // U+0665: "٥" ARABIC-INDIC DIGIT FIVE
+        /* additional_morekeys_symbols_5 */ "\u0665",
+        // U+0666: "٦" ARABIC-INDIC DIGIT SIX
+        /* additional_morekeys_symbols_6 */ "\u0666",
+        // U+0667: "٧" ARABIC-INDIC DIGIT SEVEN
+        /* additional_morekeys_symbols_7 */ "\u0667",
+        // U+0668: "٨" ARABIC-INDIC DIGIT EIGHT
+        /* additional_morekeys_symbols_8 */ "\u0668",
+        // U+0669: "٩" ARABIC-INDIC DIGIT NINE
+        /* additional_morekeys_symbols_9 */ "\u0669",
+        // U+0660: "٠" ARABIC-INDIC DIGIT ZERO
+        /* additional_morekeys_symbols_0 */ "\u0660",
+        /* keylabel_to_symbol ~ */
+        null, null, null, null, null, null, null, null, null, null, null, null,
         /* ~ keyspec_currency */
         /* morekeys_period */ "!autoColumnOrder!8,\u0650,\u064E,\u064F,\u0652,\u0651,\u0640,\u061F,\u061B,\u064D,\u064B,\u064C,\u0653,\u0670,\u0656,\u0654,\u0655",
         /* keyspec_comma */ "\u060C",
@@ -744,12 +763,52 @@ public final class KeyboardTextsTable {
     private static final String[] TEXTS_ks = {
         // U+0915 U+0916 U+0917: Devanagari letters ka, kha, ga (Kashmiri InScript)
         /* keylabel_to_alpha */ "\u0915\u0916\u0917",
+        // U+06F1: "۱" EXTENDED ARABIC-INDIC DIGIT ONE
+        /* additional_morekeys_symbols_1 */ "\u06F1",
+        // U+06F2: "۲" EXTENDED ARABIC-INDIC DIGIT TWO
+        /* additional_morekeys_symbols_2 */ "\u06F2",
+        // U+06F3: "۳" EXTENDED ARABIC-INDIC DIGIT THREE
+        /* additional_morekeys_symbols_3 */ "\u06F3",
+        // U+06F4: "۴" EXTENDED ARABIC-INDIC DIGIT FOUR
+        /* additional_morekeys_symbols_4 */ "\u06F4",
+        // U+06F5: "۵" EXTENDED ARABIC-INDIC DIGIT FIVE
+        /* additional_morekeys_symbols_5 */ "\u06F5",
+        // U+06F6: "۶" EXTENDED ARABIC-INDIC DIGIT SIX
+        /* additional_morekeys_symbols_6 */ "\u06F6",
+        // U+06F7: "۷" EXTENDED ARABIC-INDIC DIGIT SEVEN
+        /* additional_morekeys_symbols_7 */ "\u06F7",
+        // U+06F8: "۸" EXTENDED ARABIC-INDIC DIGIT EIGHT
+        /* additional_morekeys_symbols_8 */ "\u06F8",
+        // U+06F9: "۹" EXTENDED ARABIC-INDIC DIGIT NINE
+        /* additional_morekeys_symbols_9 */ "\u06F9",
+        // U+06F0: "۰" EXTENDED ARABIC-INDIC DIGIT ZERO
+        /* additional_morekeys_symbols_0 */ "\u06F0",
     };
 
     /* Locale mai: Maithili */
     private static final String[] TEXTS_mai = {
         // U+0915 U+0916 U+0917: Devanagari letters ka, kha, ga (Maithili)
         /* keylabel_to_alpha */ "\u0915\u0916\u0917",
+        // U+0967: "१" DEVANAGARI DIGIT ONE
+        /* additional_morekeys_symbols_1 */ "\u0967",
+        // U+0968: "२" DEVANAGARI DIGIT TWO
+        /* additional_morekeys_symbols_2 */ "\u0968",
+        // U+0969: "३" DEVANAGARI DIGIT THREE
+        /* additional_morekeys_symbols_3 */ "\u0969",
+        // U+096A: "४" DEVANAGARI DIGIT FOUR
+        /* additional_morekeys_symbols_4 */ "\u096A",
+        // U+096B: "५" DEVANAGARI DIGIT FIVE
+        /* additional_morekeys_symbols_5 */ "\u096B",
+        // U+096C: "६" DEVANAGARI DIGIT SIX
+        /* additional_morekeys_symbols_6 */ "\u096C",
+        // U+096D: "७" DEVANAGARI DIGIT SEVEN
+        /* additional_morekeys_symbols_7 */ "\u096D",
+        // U+096E: "८" DEVANAGARI DIGIT EIGHT
+        /* additional_morekeys_symbols_8 */ "\u096E",
+        // U+096F: "९" DEVANAGARI DIGIT NINE
+        /* additional_morekeys_symbols_9 */ "\u096F",
+        // U+0966: "०" DEVANAGARI DIGIT ZERO
+        /* additional_morekeys_symbols_0 */ "\u0966",
     };
 
     /* Locale ml: Malayalam */
@@ -781,12 +840,52 @@ public final class KeyboardTextsTable {
     private static final String[] TEXTS_mni = {
         // U+0985: Bengali letter A (Manipuri/Meitei in Bengali script)
         /* keylabel_to_alpha */ "\u0985",
+        // U+09E7: "১" BENGALI DIGIT ONE
+        /* additional_morekeys_symbols_1 */ "\u09E7",
+        // U+09E8: "২" BENGALI DIGIT TWO
+        /* additional_morekeys_symbols_2 */ "\u09E8",
+        // U+09E9: "৩" BENGALI DIGIT THREE
+        /* additional_morekeys_symbols_3 */ "\u09E9",
+        // U+09EA: "৪" BENGALI DIGIT FOUR
+        /* additional_morekeys_symbols_4 */ "\u09EA",
+        // U+09EB: "৫" BENGALI DIGIT FIVE
+        /* additional_morekeys_symbols_5 */ "\u09EB",
+        // U+09EC: "৬" BENGALI DIGIT SIX
+        /* additional_morekeys_symbols_6 */ "\u09EC",
+        // U+09ED: "৭" BENGALI DIGIT SEVEN
+        /* additional_morekeys_symbols_7 */ "\u09ED",
+        // U+09EE: "৮" BENGALI DIGIT EIGHT
+        /* additional_morekeys_symbols_8 */ "\u09EE",
+        // U+09EF: "৯" BENGALI DIGIT NINE
+        /* additional_morekeys_symbols_9 */ "\u09EF",
+        // U+09E6: "০" BENGALI DIGIT ZERO
+        /* additional_morekeys_symbols_0 */ "\u09E6",
     };
 
     /* Locale mnw: mnw */
     private static final String[] TEXTS_mnw = {
         // U+1000: Myanmar letter Ka (Mon, written in Myanmar script)
         /* keylabel_to_alpha */ "\u1000",
+        // U+1041: "၁" MYANMAR DIGIT ONE
+        /* additional_morekeys_symbols_1 */ "\u1041",
+        // U+1042: "၂" MYANMAR DIGIT TWO
+        /* additional_morekeys_symbols_2 */ "\u1042",
+        // U+1043: "၃" MYANMAR DIGIT THREE
+        /* additional_morekeys_symbols_3 */ "\u1043",
+        // U+1044: "၄" MYANMAR DIGIT FOUR
+        /* additional_morekeys_symbols_4 */ "\u1044",
+        // U+1045: "၅" MYANMAR DIGIT FIVE
+        /* additional_morekeys_symbols_5 */ "\u1045",
+        // U+1046: "၆" MYANMAR DIGIT SIX
+        /* additional_morekeys_symbols_6 */ "\u1046",
+        // U+1047: "၇" MYANMAR DIGIT SEVEN
+        /* additional_morekeys_symbols_7 */ "\u1047",
+        // U+1048: "၈" MYANMAR DIGIT EIGHT
+        /* additional_morekeys_symbols_8 */ "\u1048",
+        // U+1049: "၉" MYANMAR DIGIT NINE
+        /* additional_morekeys_symbols_9 */ "\u1049",
+        // U+1040: "၀" MYANMAR DIGIT ZERO
+        /* additional_morekeys_symbols_0 */ "\u1040",
     };
 
     /* Locale mr: Marathi */
@@ -967,12 +1066,52 @@ public final class KeyboardTextsTable {
     private static final String[] TEXTS_sa = {
         // U+0915 U+0916 U+0917: Devanagari letters ka, kha, ga (Sanskrit)
         /* keylabel_to_alpha */ "\u0915\u0916\u0917",
+        // U+0967: "१" DEVANAGARI DIGIT ONE
+        /* additional_morekeys_symbols_1 */ "\u0967",
+        // U+0968: "२" DEVANAGARI DIGIT TWO
+        /* additional_morekeys_symbols_2 */ "\u0968",
+        // U+0969: "३" DEVANAGARI DIGIT THREE
+        /* additional_morekeys_symbols_3 */ "\u0969",
+        // U+096A: "४" DEVANAGARI DIGIT FOUR
+        /* additional_morekeys_symbols_4 */ "\u096A",
+        // U+096B: "५" DEVANAGARI DIGIT FIVE
+        /* additional_morekeys_symbols_5 */ "\u096B",
+        // U+096C: "६" DEVANAGARI DIGIT SIX
+        /* additional_morekeys_symbols_6 */ "\u096C",
+        // U+096D: "७" DEVANAGARI DIGIT SEVEN
+        /* additional_morekeys_symbols_7 */ "\u096D",
+        // U+096E: "८" DEVANAGARI DIGIT EIGHT
+        /* additional_morekeys_symbols_8 */ "\u096E",
+        // U+096F: "९" DEVANAGARI DIGIT NINE
+        /* additional_morekeys_symbols_9 */ "\u096F",
+        // U+0966: "०" DEVANAGARI DIGIT ZERO
+        /* additional_morekeys_symbols_0 */ "\u0966",
     };
 
     /* Locale sat: Santali */
     private static final String[] TEXTS_sat = {
         // U+1C5A: Ol Chiki letter LA (Santali)
         /* keylabel_to_alpha */ "\u1C5A",
+        // U+1C51: "᱑" OL CHIKI DIGIT ONE
+        /* additional_morekeys_symbols_1 */ "\u1C51",
+        // U+1C52: "᱒" OL CHIKI DIGIT TWO
+        /* additional_morekeys_symbols_2 */ "\u1C52",
+        // U+1C53: "᱓" OL CHIKI DIGIT THREE
+        /* additional_morekeys_symbols_3 */ "\u1C53",
+        // U+1C54: "᱔" OL CHIKI DIGIT FOUR
+        /* additional_morekeys_symbols_4 */ "\u1C54",
+        // U+1C55: "᱕" OL CHIKI DIGIT FIVE
+        /* additional_morekeys_symbols_5 */ "\u1C55",
+        // U+1C56: "᱖" OL CHIKI DIGIT SIX
+        /* additional_morekeys_symbols_6 */ "\u1C56",
+        // U+1C57: "᱗" OL CHIKI DIGIT SEVEN
+        /* additional_morekeys_symbols_7 */ "\u1C57",
+        // U+1C58: "᱘" OL CHIKI DIGIT EIGHT
+        /* additional_morekeys_symbols_8 */ "\u1C58",
+        // U+1C59: "᱙" OL CHIKI DIGIT NINE
+        /* additional_morekeys_symbols_9 */ "\u1C59",
+        // U+1C50: "᱐" OL CHIKI DIGIT ZERO
+        /* additional_morekeys_symbols_0 */ "\u1C50",
     };
 
     /* Locale si: Sinhala */
@@ -1014,9 +1153,28 @@ public final class KeyboardTextsTable {
         // U+0BAE/U+0BBF: "மி" TAMIL LETTER MA/TAMIL VOWEL SIGN I
         // U+0BB4/U+0BCD: "ழ்" TAMIL LETTER LLLA/TAMIL SIGN VIRAMA
         /* keylabel_to_alpha */ "\u0BA4\u0BAE\u0BBF\u0BB4\u0BCD",
-        /* additional_morekeys_symbols_1 ~ */
-        null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null,
+        // U+0BE7: "௧" TAMIL DIGIT ONE
+        /* additional_morekeys_symbols_1 */ "\u0BE7",
+        // U+0BE8: "௨" TAMIL DIGIT TWO
+        /* additional_morekeys_symbols_2 */ "\u0BE8",
+        // U+0BE9: "௩" TAMIL DIGIT THREE
+        /* additional_morekeys_symbols_3 */ "\u0BE9",
+        // U+0BEA: "௪" TAMIL DIGIT FOUR
+        /* additional_morekeys_symbols_4 */ "\u0BEA",
+        // U+0BEB: "௫" TAMIL DIGIT FIVE
+        /* additional_morekeys_symbols_5 */ "\u0BEB",
+        // U+0BEC: "௬" TAMIL DIGIT SIX
+        /* additional_morekeys_symbols_6 */ "\u0BEC",
+        // U+0BED: "௭" TAMIL DIGIT SEVEN
+        /* additional_morekeys_symbols_7 */ "\u0BED",
+        // U+0BEE: "௮" TAMIL DIGIT EIGHT
+        /* additional_morekeys_symbols_8 */ "\u0BEE",
+        // U+0BEF: "௯" TAMIL DIGIT NINE
+        /* additional_morekeys_symbols_9 */ "\u0BEF",
+        // U+0BE6: "௦" TAMIL DIGIT ZERO
+        /* additional_morekeys_symbols_0 */ "\u0BE6",
+        /* keylabel_to_symbol ~ */
+        null, null, null, null, null, null, null, null, null, null, null,
         /* ~ keyspec_symbols_0 */
         // U+0DBB/U+0DD4: "රු" SINHALA LETTER RAYANNA/SINHALA VOWEL SIGN KETTI PAA-PILLA
         /* keyspec_currency */ "\u0DBB\u0DD4",
@@ -1029,6 +1187,26 @@ public final class KeyboardTextsTable {
         // U+0BAE/U+0BBF: "மி" TAMIL LETTER MA/TAMIL VOWEL SIGN I
         // U+0BB4/U+0BCD: "ழ்" TAMIL LETTER LLLA/TAMIL SIGN VIRAMA
         /* keylabel_to_alpha */ "\u0BA4\u0BAE\u0BBF\u0BB4\u0BCD",
+        // U+0BE7: "௧" TAMIL DIGIT ONE
+        /* additional_morekeys_symbols_1 */ "\u0BE7",
+        // U+0BE8: "௨" TAMIL DIGIT TWO
+        /* additional_morekeys_symbols_2 */ "\u0BE8",
+        // U+0BE9: "௩" TAMIL DIGIT THREE
+        /* additional_morekeys_symbols_3 */ "\u0BE9",
+        // U+0BEA: "௪" TAMIL DIGIT FOUR
+        /* additional_morekeys_symbols_4 */ "\u0BEA",
+        // U+0BEB: "௫" TAMIL DIGIT FIVE
+        /* additional_morekeys_symbols_5 */ "\u0BEB",
+        // U+0BEC: "௬" TAMIL DIGIT SIX
+        /* additional_morekeys_symbols_6 */ "\u0BEC",
+        // U+0BED: "௭" TAMIL DIGIT SEVEN
+        /* additional_morekeys_symbols_7 */ "\u0BED",
+        // U+0BEE: "௮" TAMIL DIGIT EIGHT
+        /* additional_morekeys_symbols_8 */ "\u0BEE",
+        // U+0BEF: "௯" TAMIL DIGIT NINE
+        /* additional_morekeys_symbols_9 */ "\u0BEF",
+        // U+0BE6: "௦" TAMIL DIGIT ZERO
+        /* additional_morekeys_symbols_0 */ "\u0BE6",
     };
 
     /* Locale te: Telugu */
@@ -1061,6 +1239,26 @@ public final class KeyboardTextsTable {
     private static final String[] TEXTS_ur = {
         // U+0627 U+0628 U+067E: Perso-Arabic letters alif, be, pe (Urdu)
         /* keylabel_to_alpha */ "\u0627\u0628\u067E",
+        // U+06F1: "۱" EXTENDED ARABIC-INDIC DIGIT ONE
+        /* additional_morekeys_symbols_1 */ "\u06F1",
+        // U+06F2: "۲" EXTENDED ARABIC-INDIC DIGIT TWO
+        /* additional_morekeys_symbols_2 */ "\u06F2",
+        // U+06F3: "۳" EXTENDED ARABIC-INDIC DIGIT THREE
+        /* additional_morekeys_symbols_3 */ "\u06F3",
+        // U+06F4: "۴" EXTENDED ARABIC-INDIC DIGIT FOUR
+        /* additional_morekeys_symbols_4 */ "\u06F4",
+        // U+06F5: "۵" EXTENDED ARABIC-INDIC DIGIT FIVE
+        /* additional_morekeys_symbols_5 */ "\u06F5",
+        // U+06F6: "۶" EXTENDED ARABIC-INDIC DIGIT SIX
+        /* additional_morekeys_symbols_6 */ "\u06F6",
+        // U+06F7: "۷" EXTENDED ARABIC-INDIC DIGIT SEVEN
+        /* additional_morekeys_symbols_7 */ "\u06F7",
+        // U+06F8: "۸" EXTENDED ARABIC-INDIC DIGIT EIGHT
+        /* additional_morekeys_symbols_8 */ "\u06F8",
+        // U+06F9: "۹" EXTENDED ARABIC-INDIC DIGIT NINE
+        /* additional_morekeys_symbols_9 */ "\u06F9",
+        // U+06F0: "۰" EXTENDED ARABIC-INDIC DIGIT ZERO
+        /* additional_morekeys_symbols_0 */ "\u06F0",
     };
 
     /* Locale zz: Alphabet */
@@ -1192,7 +1390,7 @@ public final class KeyboardTextsTable {
     private static final Object[] LOCALES_AND_TEXTS = {
     // "locale", TEXT_ARRAY,  /* numberOfNonNullText/lengthOf_TEXT_ARRAY localeName */
         "DEFAULT", TEXTS_DEFAULT, /* 177/177 DEFAULT */
-        "ar"     , TEXTS_ar,    /*   3/ 25 Arabic */
+        "ar"     , TEXTS_ar,    /*  13/ 25 Arabic */
         "as_IN"  , TEXTS_as_IN, /*  25/ 49 Assamese (India) */
         "bn_IN"  , TEXTS_bn_IN, /*  22/ 22 Bangla (India) */
         "en"     , TEXTS_en,    /*   8/ 36 English */
@@ -1200,24 +1398,24 @@ public final class KeyboardTextsTable {
         "hi"     , TEXTS_hi,    /*  27/ 28 Hindi */
         "hi_ZZ"  , TEXTS_hi_ZZ, /*   9/ 57 Hindi (Unknown Region) */
         "kn"     , TEXTS_kn,    /*  22/ 22 Kannada */
-        "ks"     , TEXTS_ks,    /*   1/  1 Kashmiri */
-        "mai"    , TEXTS_mai,   /*   1/  1 Maithili */
+        "ks"     , TEXTS_ks,    /*  11/ 11 Kashmiri */
+        "mai"    , TEXTS_mai,   /*  11/ 11 Maithili */
         "ml"     , TEXTS_ml,    /*  11/ 11 Malayalam */
-        "mni"    , TEXTS_mni,   /*   1/  1 Manipuri */
-        "mnw"    , TEXTS_mnw,   /*   1/  1 mnw */
+        "mni"    , TEXTS_mni,   /*  11/ 11 Manipuri */
+        "mnw"    , TEXTS_mnw,   /*  11/ 11 mnw */
         "mr"     , TEXTS_mr,    /*  23/ 23 Marathi */
         "my"     , TEXTS_my,    /*  22/ 22 Burmese */
         "ne"     , TEXTS_ne,    /*  27/ 28 Nepali */
         "or_IN"  , TEXTS_or_IN, /*  23/ 25 Odia (India) */
         "pa_IN"  , TEXTS_pa_IN, /*  22/ 22 Punjabi (India) */
-        "sa"     , TEXTS_sa,    /*   1/  1 Sanskrit */
-        "sat"    , TEXTS_sat,   /*   1/  1 Santali */
+        "sa"     , TEXTS_sa,    /*  11/ 11 Sanskrit */
+        "sat"    , TEXTS_sat,   /*  11/ 11 Santali */
         "si"     , TEXTS_si,    /*   1/  1 Sinhala */
         "ta_IN"  , TEXTS_ta_IN, /*  12/ 12 Tamil (India) */
-        "ta_LK"  , TEXTS_ta_LK, /*   2/ 23 Tamil (Sri Lanka) */
-        "ta_SG"  , TEXTS_ta_SG, /*   1/  1 Tamil (Singapore) */
+        "ta_LK"  , TEXTS_ta_LK, /*  12/ 23 Tamil (Sri Lanka) */
+        "ta_SG"  , TEXTS_ta_SG, /*  11/ 11 Tamil (Singapore) */
         "te"     , TEXTS_te,    /*  22/ 22 Telugu */
-        "ur"     , TEXTS_ur,    /*   1/  1 Urdu */
+        "ur"     , TEXTS_ur,    /*  11/ 11 Urdu */
         "zz"     , TEXTS_zz,    /*  19/ 47 Alphabet */
     };
 

@@ -25,4 +25,24 @@
     <string name="keylabel_to_alpha">&#x0BA4;&#x0BAE;&#x0BBF;&#x0BB4;&#x0BCD;</string>
     <!-- U+0DBB/U+0DD4: "රු" SINHALA LETTER RAYANNA/SINHALA VOWEL SIGN KETTI PAA-PILLA -->
     <string name="keyspec_currency">&#x0DBB;&#x0DD4;</string>
+    <!-- U+0BE7: "௧" TAMIL DIGIT ONE -->
+    <string name="additional_morekeys_symbols_1">&#x0BE7;</string>
+    <!-- U+0BE8: "௨" TAMIL DIGIT TWO -->
+    <string name="additional_morekeys_symbols_2">&#x0BE8;</string>
+    <!-- U+0BE9: "௩" TAMIL DIGIT THREE -->
+    <string name="additional_morekeys_symbols_3">&#x0BE9;</string>
+    <!-- U+0BEA: "௪" TAMIL DIGIT FOUR -->
+    <string name="additional_morekeys_symbols_4">&#x0BEA;</string>
+    <!-- U+0BEB: "௫" TAMIL DIGIT FIVE -->
+    <string name="additional_morekeys_symbols_5">&#x0BEB;</string>
+    <!-- U+0BEC: "௬" TAMIL DIGIT SIX -->
+    <string name="additional_morekeys_symbols_6">&#x0BEC;</string>
+    <!-- U+0BED: "௭" TAMIL DIGIT SEVEN -->
+    <string name="additional_morekeys_symbols_7">&#x0BED;</string>
+    <!-- U+0BEE: "௮" TAMIL DIGIT EIGHT -->
+    <string name="additional_morekeys_symbols_8">&#x0BEE;</string>
+    <!-- U+0BEF: "௯" TAMIL DIGIT NINE -->
+    <string name="additional_morekeys_symbols_9">&#x0BEF;</string>
+    <!-- U+0BE6: "௦" TAMIL DIGIT ZERO -->
+    <string name="additional_morekeys_symbols_0">&#x0BE6;</string>
 </resources>

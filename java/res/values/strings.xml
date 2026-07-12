@@ -137,6 +137,12 @@
     <string name="learned_words_search_hint">Search words</string>
     <!-- Shown on the learned words screen when there is nothing to list [CHAR LIMIT=65] -->
     <string name="learned_words_empty">No learned words yet</string>
+    <!-- Section header on the language details page for numeral options [CHAR LIMIT=33] -->
+    <string name="language_section_numbers">Numbers</string>
+    <!-- Option to use the language\'s own numerals on the number row [CHAR LIMIT=40] -->
+    <string name="native_numerals">Use local numerals</string>
+    <!-- Summary of the local numerals option; %1$s is a sample of the digits [CHAR LIMIT=100] -->
+    <string name="native_numerals_summary">%1$s… on the number row and 1 2 3 on the symbols keyboard; when off, the other way around</string>
     <!-- Button in the clipboard panel that turns the feature off [CHAR LIMIT=33] -->
     <string name="clipboard_turn_off">Turn off</string>
     <!-- Accessibility description for the clipboard suggestion chip [CHAR LIMIT=65] -->

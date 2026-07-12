@@ -27,6 +27,8 @@ import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreferenceCompat;
 
+import com.android.inputmethod.keyboard.KeyboardLayoutSet;
+import com.android.inputmethod.keyboard.internal.NativeNumerals;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.common.LocaleUtils;
@@ -141,8 +143,41 @@ public final class LanguageLayoutSettingsFragment extends SubScreenFragment
             layoutsCategory.addPreference(pref);
         }
 
+        addNumeralsSection(context, screen, target);
+
         mPack = findPack(mPackManager.cachedPacks());
         bindPack();
+    }
+
+    private void addNumeralsSection(final Context context, final PreferenceScreen screen,
+            final Language target) {
+        final Locale locale = LocaleUtils.constructLocaleFromString(target.mLocale);
+        final String[] digits = NativeNumerals.nativeDigits(locale);
+        if (digits == null) {
+            return;
+        }
+        final PreferenceCategory category = new PreferenceCategory(context);
+        category.setTitle(R.string.language_section_numbers);
+        category.setIconSpaceReserved(false);
+        screen.addPreference(category);
+
+        final SwitchPreferenceCompat pref = new SwitchPreferenceCompat(context);
+        pref.setWidgetLayoutResource(R.layout.preference_material_switch);
+        pref.setPersistent(false);
+        pref.setIconSpaceReserved(false);
+        pref.setTitle(R.string.native_numerals);
+        pref.setSummary(getString(R.string.native_numerals_summary,
+                digits[0] + " " + digits[1] + " " + digits[2]));
+        pref.setChecked(NativeNumerals.readUseNative(getSharedPreferences(), locale));
+        pref.setOnPreferenceChangeListener((preference, newValue) -> {
+            getSharedPreferences().edit()
+                    .putBoolean(NativeNumerals.prefKey(locale.getLanguage()),
+                            (Boolean) newValue)
+                    .apply();
+            KeyboardLayoutSet.onNumeralPreferenceChanged();
+            return true;
+        });
+        category.addPreference(pref);
     }
 
     private void addCompanionLanguageSection(final Context context,

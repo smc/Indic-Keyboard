@@ -146,6 +146,10 @@ public final class KeyboardLayoutSet {
         clearKeyboardCache();
     }
 
+    public static void onNumeralPreferenceChanged() {
+        clearKeyboardCache();
+    }
+
     private static void clearKeyboardCache() {
         sKeyboardCache.clear();
         sUniqueKeysCache.clear();

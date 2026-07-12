@@ -24,4 +24,24 @@
     <!-- U+0627 U+0628 U+062A: Arabic letters alif, ba, ta -->
     <string name="keylabel_to_alpha">&#x0627;&#x0628;&#x062A;</string>
 
+    <!-- U+0661: "١" ARABIC-INDIC DIGIT ONE -->
+    <string name="additional_morekeys_symbols_1">&#x0661;</string>
+    <!-- U+0662: "٢" ARABIC-INDIC DIGIT TWO -->
+    <string name="additional_morekeys_symbols_2">&#x0662;</string>
+    <!-- U+0663: "٣" ARABIC-INDIC DIGIT THREE -->
+    <string name="additional_morekeys_symbols_3">&#x0663;</string>
+    <!-- U+0664: "٤" ARABIC-INDIC DIGIT FOUR -->
+    <string name="additional_morekeys_symbols_4">&#x0664;</string>
+    <!-- U+0665: "٥" ARABIC-INDIC DIGIT FIVE -->
+    <string name="additional_morekeys_symbols_5">&#x0665;</string>
+    <!-- U+0666: "٦" ARABIC-INDIC DIGIT SIX -->
+    <string name="additional_morekeys_symbols_6">&#x0666;</string>
+    <!-- U+0667: "٧" ARABIC-INDIC DIGIT SEVEN -->
+    <string name="additional_morekeys_symbols_7">&#x0667;</string>
+    <!-- U+0668: "٨" ARABIC-INDIC DIGIT EIGHT -->
+    <string name="additional_morekeys_symbols_8">&#x0668;</string>
+    <!-- U+0669: "٩" ARABIC-INDIC DIGIT NINE -->
+    <string name="additional_morekeys_symbols_9">&#x0669;</string>
+    <!-- U+0660: "٠" ARABIC-INDIC DIGIT ZERO -->
+    <string name="additional_morekeys_symbols_0">&#x0660;</string>
 </resources>

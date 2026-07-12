@@ -20,4 +20,24 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- U+1000: Myanmar letter Ka (Mon, written in Myanmar script) -->
     <string name="keylabel_to_alpha">&#x1000;</string>
+    <!-- U+1041: "၁" MYANMAR DIGIT ONE -->
+    <string name="additional_morekeys_symbols_1">&#x1041;</string>
+    <!-- U+1042: "၂" MYANMAR DIGIT TWO -->
+    <string name="additional_morekeys_symbols_2">&#x1042;</string>
+    <!-- U+1043: "၃" MYANMAR DIGIT THREE -->
+    <string name="additional_morekeys_symbols_3">&#x1043;</string>
+    <!-- U+1044: "၄" MYANMAR DIGIT FOUR -->
+    <string name="additional_morekeys_symbols_4">&#x1044;</string>
+    <!-- U+1045: "၅" MYANMAR DIGIT FIVE -->
+    <string name="additional_morekeys_symbols_5">&#x1045;</string>
+    <!-- U+1046: "၆" MYANMAR DIGIT SIX -->
+    <string name="additional_morekeys_symbols_6">&#x1046;</string>
+    <!-- U+1047: "၇" MYANMAR DIGIT SEVEN -->
+    <string name="additional_morekeys_symbols_7">&#x1047;</string>
+    <!-- U+1048: "၈" MYANMAR DIGIT EIGHT -->
+    <string name="additional_morekeys_symbols_8">&#x1048;</string>
+    <!-- U+1049: "၉" MYANMAR DIGIT NINE -->
+    <string name="additional_morekeys_symbols_9">&#x1049;</string>
+    <!-- U+1040: "၀" MYANMAR DIGIT ZERO -->
+    <string name="additional_morekeys_symbols_0">&#x1040;</string>
 </resources>

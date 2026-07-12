@@ -20,4 +20,24 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- U+0985: Bengali letter A (Manipuri/Meitei in Bengali script) -->
     <string name="keylabel_to_alpha">&#x0985;</string>
+    <!-- U+09E7: "১" BENGALI DIGIT ONE -->
+    <string name="additional_morekeys_symbols_1">&#x09E7;</string>
+    <!-- U+09E8: "২" BENGALI DIGIT TWO -->
+    <string name="additional_morekeys_symbols_2">&#x09E8;</string>
+    <!-- U+09E9: "৩" BENGALI DIGIT THREE -->
+    <string name="additional_morekeys_symbols_3">&#x09E9;</string>
+    <!-- U+09EA: "৪" BENGALI DIGIT FOUR -->
+    <string name="additional_morekeys_symbols_4">&#x09EA;</string>
+    <!-- U+09EB: "৫" BENGALI DIGIT FIVE -->
+    <string name="additional_morekeys_symbols_5">&#x09EB;</string>
+    <!-- U+09EC: "৬" BENGALI DIGIT SIX -->
+    <string name="additional_morekeys_symbols_6">&#x09EC;</string>
+    <!-- U+09ED: "৭" BENGALI DIGIT SEVEN -->
+    <string name="additional_morekeys_symbols_7">&#x09ED;</string>
+    <!-- U+09EE: "৮" BENGALI DIGIT EIGHT -->
+    <string name="additional_morekeys_symbols_8">&#x09EE;</string>
+    <!-- U+09EF: "৯" BENGALI DIGIT NINE -->
+    <string name="additional_morekeys_symbols_9">&#x09EF;</string>
+    <!-- U+09E6: "০" BENGALI DIGIT ZERO -->
+    <string name="additional_morekeys_symbols_0">&#x09E6;</string>
 </resources>

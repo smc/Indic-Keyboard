@@ -20,4 +20,24 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- U+1C5A: Ol Chiki letter LA (Santali) -->
     <string name="keylabel_to_alpha">&#x1C5A;</string>
+    <!-- U+1C51: "᱑" OL CHIKI DIGIT ONE -->
+    <string name="additional_morekeys_symbols_1">&#x1C51;</string>
+    <!-- U+1C52: "᱒" OL CHIKI DIGIT TWO -->
+    <string name="additional_morekeys_symbols_2">&#x1C52;</string>
+    <!-- U+1C53: "᱓" OL CHIKI DIGIT THREE -->
+    <string name="additional_morekeys_symbols_3">&#x1C53;</string>
+    <!-- U+1C54: "᱔" OL CHIKI DIGIT FOUR -->
+    <string name="additional_morekeys_symbols_4">&#x1C54;</string>
+    <!-- U+1C55: "᱕" OL CHIKI DIGIT FIVE -->
+    <string name="additional_morekeys_symbols_5">&#x1C55;</string>
+    <!-- U+1C56: "᱖" OL CHIKI DIGIT SIX -->
+    <string name="additional_morekeys_symbols_6">&#x1C56;</string>
+    <!-- U+1C57: "᱗" OL CHIKI DIGIT SEVEN -->
+    <string name="additional_morekeys_symbols_7">&#x1C57;</string>
+    <!-- U+1C58: "᱘" OL CHIKI DIGIT EIGHT -->
+    <string name="additional_morekeys_symbols_8">&#x1C58;</string>
+    <!-- U+1C59: "᱙" OL CHIKI DIGIT NINE -->
+    <string name="additional_morekeys_symbols_9">&#x1C59;</string>
+    <!-- U+1C50: "᱐" OL CHIKI DIGIT ZERO -->
+    <string name="additional_morekeys_symbols_0">&#x1C50;</string>
 </resources>
