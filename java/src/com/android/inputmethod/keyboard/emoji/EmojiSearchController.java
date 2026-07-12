@@ -136,6 +136,9 @@ public final class EmojiSearchController {
             return;
         }
         clearState();
+        // enterSearch() hid the suggestion strip; restore it now that we are back on a keyboard
+        // that uses it (clearState only hides the search-specific views).
+        mStripView.setVisibility(View.VISIBLE);
         mKeyboardSwitcher.restoreFromEmojiSearch();
         mKeyboardSwitcher.setAlphabetKeyboard();
         mLatinIME.clearSuggestionStrip();

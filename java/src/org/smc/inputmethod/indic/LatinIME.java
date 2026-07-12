@@ -120,6 +120,7 @@ import com.android.inputmethod.latin.utils.IntentUtils;
 import com.android.inputmethod.latin.utils.JniUtils;
 import com.android.inputmethod.latin.utils.KeyboardLanguages;
 import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
+import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.StatsUtilsManager;
@@ -993,6 +994,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         mEmojiSearchBar = view.findViewById(R.id.emoji_search_bar);
         mEmojiSuggestionStrip = view.findViewById(R.id.emoji_suggestion_strip);
+        if (mEmojiSearchBar != null) {
+            // Keep the search bar within the same content-width cap + centering gutters as the
+            // keyboard and suggestion strip (otherwise it spans full width on tablets).
+            final int gutter = ResourceUtils.getKeyboardGutterWidth(this);
+            mEmojiSearchBar.setPadding(gutter, mEmojiSearchBar.getPaddingTop(),
+                    gutter, mEmojiSearchBar.getPaddingBottom());
+        }
         if (mEmojiSearchBar != null && hasSuggestionStripView()) {
             mEmojiSearchController = new EmojiSearchController(
                     this, mKeyboardSwitcher, mSuggestionStripView, mEmojiSearchBar);

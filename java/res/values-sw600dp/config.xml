@@ -24,8 +24,8 @@
 
     <dimen name="config_keyboard_max_content_width">780dp</dimen>
 
-    <dimen name="config_default_keyboard_height">260dp</dimen>
-    <fraction name="config_max_keyboard_height">46%p</fraction>
+    <dimen name="config_default_keyboard_height">325dp</dimen>
+    <fraction name="config_max_keyboard_height">56%p</fraction>
     <fraction name="config_min_keyboard_height">-35.0%p</fraction>
 
     <dimen name="config_more_keys_keyboard_key_height">63.0dp</dimen>
