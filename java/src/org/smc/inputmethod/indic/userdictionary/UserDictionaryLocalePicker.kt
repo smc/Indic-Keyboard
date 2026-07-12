@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 The Android Open Source Project
+ * Copyright 2026, Jishnu Mohan <jishnu@gmail.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package org.smc.inputmethod.indic.userdictionary;
+package org.smc.inputmethod.indic.userdictionary
 
-import android.app.Fragment;
+import android.app.Fragment
 
-import java.util.Locale;
+import java.util.Locale
 
-// Caveat: This class is basically taken from
+// Caveat: this class is basically taken from
 // packages/apps/Settings/src/com/android/settings/inputmethod/UserDictionaryLocalePicker.java
-// in order to deal with some devices that have issues with the user dictionary handling
+// in order to deal with some devices that have issues with the user dictionary handling.
+@Suppress("DEPRECATION")
+class UserDictionaryLocalePicker : Fragment() {
+    // TODO: implement
 
-public class UserDictionaryLocalePicker extends Fragment {
-    public UserDictionaryLocalePicker() {
-        super();
-        // TODO: implement
-    }
-
-    public interface LocationChangedListener {
-        public void onLocaleSelected(Locale locale);
+    interface LocationChangedListener {
+        fun onLocaleSelected(locale: Locale)
     }
 }
