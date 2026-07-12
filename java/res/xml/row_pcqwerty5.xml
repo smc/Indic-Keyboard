@@ -25,7 +25,7 @@
         latin:keyWidth="7.692%p"
     >
         <Key
-            latin:keyStyle="emojiKeyStyle"
+            latin:keyStyle="functionMenuKeyStyle"
             latin:keyWidth="11.538%p" />
         <switch>
             <case

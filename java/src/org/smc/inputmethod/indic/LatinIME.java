@@ -1678,6 +1678,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final boolean isKeyRepeat) {
         // TODO: this processing does not belong inside LatinIME, the caller should be doing this.
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        if (codePoint == Constants.CODE_FUNCTION_MENU) {
+            if (mainKeyboardView != null) {
+                mainKeyboardView.showFunctionMenu();
+            }
+            return;
+        }
         // x and y include some padding, but everything down the line (especially native
         // code) needs the coordinates in the keyboard frame.
         // TODO: We should reconsider which coordinate system should be used to represent

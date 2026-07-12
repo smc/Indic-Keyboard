@@ -157,6 +157,10 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
     // More keys panel (used by both more keys keyboard and more suggestions view)
     // TODO: Consider extending to support multiple more keys panels
     private MoreKeysPanel mMoreKeysPanel;
+    // A sticky panel is opened by a tap (no pointer holds it), stays up after the finger
+    // lifts, and closes when a touch lands outside it.
+    private boolean mStickyMoreKeysPanel;
+    private boolean mSuppressGestureAfterStickyPanel;
 
     // Gesture floating preview text
     // TODO: Make this parameter customizable by user via settings.
@@ -653,6 +657,21 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
         return PointerTracker.isAnyInDraggingFinger();
     }
 
+    /** Shows the function key's popover as a sticky more-keys panel. */
+    public void showFunctionMenu() {
+        final Keyboard keyboard = getKeyboard();
+        if (keyboard == null || isShowingMoreKeysPanel()) {
+            return;
+        }
+        final Key key = keyboard.getKey(Constants.CODE_FUNCTION_MENU);
+        if (key == null) {
+            return;
+        }
+        final MoreKeysPanel panel = showMoreKeysKeyboard(key,
+                PointerTracker.getPointerTracker(0));
+        mStickyMoreKeysPanel = panel != null;
+    }
+
     @Override
     public void onShowMoreKeysPanel(final MoreKeysPanel panel) {
         locatePreviewPlacerView();
@@ -682,6 +701,7 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
 
     @Override
     public void onDismissMoreKeysPanel() {
+        mStickyMoreKeysPanel = false;
         if (isShowingMoreKeysPanel()) {
             mMoreKeysPanel.removeFromParent();
             mMoreKeysPanel = null;
@@ -719,6 +739,20 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
     }
 
     public boolean processMotionEvent(final MotionEvent event) {
+        if (mSuppressGestureAfterStickyPanel) {
+            final int action = event.getActionMasked();
+            if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_CANCEL) {
+                mSuppressGestureAfterStickyPanel = false;
+            }
+            return true;
+        }
+        if (mStickyMoreKeysPanel && isShowingMoreKeysPanel()) {
+            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                onDismissMoreKeysPanel();
+                mSuppressGestureAfterStickyPanel = true;
+            }
+            return true;
+        }
         final int index = event.getActionIndex();
         final int id = event.getPointerId(index);
         final PointerTracker tracker = PointerTracker.getPointerTracker(id);

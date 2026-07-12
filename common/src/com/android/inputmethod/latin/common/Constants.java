@@ -249,6 +249,7 @@ public final class Constants {
     public static final int CODE_BACK_TO_KEYBOARD = -17;
     public static final int CODE_CLIPBOARD = -18;
     public static final int CODE_ALPHA_FROM_CLIPBOARD = -19;
+    public static final int CODE_FUNCTION_MENU = -20;
     // Code value representing the code is not specified.
     public static final int CODE_UNSPECIFIED = -15;
 
@@ -276,6 +277,7 @@ public final class Constants {
         case CODE_BACK_TO_KEYBOARD: return "backToKeyboard";
         case CODE_CLIPBOARD: return "clipboard";
         case CODE_ALPHA_FROM_CLIPBOARD: return "alphaFromClipboard";
+        case CODE_FUNCTION_MENU: return "functionMenu";
         case CODE_UNSPECIFIED: return "unspec";
         case CODE_TAB: return "tab";
         case CODE_ENTER: return "enter";

@@ -496,6 +496,9 @@ public class MoreKeysKeyboardView extends KeyboardView implements MoreKeysPanel 
         case MotionEvent.ACTION_UP:
         case MotionEvent.ACTION_POINTER_UP:
             onUpEvent(x, y, pointerId, eventTime);
+            // Direct touches only happen on a sticky panel (tracker-driven gestures are
+            // forwarded and dismissed by the tracker), so the release always closes it.
+            dismissMoreKeysPanel();
             break;
         case MotionEvent.ACTION_MOVE:
             onMoveEvent(x, y, pointerId, eventTime);

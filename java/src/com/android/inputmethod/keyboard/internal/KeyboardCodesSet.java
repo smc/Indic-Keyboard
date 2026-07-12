@@ -55,6 +55,7 @@ public final class KeyboardCodesSet {
         "key_alpha_from_emoji",
         "key_clipboard",
         "key_alpha_from_clipboard",
+        "key_function_menu",
         "key_unspecified",
     };
 
@@ -78,6 +79,7 @@ public final class KeyboardCodesSet {
         Constants.CODE_ALPHA_FROM_EMOJI,
         Constants.CODE_CLIPBOARD,
         Constants.CODE_ALPHA_FROM_CLIPBOARD,
+        Constants.CODE_FUNCTION_MENU,
         Constants.CODE_UNSPECIFIED,
     };
 
