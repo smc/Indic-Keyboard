@@ -31,6 +31,7 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardLayoutSet;
+import com.android.inputmethod.keyboard.internal.EmojiSkinTone;
 import com.android.inputmethod.latin.R;
 import org.smc.inputmethod.indic.settings.Settings;
 
@@ -160,6 +161,7 @@ final class EmojiCategory {
 
     private int mCurrentCategoryId = EmojiCategory.ID_UNSPECIFIED;
     private int mCurrentCategoryPageId = 0;
+    private int mSkinTone;
 
     public EmojiCategory(final SharedPreferences prefs, final Resources res,
             final KeyboardLayoutSet layoutSet, final TypedArray emojiPaletteViewAttr) {
@@ -167,6 +169,7 @@ final class EmojiCategory {
         mRes = res;
         mMaxPageKeyCount = res.getInteger(R.integer.config_emoji_keyboard_max_page_key_count);
         mLayoutSet = layoutSet;
+        mSkinTone = EmojiSkinTone.read(prefs);
         for (int i = 0; i < sCategoryName.length; ++i) {
             mCategoryNameToIdMap.put(sCategoryName[i], i);
             mCategoryTabIconId[i] = emojiPaletteViewAttr.getResourceId(
@@ -352,6 +355,23 @@ final class EmojiCategory {
 
     private static final Long getCategoryKeyboardMapKey(final int categoryId, final int id) {
         return (((long) categoryId) << Integer.SIZE) | id;
+    }
+
+    /**
+     * Drops the cached category keyboards when the default skin-tone preference changed since they
+     * were built, so they are rebuilt with the new tone. Returns true when a rebuild is needed.
+     */
+    public boolean refreshSkinToneIfChanged() {
+        final int tone = EmojiSkinTone.read(mPrefs);
+        if (tone == mSkinTone) {
+            return false;
+        }
+        mSkinTone = tone;
+        KeyboardLayoutSet.onEmojiSkinTonePreferenceChanged();
+        synchronized (mCategoryKeyboardMap) {
+            mCategoryKeyboardMap.clear();
+        }
+        return true;
     }
 
     public DynamicGridKeyboard getKeyboard(final int categoryId, final int id) {

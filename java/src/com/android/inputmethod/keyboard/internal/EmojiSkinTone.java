@@ -35,8 +35,10 @@ public final class EmojiSkinTone {
 
     /** The selected tone index (0 = neutral), clamped to a sane range. */
     public static int read(final Context context) {
-        final SharedPreferences prefs =
-                PreferenceManagerCompat.getDeviceSharedPreferences(context);
+        return read(PreferenceManagerCompat.getDeviceSharedPreferences(context));
+    }
+
+    public static int read(final SharedPreferences prefs) {
         try {
             final int tone = Integer.parseInt(prefs.getString(PREF_KEY, "0"));
             return (tone < 0) ? 0 : tone;
