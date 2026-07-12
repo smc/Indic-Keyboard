@@ -24,11 +24,12 @@ import android.content.res.Resources
 import android.text.TextUtils
 import android.util.Log
 
+import androidx.core.content.edit
+
 import com.android.inputmethod.compat.PreferenceManagerCompat
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager
 import com.android.inputmethod.latin.InputAttributes
 import com.android.inputmethod.latin.R
-import com.android.inputmethod.latin.common.StringUtils
 import com.android.inputmethod.latin.utils.AdditionalSubtypeUtils
 import com.android.inputmethod.latin.utils.JsonUtils
 import com.android.inputmethod.latin.utils.ResourceUtils
@@ -93,44 +94,13 @@ class Settings private constructor() : SharedPreferences.OnSharedPreferenceChang
     // TODO: Remove this method and add proxy method to SettingsValues.
     fun getCurrent(): SettingsValues? = mSettingsValues
 
-    fun isInternal(): Boolean = mSettingsValues!!.mIsInternal
-
-    fun writeLastUsedPersonalizationToken(token: ByteArray?) {
-        if (token == null) {
-            mPrefs.edit().remove(PREF_LAST_USED_PERSONALIZATION_TOKEN).apply()
-        } else {
-            val tokenStr = StringUtils.byteArrayToHexString(token)
-            mPrefs.edit().putString(PREF_LAST_USED_PERSONALIZATION_TOKEN, tokenStr).apply()
-        }
-    }
-
-    fun readLastUsedPersonalizationToken(): ByteArray? {
-        val tokenStr = mPrefs.getString(PREF_LAST_USED_PERSONALIZATION_TOKEN, null)
-        return StringUtils.hexStringToByteArray(tokenStr)
-    }
-
-    fun writeLastPersonalizationDictWipedTime(timestamp: Long) {
-        mPrefs.edit().putLong(PREF_LAST_PERSONALIZATION_DICT_WIPED_TIME, timestamp).apply()
-    }
-
-    fun readLastPersonalizationDictGeneratedTime(): Long =
-        mPrefs.getLong(PREF_LAST_PERSONALIZATION_DICT_WIPED_TIME, 0)
-
-    fun writeCorpusHandlesForPersonalization(corpusHandles: Set<String>) {
-        mPrefs.edit().putStringSet(PREF_CORPUS_HANDLES_FOR_PERSONALIZATION, corpusHandles).apply()
-    }
-
-    fun readCorpusHandlesForPersonalization(): Set<String> =
-        mPrefs.getStringSet(PREF_CORPUS_HANDLES_FOR_PERSONALIZATION, emptySet()) ?: emptySet()
-
     private fun upgradeAutocorrectionSettings(prefs: SharedPreferences, res: Resources) {
         val thresholdSetting = prefs.getString(PREF_AUTO_CORRECTION_THRESHOLD_OBSOLETE, null)
-        if (thresholdSetting != null) {
-            val editor = prefs.edit()
-            editor.remove(PREF_AUTO_CORRECTION_THRESHOLD_OBSOLETE)
-            val autoCorrectionOff = res.getString(R.string.auto_correction_threshold_mode_index_off)
-            editor.putBoolean(PREF_AUTO_CORRECTION, thresholdSetting != autoCorrectionOff)
-            editor.commit()
+            ?: return
+        val autoCorrectionOff = res.getString(R.string.auto_correction_threshold_mode_index_off)
+        prefs.edit(commit = true) {
+            remove(PREF_AUTO_CORRECTION_THRESHOLD_OBSOLETE)
+            putBoolean(PREF_AUTO_CORRECTION, thresholdSetting != autoCorrectionOff)
         }
     }
 
@@ -193,13 +163,6 @@ class Settings private constructor() : SharedPreferences.OnSharedPreferenceChang
         const val PREF_SHOW_HINTS = "pref_show_hints"
         const val PREF_GRAY_OUT_SUGGESTIONS_INCOGNITO = "pref_gray_out_suggestions_incognito"
         const val PREF_DID_MD3_MIGRATION = "pref_did_md3_migration"
-
-        private const val PREF_LAST_USED_PERSONALIZATION_TOKEN =
-            "pref_last_used_personalization_token"
-        private const val PREF_LAST_PERSONALIZATION_DICT_WIPED_TIME =
-            "pref_last_used_personalization_dict_wiped_time"
-        private const val PREF_CORPUS_HANDLES_FOR_PERSONALIZATION =
-            "pref_corpus_handles_for_personalization"
 
         const val PREF_RESIZE_KEYBOARD = "pref_resize_keyboard"
         const val PREF_KEYBOARD_HEIGHT_SCALE = "pref_keyboard_height_scale"
@@ -304,10 +267,10 @@ class Settings private constructor() : SharedPreferences.OnSharedPreferenceChang
             if (prefs.contains(PREF_SUPPRESS_LANGUAGE_SWITCH_KEY)) {
                 val suppressLanguageSwitchKey =
                     prefs.getBoolean(PREF_SUPPRESS_LANGUAGE_SWITCH_KEY, false)
-                prefs.edit()
-                    .remove(PREF_SUPPRESS_LANGUAGE_SWITCH_KEY)
-                    .putBoolean(PREF_SHOW_LANGUAGE_SWITCH_KEY, !suppressLanguageSwitchKey)
-                    .apply()
+                prefs.edit {
+                    remove(PREF_SUPPRESS_LANGUAGE_SWITCH_KEY)
+                    putBoolean(PREF_SHOW_LANGUAGE_SWITCH_KEY, !suppressLanguageSwitchKey)
+                }
             }
             return prefs.getBoolean(PREF_SHOW_LANGUAGE_SWITCH_KEY, true)
         }
@@ -330,7 +293,7 @@ class Settings private constructor() : SharedPreferences.OnSharedPreferenceChang
 
         @JvmStatic
         fun writePrefAdditionalSubtypes(prefs: SharedPreferences, prefSubtypes: String) {
-            prefs.edit().putString(PREF_CUSTOM_INPUT_STYLES, prefSubtypes).apply()
+            prefs.edit { putString(PREF_CUSTOM_INPUT_STYLES, prefSubtypes) }
         }
 
         @JvmStatic
@@ -340,27 +303,31 @@ class Settings private constructor() : SharedPreferences.OnSharedPreferenceChang
         @JvmStatic
         fun readEnabledSubtypeKeys(prefs: SharedPreferences): MutableSet<String> {
             val value = prefs.getString(PREF_ENABLED_SUBTYPES, "") ?: ""
-            val keys = HashSet<String>()
-            if (value.isEmpty()) {
-                return keys
-            }
-            keys.addAll(value.split(ENABLED_SUBTYPE_KEY_SEPARATOR))
-            return keys
+            return if (value.isEmpty()) HashSet()
+            else HashSet(value.split(ENABLED_SUBTYPE_KEY_SEPARATOR))
         }
 
         @JvmStatic
         fun writeEnabledSubtypeKeys(prefs: SharedPreferences, keys: Set<String>) {
-            prefs.edit().putString(
-                PREF_ENABLED_SUBTYPES, TextUtils.join(ENABLED_SUBTYPE_KEY_SEPARATOR, keys)
-            ).apply()
+            prefs.edit {
+                putString(PREF_ENABLED_SUBTYPES, TextUtils.join(ENABLED_SUBTYPE_KEY_SEPARATOR, keys))
+            }
         }
 
+        // Reads that fall back to a default when the stored value is the sentinel "undefined".
+        private inline fun SharedPreferences.floatOrDefault(key: String, default: () -> Float): Float =
+            getFloat(key, UNDEFINED_PREFERENCE_VALUE_FLOAT).let {
+                if (it != UNDEFINED_PREFERENCE_VALUE_FLOAT) it else default()
+            }
+
+        private inline fun SharedPreferences.intOrDefault(key: String, default: () -> Int): Int =
+            getInt(key, UNDEFINED_PREFERENCE_VALUE_INT).let {
+                if (it != UNDEFINED_PREFERENCE_VALUE_INT) it else default()
+            }
+
         @JvmStatic
-        fun readKeypressSoundVolume(prefs: SharedPreferences, res: Resources): Float {
-            val volume = prefs.getFloat(PREF_KEYPRESS_SOUND_VOLUME, UNDEFINED_PREFERENCE_VALUE_FLOAT)
-            return if (volume != UNDEFINED_PREFERENCE_VALUE_FLOAT) volume
-            else readDefaultKeypressSoundVolume(res)
-        }
+        fun readKeypressSoundVolume(prefs: SharedPreferences, res: Resources): Float =
+            prefs.floatOrDefault(PREF_KEYPRESS_SOUND_VOLUME) { readDefaultKeypressSoundVolume(res) }
 
         @JvmStatic
         fun readDefaultKeypressSoundVolume(res: Resources): Float = ResourceUtils.getDeviceOverrideValue(
@@ -368,23 +335,18 @@ class Settings private constructor() : SharedPreferences.OnSharedPreferenceChang
         ).toFloat()
 
         @JvmStatic
-        fun readKeyLongpressTimeout(prefs: SharedPreferences, res: Resources): Int {
-            val milliseconds = prefs.getInt(PREF_KEY_LONGPRESS_TIMEOUT, UNDEFINED_PREFERENCE_VALUE_INT)
-            return if (milliseconds != UNDEFINED_PREFERENCE_VALUE_INT) milliseconds
-            else readDefaultKeyLongpressTimeout(res)
-        }
+        fun readKeyLongpressTimeout(prefs: SharedPreferences, res: Resources): Int =
+            prefs.intOrDefault(PREF_KEY_LONGPRESS_TIMEOUT) { readDefaultKeyLongpressTimeout(res) }
 
         @JvmStatic
         fun readDefaultKeyLongpressTimeout(res: Resources): Int =
             res.getInteger(R.integer.config_default_longpress_key_timeout)
 
         @JvmStatic
-        fun readKeypressVibrationDuration(prefs: SharedPreferences, res: Resources): Int {
-            val milliseconds =
-                prefs.getInt(PREF_VIBRATION_DURATION_SETTINGS, UNDEFINED_PREFERENCE_VALUE_INT)
-            return if (milliseconds != UNDEFINED_PREFERENCE_VALUE_INT) milliseconds
-            else readDefaultKeypressVibrationDuration(res)
-        }
+        fun readKeypressVibrationDuration(prefs: SharedPreferences, res: Resources): Int =
+            prefs.intOrDefault(PREF_VIBRATION_DURATION_SETTINGS) {
+                readDefaultKeypressVibrationDuration(res)
+            }
 
         @JvmStatic
         fun readDefaultKeypressVibrationDuration(res: Resources): Int =
@@ -395,24 +357,16 @@ class Settings private constructor() : SharedPreferences.OnSharedPreferenceChang
         @JvmStatic
         fun readKeyPreviewAnimationScale(
             prefs: SharedPreferences, prefKey: String, defaultValue: Float
-        ): Float {
-            val fraction = prefs.getFloat(prefKey, UNDEFINED_PREFERENCE_VALUE_FLOAT)
-            return if (fraction != UNDEFINED_PREFERENCE_VALUE_FLOAT) fraction else defaultValue
-        }
+        ): Float = prefs.floatOrDefault(prefKey) { defaultValue }
 
         @JvmStatic
         fun readKeyPreviewAnimationDuration(
             prefs: SharedPreferences, prefKey: String, defaultValue: Int
-        ): Int {
-            val milliseconds = prefs.getInt(prefKey, UNDEFINED_PREFERENCE_VALUE_INT)
-            return if (milliseconds != UNDEFINED_PREFERENCE_VALUE_INT) milliseconds else defaultValue
-        }
+        ): Int = prefs.intOrDefault(prefKey) { defaultValue }
 
         @JvmStatic
-        fun readKeyboardHeight(prefs: SharedPreferences, defaultValue: Float): Float {
-            val percentage = prefs.getFloat(PREF_KEYBOARD_HEIGHT_SCALE, UNDEFINED_PREFERENCE_VALUE_FLOAT)
-            return if (percentage != UNDEFINED_PREFERENCE_VALUE_FLOAT) percentage else defaultValue
-        }
+        fun readKeyboardHeight(prefs: SharedPreferences, defaultValue: Float): Float =
+            prefs.floatOrDefault(PREF_KEYBOARD_HEIGHT_SCALE) { defaultValue }
 
         @JvmStatic
         fun readSpaceTrackpadEnabled(prefs: SharedPreferences): Boolean =
@@ -431,14 +385,8 @@ class Settings private constructor() : SharedPreferences.OnSharedPreferenceChang
             prefs.getString(PREF_COMPANION_LANGUAGE, "")!!
 
         @JvmStatic
-        fun readClipboardExpiryMillis(prefs: SharedPreferences): Long {
-            val seconds = prefs.getString(PREF_CLIPBOARD_EXPIRY_SECONDS, "3600")
-            return try {
-                seconds!!.toLong() * 1000
-            } catch (e: NumberFormatException) {
-                3600 * 1000L
-            }
-        }
+        fun readClipboardExpiryMillis(prefs: SharedPreferences): Long =
+            (prefs.getString(PREF_CLIPBOARD_EXPIRY_SECONDS, "3600")?.toLongOrNull() ?: 3600L) * 1000
 
         @JvmStatic
         fun readUseFullscreenMode(res: Resources): Boolean =
@@ -472,7 +420,7 @@ class Settings private constructor() : SharedPreferences.OnSharedPreferenceChang
 
         @JvmStatic
         fun writeEmojiRecentKeys(prefs: SharedPreferences, str: String) {
-            prefs.edit().putString(PREF_EMOJI_RECENT_KEYS, str).apply()
+            prefs.edit { putString(PREF_EMOJI_RECENT_KEYS, str) }
         }
 
         @JvmStatic
@@ -497,23 +445,23 @@ class Settings private constructor() : SharedPreferences.OnSharedPreferenceChang
             writeEmojiRecentKeys(prefs, JsonUtils.listToJsonStr(keys))
         }
 
+        private fun emojiCategoryPageKey(categoryId: Int): String =
+            PREF_EMOJI_CATEGORY_LAST_TYPED_ID + categoryId
+
         @JvmStatic
         fun writeLastTypedEmojiCategoryPageId(
             prefs: SharedPreferences, categoryId: Int, categoryPageId: Int
         ) {
-            val key = PREF_EMOJI_CATEGORY_LAST_TYPED_ID + categoryId
-            prefs.edit().putInt(key, categoryPageId).apply()
+            prefs.edit { putInt(emojiCategoryPageKey(categoryId), categoryPageId) }
         }
 
         @JvmStatic
-        fun readLastTypedEmojiCategoryPageId(prefs: SharedPreferences, categoryId: Int): Int {
-            val key = PREF_EMOJI_CATEGORY_LAST_TYPED_ID + categoryId
-            return prefs.getInt(key, 0)
-        }
+        fun readLastTypedEmojiCategoryPageId(prefs: SharedPreferences, categoryId: Int): Int =
+            prefs.getInt(emojiCategoryPageKey(categoryId), 0)
 
         @JvmStatic
         fun writeLastShownEmojiCategoryId(prefs: SharedPreferences, categoryId: Int) {
-            prefs.edit().putInt(PREF_LAST_SHOWN_EMOJI_CATEGORY_ID, categoryId).apply()
+            prefs.edit { putInt(PREF_LAST_SHOWN_EMOJI_CATEGORY_ID, categoryId) }
         }
 
         @JvmStatic
@@ -522,7 +470,7 @@ class Settings private constructor() : SharedPreferences.OnSharedPreferenceChang
 
         @JvmStatic
         fun writeLastShownEmojiCategoryPageId(prefs: SharedPreferences, categoryId: Int) {
-            prefs.edit().putInt(PREF_LAST_SHOWN_EMOJI_CATEGORY_PAGE_ID, categoryId).apply()
+            prefs.edit { putInt(PREF_LAST_SHOWN_EMOJI_CATEGORY_PAGE_ID, categoryId) }
         }
 
         @JvmStatic

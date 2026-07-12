@@ -23,6 +23,8 @@ import android.content.res.Resources
 import android.util.Log
 import android.view.inputmethod.EditorInfo
 
+import androidx.core.content.edit
+
 import com.android.inputmethod.compat.AppWorkaroundsUtils
 import com.android.inputmethod.latin.InputAttributes
 import com.android.inputmethod.latin.R
@@ -31,7 +33,7 @@ import com.android.inputmethod.latin.utils.AsyncResultHolder
 import com.android.inputmethod.latin.utils.ResourceUtils
 import com.android.inputmethod.latin.utils.TargetPackageInfoGetterTask
 
-import java.util.Arrays
+import java.util.Locale
 
 /**
  * When you construct this class you may want to change the current system locale using
@@ -46,7 +48,7 @@ open class SettingsValues(
     @JvmField val mDelayInMillisecondsToUpdateOldSuggestions: Int
     @JvmField val mDoubleSpacePeriodTimeout: Long
     // From configuration:
-    @JvmField val mLocale: java.util.Locale
+    @JvmField val mLocale: Locale
     @JvmField val mHasHardwareKeyboard: Boolean
     @JvmField val mDisplayOrientation: Int
     // From preferences, in the same order as xml/prefs.xml:
@@ -304,51 +306,43 @@ open class SettingsValues(
 
     open fun dump(): String = buildString {
         append("Current settings :")
-        append("\n   mSpacingAndPunctuations = ")
-        append(mSpacingAndPunctuations.dump())
-        append("\n   mDelayInMillisecondsToUpdateOldSuggestions = ")
-        append(mDelayInMillisecondsToUpdateOldSuggestions)
-        append("\n   mAutoCap = ").append(mAutoCap)
-        append("\n   mVibrateOn = ").append(mVibrateOn)
-        append("\n   mSoundOn = ").append(mSoundOn)
-        append("\n   mKeyPreviewPopupOn = ").append(mKeyPreviewPopupOn)
-        append("\n   mShowsVoiceInputKey = ").append(mShowsVoiceInputKey)
-        append("\n   mIncludesOtherImesInLanguageSwitchList = ")
-        append(mIncludesOtherImesInLanguageSwitchList)
-        append("\n   mShowsLanguageSwitchKey = ").append(mShowsLanguageSwitchKey)
-        append("\n   mUseContactsDict = ").append(mUseContactsDict)
-        append("\n   mUsePersonalizedDicts = ").append(mUsePersonalizedDicts)
-        append("\n   mUseDoubleSpacePeriod = ").append(mUseDoubleSpacePeriod)
-        append("\n   mBlockPotentiallyOffensive = ").append(mBlockPotentiallyOffensive)
-        append("\n   mBigramPredictionEnabled = ").append(mBigramPredictionEnabled)
-        append("\n   mGestureInputEnabled = ").append(mGestureInputEnabled)
-        append("\n   mGestureTrailEnabled = ").append(mGestureTrailEnabled)
-        append("\n   mGestureFloatingPreviewTextEnabled = ")
-        append(mGestureFloatingPreviewTextEnabled)
-        append("\n   mSlidingKeyInputPreviewEnabled = ").append(mSlidingKeyInputPreviewEnabled)
-        append("\n   mKeyLongpressTimeout = ").append(mKeyLongpressTimeout)
-        append("\n   mLocale = ").append(mLocale)
-        append("\n   mInputAttributes = ").append(mInputAttributes)
-        append("\n   mKeypressVibrationDuration = ").append(mKeypressVibrationDuration)
-        append("\n   mKeypressSoundVolume = ").append(mKeypressSoundVolume)
-        append("\n   mKeyPreviewPopupDismissDelay = ").append(mKeyPreviewPopupDismissDelay)
-        append("\n   mAutoCorrectEnabled = ").append(mAutoCorrectEnabled)
-        append("\n   mAutoCorrectionThreshold = ").append(mAutoCorrectionThreshold)
-        append("\n   mAutoCorrectionEnabledPerUserSettings = ")
-        append(mAutoCorrectionEnabledPerUserSettings)
-        append("\n   mSuggestionsEnabledPerUserSettings = ")
-        append(mSuggestionsEnabledPerUserSettings)
-        append("\n   mDisplayOrientation = ").append(mDisplayOrientation)
-        append("\n   mAppWorkarounds = ")
-        val awu = mAppWorkarounds.get(null, 0L)
-        append(awu?.toString() ?: "null")
-        append("\n   mIsInternal = ").append(mIsInternal)
-        append("\n   mKeyPreviewShowUpDuration = ").append(mKeyPreviewShowUpDuration)
-        append("\n   mKeyPreviewDismissDuration = ").append(mKeyPreviewDismissDuration)
-        append("\n   mKeyPreviewShowUpStartScaleX = ").append(mKeyPreviewShowUpStartXScale)
-        append("\n   mKeyPreviewShowUpStartScaleY = ").append(mKeyPreviewShowUpStartYScale)
-        append("\n   mKeyPreviewDismissEndScaleX = ").append(mKeyPreviewDismissEndXScale)
-        append("\n   mKeyPreviewDismissEndScaleY = ").append(mKeyPreviewDismissEndYScale)
+        append("\n   mSpacingAndPunctuations = ${mSpacingAndPunctuations.dump()}")
+        append("\n   mDelayInMillisecondsToUpdateOldSuggestions = $mDelayInMillisecondsToUpdateOldSuggestions")
+        append("\n   mAutoCap = $mAutoCap")
+        append("\n   mVibrateOn = $mVibrateOn")
+        append("\n   mSoundOn = $mSoundOn")
+        append("\n   mKeyPreviewPopupOn = $mKeyPreviewPopupOn")
+        append("\n   mShowsVoiceInputKey = $mShowsVoiceInputKey")
+        append("\n   mIncludesOtherImesInLanguageSwitchList = $mIncludesOtherImesInLanguageSwitchList")
+        append("\n   mShowsLanguageSwitchKey = $mShowsLanguageSwitchKey")
+        append("\n   mUseContactsDict = $mUseContactsDict")
+        append("\n   mUsePersonalizedDicts = $mUsePersonalizedDicts")
+        append("\n   mUseDoubleSpacePeriod = $mUseDoubleSpacePeriod")
+        append("\n   mBlockPotentiallyOffensive = $mBlockPotentiallyOffensive")
+        append("\n   mBigramPredictionEnabled = $mBigramPredictionEnabled")
+        append("\n   mGestureInputEnabled = $mGestureInputEnabled")
+        append("\n   mGestureTrailEnabled = $mGestureTrailEnabled")
+        append("\n   mGestureFloatingPreviewTextEnabled = $mGestureFloatingPreviewTextEnabled")
+        append("\n   mSlidingKeyInputPreviewEnabled = $mSlidingKeyInputPreviewEnabled")
+        append("\n   mKeyLongpressTimeout = $mKeyLongpressTimeout")
+        append("\n   mLocale = $mLocale")
+        append("\n   mInputAttributes = $mInputAttributes")
+        append("\n   mKeypressVibrationDuration = $mKeypressVibrationDuration")
+        append("\n   mKeypressSoundVolume = $mKeypressSoundVolume")
+        append("\n   mKeyPreviewPopupDismissDelay = $mKeyPreviewPopupDismissDelay")
+        append("\n   mAutoCorrectEnabled = $mAutoCorrectEnabled")
+        append("\n   mAutoCorrectionThreshold = $mAutoCorrectionThreshold")
+        append("\n   mAutoCorrectionEnabledPerUserSettings = $mAutoCorrectionEnabledPerUserSettings")
+        append("\n   mSuggestionsEnabledPerUserSettings = $mSuggestionsEnabledPerUserSettings")
+        append("\n   mDisplayOrientation = $mDisplayOrientation")
+        append("\n   mAppWorkarounds = ${mAppWorkarounds.get(null, 0L)?.toString() ?: "null"}")
+        append("\n   mIsInternal = $mIsInternal")
+        append("\n   mKeyPreviewShowUpDuration = $mKeyPreviewShowUpDuration")
+        append("\n   mKeyPreviewDismissDuration = $mKeyPreviewDismissDuration")
+        append("\n   mKeyPreviewShowUpStartScaleX = $mKeyPreviewShowUpStartXScale")
+        append("\n   mKeyPreviewShowUpStartScaleY = $mKeyPreviewShowUpStartYScale")
+        append("\n   mKeyPreviewDismissEndScaleX = $mKeyPreviewDismissEndXScale")
+        append("\n   mKeyPreviewDismissEndScaleY = $mKeyPreviewDismissEndYScale")
     }
 
     companion object {
@@ -368,10 +362,10 @@ open class SettingsValues(
             if (prefs.contains(Settings.PREF_SHOW_SUGGESTIONS_SETTING_OBSOLETE)) {
                 val alwaysHide = SUGGESTIONS_VISIBILITY_HIDE_VALUE_OBSOLETE ==
                     prefs.getString(Settings.PREF_SHOW_SUGGESTIONS_SETTING_OBSOLETE, null)
-                prefs.edit()
-                    .remove(Settings.PREF_SHOW_SUGGESTIONS_SETTING_OBSOLETE)
-                    .putBoolean(Settings.PREF_SHOW_SUGGESTIONS, !alwaysHide)
-                    .apply()
+                prefs.edit {
+                    remove(Settings.PREF_SHOW_SUGGESTIONS_SETTING_OBSOLETE)
+                    putBoolean(Settings.PREF_SHOW_SUGGESTIONS, !alwaysHide)
+                }
             }
             return prefs.getBoolean(Settings.PREF_SHOW_SUGGESTIONS, true)
         }
@@ -404,9 +398,9 @@ open class SettingsValues(
                 // Whenever the threshold settings are correct, never come here.
                 Log.w(
                     TAG, "Cannot load auto correction threshold setting." +
-                        " currentAutoCorrectionSetting: " + currentAutoCorrectionSetting +
+                        " currentAutoCorrectionSetting: $currentAutoCorrectionSetting" +
                         ", autoCorrectionThresholdValues: " +
-                        Arrays.toString(autoCorrectionThresholdValues), e
+                        autoCorrectionThresholdValues.contentToString(), e
                 )
                 Float.MAX_VALUE
             }
@@ -421,11 +415,10 @@ open class SettingsValues(
                 val voiceModeMain = res.getString(R.string.voice_mode_main)
                 val voiceMode = prefs.getString(Settings.PREF_VOICE_MODE_OBSOLETE, voiceModeMain)
                 val shouldShowVoiceInputKey = voiceModeMain == voiceMode
-                prefs.edit()
-                    .putBoolean(Settings.PREF_VOICE_INPUT_KEY, shouldShowVoiceInputKey)
-                    // Remove the obsolete preference if it exists.
-                    .remove(Settings.PREF_VOICE_MODE_OBSOLETE)
-                    .apply()
+                prefs.edit {
+                    putBoolean(Settings.PREF_VOICE_INPUT_KEY, shouldShowVoiceInputKey)
+                    remove(Settings.PREF_VOICE_MODE_OBSOLETE)
+                }
             }
             return prefs.getBoolean(Settings.PREF_VOICE_INPUT_KEY, false)
         }
