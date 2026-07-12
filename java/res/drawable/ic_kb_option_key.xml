@@ -1,0 +1,7 @@
+<!-- Material Symbols (Rounded) "keyboard_option_key" - generated from fonts.gstatic.com render, opsz 24 / wght 400 / FILL 0 / GRAD 0 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <path android:fillColor="?attr/md3OnSurfaceVariant"
+        android:pathData="M15.93,19q-0.55,0 -1,-0.26T14.2,18L7.85,7H4Q3.58,7 3.29,6.71Q3,6.43 3,6T3.29,5.29T4,5H7.85q0.55,0 1,0.26T9.58,6l6.35,11H20q0.43,0 0.71,0.29T21,18t-0.29,0.71T20,19H15.93ZM16,7Q15.58,7 15.29,6.71Q15,6.43 15,6T15.29,5.29T16,5h4q0.43,0 0.71,0.29T21,6T20.71,6.71T20,7H16Z"/>
+</vector>

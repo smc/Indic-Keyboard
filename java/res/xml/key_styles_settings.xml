@@ -52,7 +52,7 @@
         >
             <key-style
                 latin:styleName="functionMenuKeyStyle"
-                latin:keySpec="!icon/settings_key|!code/key_function_menu"
+                latin:keySpec="!icon/function_menu_key|!code/key_function_menu"
                 latin:keyLabelFlags="hasPopupHint"
                 latin:moreKeys="!icon/emoji_normal_key|!code/key_emoji,!text/keyspec_clipboard"
                 latin:keyActionFlags="noKeyPreview"
@@ -62,7 +62,7 @@
         <default>
             <key-style
                 latin:styleName="functionMenuKeyStyle"
-                latin:keySpec="!icon/settings_key|!code/key_function_menu"
+                latin:keySpec="!icon/function_menu_key|!code/key_function_menu"
                 latin:keyLabelFlags="hasPopupHint"
                 latin:moreKeys="!icon/emoji_normal_key|!code/key_emoji,!text/keyspec_clipboard,!text/keyspec_settings"
                 latin:keyActionFlags="noKeyPreview"

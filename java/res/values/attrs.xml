@@ -317,6 +317,7 @@
         <attr name="iconImeKey" format="reference" />
         <attr name="iconEmojiActionKey" format="reference" />
         <attr name="iconEmojiNormalKey" format="reference" />
+        <attr name="iconFunctionMenuKey" format="reference" />
         <attr name="iconClipboardKey" format="reference" />
     </declare-styleable>
 
