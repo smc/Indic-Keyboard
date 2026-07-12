@@ -46,7 +46,11 @@ TEST_APP_PKG := org.smc.inputtest
 TEST_APP_APK := $(TEST_APP_DIR)/build/outputs/apk/debug/input-test-app-debug.apk
 TEST_APP_ACT := $(TEST_APP_PKG)/.MainActivity
 
-.PHONY: help build install run emulator emulator-install emulator-run release release-install offline-assets offline-release rename-release uninstall clear-data clean logcat build-native build-native-x86 varnam-native keyboard-text dicttool dictionaries-en device-check test-app-build test-app-install test-app-emulator-install harness harness-corpus harness-run
+# The tablet AVD used for testing tablet UI (a ~10-inch tablet, sw >= 600dp, the tablet layout
+# bucket). Override on the command line if your AVD has a different name: make emulator-tablet TABLET_AVD=...
+TABLET_AVD := Pixel_Tablet
+
+.PHONY: help build install run emulator emulator-tablet emulator-install emulator-run release release-install offline-assets offline-release rename-release uninstall clear-data clean logcat build-native build-native-x86 varnam-native keyboard-text dicttool dictionaries-en device-check test-app-build test-app-install test-app-emulator-install harness harness-corpus harness-run
 
 .DEFAULT_GOAL := help
 
@@ -92,6 +96,9 @@ emulator-run: emulator ## Boot the emulator, install and make Indic Keyboard the
 	$(ADB_BASE) -s emulator-5554 shell ime enable $(PKG)/.LatinIME
 	$(ADB_BASE) -s emulator-5554 shell ime set $(PKG)/.LatinIME
 	@echo "Indic Keyboard is now the active IME. Focus a text field to see it."
+
+emulator-tablet: ## Boot the tablet AVD ($(TABLET_AVD)) on emulator-5554 for tablet UI testing
+	@$(MAKE) emulator AVD=$(TABLET_AVD)
 
 test-app-build: ## Assemble the input-type test app's debug APK
 	cd $(TEST_APP_DIR) && $(GRADLEW) assembleDebug
