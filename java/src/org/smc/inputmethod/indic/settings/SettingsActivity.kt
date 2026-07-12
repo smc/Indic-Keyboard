@@ -17,10 +17,12 @@
 package org.smc.inputmethod.indic.settings
 
 import android.os.Bundle
+import android.view.View
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 
@@ -46,12 +48,27 @@ class SettingsActivity : AppCompatActivity(),
 
         if (savedState == null) {
             val fragmentName = intent.getStringExtra(EXTRA_SHOW_FRAGMENT)
-            val fragment = fragmentName?.let { instantiate(it, null) } ?: SettingsFragment()
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.settings_container, fragment)
-                .commit()
+            if (isTwoPane) {
+                // Master (category list) stays in the left pane; details open in the right pane.
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.settings_list_container, SettingsFragment())
+                    .commit()
+                if (fragmentName != null) {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.settings_container, instantiate(fragmentName, null))
+                        .commit()
+                }
+            } else {
+                val fragment = fragmentName?.let { instantiate(it, null) } ?: SettingsFragment()
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.settings_container, fragment)
+                    .commit()
+            }
         }
     }
+
+    private val isTwoPane: Boolean
+        get() = findViewById<View>(R.id.settings_list_container) != null
 
     private fun instantiate(name: String, args: Bundle?): Fragment {
         val fragment = supportFragmentManager.fragmentFactory.instantiate(classLoader, name)
@@ -73,10 +90,20 @@ class SettingsActivity : AppCompatActivity(),
         caller: PreferenceFragmentCompat, pref: Preference
     ): Boolean {
         val fragment = instantiate(pref.fragment!!, pref.extras)
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.settings_container, fragment)
-            .addToBackStack(null)
-            .commit()
+        // Two-pane: picking a category from the list pane resets the detail; drilling deeper
+        // within a category (caller is a detail fragment) stacks so Back returns one level.
+        val isCategoryPick = isTwoPane && caller is SettingsFragment
+        if (isCategoryPick) {
+            supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.settings_container, fragment)
+                .commit()
+        } else {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.settings_container, fragment)
+                .addToBackStack(null)
+                .commit()
+        }
         supportActionBar?.let { bar -> pref.title?.let { bar.title = it } }
         return true
     }
