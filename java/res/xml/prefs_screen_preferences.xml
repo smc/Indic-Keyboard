@@ -44,12 +44,6 @@
             android:summary="@string/include_other_imes_in_language_switch_list_summary"
             android:defaultValue="false"
             android:persistent="true" />
-        <CheckBoxPreference
-            android:key="pref_show_emoji_switch_key"
-            android:title="@string/show_emoji_key"
-            android:summary="@string/show_emoji_key_summary"
-            android:defaultValue="false"
-            android:persistent="true" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_category_layout">

@@ -52,6 +52,8 @@
     <string name="settings_screen_theme">Theme</string>
     <!-- Settings screen title for clipboard settings [CHAR LIMIT=33] -->
     <string name="settings_screen_clipboard">Clipboard</string>
+    <!-- Settings screen title for emoji settings [CHAR LIMIT=33] -->
+    <string name="settings_screen_emoji">Emoji</string>
 
     <!-- Accessibility description for the suggestion strip's sticky menu key that opens the
          toolbox (settings/clipboard/emoji shortcuts) [CHAR LIMIT=33] -->

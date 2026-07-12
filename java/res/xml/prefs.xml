@@ -44,6 +44,11 @@
         android:icon="@drawable/ic_settings_clipboard"
         android:key="screen_clipboard" />
     <PreferenceScreen
+        android:fragment="org.smc.inputmethod.indic.settings.EmojiSettingsFragment"
+        android:title="@string/settings_screen_emoji"
+        android:icon="@drawable/ic_settings_emoji"
+        android:key="screen_emoji" />
+    <PreferenceScreen
         android:fragment="org.smc.inputmethod.indic.settings.PrivacySettingsFragment"
         android:title="@string/settings_screen_privacy"
         android:icon="@drawable/ic_settings_privacy"
