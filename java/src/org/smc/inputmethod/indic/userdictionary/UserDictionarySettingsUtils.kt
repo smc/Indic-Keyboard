@@ -23,7 +23,6 @@ import com.android.inputmethod.latin.common.LocaleUtils
 
 /** Utilities for the user dictionary settings. */
 object UserDictionarySettingsUtils {
-    @JvmStatic
     fun getLocaleDisplayName(context: Context, localeStr: String?): String {
         if (localeStr.isNullOrEmpty()) {
             // CAVEAT: localeStr should not be null because a null locale stands for the system

@@ -48,37 +48,37 @@ import java.util.Locale
 class UserDictionaryAddWordFragment : Fragment(),
     AdapterView.OnItemSelectedListener, LocationChangedListener {
 
-    private var mContents: UserDictionaryAddWordContents? = null
-    private lateinit var mRootView: View
-    private var mIsDeleting = false
+    private var contents: UserDictionaryAddWordContents? = null
+    private lateinit var rootView: View
+    private var isDeleting = false
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true)
         activity!!.actionBar?.setTitle(R.string.edit_personal_dictionary)
-        // Keep the instance so we remember mContents across configuration changes (eg rotation).
+        // Keep the instance so we remember contents across configuration changes (eg rotation).
         retainInstance = true
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedState: Bundle?
     ): View {
-        mRootView = inflater.inflate(R.layout.user_dictionary_add_word_fullscreen, null)
-        mIsDeleting = false
-        // A non-null mContents is the old value before a configuration change (eg rotation), so we
+        rootView = inflater.inflate(R.layout.user_dictionary_add_word_fullscreen, null)
+        isDeleting = false
+        // A non-null contents is the old value before a configuration change (eg rotation), so we
         // reuse its values. Otherwise read from the arguments.
-        val contents = mContents
-        mContents = if (contents == null) {
-            UserDictionaryAddWordContents(mRootView, arguments!!)
+        val existing = contents
+        contents = if (existing == null) {
+            UserDictionaryAddWordContents(rootView, arguments!!)
         } else {
             // A word may have been added while rotating and we are now editing it, so switch the
             // contents to EDIT mode if it was in INSERT mode by using the copy constructor.
-            UserDictionaryAddWordContents(mRootView, contents /* oldInstanceToBeEdited */)
+            UserDictionaryAddWordContents(rootView, existing /* oldInstanceToBeEdited */)
         }
         activity!!.actionBar?.subtitle = UserDictionarySettingsUtils.getLocaleDisplayName(
-            activity, mContents!!.getCurrentUserDictionaryLocale()
+            activity, contents!!.currentUserDictionaryLocale
         )
-        return mRootView
+        return rootView
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -98,8 +98,8 @@ class UserDictionaryAddWordFragment : Fragment(),
                 return true
             }
             OPTIONS_MENU_DELETE -> {
-                mContents!!.delete(activity!!)
-                mIsDeleting = true
+                contents!!.delete(activity!!)
+                isDeleting = true
                 activity!!.onBackPressed()
                 return true
             }
@@ -114,8 +114,8 @@ class UserDictionaryAddWordFragment : Fragment(),
     }
 
     private fun updateSpinner() {
-        val localesList = mContents!!.getLocalesList(activity!!)
-        val localeSpinner = mRootView.findViewById<Spinner>(R.id.user_dictionary_add_locale)
+        val localesList = contents!!.getLocalesList(activity!!)
+        val localeSpinner = rootView.findViewById<Spinner>(R.id.user_dictionary_add_locale)
         val adapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, localesList)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         localeSpinner.adapter = adapter
@@ -125,29 +125,29 @@ class UserDictionaryAddWordFragment : Fragment(),
     override fun onPause() {
         super.onPause()
         // We are being hidden: commit changes to the user dictionary, unless we were deleting.
-        if (!mIsDeleting) {
-            mContents!!.apply(activity!!, null)
+        if (!isDeleting) {
+            contents!!.apply(activity!!, null)
         }
     }
 
     override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
         val locale = parent.getItemAtPosition(pos) as LocaleRenderer
-        if (locale.isMoreLanguages()) {
+        if (locale.isMoreLanguages) {
             val preferenceActivity = activity as PreferenceActivity
             preferenceActivity.startPreferenceFragment(UserDictionaryLocalePicker(), true)
         } else {
-            mContents!!.updateLocale(locale.getLocaleString())
+            contents!!.updateLocale(locale.localeString)
         }
     }
 
     override fun onNothingSelected(parent: AdapterView<*>) {
         // Not sure we can come here, but if we do, that's the right thing to do.
-        mContents!!.updateLocale(arguments?.getString(UserDictionaryAddWordContents.EXTRA_LOCALE))
+        contents!!.updateLocale(arguments?.getString(UserDictionaryAddWordContents.EXTRA_LOCALE))
     }
 
     // Called by the locale picker
     override fun onLocaleSelected(locale: Locale) {
-        mContents!!.updateLocale(locale.toString())
+        contents!!.updateLocale(locale.toString())
         activity!!.onBackPressed()
     }
 

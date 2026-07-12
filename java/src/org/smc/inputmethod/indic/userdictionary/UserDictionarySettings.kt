@@ -22,7 +22,6 @@ import android.content.Context
 import android.database.Cursor
 import android.os.Bundle
 import android.provider.UserDictionary
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -46,8 +45,8 @@ import java.util.Locale
 @Suppress("DEPRECATION", "OVERRIDE_DEPRECATION")
 class UserDictionarySettings : ListFragment() {
 
-    private var mCursor: Cursor? = null
-    private var mLocale: String? = null
+    private var cursor: Cursor? = null
+    private var locale: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,13 +65,12 @@ class UserDictionarySettings : ListFragment() {
         val intent = activity!!.intent
         val localeFromIntent = intent?.getStringExtra("locale")
         val localeFromArguments = arguments?.getString("locale")
-        val locale = localeFromArguments ?: localeFromIntent
-        mLocale = locale
+        locale = localeFromArguments ?: localeFromIntent
 
         // WARNING: the following cursor is never closed! TODO: don't keep it in a member and close
         // all cursors properly. It comes from Activity#managedQuery (long deprecated, and which
         // FORBIDS closing the cursor). Either use a regular query and close, or a CursorLoader.
-        mCursor = createCursor(locale)
+        cursor = createCursor(locale)
         val emptyView = view!!.findViewById<TextView>(android.R.id.empty)
         emptyView.setText(R.string.user_dict_settings_empty_text)
 
@@ -83,7 +81,7 @@ class UserDictionarySettings : ListFragment() {
         setHasOptionsMenu(true)
         // Show the language as a subtitle of the action bar.
         activity!!.actionBar?.subtitle =
-            UserDictionarySettingsUtils.getLocaleDisplayName(activity, mLocale)
+            UserDictionarySettingsUtils.getLocaleDisplayName(activity, locale)
     }
 
     override fun onResume() {
@@ -115,7 +113,7 @@ class UserDictionarySettings : ListFragment() {
     }
 
     private fun createAdapter(): ListAdapter =
-        MyAdapter(activity, R.layout.user_dictionary_item, mCursor, ADAPTER_FROM, ADAPTER_TO)
+        MyAdapter(activity, R.layout.user_dictionary_item, cursor, ADAPTER_FROM, ADAPTER_TO)
 
     override fun onListItemClick(l: ListView, v: View, position: Int, id: Long) {
         val word = getWord(position)
@@ -126,14 +124,6 @@ class UserDictionarySettings : ListFragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if (!IS_SHORTCUT_API_SUPPORTED) {
-            val systemLocale = resources.configuration.locale
-            if (!TextUtils.isEmpty(mLocale) && mLocale != systemLocale.toString()) {
-                // Hide the add button for ICS because it doesn't support specifying a locale for
-                // an entry (that locale-aware API arrived with the shortcut API).
-                return
-            }
-        }
         menu.add(0, OPTIONS_MENU_ADD, 0, R.string.user_dict_settings_add_menu_title)
             .setIcon(R.drawable.ic_menu_add)
             .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM or MenuItem.SHOW_AS_ACTION_WITH_TEXT)
@@ -159,7 +149,7 @@ class UserDictionarySettings : ListFragment() {
         )
         args.putString(UserDictionaryAddWordContents.EXTRA_WORD, editingWord)
         args.putString(UserDictionaryAddWordContents.EXTRA_SHORTCUT, editingShortcut)
-        args.putString(UserDictionaryAddWordContents.EXTRA_LOCALE, mLocale)
+        args.putString(UserDictionaryAddWordContents.EXTRA_LOCALE, locale)
         val pa = activity as android.preference.PreferenceActivity
         pa.startPreferencePanel(
             UserDictionaryAddWordFragment::class.java.name, args,
@@ -168,7 +158,7 @@ class UserDictionarySettings : ListFragment() {
     }
 
     private fun getWord(position: Int): String? {
-        val cursor = mCursor ?: return null
+        val cursor = this.cursor ?: return null
         cursor.moveToPosition(position)
         // Handle a possible race condition.
         if (cursor.isAfterLast) return null
@@ -176,8 +166,7 @@ class UserDictionarySettings : ListFragment() {
     }
 
     private fun getShortcut(position: Int): String? {
-        if (!IS_SHORTCUT_API_SUPPORTED) return null
-        val cursor = mCursor ?: return null
+        val cursor = this.cursor ?: return null
         cursor.moveToPosition(position)
         // Handle a possible race condition.
         if (cursor.isAfterLast) return null
@@ -188,21 +177,18 @@ class UserDictionarySettings : ListFragment() {
         context: Context?, layout: Int, c: Cursor?, from: Array<String>, to: IntArray
     ) : SimpleCursorAdapter(context, layout, c, from, to, 0 /* flags */), SectionIndexer {
 
-        private var mIndexer: AlphabetIndexer? = null
+        private var indexer: AlphabetIndexer? = null
 
         init {
             if (c != null) {
                 val alphabet = context!!.getString(R.string.user_dict_fast_scroll_alphabet)
                 val wordColIndex = c.getColumnIndexOrThrow(UserDictionary.Words.WORD)
-                mIndexer = AlphabetIndexer(c, wordColIndex, alphabet)
+                indexer = AlphabetIndexer(c, wordColIndex, alphabet)
             }
             viewBinder = SimpleCursorAdapter.ViewBinder { v, cur, columnIndex ->
-                if (!IS_SHORTCUT_API_SUPPORTED) {
-                    // Just let SimpleCursorAdapter set the view values.
-                    false
-                } else if (columnIndex == INDEX_SHORTCUT) {
+                if (columnIndex == INDEX_SHORTCUT) {
                     val shortcut = cur.getString(INDEX_SHORTCUT)
-                    if (TextUtils.isEmpty(shortcut)) {
+                    if (shortcut.isNullOrEmpty()) {
                         v.visibility = View.GONE
                     } else {
                         (v as TextView).text = shortcut
@@ -217,42 +203,25 @@ class UserDictionarySettings : ListFragment() {
         }
 
         override fun getPositionForSection(section: Int): Int =
-            mIndexer?.getPositionForSection(section) ?: 0
+            indexer?.getPositionForSection(section) ?: 0
 
         override fun getSectionForPosition(position: Int): Int =
-            mIndexer?.getSectionForPosition(position) ?: 0
+            indexer?.getSectionForPosition(position) ?: 0
 
-        override fun getSections(): Array<Any>? = mIndexer?.sections
+        override fun getSections(): Array<Any>? = indexer?.sections
     }
 
     companion object {
-        const val IS_SHORTCUT_API_SUPPORTED = true
-
-        private val QUERY_PROJECTION_SHORTCUT_UNSUPPORTED =
-            arrayOf(UserDictionary.Words._ID, UserDictionary.Words.WORD)
-        private val QUERY_PROJECTION_SHORTCUT_SUPPORTED = arrayOf(
+        private val QUERY_PROJECTION = arrayOf(
             UserDictionary.Words._ID, UserDictionary.Words.WORD, UserDictionary.Words.SHORTCUT
         )
-        private val QUERY_PROJECTION =
-            if (IS_SHORTCUT_API_SUPPORTED) QUERY_PROJECTION_SHORTCUT_SUPPORTED
-            else QUERY_PROJECTION_SHORTCUT_UNSUPPORTED
 
         // The index of the shortcut in the above array.
         private const val INDEX_SHORTCUT = 2
 
-        private val ADAPTER_FROM_SHORTCUT_UNSUPPORTED = arrayOf(UserDictionary.Words.WORD)
-        private val ADAPTER_FROM_SHORTCUT_SUPPORTED =
-            arrayOf(UserDictionary.Words.WORD, UserDictionary.Words.SHORTCUT)
         private val ADAPTER_FROM =
-            if (IS_SHORTCUT_API_SUPPORTED) ADAPTER_FROM_SHORTCUT_SUPPORTED
-            else ADAPTER_FROM_SHORTCUT_UNSUPPORTED
-
-        private val ADAPTER_TO_SHORTCUT_UNSUPPORTED = intArrayOf(android.R.id.text1)
-        private val ADAPTER_TO_SHORTCUT_SUPPORTED =
-            intArrayOf(android.R.id.text1, android.R.id.text2)
-        private val ADAPTER_TO =
-            if (IS_SHORTCUT_API_SUPPORTED) ADAPTER_TO_SHORTCUT_SUPPORTED
-            else ADAPTER_TO_SHORTCUT_UNSUPPORTED
+            arrayOf(UserDictionary.Words.WORD, UserDictionary.Words.SHORTCUT)
+        private val ADAPTER_TO = intArrayOf(android.R.id.text1, android.R.id.text2)
 
         // Either the locale is empty (word applies to all locales) or it equals our current locale.
         private val QUERY_SELECTION = UserDictionary.Words.LOCALE + "=?"
@@ -263,22 +232,17 @@ class UserDictionarySettings : ListFragment() {
         private val DELETE_SELECTION_WITHOUT_SHORTCUT =
             UserDictionary.Words.WORD + "=? AND " + UserDictionary.Words.SHORTCUT + " is null OR " +
                 UserDictionary.Words.SHORTCUT + "=''"
-        private val DELETE_SELECTION_SHORTCUT_UNSUPPORTED = UserDictionary.Words.WORD + "=?"
 
         private const val OPTIONS_MENU_ADD = Menu.FIRST
 
-        @JvmStatic
         fun deleteWord(word: String?, shortcut: String?, resolver: ContentResolver) {
-            when {
-                !IS_SHORTCUT_API_SUPPORTED -> resolver.delete(
-                    UserDictionary.Words.CONTENT_URI, DELETE_SELECTION_SHORTCUT_UNSUPPORTED,
-                    arrayOf(word)
-                )
-                TextUtils.isEmpty(shortcut) -> resolver.delete(
+            if (shortcut.isNullOrEmpty()) {
+                resolver.delete(
                     UserDictionary.Words.CONTENT_URI, DELETE_SELECTION_WITHOUT_SHORTCUT,
                     arrayOf(word)
                 )
-                else -> resolver.delete(
+            } else {
+                resolver.delete(
                     UserDictionary.Words.CONTENT_URI, DELETE_SELECTION_WITH_SHORTCUT,
                     arrayOf(word, shortcut)
                 )

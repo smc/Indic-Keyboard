@@ -17,15 +17,15 @@
 package org.smc.inputmethod.indic.userdictionary
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.preference.Preference
 import android.preference.PreferenceFragment
 import android.preference.PreferenceGroup
 import android.provider.UserDictionary
-import android.text.TextUtils
 import android.view.inputmethod.InputMethodManager
+
+import androidx.core.content.getSystemService
 
 import com.android.inputmethod.latin.R
 import com.android.inputmethod.latin.common.LocaleUtils
@@ -92,37 +92,29 @@ class UserDictionaryList : PreferenceFragment() {
         const val USER_DICTIONARY_SETTINGS_INTENT_ACTION =
             "android.settings.USER_DICTIONARY_SETTINGS"
 
-        @JvmStatic
         fun getUserDictionaryLocalesSet(activity: Activity): TreeSet<String>? {
             val cursor = activity.contentResolver.query(
                 UserDictionary.Words.CONTENT_URI,
                 arrayOf(UserDictionary.Words.LOCALE), null, null, null
             ) ?: return null // The user dictionary service is not present or disabled.
             val localeSet = TreeSet<String>()
-            try {
-                if (cursor.moveToFirst()) {
-                    val columnIndex = cursor.getColumnIndex(UserDictionary.Words.LOCALE)
+            cursor.use {
+                if (it.moveToFirst()) {
+                    val columnIndex = it.getColumnIndex(UserDictionary.Words.LOCALE)
                     do {
-                        val locale = cursor.getString(columnIndex)
+                        val locale = it.getString(columnIndex)
                         localeSet.add(locale ?: "")
-                    } while (cursor.moveToNext())
+                    } while (it.moveToNext())
                 }
-            } finally {
-                cursor.close()
-            }
-            if (!UserDictionarySettings.IS_SHORTCUT_API_SUPPORTED) {
-                // For ICS, show "For all languages" in case the keyboard locale differs from the
-                // system locale.
-                localeSet.add("")
             }
 
-            val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm = activity.getSystemService<InputMethodManager>()!!
             for (imi in imm.enabledInputMethodList) {
                 val subtypes =
                     imm.getEnabledInputMethodSubtypeList(imi, true /* allowsImplicitly... */)
                 for (subtype in subtypes) {
                     val locale = subtype.locale
-                    if (!TextUtils.isEmpty(locale)) {
+                    if (!locale.isNullOrEmpty()) {
                         localeSet.add(locale)
                     }
                 }

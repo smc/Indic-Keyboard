@@ -20,7 +20,6 @@ import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.provider.UserDictionary
-import android.text.TextUtils
 import android.view.View
 import android.widget.EditText
 
@@ -38,74 +37,66 @@ import java.util.Locale
  * UserDictionaryAddWordActivity.
  */
 class UserDictionaryAddWordContents {
-    private val mMode: Int // Either MODE_EDIT or MODE_INSERT
-    private val mWordEditText: EditText
-    private val mShortcutEditText: EditText?
-    private var mLocale: String
-    private val mOldWord: String?
-    private val mOldShortcut: String?
-    private var mSavedWord: String? = null
-    private var mSavedShortcut: String? = null
+    private val mode: Int // Either MODE_EDIT or MODE_INSERT
+    private val wordEditText: EditText
+    private val shortcutEditText: EditText?
+    private var locale: String
+    private val oldWord: String?
+    private val oldShortcut: String?
+    private var savedWord: String? = null
+    private var savedShortcut: String? = null
 
     internal constructor(view: View, args: Bundle) {
-        mWordEditText = view.findViewById(R.id.user_dictionary_add_word_text)
-        mShortcutEditText = view.findViewById(R.id.user_dictionary_add_shortcut)
-        if (!UserDictionarySettings.IS_SHORTCUT_API_SUPPORTED) {
-            mShortcutEditText?.visibility = View.GONE
-            view.findViewById<View>(R.id.user_dictionary_add_shortcut_label).visibility = View.GONE
-        }
+        wordEditText = view.findViewById(R.id.user_dictionary_add_word_text)
+        shortcutEditText = view.findViewById(R.id.user_dictionary_add_shortcut)
         val word = args.getString(EXTRA_WORD)
         if (word != null) {
-            mWordEditText.setText(word)
+            wordEditText.setText(word)
             // Use getText in case the edit text modified the text we set (happens when it's too
             // long to be edited).
-            mWordEditText.setSelection(mWordEditText.text.length)
+            wordEditText.setSelection(wordEditText.text.length)
         }
-        if (UserDictionarySettings.IS_SHORTCUT_API_SUPPORTED) {
-            val shortcut = args.getString(EXTRA_SHORTCUT)
-            if (shortcut != null && mShortcutEditText != null) {
-                mShortcutEditText.setText(shortcut)
-            }
-            mOldShortcut = args.getString(EXTRA_SHORTCUT)
-        } else {
-            mOldShortcut = null
+        val shortcut = args.getString(EXTRA_SHORTCUT)
+        if (shortcut != null && shortcutEditText != null) {
+            shortcutEditText.setText(shortcut)
         }
-        mMode = args.getInt(EXTRA_MODE) // default return value for getInt() is 0 = MODE_EDIT
-        mOldWord = args.getString(EXTRA_WORD)
-        mLocale = args.getString(EXTRA_LOCALE) ?: Locale.getDefault().toString()
+        oldShortcut = args.getString(EXTRA_SHORTCUT)
+        mode = args.getInt(EXTRA_MODE) // default return value for getInt() is 0 = MODE_EDIT
+        oldWord = args.getString(EXTRA_WORD)
+        locale = args.getString(EXTRA_LOCALE) ?: Locale.getDefault().toString()
     }
 
     internal constructor(view: View, oldInstanceToBeEdited: UserDictionaryAddWordContents) {
-        mWordEditText = view.findViewById(R.id.user_dictionary_add_word_text)
-        mShortcutEditText = view.findViewById(R.id.user_dictionary_add_shortcut)
-        mMode = MODE_EDIT
-        mOldWord = oldInstanceToBeEdited.mSavedWord
-        mOldShortcut = oldInstanceToBeEdited.mSavedShortcut
-        // The original passed the still-null mLocale to updateLocale, i.e. the default locale.
-        mLocale = Locale.getDefault().toString()
+        wordEditText = view.findViewById(R.id.user_dictionary_add_word_text)
+        shortcutEditText = view.findViewById(R.id.user_dictionary_add_shortcut)
+        mode = MODE_EDIT
+        oldWord = oldInstanceToBeEdited.savedWord
+        oldShortcut = oldInstanceToBeEdited.savedShortcut
+        // The original passed the still-null locale to updateLocale, i.e. the default locale.
+        locale = Locale.getDefault().toString()
     }
 
     // locale may be null (default locale) or the empty string ("all locales").
     internal fun updateLocale(locale: String?) {
-        mLocale = locale ?: Locale.getDefault().toString()
+        this.locale = locale ?: Locale.getDefault().toString()
     }
 
     internal fun saveStateIntoBundle(outState: Bundle) {
-        outState.putString(EXTRA_WORD, mWordEditText.text.toString())
-        outState.putString(EXTRA_ORIGINAL_WORD, mOldWord)
-        if (mShortcutEditText != null) {
-            outState.putString(EXTRA_SHORTCUT, mShortcutEditText.text.toString())
+        outState.putString(EXTRA_WORD, wordEditText.text.toString())
+        outState.putString(EXTRA_ORIGINAL_WORD, oldWord)
+        if (shortcutEditText != null) {
+            outState.putString(EXTRA_SHORTCUT, shortcutEditText.text.toString())
         }
-        if (mOldShortcut != null) {
-            outState.putString(EXTRA_ORIGINAL_SHORTCUT, mOldShortcut)
+        if (oldShortcut != null) {
+            outState.putString(EXTRA_ORIGINAL_SHORTCUT, oldShortcut)
         }
-        outState.putString(EXTRA_LOCALE, mLocale)
+        outState.putString(EXTRA_LOCALE, locale)
     }
 
     internal fun delete(context: Context) {
-        if (MODE_EDIT == mMode && !TextUtils.isEmpty(mOldWord)) {
+        if (MODE_EDIT == mode && !oldWord.isNullOrEmpty()) {
             // Mode edit: remove the old entry.
-            UserDictionarySettings.deleteWord(mOldWord, mOldShortcut, context.contentResolver)
+            UserDictionarySettings.deleteWord(oldWord, oldShortcut, context.contentResolver)
         }
         // If we are in add mode, nothing was added, so we don't need to do anything.
     }
@@ -113,50 +104,46 @@ class UserDictionaryAddWordContents {
     internal fun apply(context: Context, outParameters: Bundle?): Int {
         if (outParameters != null) saveStateIntoBundle(outParameters)
         val resolver = context.contentResolver
-        if (MODE_EDIT == mMode && !TextUtils.isEmpty(mOldWord)) {
+        if (MODE_EDIT == mode && !oldWord.isNullOrEmpty()) {
             // Mode edit: remove the old entry.
-            UserDictionarySettings.deleteWord(mOldWord, mOldShortcut, resolver)
+            UserDictionarySettings.deleteWord(oldWord, oldShortcut, resolver)
         }
-        val newWord = mWordEditText.text.toString()
-        val newShortcut: String? = when {
-            !UserDictionarySettings.IS_SHORTCUT_API_SUPPORTED -> null
-            mShortcutEditText == null -> null
-            else -> mShortcutEditText.text.toString().ifEmpty { null }
-        }
-        if (TextUtils.isEmpty(newWord)) {
+        val newWord = wordEditText.text.toString()
+        val newShortcut = shortcutEditText?.text?.toString()?.ifEmpty { null }
+        if (newWord.isEmpty()) {
             // If the word is somehow empty, don't insert it.
             return CODE_CANCEL
         }
-        mSavedWord = newWord
-        mSavedShortcut = newShortcut
+        savedWord = newWord
+        savedShortcut = newShortcut
         // If there is no shortcut, and the word already exists, we should not insert: either the
         // word exists with no shortcut (same thing we'd insert) or it exists with a shortcut (which
         // has priority over our word).
-        if (TextUtils.isEmpty(newShortcut) && hasWord(newWord, context)) {
+        if (newShortcut.isNullOrEmpty() && hasWord(newWord, context)) {
             return CODE_ALREADY_PRESENT
         }
 
         // Disallow duplicates. Remove the same word with no shortcut, and the same word with the
         // same shortcut; a same word with a different, non-empty shortcut is left alone.
         UserDictionarySettings.deleteWord(newWord, null, resolver)
-        if (!TextUtils.isEmpty(newShortcut)) {
+        if (!newShortcut.isNullOrEmpty()) {
             // If newShortcut is empty we just deleted this, no need to do it again.
             UserDictionarySettings.deleteWord(newWord, newShortcut, resolver)
         }
 
-        // We use the empty string for 'all locales' and mLocale is never null; addWord takes null
+        // We use the empty string for 'all locales' and locale is never null; addWord takes null
         // to mean 'all locales'.
         UserDictionary.Words.addWord(
             context, newWord, FREQUENCY_FOR_USER_DICTIONARY_ADDS, newShortcut,
-            if (TextUtils.isEmpty(mLocale)) null else LocaleUtils.constructLocaleFromString(mLocale)
+            if (locale.isEmpty()) null else LocaleUtils.constructLocaleFromString(locale)
         )
         return CODE_WORD_ADDED
     }
 
     private fun hasWord(word: String, context: Context): Boolean {
-        // mLocale == "" indicates an entry for all languages. mLocale is never null here (ensured
+        // locale == "" indicates an entry for all languages. locale is never null here (ensured
         // by updateLocale).
-        val cursor = if ("" == mLocale) {
+        val cursor = if (locale.isEmpty()) {
             context.contentResolver.query(
                 UserDictionary.Words.CONTENT_URI, HAS_WORD_PROJECTION,
                 HAS_WORD_SELECTION_ALL_LOCALES, arrayOf(word), null /* sort order */
@@ -164,59 +151,53 @@ class UserDictionaryAddWordContents {
         } else {
             context.contentResolver.query(
                 UserDictionary.Words.CONTENT_URI, HAS_WORD_PROJECTION,
-                HAS_WORD_SELECTION_ONE_LOCALE, arrayOf(word, mLocale), null /* sort order */
+                HAS_WORD_SELECTION_ONE_LOCALE, arrayOf(word, locale), null /* sort order */
             )
         }
-        return try {
-            cursor != null && cursor.count > 0
-        } finally {
-            cursor?.close()
-        }
+        return cursor?.use { it.count > 0 } ?: false
     }
 
-    class LocaleRenderer(context: Context, private val mLocaleString: String?) {
-        private val mDescription: String = when {
-            mLocaleString == null -> context.getString(R.string.user_dict_settings_more_languages)
-            mLocaleString.isEmpty() -> context.getString(R.string.user_dict_settings_all_languages)
-            else -> LocaleUtils.constructLocaleFromString(mLocaleString).displayName
+    class LocaleRenderer(context: Context, val localeString: String?) {
+        private val description: String = when {
+            localeString == null -> context.getString(R.string.user_dict_settings_more_languages)
+            localeString.isEmpty() -> context.getString(R.string.user_dict_settings_all_languages)
+            else -> LocaleUtils.constructLocaleFromString(localeString).displayName
         }
 
-        override fun toString(): String = mDescription
-
-        fun getLocaleString(): String? = mLocaleString
+        override fun toString(): String = description
 
         // "More languages..." is null; "All languages" is the empty string.
-        fun isMoreLanguages(): Boolean = mLocaleString == null
+        val isMoreLanguages: Boolean = localeString == null
     }
 
     // Helper method to get the list of locales to display for this word.
     fun getLocalesList(activity: Activity): ArrayList<LocaleRenderer> {
         val locales = UserDictionaryList.getUserDictionaryLocalesSet(activity)!!
         // Remove our locale if present, because we always put it at the top.
-        locales.remove(mLocale) // mLocale may not be null
+        locales.remove(locale) // locale may not be null
         val systemLocale = Locale.getDefault().toString()
         // The system locale should be inside. We want it at the 2nd spot.
         locales.remove(systemLocale) // system locale may not be null
         locales.remove("") // Remove the empty string if it's there
         val localesList = ArrayList<LocaleRenderer>()
         // Add the passed locale, then the system locale at the top; "all languages" at the bottom.
-        addLocaleDisplayNameToList(activity, localesList, mLocale)
-        if (systemLocale != mLocale) {
+        addLocaleDisplayNameToList(activity, localesList, locale)
+        if (systemLocale != locale) {
             addLocaleDisplayNameToList(activity, localesList, systemLocale)
         }
         for (l in locales) {
             // TODO: sort in unicode order
             addLocaleDisplayNameToList(activity, localesList, l)
         }
-        if ("" != mLocale) {
-            // If mLocale is "", we already inserted the "all languages" item, so don't do it again.
+        if (locale.isNotEmpty()) {
+            // If locale is "", we already inserted the "all languages" item, so don't do it again.
             addLocaleDisplayNameToList(activity, localesList, "") // meaning: all languages
         }
         localesList.add(LocaleRenderer(activity, null)) // meaning: select another locale
         return localesList
     }
 
-    fun getCurrentUserDictionaryLocale(): String = mLocale
+    val currentUserDictionaryLocale: String get() = locale
 
     companion object {
         const val EXTRA_MODE = "mode"
