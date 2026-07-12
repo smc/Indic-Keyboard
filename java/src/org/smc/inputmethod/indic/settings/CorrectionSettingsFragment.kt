@@ -50,14 +50,14 @@ class CorrectionSettingsFragment : SubScreenFragment(),
         removePreference(Settings.PREF_CONFIGURE_DICTIONARIES_KEY)
 
         val editPersonalDictionary =
-            findPreference<Preference>(Settings.PREF_EDIT_PERSONAL_DICTIONARY)!!
+            requirePreference<Preference>(Settings.PREF_EDIT_PERSONAL_DICTIONARY)
         val ri = if (USE_INTERNAL_PERSONAL_DICTIONARY_SETTINGS) null
         else pm.resolveActivity(editPersonalDictionary.intent!!, PackageManager.MATCH_DEFAULT_ONLY)
         if (ri == null) {
             overwriteUserDictionaryPreference(editPersonalDictionary)
         }
 
-        useContactsPreference = findPreference(Settings.PREF_KEY_USE_CONTACTS_DICT)!!
+        useContactsPreference = requirePreference(Settings.PREF_KEY_USE_CONTACTS_DICT)
         turnOffUseContactsIfNoPermission()
     }
 

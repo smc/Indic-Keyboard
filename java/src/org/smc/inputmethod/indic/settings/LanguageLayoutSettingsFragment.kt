@@ -23,9 +23,8 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import androidx.preference.Preference
-import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceScreen
 import androidx.preference.PreferenceViewHolder
 import androidx.preference.SwitchPreferenceCompat
@@ -67,7 +66,7 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
 
     private val toggleListener = Preference.OnPreferenceChangeListener { preference, newValue ->
         val checked = newValue as Boolean
-        val enabled = Settings.readEnabledSubtypeKeys(getSharedPreferences())
+        val enabled = Settings.readEnabledSubtypeKeys(sharedPreferences)
         if (checked) {
             enabled.add(preference.key)
         } else {
@@ -108,12 +107,9 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
 
         addPreferencesSection(context, screen, target)
 
-        val layoutsCategory = PreferenceCategory(context)
-        layoutsCategory.setTitle(R.string.language_section_layouts)
-        layoutsCategory.isIconSpaceReserved = false
-        screen.addPreference(layoutsCategory)
+        val layoutsCategory = screen.addCategory(context, R.string.language_section_layouts)
 
-        val enabled = Settings.readEnabledSubtypeKeys(getSharedPreferences())
+        val enabled = Settings.readEnabledSubtypeKeys(sharedPreferences)
         for (layout in target.mLayouts) {
             val key = SubtypeLocaleUtils.getSubtypeKey(layout.mSubtype)
             val pref = LayoutPreviewPreference(context, layout.mSubtype)
@@ -138,11 +134,7 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
         val hasCompanion = VarnamIndicKeyboard.schemes.containsKey("varnam-$langCode")
         if (digits == null && !hasCompanion) return
 
-        val category = PreferenceCategory(context)
-        category.setTitle(R.string.language_section_preferences)
-        category.isIconSpaceReserved = false
-        screen.addPreference(category)
-
+        val category = screen.addCategory(context, R.string.language_section_preferences)
         if (hasCompanion) {
             category.addPreference(buildCompanionPref(context, target))
         }
@@ -162,11 +154,11 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
         pref.summary = getString(
             R.string.native_numerals_summary, "${digits[0]} ${digits[1]} ${digits[2]}"
         )
-        pref.isChecked = NativeNumerals.readUseNative(getSharedPreferences(), locale)
+        pref.isChecked = NativeNumerals.readUseNative(sharedPreferences, locale)
         pref.setOnPreferenceChangeListener { _, newValue ->
-            getSharedPreferences().edit()
-                .putBoolean(NativeNumerals.prefKey(locale.language), newValue as Boolean)
-                .apply()
+            sharedPreferences.edit {
+                putBoolean(NativeNumerals.prefKey(locale.language), newValue as Boolean)
+            }
             KeyboardLayoutSet.onNumeralPreferenceChanged()
             true
         }
@@ -180,12 +172,12 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
         pref.isIconSpaceReserved = false
         pref.setTitle(R.string.companion_language_suggestions)
         pref.summary = getString(R.string.companion_language_suggestions_summary, target.mAutonym)
-        pref.isChecked = langCode == Settings.readCompanionLanguage(getSharedPreferences())
+        pref.isChecked = langCode == Settings.readCompanionLanguage(sharedPreferences)
         pref.setOnPreferenceChangeListener { _, newValue ->
             val checked = newValue as Boolean
-            getSharedPreferences().edit()
-                .putString(Settings.PREF_COMPANION_LANGUAGE, if (checked) langCode else "")
-                .apply()
+            sharedPreferences.edit {
+                putString(Settings.PREF_COMPANION_LANGUAGE, if (checked) langCode else "")
+            }
             if (checked) triggerPackDownload()
             true
         }
@@ -193,11 +185,7 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
     }
 
     private fun addPackSection(context: Context, screen: PreferenceScreen) {
-        val category = PreferenceCategory(context)
-        category.setTitle(R.string.language_pack_section)
-        category.isIconSpaceReserved = false
-        screen.addPreference(category)
-
+        val category = screen.addCategory(context, R.string.language_pack_section)
         val pref = PackPreference(context)
         pref.setTitle(R.string.language_pack_section)
         packPref = pref
@@ -206,9 +194,7 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
 
     override fun onResume() {
         super.onResume()
-        englishName?.let { name ->
-            (activity as? AppCompatActivity)?.supportActionBar?.title = name
-        }
+        englishName?.let { setActionBarTitle(it) }
         packManager.setListener(this)
         packManager.loadIndex()  // refresh availability / update status
     }
@@ -398,7 +384,7 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
 
         private fun formatSize(bytes: Long): String =
             if (bytes < 1024 * 1024) {
-                String.format(Locale.getDefault(), "%d KB", Math.max(1, bytes / 1024))
+                String.format(Locale.getDefault(), "%d KB", (bytes / 1024).coerceAtLeast(1))
             } else {
                 String.format(Locale.getDefault(), "%.1f MB", bytes / (1024.0 * 1024.0))
             }

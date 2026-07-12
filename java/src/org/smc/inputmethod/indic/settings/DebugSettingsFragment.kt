@@ -32,8 +32,6 @@ import com.android.inputmethod.latin.R
 import com.android.inputmethod.latin.utils.ApplicationUtils
 import com.android.inputmethod.latin.utils.ResourceUtils
 
-import java.util.Locale
-
 /** "Debug mode" settings sub screen: a handful of options for debugging. */
 class DebugSettingsFragment : SubScreenFragment(), Preference.OnPreferenceClickListener {
 
@@ -88,7 +86,7 @@ class DebugSettingsFragment : SubScreenFragment(), Preference.OnPreferenceClickL
 
     private class DictDumpPreference(context: Context, val dictName: String) : Preference(context) {
         init {
-            key = PREF_KEY_DUMP_DICT_PREFIX + dictName
+            key = PREF_KEY_DUMP_DICTS + dictName
             title = "Dump $dictName dictionary"
         }
     }
@@ -136,61 +134,34 @@ class DebugSettingsFragment : SubScreenFragment(), Preference.OnPreferenceClickL
     }
 
     private fun setupKeyPreviewAnimationScale(prefKey: String, defaultValue: Float) {
-        val prefs = getSharedPreferences()
+        val prefs = sharedPreferences
         val res = resources
         val pref = findPreference<SeekBarDialogPreference>(prefKey) ?: return
-        pref.setInterface(object : SeekBarDialogPreference.ValueProxy {
-            private fun valueFromPercentage(percentage: Int): Float = percentage / 100.0f
-            private fun percentageFromValue(floatValue: Float): Int = (floatValue * 100.0f).toInt()
-
-            override fun writeValue(value: Int, key: String) {
-                prefs.edit().putFloat(key, valueFromPercentage(value)).apply()
+        pref.bindValueProxy(
+            prefs,
+            storeAsFraction = true,
+            read = { (Settings.readKeyPreviewAnimationScale(prefs, it, defaultValue) * 100f).toInt() },
+            readDefault = { (defaultValue * 100f).toInt() },
+            text = {
+                if (it < 0) res.getString(R.string.settings_system_default) else "$it%"
             }
-
-            override fun writeDefaultValue(key: String) {
-                prefs.edit().remove(key).apply()
-            }
-
-            override fun readValue(key: String): Int =
-                percentageFromValue(Settings.readKeyPreviewAnimationScale(prefs, key, defaultValue))
-
-            override fun readDefaultValue(key: String): Int = percentageFromValue(defaultValue)
-
-            override fun getValueText(value: Int): String =
-                if (value < 0) res.getString(R.string.settings_system_default)
-                else String.format(Locale.ROOT, "%d%%", value)
-
-            override fun feedbackValue(value: Int) {}
-        })
+        )
     }
 
     private fun setupKeyPreviewAnimationDuration(prefKey: String, defaultValue: Int) {
-        val prefs = getSharedPreferences()
+        val prefs = sharedPreferences
         val res = resources
         val pref = findPreference<SeekBarDialogPreference>(prefKey) ?: return
-        pref.setInterface(object : SeekBarDialogPreference.ValueProxy {
-            override fun writeValue(value: Int, key: String) {
-                prefs.edit().putInt(key, value).apply()
-            }
-
-            override fun writeDefaultValue(key: String) {
-                prefs.edit().remove(key).apply()
-            }
-
-            override fun readValue(key: String): Int =
-                Settings.readKeyPreviewAnimationDuration(prefs, key, defaultValue)
-
-            override fun readDefaultValue(key: String): Int = defaultValue
-
-            override fun getValueText(value: Int): String =
-                res.getString(R.string.abbreviation_unit_milliseconds, value)
-
-            override fun feedbackValue(value: Int) {}
-        })
+        pref.bindValueProxy(
+            prefs,
+            read = { Settings.readKeyPreviewAnimationDuration(prefs, it, defaultValue) },
+            readDefault = { defaultValue },
+            text = { res.getString(R.string.abbreviation_unit_milliseconds, it) }
+        )
     }
 
     companion object {
+        // Group key in prefs_screen_debug.xml; also the prefix for each per-dictionary child key.
         private const val PREF_KEY_DUMP_DICTS = "pref_key_dump_dictionaries"
-        private const val PREF_KEY_DUMP_DICT_PREFIX = "pref_key_dump_dictionaries"
     }
 }

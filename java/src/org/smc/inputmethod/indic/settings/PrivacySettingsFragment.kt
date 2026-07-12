@@ -19,7 +19,8 @@ package org.smc.inputmethod.indic.settings
 import android.os.Bundle
 import android.widget.Toast
 
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
+import androidx.preference.Preference
 
 import com.android.inputmethod.latin.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -53,11 +54,11 @@ class PrivacySettingsFragment : SubScreenFragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as? AppCompatActivity)?.supportActionBar?.setTitle(R.string.settings_screen_privacy)
+        setActionBarTitle(getString(R.string.settings_screen_privacy))
     }
 
     private fun confirmOnClick(key: String, messageRes: Int, buttonRes: Int, action: () -> Unit) {
-        val pref = findPreference<androidx.preference.Preference>(key)!!
+        val pref = requirePreference<Preference>(key)
         pref.setOnPreferenceClickListener { p ->
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(p.title)
@@ -86,6 +87,6 @@ class PrivacySettingsFragment : SubScreenFragment() {
     }
 
     private fun clearRecentEmojis() {
-        getSharedPreferences().edit().remove(Settings.PREF_EMOJI_RECENT_KEYS).apply()
+        sharedPreferences.edit { remove(Settings.PREF_EMOJI_RECENT_KEYS) }
     }
 }

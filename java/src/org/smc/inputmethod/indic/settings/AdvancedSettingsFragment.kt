@@ -16,10 +16,11 @@
 
 package org.smc.inputmethod.indic.settings
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.media.AudioManager
 import android.os.Bundle
+
+import androidx.core.content.getSystemService
 
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager
 import com.android.inputmethod.latin.R
@@ -38,7 +39,7 @@ class AdvancedSettingsFragment : SubScreenFragment() {
         // not have been initialized yet. See LatinIME.onCreate().
         AudioAndHapticFeedbackManager.init(requireContext())
 
-        if (!Settings.isInternal(getSharedPreferences())) {
+        if (!Settings.isInternal(sharedPreferences)) {
             removePreference(Settings.SCREEN_DEBUG)
         }
         if (!AudioAndHapticFeedbackManager.getInstance().hasVibrator()) {
@@ -58,106 +59,52 @@ class AdvancedSettingsFragment : SubScreenFragment() {
         refreshEnablingsOfKeypressSoundAndVibrationSettings()
     }
 
-    private fun refreshEnablingsOfKeypressSoundAndVibrationSettings() {
-        val prefs = getSharedPreferences()
-        val res = resources
-        setPreferenceEnabled(
-            Settings.PREF_VIBRATION_DURATION_SETTINGS, Settings.readVibrationEnabled(prefs, res)
-        )
-        setPreferenceEnabled(
-            Settings.PREF_KEYPRESS_SOUND_VOLUME, Settings.readKeypressSoundEnabled(prefs, res)
-        )
-    }
-
     private fun setupKeypressVibrationDurationSettings() {
         val pref = findPreference<SeekBarDialogPreference>(
             Settings.PREF_VIBRATION_DURATION_SETTINGS
         ) ?: return
-        val prefs = getSharedPreferences()
+        val prefs = sharedPreferences
         val res = resources
-        pref.setInterface(object : SeekBarDialogPreference.ValueProxy {
-            override fun writeValue(value: Int, key: String) {
-                prefs.edit().putInt(key, value).apply()
-            }
-
-            override fun writeDefaultValue(key: String) {
-                prefs.edit().remove(key).apply()
-            }
-
-            override fun readValue(key: String): Int =
-                Settings.readKeypressVibrationDuration(prefs, res)
-
-            override fun readDefaultValue(key: String): Int =
-                Settings.readDefaultKeypressVibrationDuration(res)
-
-            override fun feedbackValue(value: Int) {
-                AudioAndHapticFeedbackManager.getInstance().vibrate(value.toLong())
-            }
-
-            override fun getValueText(value: Int): String =
-                if (value < 0) res.getString(R.string.settings_system_default)
-                else res.getString(R.string.abbreviation_unit_milliseconds, value)
-        })
+        pref.bindValueProxy(
+            prefs,
+            read = { Settings.readKeypressVibrationDuration(prefs, res) },
+            readDefault = { Settings.readDefaultKeypressVibrationDuration(res) },
+            text = {
+                if (it < 0) res.getString(R.string.settings_system_default)
+                else res.getString(R.string.abbreviation_unit_milliseconds, it)
+            },
+            feedback = { AudioAndHapticFeedbackManager.getInstance().vibrate(it.toLong()) }
+        )
     }
 
     private fun setupKeypressSoundVolumeSettings() {
         val pref = findPreference<SeekBarDialogPreference>(
             Settings.PREF_KEYPRESS_SOUND_VOLUME
         ) ?: return
-        val prefs = getSharedPreferences()
+        val prefs = sharedPreferences
         val res = resources
-        val am = requireActivity().getSystemService(Context.AUDIO_SERVICE) as AudioManager
-        pref.setInterface(object : SeekBarDialogPreference.ValueProxy {
-            private fun valueFromPercentage(percentage: Int): Float = percentage / 100.0f
-            private fun percentageFromValue(floatValue: Float): Int = (floatValue * 100.0f).toInt()
-
-            override fun writeValue(value: Int, key: String) {
-                prefs.edit().putFloat(key, valueFromPercentage(value)).apply()
-            }
-
-            override fun writeDefaultValue(key: String) {
-                prefs.edit().remove(key).apply()
-            }
-
-            override fun readValue(key: String): Int =
-                percentageFromValue(Settings.readKeypressSoundVolume(prefs, res))
-
-            override fun readDefaultValue(key: String): Int =
-                percentageFromValue(Settings.readDefaultKeypressSoundVolume(res))
-
-            override fun getValueText(value: Int): String =
-                if (value < 0) res.getString(R.string.settings_system_default) else value.toString()
-
-            override fun feedbackValue(value: Int) {
-                am.playSoundEffect(AudioManager.FX_KEYPRESS_STANDARD, valueFromPercentage(value))
-            }
-        })
+        val am = requireActivity().getSystemService<AudioManager>()!!
+        pref.bindValueProxy(
+            prefs,
+            storeAsFraction = true,
+            read = { (Settings.readKeypressSoundVolume(prefs, res) * 100f).toInt() },
+            readDefault = { (Settings.readDefaultKeypressSoundVolume(res) * 100f).toInt() },
+            text = { if (it < 0) res.getString(R.string.settings_system_default) else it.toString() },
+            feedback = { am.playSoundEffect(AudioManager.FX_KEYPRESS_STANDARD, it / 100f) }
+        )
     }
 
     private fun setupKeyLongpressTimeoutSettings() {
-        val prefs = getSharedPreferences()
+        val prefs = sharedPreferences
         val res = resources
         val pref = findPreference<SeekBarDialogPreference>(
             Settings.PREF_KEY_LONGPRESS_TIMEOUT
         ) ?: return
-        pref.setInterface(object : SeekBarDialogPreference.ValueProxy {
-            override fun writeValue(value: Int, key: String) {
-                prefs.edit().putInt(key, value).apply()
-            }
-
-            override fun writeDefaultValue(key: String) {
-                prefs.edit().remove(key).apply()
-            }
-
-            override fun readValue(key: String): Int = Settings.readKeyLongpressTimeout(prefs, res)
-
-            override fun readDefaultValue(key: String): Int =
-                Settings.readDefaultKeyLongpressTimeout(res)
-
-            override fun getValueText(value: Int): String =
-                res.getString(R.string.abbreviation_unit_milliseconds, value)
-
-            override fun feedbackValue(value: Int) {}
-        })
+        pref.bindValueProxy(
+            prefs,
+            read = { Settings.readKeyLongpressTimeout(prefs, res) },
+            readDefault = { Settings.readDefaultKeyLongpressTimeout(res) },
+            text = { res.getString(R.string.abbreviation_unit_milliseconds, it) }
+        )
     }
 }

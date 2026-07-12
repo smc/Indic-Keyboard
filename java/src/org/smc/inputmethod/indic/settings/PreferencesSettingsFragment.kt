@@ -19,11 +19,13 @@ package org.smc.inputmethod.indic.settings
 import android.content.SharedPreferences
 import android.os.Bundle
 
+import androidx.preference.Preference
+
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager
 import com.android.inputmethod.latin.R
 import com.android.inputmethod.latin.RichInputMethodManager
 
-import java.util.Locale
+import kotlin.math.roundToInt
 
 /**
  * "Preferences" settings sub screen: auto-capitalization, double-space period, keypress
@@ -57,12 +59,10 @@ class PreferencesSettingsFragment : SubScreenFragment() {
 
     override fun onResume() {
         super.onResume()
-        val voiceInputKeyOption = findPreference<androidx.preference.Preference>(Settings.PREF_VOICE_INPUT_KEY)
-        if (voiceInputKeyOption != null) {
+        findPreference<Preference>(Settings.PREF_VOICE_INPUT_KEY)?.apply {
             RichInputMethodManager.getInstance().refreshSubtypeCaches()
-            voiceInputKeyOption.isEnabled = VOICE_IME_ENABLED
-            voiceInputKeyOption.summary =
-                if (VOICE_IME_ENABLED) null else getText(R.string.voice_input_disabled_summary)
+            isEnabled = true
+            summary = null
         }
     }
 
@@ -70,46 +70,15 @@ class PreferencesSettingsFragment : SubScreenFragment() {
         refreshEnablingsOfKeypressSoundAndVibrationSettings()
     }
 
-    private fun refreshEnablingsOfKeypressSoundAndVibrationSettings() {
-        val prefs = getSharedPreferences()
-        val res = resources
-        setPreferenceEnabled(
-            Settings.PREF_VIBRATION_DURATION_SETTINGS, Settings.readVibrationEnabled(prefs, res)
-        )
-        setPreferenceEnabled(
-            Settings.PREF_KEYPRESS_SOUND_VOLUME, Settings.readKeypressSoundEnabled(prefs, res)
-        )
-    }
-
     private fun setupKeyboardHeight(prefKey: String, defaultValue: Float) {
-        val prefs = getSharedPreferences()
+        val prefs = sharedPreferences
         val pref = findPreference<SeekBarDialogPreference>(prefKey) ?: return
-        pref.setInterface(object : SeekBarDialogPreference.ValueProxy {
-            private fun valueFromPercentage(percentage: Int): Float = percentage / PERCENTAGE_FLOAT
-            private fun percentageFromValue(floatValue: Float): Int =
-                Math.round(floatValue * PERCENTAGE_FLOAT)
-
-            override fun writeValue(value: Int, key: String) {
-                prefs.edit().putFloat(key, valueFromPercentage(value)).apply()
-            }
-
-            override fun writeDefaultValue(key: String) {
-                prefs.edit().remove(key).apply()
-            }
-
-            override fun readValue(key: String): Int =
-                percentageFromValue(Settings.readKeyboardHeight(prefs, defaultValue))
-
-            override fun readDefaultValue(key: String): Int = percentageFromValue(defaultValue)
-
-            override fun getValueText(value: Int): String = String.format(Locale.ROOT, "%d%%", value)
-
-            override fun feedbackValue(value: Int) {}
-        })
-    }
-
-    companion object {
-        private const val VOICE_IME_ENABLED = true
-        private const val PERCENTAGE_FLOAT = 100.0f
+        pref.bindValueProxy(
+            prefs,
+            storeAsFraction = true,
+            read = { (Settings.readKeyboardHeight(prefs, defaultValue) * 100f).roundToInt() },
+            readDefault = { (defaultValue * 100f).roundToInt() },
+            text = { "$it%" }
+        )
     }
 }

@@ -46,8 +46,7 @@ class SettingsActivity : AppCompatActivity(),
 
         if (savedState == null) {
             val fragmentName = intent.getStringExtra(EXTRA_SHOW_FRAGMENT)
-            val fragment = if (fragmentName != null) instantiate(fragmentName, null)
-            else SettingsFragment()
+            val fragment = fragmentName?.let { instantiate(it, null) } ?: SettingsFragment()
             supportFragmentManager.beginTransaction()
                 .replace(R.id.settings_container, fragment)
                 .commit()

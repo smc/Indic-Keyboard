@@ -36,6 +36,6 @@ class AppearanceSettingsFragment : SubScreenFragment() {
 
     override fun onResume() {
         super.onResume()
-        ThemeSettingsFragment.updateKeyboardThemeSummary(findPreference(Settings.SCREEN_THEME)!!)
+        ThemeSettingsFragment.updateKeyboardThemeSummary(requirePreference(Settings.SCREEN_THEME))
     }
 }

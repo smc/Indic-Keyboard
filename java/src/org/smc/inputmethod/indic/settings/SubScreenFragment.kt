@@ -25,6 +25,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 
+import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceGroup
@@ -37,6 +38,9 @@ abstract class SubScreenFragment : PreferenceFragmentCompat(), OnSharedPreferenc
 
     private var sharedPreferenceChangeListener: OnSharedPreferenceChangeListener? = null
 
+    protected val sharedPreferences: SharedPreferences
+        get() = PreferenceManagerCompat.getDeviceSharedPreferences(activity)
+
     protected fun setPreferenceEnabled(prefKey: String, enabled: Boolean) {
         preferenceScreen.findPreference<Preference>(prefKey)?.isEnabled = enabled
     }
@@ -46,8 +50,23 @@ abstract class SubScreenFragment : PreferenceFragmentCompat(), OnSharedPreferenc
         screen.findPreference<Preference>(prefKey)?.let { screen.removePreference(it) }
     }
 
-    protected fun getSharedPreferences(): SharedPreferences =
-        PreferenceManagerCompat.getDeviceSharedPreferences(activity)
+    protected fun <T : Preference> requirePreference(key: String): T = findPreference(key)!!
+
+    protected fun setActionBarTitle(title: CharSequence?) {
+        (activity as? AppCompatActivity)?.supportActionBar?.title = title
+    }
+
+    /** Enable the vibration/sound sub-settings only while their master toggle is on. */
+    protected fun refreshEnablingsOfKeypressSoundAndVibrationSettings() {
+        val prefs = sharedPreferences
+        val res = resources
+        setPreferenceEnabled(
+            Settings.PREF_VIBRATION_DURATION_SETTINGS, Settings.readVibrationEnabled(prefs, res)
+        )
+        setPreferenceEnabled(
+            Settings.PREF_KEYPRESS_SOUND_VOLUME, Settings.readKeypressSoundEnabled(prefs, res)
+        )
+    }
 
     override fun addPreferencesFromResource(preferencesResId: Int) {
         super.addPreferencesFromResource(preferencesResId)
@@ -99,11 +118,11 @@ abstract class SubScreenFragment : PreferenceFragmentCompat(), OnSharedPreferenc
             onSharedPreferenceChanged(prefs, key)
         }
         sharedPreferenceChangeListener = listener
-        getSharedPreferences().registerOnSharedPreferenceChangeListener(listener)
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
     }
 
     override fun onDestroy() {
-        getSharedPreferences().unregisterOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(sharedPreferenceChangeListener)
         super.onDestroy()
     }
 

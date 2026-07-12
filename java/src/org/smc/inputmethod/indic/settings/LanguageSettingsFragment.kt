@@ -21,9 +21,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.TypedValue
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.preference.Preference
-import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceScreen
 
 import com.android.inputmethod.latin.R
@@ -31,6 +29,8 @@ import com.android.inputmethod.latin.utils.KeyboardLanguages
 import com.android.inputmethod.latin.utils.KeyboardLanguages.Language
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils
 import com.android.inputmethod.latin.utils.TextDrawable
+
+import kotlin.math.roundToInt
 
 class LanguageSettingsFragment : SubScreenFragment() {
 
@@ -41,7 +41,7 @@ class LanguageSettingsFragment : SubScreenFragment() {
 
     override fun onResume() {
         super.onResume()
-        (activity as? AppCompatActivity)?.supportActionBar?.setTitle(R.string.language_selection_title)
+        setActionBarTitle(getString(R.string.language_selection_title))
         // A language moves between the enabled and available sections after its layouts are
         // edited, so rebuild the whole screen each time we return to it.
         buildScreen()
@@ -52,27 +52,22 @@ class LanguageSettingsFragment : SubScreenFragment() {
         val screen = preferenceManager.createPreferenceScreen(context)
         preferenceScreen = screen
 
-        val enabledKeys = Settings.readEnabledSubtypeKeys(getSharedPreferences())
-        val enabled = ArrayList<Language>()
-        val available = ArrayList<Language>()
-        for (language in KeyboardLanguages.getLanguages(context)) {
-            (if (isEnabled(language, enabledKeys)) enabled else available).add(language)
-        }
-        sortByEnglishName(enabled)
-        sortByEnglishName(available)
+        val enabledKeys = Settings.readEnabledSubtypeKeys(sharedPreferences)
+        // English-first, then case-insensitive by English name.
+        val byName = compareByDescending<Language> { it.mLocale.startsWith("en") }
+            .thenBy(String.CASE_INSENSITIVE_ORDER) { it.mEnglishName }
+        val (enabled, available) = KeyboardLanguages.getLanguages(context)
+            .partition { isEnabled(it, enabledKeys) }
 
-        addSection(context, screen, R.string.language_section_enabled, enabled)
-        addSection(context, screen, R.string.language_section_available, available)
+        addSection(context, screen, R.string.language_section_enabled, enabled.sortedWith(byName))
+        addSection(context, screen, R.string.language_section_available, available.sortedWith(byName))
     }
 
     private fun addSection(
         context: Context, screen: PreferenceScreen, titleResId: Int, languages: List<Language>
     ) {
         if (languages.isEmpty()) return
-        val category = PreferenceCategory(context)
-        category.setTitle(titleResId)
-        category.isIconSpaceReserved = false
-        screen.addPreference(category)
+        val category = screen.addCategory(context, titleResId)
         for (language in languages) {
             val pref = Preference(context)
             pref.title = formatName(language)
@@ -89,17 +84,6 @@ class LanguageSettingsFragment : SubScreenFragment() {
                 enabledKeys.contains(SubtypeLocaleUtils.getSubtypeKey(it.mSubtype))
             }
 
-        private fun sortByEnglishName(languages: MutableList<Language>) {
-            languages.sortWith { a, b ->
-                val aEn = a.mLocale.startsWith("en")
-                val bEn = b.mLocale.startsWith("en")
-                when {
-                    aEn != bEn -> if (aEn) -1 else 1
-                    else -> a.mEnglishName.compareTo(b.mEnglishName, ignoreCase = true)
-                }
-            }
-        }
-
         private fun formatName(language: Language): CharSequence =
             if (language.mEnglishName.equals(language.mAutonym, ignoreCase = true)) {
                 language.mEnglishName
@@ -109,7 +93,7 @@ class LanguageSettingsFragment : SubScreenFragment() {
 
         private fun createIcon(context: Context, language: Language): Drawable {
             val accent = resolveColor(context, androidx.appcompat.R.attr.colorPrimary)
-            val size = Math.round(40 * context.resources.displayMetrics.density)
+            val size = (40 * context.resources.displayMetrics.density).roundToInt()
             return TextDrawable(language.mGlyph, accent, 0, size)
         }
 
