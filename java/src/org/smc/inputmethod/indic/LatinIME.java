@@ -994,12 +994,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         mEmojiSearchBar = view.findViewById(R.id.emoji_search_bar);
         mEmojiSuggestionStrip = view.findViewById(R.id.emoji_suggestion_strip);
+        // Keep the emoji search bar and its results strip within the same content-width cap +
+        // centering gutters as the keyboard and suggestion strip (otherwise they span full width
+        // on tablets).
+        final int gutter = ResourceUtils.getKeyboardGutterWidth(this);
         if (mEmojiSearchBar != null) {
-            // Keep the search bar within the same content-width cap + centering gutters as the
-            // keyboard and suggestion strip (otherwise it spans full width on tablets).
-            final int gutter = ResourceUtils.getKeyboardGutterWidth(this);
             mEmojiSearchBar.setPadding(gutter, mEmojiSearchBar.getPaddingTop(),
                     gutter, mEmojiSearchBar.getPaddingBottom());
+        }
+        if (mEmojiSuggestionStrip != null) {
+            mEmojiSuggestionStrip.setPadding(gutter, mEmojiSuggestionStrip.getPaddingTop(),
+                    gutter, mEmojiSuggestionStrip.getPaddingBottom());
         }
         if (mEmojiSearchBar != null && hasSuggestionStripView()) {
             mEmojiSearchController = new EmojiSearchController(
