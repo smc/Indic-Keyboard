@@ -42,6 +42,9 @@ android {
     compileSdk = 36
     namespace = 'com.android.inputmethod.latin'
 
+    kotlin {
+        jvmToolchain(17)
+    }
 
     defaultConfig {
         applicationId = "org.smc.inputmethod.indic"
@@ -82,6 +85,7 @@ android {
         main {
             manifest.srcFile 'AndroidManifest.xml'
             java.srcDirs = ['src', '../common/src']
+            kotlin.srcDirs = ['src', '../common/src']
             jniLibs.srcDirs = ['jniLibs']
             resources.srcDirs = ['src']
             aidl.srcDirs = ['src']
