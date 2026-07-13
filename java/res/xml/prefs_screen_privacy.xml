@@ -40,7 +40,7 @@
             android:key="pref_privacy_delete_varnam"
             android:title="@string/privacy_learned_varnam"
             android:summary="@string/privacy_learned_varnam_summary"
-            android:icon="@drawable/ic_settings_delete"
+            android:icon="@drawable/ic_settings_translate"
             android:persistent="false" />
     </PreferenceCategory>
 
