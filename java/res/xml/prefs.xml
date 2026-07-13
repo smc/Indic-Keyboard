@@ -18,44 +18,58 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:latin="http://schemas.android.com/apk/res-auto"
     android:key="english_ime_settings">
-    <PreferenceScreen
-        android:fragment="org.smc.inputmethod.indic.settings.ThemeSettingsFragment"
-        android:key="screen_theme"
-        android:icon="@drawable/ic_settings_theme"
-        android:title="@string/settings_screen_theme" />
-    <PreferenceScreen
-        android:fragment="org.smc.inputmethod.indic.settings.PreferencesSettingsFragment"
-        android:title="@string/settings_screen_preferences"
-        android:icon="@drawable/ic_settings_preferences"
-        android:key="screen_preferences" />
-    <PreferenceScreen
-        android:fragment="org.smc.inputmethod.indic.settings.GestureSettingsFragment"
-        android:title="@string/settings_screen_gesture"
-        android:icon="@drawable/ic_settings_gestures"
-        android:key="screen_gesture" />
-    <PreferenceScreen
-        android:fragment="org.smc.inputmethod.indic.settings.CorrectionSettingsFragment"
-        android:title="@string/settings_screen_correction"
-        android:icon="@drawable/ic_settings_text"
-        android:key="screen_correction" />
-    <PreferenceScreen
-        android:fragment="org.smc.inputmethod.indic.settings.ClipboardSettingsFragment"
-        android:title="@string/settings_screen_clipboard"
-        android:icon="@drawable/ic_settings_clipboard"
-        android:key="screen_clipboard" />
-    <PreferenceScreen
-        android:fragment="org.smc.inputmethod.indic.settings.EmojiSettingsFragment"
-        android:title="@string/settings_screen_emoji"
-        android:icon="@drawable/ic_settings_emoji"
-        android:key="screen_emoji" />
-    <PreferenceScreen
-        android:fragment="org.smc.inputmethod.indic.settings.PrivacySettingsFragment"
-        android:title="@string/settings_screen_privacy"
-        android:icon="@drawable/ic_settings_privacy"
-        android:key="screen_privacy" />
-    <PreferenceScreen
-        android:fragment="org.smc.inputmethod.indic.settings.AdvancedSettingsFragment"
-        android:title="@string/settings_screen_advanced"
-        android:icon="@drawable/ic_settings_advanced"
-        android:key="screen_advanced" />
+    <!-- Grouped into titleless cards; each PreferenceCategory renders as one rounded card. -->
+    <PreferenceCategory android:key="group_input">
+        <PreferenceScreen
+            android:fragment="org.smc.inputmethod.indic.settings.LanguageSettingsFragment"
+            android:title="@string/language_selection_title"
+            android:icon="@drawable/ic_settings_languages"
+            android:key="screen_languages" />
+        <PreferenceScreen
+            android:fragment="org.smc.inputmethod.indic.settings.PreferencesSettingsFragment"
+            android:title="@string/settings_screen_preferences"
+            android:icon="@drawable/ic_settings_preferences"
+            android:key="screen_preferences" />
+        <PreferenceScreen
+            android:fragment="org.smc.inputmethod.indic.settings.ThemeSettingsFragment"
+            android:key="screen_theme"
+            android:icon="@drawable/ic_settings_theme"
+            android:title="@string/settings_screen_theme" />
+    </PreferenceCategory>
+    <PreferenceCategory android:key="group_typing">
+        <PreferenceScreen
+            android:fragment="org.smc.inputmethod.indic.settings.CorrectionSettingsFragment"
+            android:title="@string/settings_screen_correction"
+            android:icon="@drawable/ic_settings_text"
+            android:key="screen_correction" />
+        <PreferenceScreen
+            android:fragment="org.smc.inputmethod.indic.settings.GestureSettingsFragment"
+            android:title="@string/settings_screen_gesture"
+            android:icon="@drawable/ic_settings_gestures"
+            android:key="screen_gesture" />
+        <PreferenceScreen
+            android:fragment="org.smc.inputmethod.indic.settings.EmojiSettingsFragment"
+            android:title="@string/settings_screen_emoji"
+            android:icon="@drawable/ic_settings_emoji"
+            android:key="screen_emoji" />
+    </PreferenceCategory>
+    <PreferenceCategory android:key="group_tools">
+        <PreferenceScreen
+            android:fragment="org.smc.inputmethod.indic.settings.ClipboardSettingsFragment"
+            android:title="@string/settings_screen_clipboard"
+            android:icon="@drawable/ic_settings_clipboard"
+            android:key="screen_clipboard" />
+        <PreferenceScreen
+            android:fragment="org.smc.inputmethod.indic.settings.AdvancedSettingsFragment"
+            android:title="@string/settings_screen_advanced"
+            android:icon="@drawable/ic_settings_advanced"
+            android:key="screen_advanced" />
+    </PreferenceCategory>
+    <PreferenceCategory android:key="group_privacy">
+        <PreferenceScreen
+            android:fragment="org.smc.inputmethod.indic.settings.PrivacySettingsFragment"
+            android:title="@string/settings_screen_privacy"
+            android:icon="@drawable/ic_settings_privacy"
+            android:key="screen_privacy" />
+    </PreferenceCategory>
 </PreferenceScreen>

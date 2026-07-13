@@ -58,11 +58,21 @@ class CardedPreferenceGroupAdapter(preferenceGroup: PreferenceGroup) :
             )
         lp.leftMargin = inset
         lp.rightMargin = inset
-        if (getItem(position) is PreferenceCategory) {
+        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT  // reset; view holders are recycled
+        val category = getItem(position) as? PreferenceCategory
+        if (category != null) {
             item.background = null
-            lp.topMargin = gap
-            lp.bottomMargin = 0
-            styleCategoryTitle(holder)
+            if (category.title.isNullOrEmpty()) {
+                // A titleless category is just a card separator: collapse it so the gap comes
+                // from the surrounding cards' own margins.
+                lp.height = 0
+                lp.topMargin = 0
+                lp.bottomMargin = 0
+            } else {
+                lp.topMargin = gap
+                lp.bottomMargin = 0
+                styleCategoryTitle(holder)
+            }
         } else {
             val top = isCardTop(position)
             val bottom = isCardBottom(position)

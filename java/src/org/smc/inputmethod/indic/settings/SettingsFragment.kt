@@ -26,7 +26,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.ViewGroup
 
-import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
 import androidx.recyclerview.widget.RecyclerView
@@ -42,7 +41,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
             preferenceManager.setStorageDeviceProtected()
         }
         addPreferencesFromResource(R.xml.prefs)
-        addLanguageSelectionPreference()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,16 +57,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val recyclerView = super.onCreateRecyclerView(inflater, parent, savedInstanceState)
         recyclerView.addItemDecoration(CardedPreferenceGroupAdapter.CardDivider(requireActivity()))
         return recyclerView
-    }
-
-    /** Adds a "Languages" entry at the top that opens our self-managed language-selection screen. */
-    private fun addLanguageSelectionPreference() {
-        val languagePref = Preference(requireActivity())
-        languagePref.setTitle(R.string.language_selection_title)
-        languagePref.setIcon(R.drawable.ic_settings_languages)
-        languagePref.order = -1
-        languagePref.fragment = LanguageSettingsFragment::class.java.name
-        preferenceScreen.addPreference(languagePref)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
