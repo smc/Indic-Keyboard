@@ -99,28 +99,9 @@ Kannada Anysoft keyboard layout was funded via [Bounty Source](https://www.bount
 
 ## Contributions and Credits
 
-Jishnu Mohan is the founder and maintainer.
+(c) 2026, Jishnu Mohan.
 
-Anoop P Contributed Swanalekha Layout(beta) and converted [java-morelangs  module](https://github.com/androidtweak/java-morelangs) to an [Android library](https://gitlab.com/smc/android-ime).
+Brand identity and visual design by Hiran Venugopalan.
 
-Sridhar Contributed Kannada Anysoft Keyboard layout.
+Thanks to [all the contributors](https://github.com/smc/Indic-Keyboard/graphs/contributors?all=1) who helped with layouts, tooling, documentation, and bug fixes.
 
-Hiran Venugopalan contributed Graphic Assets for the project and helped with re-branding 2.0 version.
-
-Anivar Aravind helped with project management.
-
-Indic Project community members (Akshay, Balasankar, Ashik, Santhosh ) contributed documentation.
-
-Many keyboard layouts were adapted from the [jquery.ime](https://github.com/wikimedia/jquery.ime) project of Wikimedia Foundation. They were contributed by volunteers.
-
-Akshy contributed in layout bug fixes and in tooling.
-
-Mujeebcpy contributed Malayalam Mobile inscript and Poorna inscript Keyboard Layouts.
-
-Some icons from from FontAwesome, they are in [Creative Commons Attribution 4.0 International license](https://fontawesome.com/license)
-
-Emoji search keywords are derived from the [Emoogle Emoji Search Engine](https://github.com/xitanggg/emoogle-emoji-search-engine) dataset by Xitang Zhao, used under the MIT License.
-
-Also thank [LineageOS](https://review.lineageos.org/c/LineageOS/android_packages_inputmethods_LatinIME/), [Openboard](https://github.com/dslul/openboard/), and [Simple-Keyboard](https://github.com/rkkr/simple-keyboard) some changes are taken/adopted from these keyboards
-
-## TODO

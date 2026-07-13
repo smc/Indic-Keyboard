@@ -54,6 +54,41 @@
     <string name="settings_screen_clipboard">Clipboard</string>
     <!-- Settings screen title for emoji settings [CHAR LIMIT=33] -->
     <string name="settings_screen_emoji">Emoji</string>
+    <!-- Settings screen title for the about page [CHAR LIMIT=33] -->
+    <string name="settings_screen_about">About</string>
+
+    <!-- About page: copyright / author credit -->
+    <string name="about_copyright">© 2026, Jishnu Mohan</string>
+    <!-- About page: app version line; %1$s is the version name -->
+    <string name="about_version">Version %1$s</string>
+    <!-- About page: link to the project website [CHAR LIMIT=33] -->
+    <string name="about_website">Website</string>
+    <!-- About page: link to the source code repository [CHAR LIMIT=33] -->
+    <string name="about_source">Source code</string>
+    <!-- About page: section header for credits [CHAR LIMIT=33] -->
+    <string name="about_section_credits">Credits</string>
+    <!-- About page: credit for the app logo/icon [CHAR LIMIT=65] -->
+    <string name="about_logo_credit">Logo by Hiran Venugopalan</string>
+    <!-- About page: entry linking to the list of contributors [CHAR LIMIT=40] -->
+    <string name="about_contributors">Contributors</string>
+    <!-- About page: section header for legal/licenses [CHAR LIMIT=33] -->
+    <string name="about_section_legal">Legal</string>
+    <!-- About page: entry that opens the open-source licenses list [CHAR LIMIT=40] -->
+    <string name="about_open_source_licenses">Open-source licenses</string>
+    <!-- About page: entry that shows the app\'s own license [CHAR LIMIT=40] -->
+    <string name="about_app_license">License</string>
+    <!-- Summary for the app license entry [CHAR LIMIT=40] -->
+    <string name="about_app_license_summary">Apache License 2.0</string>
+    <!-- Project website URL -->
+    <string name="about_website_url" translatable="false">https://indicproject.org</string>
+    <!-- Source code repository URL -->
+    <string name="about_source_url" translatable="false">https://gitlab.com/indicproject/indic-keyboard</string>
+    <!-- Contributors list URL -->
+    <string name="about_contributors_url" translatable="false">https://github.com/smc/Indic-Keyboard/graphs/contributors?all=1</string>
+    <!-- Author (copyright) URL -->
+    <string name="about_copyright_url" translatable="false">https://j15h.nu/</string>
+    <!-- Logo author URL -->
+    <string name="about_logo_credit_url" translatable="false">https://hiran.in/</string>
 
     <!-- Accessibility description for the suggestion strip's sticky menu key that opens the
          toolbox (settings/clipboard/emoji shortcuts) [CHAR LIMIT=33] -->

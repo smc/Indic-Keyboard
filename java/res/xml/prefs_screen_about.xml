@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright 2026, Jishnu Mohan <jishnu7@gmail.com>
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/settings_screen_about">
+
+    <org.smc.inputmethod.indic.settings.AboutHeaderPreference
+        android:key="about_header"
+        app:iconSpaceReserved="false" />
+
+    <Preference
+        android:key="about_website"
+        android:title="@string/about_website"
+        android:icon="@drawable/ic_settings_languages"
+        android:persistent="false" />
+    <Preference
+        android:key="about_source"
+        android:title="@string/about_source"
+        android:icon="@drawable/ic_settings_source"
+        android:persistent="false" />
+
+    <PreferenceCategory
+        android:title="@string/about_section_credits"
+        app:iconSpaceReserved="false">
+        <Preference
+            android:key="about_copyright"
+            android:title="@string/about_copyright"
+            android:persistent="false" />
+        <Preference
+            android:key="about_logo_credit"
+            android:title="@string/about_logo_credit"
+            android:persistent="false" />
+        <Preference
+            android:key="about_contributors"
+            android:title="@string/about_contributors"
+            android:persistent="false" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/about_section_legal"
+        app:iconSpaceReserved="false">
+        <Preference
+            android:key="about_open_source_licenses"
+            android:fragment="org.smc.inputmethod.indic.settings.LicensesFragment"
+            android:title="@string/about_open_source_licenses"
+            android:persistent="false" />
+        <Preference
+            android:key="about_app_license"
+            android:fragment="org.smc.inputmethod.indic.settings.LicenseTextFragment"
+            android:title="@string/about_app_license"
+            android:summary="@string/about_app_license_summary"
+            android:persistent="false">
+            <extra android:name="title" android:value="Indic Keyboard" />
+            <extra android:name="license" android:value="apache" />
+        </Preference>
+    </PreferenceCategory>
+</PreferenceScreen>

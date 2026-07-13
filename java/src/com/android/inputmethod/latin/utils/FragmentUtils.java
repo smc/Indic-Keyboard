@@ -18,8 +18,11 @@ package com.android.inputmethod.latin.utils;
 
 import com.android.inputmethod.dictionarypack.DictionarySettingsFragment;
 import com.android.inputmethod.latin.about.AboutPreferences;
+import org.smc.inputmethod.indic.settings.AboutSettingsFragment;
 import org.smc.inputmethod.indic.settings.AdvancedSettingsFragment;
 import org.smc.inputmethod.indic.settings.AppearanceSettingsFragment;
+import org.smc.inputmethod.indic.settings.LicenseTextFragment;
+import org.smc.inputmethod.indic.settings.LicensesFragment;
 import org.smc.inputmethod.indic.settings.CorrectionSettingsFragment;
 import org.smc.inputmethod.indic.settings.DebugSettingsFragment;
 import org.smc.inputmethod.indic.settings.EmojiSettingsFragment;
@@ -49,6 +52,9 @@ public class FragmentUtils {
         sLatinImeFragments.add(LanguageLayoutSettingsFragment.class.getName());
         sLatinImeFragments.add(GestureSettingsFragment.class.getName());
         sLatinImeFragments.add(EmojiSettingsFragment.class.getName());
+        sLatinImeFragments.add(AboutSettingsFragment.class.getName());
+        sLatinImeFragments.add(LicensesFragment.class.getName());
+        sLatinImeFragments.add(LicenseTextFragment.class.getName());
         sLatinImeFragments.add(CorrectionSettingsFragment.class.getName());
         sLatinImeFragments.add(AdvancedSettingsFragment.class.getName());
         sLatinImeFragments.add(DebugSettingsFragment.class.getName());

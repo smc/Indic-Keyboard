@@ -1,0 +1,7 @@
+<!-- Material Symbols (Rounded) "code_xml" - wght 400, generated from fonts.google.com -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <path android:fillColor="@color/settings_icon_tint"
+        android:pathData="M3.83,12L6.7,14.88q0.28,0.3 0.29,0.71T6.7,16.3T6,16.6T5.3,16.3L1.7,12.7Q1.4,12.4 1.4,12t0.3-0.7L5.3,7.7Q5.6,7.4 6,7.4T6.7,7.7T7,8.41T6.7,9.13L3.83,12Zm5.09,7.51q-0.19-0.36-0.06-0.76l4.4-14.1q0.13-0.4 0.49-0.59T14.5,4t0.59,0.49t0.06,0.76l-4.4,14.1q-0.13,0.4-0.49,0.59T9.5,20T8.91,19.51ZM20.18,12L17.3,9.13Q17,8.82 17,8.41T17.3,7.7T18,7.4t0.7,0.3l3.6,3.6q0.3,0.3 0.3,0.7t-0.3,0.7l-3.6,3.6q-0.3,0.3-0.7,0.3t-0.7-0.3T17,15.59t0.3-0.71L20.18,12Z"/>
+</vector>

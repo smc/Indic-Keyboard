@@ -71,5 +71,10 @@
             android:title="@string/settings_screen_privacy"
             android:icon="@drawable/ic_settings_privacy"
             android:key="screen_privacy" />
+        <PreferenceScreen
+            android:fragment="org.smc.inputmethod.indic.settings.AboutSettingsFragment"
+            android:title="@string/settings_screen_about"
+            android:icon="@drawable/ic_settings_about"
+            android:key="screen_about" />
     </PreferenceCategory>
 </PreferenceScreen>
