@@ -45,6 +45,12 @@ class GestureAlignment {
     static float sumSkipCosts(const ProximityInfoState *const pInfoState,
             const int fromSampleIndex, const int endSampleIndex);
 
+    // Rescue for a letter whose key is outside every remaining sample's near set (a badly
+    // cut corner): the geometrically closest sample. Returns the center distance in
+    // key-width units and sets *outSampleIndex, or a negative value when impossible.
+    static float findFallbackAlignment(const DicTraverseSession *const traverseSession,
+            const int fromSampleIndex, const int codePoint, int *const outSampleIndex);
+
     // A trie child repeating the letter the node just matched ("hello", "feel"): decoded as a
     // zero-consume re-match of the same alignment rather than a fresh key crossing.
     static bool isDoubleLetterRetry(const DicNode *const dicNode);

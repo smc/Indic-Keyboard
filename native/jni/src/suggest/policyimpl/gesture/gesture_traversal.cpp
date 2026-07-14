@@ -41,6 +41,14 @@ int GestureTraversal::getMatchAlignPointCount(const DicTraverseSession *const tr
     const int candidateCount = GestureAlignment::enumerateAlignCandidates(traverseSession,
             childDicNode->getInputIndex(0), childDicNode->getNodeCodePoint(), candidateSamples);
     const int doubleLetterCount = GestureAlignment::isDoubleLetterRetry(childDicNode) ? 1 : 0;
+    if (candidateCount == 0 && doubleLetterCount == 0) {
+        int fallbackSample = 0;
+        if (GestureAlignment::findFallbackAlignment(traverseSession,
+                childDicNode->getInputIndex(0), childDicNode->getNodeCodePoint(),
+                &fallbackSample) >= 0.0f) {
+            return 1;
+        }
+    }
     return doubleLetterCount + candidateCount;
 }
 } // namespace latinime

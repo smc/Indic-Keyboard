@@ -53,6 +53,27 @@ float GestureWeighting::getMatchedCost(const DicTraverseSession *const traverseS
     int candidateSamples[GestureParams::MAX_ALIGN_CANDIDATES];
     const int candidateCount = GestureAlignment::enumerateAlignCandidates(traverseSession,
             fromIndex, dicNode->getNodeCodePoint(), candidateSamples);
+    if (candidateCount == 0 && rank == 0) {
+        // The letter's key is outside every remaining sample's near set (badly cut corner).
+        // Rescue at a distance-scaled cost instead of pruning the word outright.
+        int fallbackSample = 0;
+        const float missDistance = GestureAlignment::findFallbackAlignment(traverseSession,
+                fromIndex, dicNode->getNodeCodePoint(), &fallbackSample);
+        if (missDistance < 0.0f) {
+            return maxCost;
+        }
+        const float fallbackSkipCost = GestureAlignment::sumSkipCosts(pInfoState, fromIndex,
+                fallbackSample);
+        if (fallbackSkipCost >= maxCost) {
+            return maxCost;
+        }
+        inputStateG->mNeedsToUpdateInputStateG = true;
+        inputStateG->mPointerId = 0;
+        inputStateG->mInputIndex = fallbackSample + 1;
+        inputStateG->mPrevCodePoint = baseLowerCodePoint;
+        return fallbackSkipCost + GestureParams::MISSED_LETTER_BASE_COST
+                + GestureParams::MISSED_LETTER_DISTANCE_COST * missDistance;
+    }
     // Also reached with rank 0 and no candidates via the digraph branch, which bypasses the
     // traversal's align-point count; the MAX cost is what kills those nodes.
     if (rank < 0 || rank >= candidateCount) {

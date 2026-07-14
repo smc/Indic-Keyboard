@@ -17,6 +17,7 @@
 #include "suggest/policyimpl/gesture/gesture_alignment.h"
 
 #include <algorithm>
+#include <cmath>
 
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/layout/proximity_info.h"
@@ -87,9 +88,40 @@ namespace latinime {
         if (skipCost >= maxCost) {
             return maxCost;
         }
-        sum += skipCost;
+        // Real swipes hesitate and wobble; the engine prices such "letter-like" samples as
+        // nearly unskippable, which lets wrong words win just by claiming them as letters.
+        // The cap bounds what an unexplained sample can cost the true word.
+        sum += std::min(skipCost, GestureParams::SKIP_COST_CAP);
     }
     return sum;
+}
+
+/* static */ float GestureAlignment::findFallbackAlignment(
+        const DicTraverseSession *const traverseSession, const int fromSampleIndex,
+        const int codePoint, int *const outSampleIndex) {
+    const ProximityInfoState *const pInfoState = traverseSession->getProximityInfoState(0);
+    const int sampledSize = pInfoState->size();
+    if (fromSampleIndex >= sampledSize) {
+        return -1.0f;
+    }
+    const ProximityInfo *const pInfo = traverseSession->getProximityInfo();
+    const int keyIndex = pInfo->getKeyIndexOf(CharUtils::toBaseLowerCase(codePoint));
+    if (keyIndex == NOT_AN_INDEX) {
+        return -1.0f;
+    }
+    int bestSample = -1;
+    float bestSquaredDistance = 0.0f;
+    for (int j = fromSampleIndex; j < sampledSize; ++j) {
+        const float squaredDistance = pInfo->getNormalizedSquaredDistanceFromCenterFloatG(
+                keyIndex, pInfoState->getInputX(j), pInfoState->getInputY(j),
+                true /* isGeometric */);
+        if (bestSample < 0 || squaredDistance < bestSquaredDistance) {
+            bestSquaredDistance = squaredDistance;
+            bestSample = j;
+        }
+    }
+    *outSampleIndex = bestSample;
+    return sqrtf(bestSquaredDistance);
 }
 
 /* static */ bool GestureAlignment::isDoubleLetterRetry(const DicNode *const dicNode) {
