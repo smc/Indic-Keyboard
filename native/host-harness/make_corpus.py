@@ -118,18 +118,20 @@ def key_center(ch):
 
 def word_vertices(word):
     """Key centers for the word's letters, collapsing consecutive duplicates
-    (a swipe passes through a double letter's key once)."""
+    (a swipe passes through a double letter's key once). Characters without a
+    key (apostrophe, hyphen) contribute no vertex: the swipe skips them, and
+    the decoder is expected to pass through them for free."""
     verts = []
     prev = None
     for ch in word.lower():
         if ch == prev:
             continue
+        prev = ch
         c = key_center(ch)
         if c is None:
-            return None
+            continue
         verts.append(c)
-        prev = ch
-    return verts
+    return verts if len(verts) >= 2 else None
 
 
 def dist(a, b):

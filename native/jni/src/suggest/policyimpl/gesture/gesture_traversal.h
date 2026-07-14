@@ -44,11 +44,12 @@ class GestureTraversal : public Traversal {
         return false;
     }
 
-    AK_FORCE_INLINE bool isOmission(const DicTraverseSession *const traverseSession,
+    // A swipe can only trace codepoints that exist as keys. Letters with no key (apostrophe,
+    // hyphen) are passed through as omissions — the sole correction the gesture policy allows —
+    // so "don't" is reachable from the d-o-n-t path.
+    bool isOmission(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode, const DicNode *const childDicNode,
-            const bool allowsErrorCorrections) const {
-        return false;
-    }
+            const bool allowsErrorCorrections) const;
 
     AK_FORCE_INLINE bool isSpaceSubstitutionTerminal(
             const DicTraverseSession *const traverseSession, const DicNode *const dicNode) const {
@@ -109,7 +110,7 @@ class GestureTraversal : public Traversal {
     AK_FORCE_INLINE bool isPossibleOmissionChildNode(
             const DicTraverseSession *const traverseSession, const DicNode *const parentDicNode,
             const DicNode *const dicNode) const {
-        return false;
+        return true;
     }
 
     AK_FORCE_INLINE bool isGoodToTraverseNextWord(const DicNode *const dicNode,

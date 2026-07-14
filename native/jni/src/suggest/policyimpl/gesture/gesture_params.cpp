@@ -21,8 +21,9 @@ namespace latinime {
 const float GestureParams::ALIGN_WEIGHT = 1.0f;
 const float GestureParams::LM_WEIGHT = 6.0f;
 const float GestureParams::DOUBLE_LETTER_COST = 0.15f;
+const float GestureParams::KEYLESS_PASS_COST = 0.35f;
 const int GestureParams::MAX_ALIGN_CANDIDATES = 3;
-const int GestureParams::BEAM_SIZE = 210;
+const int GestureParams::BEAM_SIZE = 240;
 const float GestureParams::MAX_SPATIAL_DISTANCE = 1.0f;
 const float GestureParams::BASE_OUTPUT_SCORE = 1.0f;
 const float GestureParams::OUTPUT_SCORE_PER_SAMPLE = 0.5f;

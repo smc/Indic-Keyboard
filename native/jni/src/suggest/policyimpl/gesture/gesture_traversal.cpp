@@ -17,9 +17,20 @@
 
 #include "suggest/policyimpl/gesture/gesture_traversal.h"
 
+#include "suggest/core/layout/proximity_info.h"
+#include "utils/char_utils.h"
+
 namespace latinime {
 
 const GestureTraversal GestureTraversal::sInstance;
+
+bool GestureTraversal::isOmission(const DicTraverseSession *const traverseSession,
+        const DicNode *const dicNode, const DicNode *const childDicNode,
+        const bool allowsErrorCorrections) const {
+    const int baseLowerCodePoint =
+            CharUtils::toBaseLowerCase(childDicNode->getNodeCodePoint());
+    return !traverseSession->getProximityInfo()->isCodePointOnKeyboard(baseLowerCodePoint);
+}
 
 int GestureTraversal::getMatchAlignPointCount(const DicTraverseSession *const traverseSession,
         const DicNode *const dicNode, const DicNode *const childDicNode) const {

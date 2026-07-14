@@ -29,6 +29,7 @@
 #include "defines.h"
 #include "suggest/core/dictionary/error_type_utils.h"
 #include "suggest/core/policy/weighting.h"
+#include "suggest/policyimpl/gesture/gesture_params.h"
 
 namespace latinime {
 
@@ -56,9 +57,12 @@ class GestureWeighting : public Weighting {
         return 0.0f;
     }
 
+    // Reached only through GestureTraversal::isOmission, i.e. only for codepoints with no key
+    // on the layout (apostrophe, hyphen); the pass-through has a small fixed price so "well"
+    // stays ahead of "we'll" on equal geometry and language score.
     AK_FORCE_INLINE float getOmissionCost(const DicNode *const parentDicNode,
             const DicNode *const dicNode) const {
-        return static_cast<float>(MAX_VALUE_FOR_WEIGHTING);
+        return GestureParams::KEYLESS_PASS_COST;
     }
 
     AK_FORCE_INLINE bool isProximityDicNode(const DicTraverseSession *const traverseSession,

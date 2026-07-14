@@ -119,6 +119,10 @@ ErrorTypeUtils::ErrorType GestureWeighting::getErrorType(const CorrectionType co
         // DicNode::compare evicts it from the terminal queue regardless of score.
         case CT_COMPLETION:
             return ErrorTypeUtils::NOT_AN_ERROR;
+        // Omission = keyless codepoint pass-through (apostrophe); the swipe traces every
+        // swipeable letter, so it is not a correction of the user's input.
+        case CT_OMISSION:
+            return ErrorTypeUtils::NOT_AN_ERROR;
         default:
             return ErrorTypeUtils::EDIT_CORRECTION;
     }

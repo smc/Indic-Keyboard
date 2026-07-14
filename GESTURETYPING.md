@@ -71,6 +71,10 @@ probabilities from the sampling stage:
 The cost of a word is the sum over its letters. Because costs accumulate incrementally
 during trie traversal, partial words compete fairly and hopeless prefixes die early.
 
+A letter with no key on the layout (apostrophe, hyphen) cannot claim a sample. Such
+letters are passed through at a small fixed cost without consuming any of the path, so
+"don't" decodes from the d-o-n-t trace.
+
 ### Beam search with alignment alternatives
 
 Greedy alignment — always take the best sample for each letter — breaks on direction
