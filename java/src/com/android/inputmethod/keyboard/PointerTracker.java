@@ -655,7 +655,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
         mIsDetectingGesture = (mKeyboard != null) && mKeyboard.mId.isAlphabetKeyboard()
                 && key != null && !key.isModifier();
         if (mIsDetectingGesture) {
-            mBatchInputArbiter.addDownEventPoint(x, y, eventTime,
+            mBatchInputArbiter.addDownEventPoint(
+                    mKeyDetector.getTouchX(x), mKeyDetector.getTouchY(y), eventTime,
                     sTypingTimeRecorder.getLastLetterTypingTime(), getActivePointerTrackerCount());
             mGestureStrokeDrawingPoints.onDownEvent(
                     x, y, mBatchInputArbiter.getElapsedTimeSinceFirstDown(eventTime));
@@ -721,7 +722,8 @@ public final class PointerTracker implements PointerTrackerQueue.Element,
             return;
         }
         final boolean onValidArea = mBatchInputArbiter.addMoveEventPoint(
-                x, y, eventTime, isMajorEvent, this);
+                mKeyDetector.getTouchX(x), mKeyDetector.getTouchY(y), eventTime, isMajorEvent,
+                this);
         // If the move event goes out from valid batch input area, cancel batch input.
         if (!onValidArea) {
             cancelBatchInput();

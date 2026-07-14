@@ -1,4 +1,4 @@
-# Indic Keyboar Gesture Typing
+# Indic Keyboard Gesture Typing
 
 Gesture (swipe/glide) typing decodes a continuous touch path over the keyboard into dictionary
 words. The AOSP engine this keyboard is built on ships everything around the decoder -
