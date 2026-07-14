@@ -17,6 +17,9 @@
 
 #include "suggest/policyimpl/gesture/gesture_weighting.h"
 
+#include <algorithm>
+#include <cmath>
+
 #include "suggest/core/dicnode/dic_node.h"
 #include "suggest/core/layout/proximity_info.h"
 #include "suggest/core/layout/proximity_info_state.h"
@@ -92,6 +95,29 @@ float GestureWeighting::getMatchedCost(const DicTraverseSession *const traverseS
     inputStateG->mInputIndex = alignSampleIndex + 1;
     inputStateG->mPrevCodePoint = baseLowerCodePoint;
     return skipCost + GestureParams::ALIGN_WEIGHT * alignCost;
+}
+
+float GestureWeighting::getTerminalSpatialCost(const DicTraverseSession *const traverseSession,
+        const DicNode *const dicNode) const {
+    if (!GestureAlignment::isSingleGesturePointer(traverseSession)) {
+        return 0.0f;
+    }
+    const ProximityInfoState *const pInfoState = traverseSession->getProximityInfoState(0);
+    const int sampledSize = pInfoState->size();
+    if (sampledSize <= 0) {
+        return 0.0f;
+    }
+    const ProximityInfo *const pInfo = traverseSession->getProximityInfo();
+    const int keyIndex = pInfo->getKeyIndexOf(
+            CharUtils::toBaseLowerCase(dicNode->getNodeCodePoint()));
+    if (keyIndex == NOT_AN_INDEX) {
+        return 0.0f;
+    }
+    const float distance = sqrtf(pInfo->getNormalizedSquaredDistanceFromCenterFloatG(keyIndex,
+            pInfoState->getInputX(sampledSize - 1), pInfoState->getInputY(sampledSize - 1),
+            true /* isGeometric */));
+    // Lifting anywhere on the final key itself is free; only drift beyond it is charged.
+    return GestureParams::END_ANCHOR_COST * std::max(0.0f, distance - 0.5f);
 }
 
 float GestureWeighting::getTerminalInsertionCost(const DicTraverseSession *const traverseSession,

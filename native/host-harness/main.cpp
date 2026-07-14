@@ -311,12 +311,31 @@ std::string asciiLower(const std::string &s) {
     return out;
 }
 
+std::vector<int> utf8ToCodePoints(const std::string &s) {
+    std::vector<int> out;
+    for (size_t i = 0; i < s.size();) {
+        const unsigned char c = s[i];
+        int cp, len;
+        if (c < 0x80) { cp = c; len = 1; }
+        else if ((c & 0xE0) == 0xC0) { cp = c & 0x1F; len = 2; }
+        else if ((c & 0xF0) == 0xE0) { cp = c & 0x0F; len = 3; }
+        else if ((c & 0xF8) == 0xF0) { cp = c & 0x07; len = 4; }
+        else { ++i; continue; }
+        if (i + len > s.size()) break;
+        for (int j = 1; j < len; ++j) cp = (cp << 6) | (s[i + j] & 0x3F);
+        out.push_back(cp);
+        i += len;
+    }
+    return out;
+}
+
 // Mirrors latinime_BinaryDictionary_getSuggestions
 // (com_android_inputmethod_latin_BinaryDictionary.cpp:178-261) for one call.
 std::vector<Suggestion> runGetSuggestions(JNIEnv *env, const Dictionary &dictionary,
         ProximityInfo *pinfo, DicTraverseSession *session, const std::vector<int> &xs,
         const std::vector<int> &ys, const std::vector<int> &times,
-        const std::vector<int> &inputCodePoints, const bool isGesture) {
+        const std::vector<int> &inputCodePoints, const bool isGesture,
+        const std::string &prevWord, const bool prevIsBeginningOfSentence) {
     const int inputSize = static_cast<int>(xs.size());
     std::vector<int> xCoordinates(xs), yCoordinates(ys), timesCopy(times);
     std::vector<int> pointerIds(inputSize, 0);
@@ -329,7 +348,13 @@ std::vector<Suggestion> runGetSuggestions(JNIEnv *env, const Dictionary &diction
             0 /* BLOCK_OFFENSIVE_WORDS */, 0 /* SPACE_AWARE_GESTURE_ENABLED */,
             1000 /* WEIGHT_FOR_LOCALE_IN_THOUSANDS, = weightForLocale 1.0 */ };
     SuggestOptions suggestOptions(options, 5);
-    const NgramContext ngramContext;
+    std::vector<int> prevCodePoints = utf8ToCodePoints(prevWord);
+    if (prevCodePoints.size() > MAX_WORD_LENGTH) prevCodePoints.clear();
+    const NgramContext ngramContext =
+            (prevCodePoints.empty() && !prevIsBeginningOfSentence)
+                    ? NgramContext()
+                    : NgramContext(prevCodePoints.data(),
+                            static_cast<int>(prevCodePoints.size()), prevIsBeginningOfSentence);
     SuggestionResults results(MAX_RESULTS);
     dictionary.getSuggestions(pinfo, session, xCoordinates.data(), yCoordinates.data(),
             timesCopy.data(), pointerIds.data(), codePoints.data(), inputSize, &ngramContext,
@@ -539,11 +564,17 @@ int main(int argc, char **argv) {
             }
         }
 
+        const Json *prevJson = c.find("prev");
+        const std::string prevWord =
+                (prevJson && prevJson->type == Json::String) ? prevJson->str : "";
+        const Json *bosJson = c.find("bos");
+        const bool prevIsBos = bosJson && bosJson->type == Json::Number && bosJson->asInt() != 0;
+
         std::vector<Suggestion> suggestions;
         if (typingMode || gesturePolicyAvailable) {
             DicTraverseSession session(&env, nullptr /* localeStr */, usesLargeCache);
             suggestions = runGetSuggestions(&env, dictionary, &pinfo, &session,
-                    xs, ys, times, inputCodePoints, !typingMode);
+                    xs, ys, times, inputCodePoints, !typingMode, prevWord, prevIsBos);
         }
 
         // The engine emits one terminal per surviving alignment, so the same word can occupy

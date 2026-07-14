@@ -52,10 +52,10 @@ class GestureWeighting : public Weighting {
     float getTerminalLanguageCost(const DicTraverseSession *const traverseSession,
             const DicNode *const dicNode, float dicNodeLanguageImprobability) const;
 
-    AK_FORCE_INLINE float getTerminalSpatialCost(const DicTraverseSession *const traverseSession,
-            const DicNode *const dicNode) const {
-        return 0.0f;
-    }
+    // End anchor: a candidate whose final letter sits far from where the finger lifted pays
+    // for the drift. Complements the first-sample anchor the engine already applies.
+    float getTerminalSpatialCost(const DicTraverseSession *const traverseSession,
+            const DicNode *const dicNode) const;
 
     // Reached only through GestureTraversal::isOmission, i.e. only for codepoints with no key
     // on the layout (apostrophe, hyphen); the pass-through has a small fixed price so "well"

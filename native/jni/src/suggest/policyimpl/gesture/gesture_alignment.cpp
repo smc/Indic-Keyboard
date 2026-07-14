@@ -88,10 +88,12 @@ namespace latinime {
         if (skipCost >= maxCost) {
             return maxCost;
         }
-        // Real swipes hesitate and wobble; the engine prices such "letter-like" samples as
-        // nearly unskippable, which lets wrong words win just by claiming them as letters.
-        // The cap bounds what an unexplained sample can cost the true word.
-        sum += std::min(skipCost, GestureParams::SKIP_COST_CAP);
+        // Weighted above the raw -log P: leaving path unexplained must cost more than the
+        // engine's skip prices say, or endpoint matchers ("he" over a h-u-d-e path) beat the
+        // full-length word whose letters claim the detours. The cap bounds what a single
+        // pathological dwell can cost the true word.
+        sum += GestureParams::SKIP_COST_WEIGHT
+                * std::min(skipCost, GestureParams::SKIP_COST_CAP);
     }
     return sum;
 }

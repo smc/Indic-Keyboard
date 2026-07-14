@@ -33,6 +33,8 @@ class GestureParams {
     static const float MISSED_LETTER_BASE_COST;
     static const float MISSED_LETTER_DISTANCE_COST;
     static const float SKIP_COST_CAP;
+    static const float SKIP_COST_WEIGHT;
+    static const float END_ANCHOR_COST;
     static const int MAX_ALIGN_CANDIDATES;
     static const int BEAM_SIZE;
     static const float MAX_SPATIAL_DISTANCE;

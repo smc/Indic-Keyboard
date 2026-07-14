@@ -19,7 +19,7 @@
 namespace latinime {
 
 const float GestureParams::ALIGN_WEIGHT = 1.0f;
-const float GestureParams::LM_WEIGHT = 7.0f;
+const float GestureParams::LM_WEIGHT = 12.0f;
 const float GestureParams::DOUBLE_LETTER_COST = 0.15f;
 const float GestureParams::KEYLESS_PASS_COST = 0.35f;
 const float GestureParams::MISSED_LETTER_BASE_COST = 2.0f;
@@ -30,4 +30,6 @@ const float GestureParams::MAX_SPATIAL_DISTANCE = 1.0f;
 const float GestureParams::BASE_OUTPUT_SCORE = 1.0f;
 const float GestureParams::OUTPUT_SCORE_PER_SAMPLE = 0.5f;
 const float GestureParams::SKIP_COST_CAP = 6.0f;
+const float GestureParams::SKIP_COST_WEIGHT = 2.0f;
+const float GestureParams::END_ANCHOR_COST = 0.6f;
 } // namespace latinime
