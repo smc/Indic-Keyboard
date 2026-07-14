@@ -35,6 +35,7 @@ class LicenseTextFragment : Fragment() {
         val root = inflater.inflate(R.layout.license_text, container, false)
         val rawRes = when (arguments?.getString(ARG_LICENSE)) {
             "agpl" -> R.raw.license_agpl_3_0
+            "gpl" -> R.raw.license_gpl_3_0
             "mit" -> R.raw.license_mit
             "jqueryime" -> R.raw.license_jqueryime
             else -> R.raw.license_apache_2_0

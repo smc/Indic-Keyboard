@@ -44,6 +44,18 @@
             <extra android:name="title" android:value="jquery.ime" />
             <extra android:name="license" android:value="jqueryime" />
         </Preference>
+        <Preference android:key="lic_openboard"
+            android:fragment="org.smc.inputmethod.indic.settings.LicenseTextFragment"
+            android:title="OpenBoard" android:persistent="false">
+            <extra android:name="title" android:value="OpenBoard" />
+            <extra android:name="license" android:value="gpl" />
+        </Preference>
+        <Preference android:key="lic_lineageos"
+            android:fragment="org.smc.inputmethod.indic.settings.LicenseTextFragment"
+            android:title="LineageOS (LatinIME)" android:persistent="false">
+            <extra android:name="title" android:value="LineageOS (LatinIME)" />
+            <extra android:name="license" android:value="apache" />
+        </Preference>
         <Preference android:key="lic_material"
             android:fragment="org.smc.inputmethod.indic.settings.LicenseTextFragment"
             android:title="Material Components for Android" android:persistent="false">
