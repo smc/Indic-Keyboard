@@ -50,7 +50,7 @@ TEST_APP_ACT := $(TEST_APP_PKG)/.MainActivity
 # bucket). Override on the command line if your AVD has a different name: make emulator-tablet TABLET_AVD=...
 TABLET_AVD := Pixel_Tablet
 
-.PHONY: help build install run emulator emulator-tablet emulator-install emulator-run release release-install offline-assets offline-release rename-release uninstall clear-data clean logcat build-native build-native-x86 varnam-native keyboard-text dicttool dictionaries-en device-check test-app-build test-app-install test-app-emulator-install harness harness-corpus harness-run
+.PHONY: help build install run emulator emulator-tablet emulator-install emulator-run release release-install offline-assets offline-release rename-release uninstall clear-data clean logcat build-native build-native-x86 varnam-native keyboard-text dicttool dictionaries-en device-check test-app-build test-app-install test-app-emulator-install harness harness-corpus harness-run harness-futo
 
 .DEFAULT_GOAL := help
 
@@ -264,6 +264,35 @@ harness-corpus: ## Generate a synthetic swipe corpus (HARNESS_VARIANTS, HARNESS_
 
 harness-run: harness ## Replay the corpus through the suggest engine (HARNESS_CORPUS, HARNESS_DICT)
 	$(HARNESS_BIN) $(HARNESS_CORPUS) $(HARNESS_DICT)
+
+# Real human swipes from huggingface.co/datasets/futo-org/swipe.futo.org (MIT)
+# A fixed-size slice of the split is downloaded once and converted with futo_corpus.py;
+# delete native/host-harness/futo/ to re-fetch. test = held-out reporting, dev = tuning,
+# swipe2..swipe5 = the later collection runs.
+FUTO_DIR   := $(HARNESS_DIR)/futo
+FUTO_BASE  := https://huggingface.co/datasets/futo-org/swipe.futo.org/resolve/main
+FUTO_SPLIT ?= test
+FUTO_PATH   = $(if $(filter swipe%,$(FUTO_SPLIT)),$(subst swipe,swipe-,$(FUTO_SPLIT))/$(FUTO_SPLIT).jsonl,$(FUTO_SPLIT).jsonl)
+FUTO_BYTES ?= 52428800
+FUTO_DICT  ?= java/res/raw/main_en.dict
+
+harness-futo: harness ## Replay real FUTO-dataset swipes and report accuracy (FUTO_SPLIT=test|dev|swipe2..swipe5)
+	@mkdir -p $(FUTO_DIR)
+	@if [ ! -f $(FUTO_DIR)/qwerty.json ]; then \
+		echo "Fetching FUTO qwerty layout..."; \
+		curl -fsSL $(FUTO_BASE)/swipe-5/layouts/qwerty.json -o $(FUTO_DIR)/qwerty.json; \
+	fi
+	@if [ ! -f $(FUTO_DIR)/$(FUTO_SPLIT).corpus.json ]; then \
+		echo "Fetching $(FUTO_PATH) slice ($(FUTO_BYTES) bytes)..."; \
+		curl -fsSL -r 0-$(FUTO_BYTES) $(FUTO_BASE)/$(FUTO_PATH) \
+			-o $(FUTO_DIR)/$(FUTO_SPLIT).jsonl; \
+		sed -i '' '$$d' $(FUTO_DIR)/$(FUTO_SPLIT).jsonl; \
+		python3 $(HARNESS_DIR)/futo_corpus.py $(FUTO_DIR)/$(FUTO_SPLIT).jsonl \
+			--layout $(FUTO_DIR)/qwerty.json \
+			--out $(FUTO_DIR)/$(FUTO_SPLIT).corpus.json; \
+		rm $(FUTO_DIR)/$(FUTO_SPLIT).jsonl; \
+	fi
+	$(HARNESS_BIN) $(FUTO_DIR)/$(FUTO_SPLIT).corpus.json $(FUTO_DICT)
 
 KBD_TEXT_DIR        := tools/make-keyboard-text
 KBD_TEXT_TABLE      := java/src/com/android/inputmethod/keyboard/internal/KeyboardTextsTable.java
