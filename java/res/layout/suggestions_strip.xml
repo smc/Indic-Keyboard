@@ -128,6 +128,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/config_suggestions_strip_edge_key_width"
+        android:layout_marginEnd="@dimen/config_suggestions_strip_edge_key_width"
         android:scrollbars="none"
         android:fillViewport="true"
         android:hapticFeedbackEnabled="false"
