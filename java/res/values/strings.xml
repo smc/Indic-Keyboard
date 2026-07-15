@@ -287,7 +287,7 @@
     <!-- Option name for enabling or disabling the use of names of people in Contacts for suggestion and correction [CHAR LIMIT=25] -->
     <string name="use_contacts_dict">Suggest Contact names</string>
     <!-- Description for option enabling or disabling the use of names of people in Contacts for suggestion and correction [CHAR LIMIT=65] -->
-    <string name="use_contacts_dict_summary">Use names from Contacts for suggestions and corrections</string>
+    <string name="use_contacts_dict_summary">Use names from contacts for word suggestions</string>
 
     <!-- Option name for enabling the use by the keyboards of sent/received messages, e-mail and typing history to improve suggestion accuracy [CHAR LIMIT=25] -->
     <string name="use_personalized_dicts">Personalized suggestions</string>
@@ -803,7 +803,15 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
     <string name="su_step3_action">Next</string>
     <string name="su_step4_title">Choose your layouts</string>
     <string name="su_step4_desc">Pick the layouts you want for each language.</string>
-    <string name="su_step4_action">Download language packs</string>
+    <string name="su_step4_action">Next</string>
+    <string name="su_step_personalize_title">Make it yours</string>
+    <string name="su_step_personalize_desc">Optional extras. You can change these anytime in Settings.</string>
+    <string name="su_step_personalize_action">Continue</string>
+    <!-- Section header above the companion-language rows; companion suggestions appear on the English keyboard. -->
+    <string name="su_section_companion">While typing in English</string>
+    <string name="su_section_suggestions">Suggestions</string>
+    <!-- Title of a companion-language row; the placeholder is the language's English name. -->
+    <string name="su_companion_row_title"><xliff:g id="LANGUAGE_NAME" example="Malayalam">%1$s</xliff:g> companion</string>
     <string name="su_step_download_title">Getting your languages ready</string>
     <string name="su_step_download_desc">Downloading language packs so your layouts work right away.</string>
     <string name="su_downloading_action">Downloading…</string>

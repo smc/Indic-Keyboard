@@ -1,9 +1,9 @@
 <!--
-  Material Icons (Round) "check" - generated from @material-design-icons/svg/round/check.svg
+  Material Symbols (Rounded) "check" - wght 400, generated from fonts.google.com
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp" android:height="24dp"
     android:viewportWidth="24" android:viewportHeight="24">
     <path android:fillColor="#FF000000"
-        android:pathData="M9 16.17L5.53 12.7c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41l4.18 4.18c.39.39 1.02.39 1.41 0L20.29 7.71c.39-.39.39-1.02 0-1.41-.39-.39-1.02-.39-1.41 0L9 16.17z"/>
+        android:pathData="M9.55,15.15L18.03,6.68q0.3,-0.3,0.7,-0.3t0.7,0.3q0.3,0.3,0.3,0.71T19.43,8.1l-9.18,9.2q-0.3,0.3,-0.7,0.3T8.85,17.3L4.55,13Q4.25,12.7,4.26,12.29T4.58,11.58t0.71,-0.3T6,11.58l3.55,3.58Z"/>
 </vector>
