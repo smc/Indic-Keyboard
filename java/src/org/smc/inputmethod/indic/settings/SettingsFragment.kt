@@ -48,6 +48,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setHasOptionsMenu(true)
     }
 
+    override fun onResume() {
+        super.onResume()
+        refreshSetupBanner()
+    }
+
+    fun refreshSetupBanner() {
+        findPreference<SetupStatusPreference>(PREF_SETUP_STATUS)?.refresh()
+    }
+
     override fun onCreateAdapter(preferenceScreen: PreferenceScreen): RecyclerView.Adapter<*> =
         CardedPreferenceGroupAdapter(preferenceScreen)
 
@@ -94,6 +103,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     companion object {
+        private const val PREF_SETUP_STATUS = "setup_status"
+
         private val NO_MENU_GROUP = Menu.NONE
         private val MENU_ABOUT = Menu.FIRST
         private val MENU_HELP_AND_FEEDBACK = Menu.FIRST + 1

@@ -108,6 +108,14 @@ class SettingsActivity : AppCompatActivity(),
         return true
     }
 
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            supportFragmentManager.fragments.filterIsInstance<SettingsFragment>()
+                .forEach { it.refreshSetupBanner() }
+        }
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         val fm = supportFragmentManager
         if (fm.backStackEntryCount > 0) {

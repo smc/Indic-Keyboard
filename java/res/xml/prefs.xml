@@ -18,6 +18,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:latin="http://schemas.android.com/apk/res-auto"
     android:key="english_ime_settings">
+    <org.smc.inputmethod.indic.settings.SetupStatusPreference
+        android:key="setup_status" />
     <!-- Grouped into titleless cards; each PreferenceCategory renders as one rounded card. -->
     <PreferenceCategory android:key="group_input">
         <PreferenceScreen

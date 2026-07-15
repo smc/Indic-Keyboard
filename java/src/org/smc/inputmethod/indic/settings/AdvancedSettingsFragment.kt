@@ -16,15 +16,19 @@
 
 package org.smc.inputmethod.indic.settings
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.media.AudioManager
 import android.os.Bundle
 
 import androidx.core.content.getSystemService
+import androidx.preference.Preference
 
 import com.android.inputmethod.latin.AudioAndHapticFeedbackManager
 import com.android.inputmethod.latin.R
 import com.android.inputmethod.latin.SystemBroadcastReceiver
+
+import org.smc.inputmethod.indic.setup.SetupWizardActivity
 
 /**
  * "Advanced" settings sub screen: key-popup dismiss delay, keypress vibration duration, keypress
@@ -50,6 +54,14 @@ class AdvancedSettingsFragment : SubScreenFragment() {
         setupKeypressSoundVolumeSettings()
         setupKeyLongpressTimeoutSettings()
         refreshEnablingsOfKeypressSoundAndVibrationSettings()
+
+        findPreference<Preference>(Settings.PREF_RERUN_SETUP)?.setOnPreferenceClickListener {
+            startActivity(
+                Intent(requireContext(), SetupWizardActivity::class.java)
+                    .putExtra(SetupWizardActivity.EXTRA_FORCE_SETUP, true)
+            )
+            true
+        }
     }
 
     override fun onSharedPreferenceChanged(prefs: SharedPreferences, key: String?) {

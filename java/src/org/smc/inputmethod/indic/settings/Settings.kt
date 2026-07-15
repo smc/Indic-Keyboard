@@ -152,6 +152,8 @@ class Settings private constructor() : SharedPreferences.OnSharedPreferenceChang
         const val PREF_GESTURE_PREVIEW_TRAIL = "pref_gesture_preview_trail"
         const val PREF_GESTURE_FLOATING_PREVIEW_TEXT = "pref_gesture_floating_preview_text"
         const val PREF_SHOW_SETUP_WIZARD_ICON = "pref_show_setup_wizard_icon"
+        const val PREF_SETUP_COMPLETED = "pref_setup_completed"
+        const val PREF_RERUN_SETUP = "pref_rerun_setup"
 
         const val PREF_KEY_IS_INTERNAL = "pref_key_is_internal"
 

@@ -1,0 +1,22 @@
+<!--
+    Copyright 2026, Jishnu Mohan <jishnu7@gmail.com>
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!-- Material Symbols (Rounded) "keyboard" - wght 400, generated from fonts.google.com -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <path android:fillColor="@color/settings_icon_tint"
+        android:pathData="M4,19Q3.18,19,2.59,18.41T2,17V7Q2,6.18,2.59,5.59T4,5H20q0.83,0,1.41,0.59Q22,6.18,22,7V17q0,0.82,-0.59,1.41T20,19H4ZM4,17H20V7H4V17ZM9,16h6q0.43,0,0.71,-0.29T16,15T15.71,14.29T15,14H9Q8.58,14,8.29,14.29T8,15t0.29,0.71Q8.58,16,9,16ZM6.71,9.71Q7,9.42,7,9Q7,8.57,6.71,8.29T6,8Q5.58,8,5.29,8.29T5,9Q5,9.42,5.29,9.71T6,10T6.71,9.71Zm3,0Q10,9.42,10,9Q10,8.57,9.71,8.29T9,8Q8.58,8,8.29,8.29T8,9Q8,9.42,8.29,9.71Q8.58,10,9,10Q9.43,10,9.71,9.71Zm3,0Q13,9.42,13,9Q13,8.57,12.71,8.29T12,8T11.29,8.29T11,9q0,0.42,0.29,0.71T12,10T12.71,9.71Zm3,0Q16,9.42,16,9Q16,8.57,15.71,8.29T15,8T14.29,8.29T14,9q0,0.42,0.29,0.71T15,10T15.71,9.71Zm3,0Q19,9.42,19,9Q19,8.57,18.71,8.29T18,8T17.29,8.29T17,9q0,0.42,0.29,0.71T18,10T18.71,9.71Zm-12,3Q7,12.43,7,12T6.71,11.29T6,11Q5.58,11,5.29,11.29T5,12t0.29,0.71T6,13T6.71,12.71Zm3,0Q10,12.43,10,12T9.71,11.29T9,11Q8.58,11,8.29,11.29T8,12t0.29,0.71Q8.58,13,9,13q0.43,0,0.71,-0.29Zm3,0Q13,12.43,13,12T12.71,11.29T12,11t-0.71,0.29T11,12t0.29,0.71T12,13t0.71,-0.29Zm3,0Q16,12.43,16,12T15.71,11.29T15,11t-0.71,0.29T14,12t0.29,0.71T15,13t0.71,-0.29Zm3,0Q19,12.43,19,12T18.71,11.29T18,11t-0.71,0.29T17,12t0.29,0.71T18,13t0.71,-0.29Z"/>
+</vector>

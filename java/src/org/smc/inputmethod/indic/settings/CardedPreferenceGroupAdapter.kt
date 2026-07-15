@@ -32,6 +32,9 @@ import androidx.recyclerview.widget.RecyclerView
 
 import com.google.android.material.color.MaterialColors
 
+/** Preferences whose layout draws its own card surface; the adapter leaves their background alone. */
+interface SelfContainedCard
+
 /**
  * Groups consecutive preferences between section headers into a single rounded Material 3 "card",
  * giving each item a position-aware background (top / middle / bottom / single) so a section reads
@@ -73,6 +76,9 @@ class CardedPreferenceGroupAdapter(preferenceGroup: PreferenceGroup) :
                 lp.bottomMargin = 0
                 styleCategoryTitle(holder)
             }
+        } else if (getItem(position) is SelfContainedCard) {
+            lp.topMargin = gap
+            lp.bottomMargin = 0
         } else {
             val top = isCardTop(position)
             val bottom = isCardBottom(position)
@@ -83,14 +89,17 @@ class CardedPreferenceGroupAdapter(preferenceGroup: PreferenceGroup) :
         item.layoutParams = lp
     }
 
+    private fun isCardBoundary(position: Int): Boolean =
+        getItem(position).let { it is PreferenceCategory || it is SelfContainedCard }
+
     private fun isCardTop(position: Int): Boolean =
-        position == 0 || getItem(position - 1) is PreferenceCategory
+        position == 0 || isCardBoundary(position - 1)
 
     private fun isCardBottom(position: Int): Boolean =
-        position == itemCount - 1 || getItem(position + 1) is PreferenceCategory
+        position == itemCount - 1 || isCardBoundary(position + 1)
 
     fun hasDividerBelow(position: Int): Boolean =
-        getItem(position) !is PreferenceCategory && !isCardBottom(position)
+        !isCardBoundary(position) && !isCardBottom(position)
 
     class CardDivider(context: Context) : RecyclerView.ItemDecoration() {
         private val paint = Paint()

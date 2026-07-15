@@ -163,7 +163,11 @@ class SetupWizardActivity : AppCompatActivity(), LanguagePackDownloadManager.Lis
         if (savedInstanceState == null) {
             val carriedFirstStep = stepOf(intent.getStringExtra(EXTRA_FIRST_STEP))
             firstStep = carriedFirstStep ?: determineSetupStepNumber()
-            stepNumber = determineSetupStepNumberFromLauncher()
+            stepNumber = if (intent.getBooleanExtra(EXTRA_FORCE_SETUP, false)) {
+                Step.WELCOME
+            } else {
+                determineSetupStepNumberFromLauncher()
+            }
         } else {
             stepNumber = stepOf(savedInstanceState.getString(STATE_STEP)) ?: Step.WELCOME
             firstStep = stepOf(savedInstanceState.getString(STATE_FIRST_STEP)) ?: Step.ENABLE
@@ -246,8 +250,20 @@ class SetupWizardActivity : AppCompatActivity(), LanguagePackDownloadManager.Lis
 
     private fun determineSetupStepNumberFromLauncher(): Step {
         val step = determineSetupStepNumber()
-        return if (step == Step.ENABLE || step == Step.SWITCH) Step.WELCOME
-        else Step.LAUNCHING_IME_SETTINGS
+        if (step == Step.ENABLE || step == Step.SWITCH) {
+            return if (isSetupCompleted()) Step.LAUNCHING_IME_SETTINGS else Step.WELCOME
+        }
+        markSetupCompleted()
+        return Step.LAUNCHING_IME_SETTINGS
+    }
+
+    private fun isSetupCompleted(): Boolean =
+        PreferenceManagerCompat.getDeviceSharedPreferences(this)
+            .getBoolean(AppSettings.PREF_SETUP_COMPLETED, false)
+
+    private fun markSetupCompleted() {
+        PreferenceManagerCompat.getDeviceSharedPreferences(this).edit()
+            .putBoolean(AppSettings.PREF_SETUP_COMPLETED, true).apply()
     }
 
     private fun determineSetupStepNumber(): Step {
@@ -368,6 +384,7 @@ class SetupWizardActivity : AppCompatActivity(), LanguagePackDownloadManager.Lis
                 showList = true
             }
             Step.DONE -> {
+                markSetupCompleted()
                 titleRes = R.string.su_done_title
                 descRes = R.string.su_done_desc
                 actionRes = R.string.su_done_action
@@ -779,6 +796,8 @@ class SetupWizardActivity : AppCompatActivity(), LanguagePackDownloadManager.Lis
     }
 
     companion object {
+        const val EXTRA_FORCE_SETUP = "force_setup"
+
         private const val EXTRA_FIRST_STEP = "first_step"
         private const val STATE_STEP = "step"
         private const val STATE_FIRST_STEP = "first_step"

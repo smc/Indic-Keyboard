@@ -596,6 +596,25 @@ mobile devices. [CHAR LIMIT=25] -->
     <!-- Description for the option to show setup wizard application icon of this IME in the laucher. [CHAR_LIMIT=65] -->
     <string name="show_setup_wizard_icon_summary">Display application icon in the launcher</string>
 
+    <!-- Settings status card shown when another keyboard is the current input method. -->
+    <string name="setup_banner_switched_title">You\'re typing with another keyboard</string>
+    <!-- Body of the status card; the placeholder is the name of the currently active keyboard. -->
+    <string name="setup_banner_switched_body"><xliff:g id="KEYBOARD_NAME" example="Gboard">%1$s</xliff:g> is currently active. Switch back to keep typing in your languages.</string>
+    <!-- Body of the status card when the active keyboard's name is unknown. -->
+    <string name="setup_banner_switched_body_generic">Another keyboard is currently active. Switch back to keep typing in your languages.</string>
+    <!-- Settings status card shown when this keyboard has been disabled in system settings; the placeholder is this app's name. -->
+    <string name="setup_banner_disabled_title"><xliff:g id="APPLICATION_NAME" example="Indic Keyboard">%1$s</xliff:g> is turned off</string>
+    <string name="setup_banner_disabled_body">It was disabled in system settings, so it can\'t be selected right now.</string>
+    <!-- Status card button that opens the system keyboard picker. [CHAR LIMIT=20] -->
+    <string name="setup_banner_switch_back">Switch back</string>
+    <!-- Status card button that opens the system input method settings. [CHAR LIMIT=20] -->
+    <string name="setup_banner_turn_on">Turn on</string>
+    <!-- Status card button that restarts the setup wizard. [CHAR LIMIT=20] -->
+    <string name="setup_banner_setup_again">Set up again</string>
+    <!-- Advanced settings entry that restarts the setup wizard. -->
+    <string name="rerun_setup_title">Run setup again</string>
+    <string name="rerun_setup_summary">Walk through enabling the keyboard</string>
+
     <!-- The dictionary provider application name. Visible in Settings/Applications/Manage applications. -->
     <string name="app_name">Dictionary Provider</string>
     <!-- The dictionary provider ContentProvider name. Visible in Settings/Applications/Running services. -->

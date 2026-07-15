@@ -44,6 +44,13 @@
           android:defaultValue="true"
           android:persistent="true" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="Setup">
+      <Preference
+          android:key="pref_rerun_setup"
+          android:title="@string/rerun_setup_title"
+          android:summary="@string/rerun_setup_summary"
+          android:persistent="false" />
+    </PreferenceCategory>
     <PreferenceScreen
         android:fragment="org.smc.inputmethod.indic.settings.DebugSettingsFragment"
         android:key="screen_debug"
