@@ -47,8 +47,7 @@
         <Key
             latin:keyStyle="num6KeyStyle" />
         <Key
-            latin:keySpec="."
-            latin:keyStyle="numFunctionalKeyStyle"
+            latin:keyStyle="numSpaceKeyStyle"
             latin:keyWidth="fillRight" />
     </Row>
     <Row>
@@ -71,7 +70,8 @@
             latin:keySpec="0 +|0"
             latin:moreKeys="!noPanelAutoMoreKey!,+" />
         <Key
-            latin:keyStyle="numSpaceKeyStyle" />
+            latin:keySpec="."
+            latin:keyStyle="numKeyStyle" />
         <Key
             latin:keyStyle="enterKeyStyle"
             latin:keyWidth="fillRight" />

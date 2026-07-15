@@ -95,6 +95,10 @@ public class KeyboardView extends View {
     private final Drawable mKeyBackground;
     private final Drawable mFunctionalKeyBackground;
     private final Drawable mSpacebarBackground;
+    private final Drawable mNumberKeyBackground;
+    private final Drawable mNumberFunctionalKeyBackground;
+    private Drawable mActiveKeyBackground;
+    private Drawable mActiveFunctionalKeyBackground;
     private final float mSpacebarIconWidthRatio;
     private final Rect mKeyBackgroundPadding = new Rect();
     private static final float KET_TEXT_SHADOW_RADIUS_DISABLED = -1.0f;
@@ -145,6 +149,16 @@ public class KeyboardView extends View {
         final Drawable spacebarBackground = keyboardViewAttr.getDrawable(
                 R.styleable.KeyboardView_spacebarBackground);
         mSpacebarBackground = (spacebarBackground != null) ? spacebarBackground : mKeyBackground;
+        final Drawable numberKeyBackground = keyboardViewAttr.getDrawable(
+                R.styleable.KeyboardView_keyBackgroundNumber);
+        mNumberKeyBackground = (numberKeyBackground != null) ? numberKeyBackground
+                : mKeyBackground;
+        final Drawable numberFunctionalKeyBackground = keyboardViewAttr.getDrawable(
+                R.styleable.KeyboardView_functionalKeyBackgroundNumber);
+        mNumberFunctionalKeyBackground = (numberFunctionalKeyBackground != null)
+                ? numberFunctionalKeyBackground : mFunctionalKeyBackground;
+        mActiveKeyBackground = mKeyBackground;
+        mActiveFunctionalKeyBackground = mFunctionalKeyBackground;
         mSpacebarIconWidthRatio = keyboardViewAttr.getFloat(
                 R.styleable.KeyboardView_spacebarIconWidthRatio, 1.0f);
         mKeyHintLetterPadding = keyboardViewAttr.getDimension(
@@ -196,6 +210,10 @@ public class KeyboardView extends View {
      */
     public void setKeyboard(@Nonnull final Keyboard keyboard) {
         mKeyboard = keyboard;
+        final boolean numberLayout = keyboard.mId.isNumberLayout();
+        mActiveKeyBackground = numberLayout ? mNumberKeyBackground : mKeyBackground;
+        mActiveFunctionalKeyBackground = numberLayout
+                ? mNumberFunctionalKeyBackground : mFunctionalKeyBackground;
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mKeyDrawParams.updateParams(keyHeight, mKeyVisualAttributes);
         mKeyDrawParams.updateParams(keyHeight, keyboard.mKeyVisualAttributes);
@@ -344,7 +362,7 @@ public class KeyboardView extends View {
 
         if (!key.isSpacer()) {
             final Drawable background = key.selectBackgroundDrawable(
-                    mKeyBackground, mFunctionalKeyBackground, mSpacebarBackground);
+                    mActiveKeyBackground, mActiveFunctionalKeyBackground, mSpacebarBackground);
             if (background != null) {
                 onDrawKeyBackground(key, canvas, background);
             }

@@ -158,6 +158,11 @@ public final class KeyboardId {
         return isAlphabetKeyboard(mElementId);
     }
 
+    public boolean isNumberLayout() {
+        return mElementId == ELEMENT_PHONE || mElementId == ELEMENT_PHONE_SYMBOLS
+                || mElementId == ELEMENT_NUMBER;
+    }
+
     public boolean navigateNext() {
         return (mEditorInfo.imeOptions & EditorInfo.IME_FLAG_NAVIGATE_NEXT) != 0
                 || imeAction() == EditorInfo.IME_ACTION_NEXT;
