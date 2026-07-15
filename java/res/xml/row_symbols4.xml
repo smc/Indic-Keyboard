@@ -22,11 +22,8 @@
     <Key
         latin:keySpec="!text/keyspec_comma" />
     <Key
-        latin:keySpec="_" />
-    <include
-        latin:keyboardLayout="@xml/key_space_symbols" />
-    <Key
-        latin:keySpec="/" />
+        latin:keyStyle="spaceKeyStyle"
+        latin:keyWidth="50%p" />
     <!-- U+2026: "…" HORIZONTAL ELLIPSIS -->
     <Key
         latin:keySpec="."

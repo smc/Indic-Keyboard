@@ -50,4 +50,6 @@
         latin:moreKeys="&#x2260;,&#x2248;,&#x221E;" />
     <include
         latin:keyboardLayout="@xml/keys_curly_brackets" />
+    <Key
+        latin:keySpec="\\" />
 </merge>

@@ -47,7 +47,6 @@
         latin:keyWidth="10%p"
     >
         <include
-            latin:keyXPos="5%p"
             latin:keyboardLayout="@xml/rowkeys_symbols_shift2" />
     </Row>
     <Row
