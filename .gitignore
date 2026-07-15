@@ -41,3 +41,5 @@ temp/
 *.diff
 
 java/offline/assets/
+
+native/host-harness/futo/

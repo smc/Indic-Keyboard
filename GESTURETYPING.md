@@ -88,6 +88,8 @@ cost.
 
 - A gesture must trace the whole word: word completions are rejected, and a candidate that
   ends before the path does pays the skip cost of the remaining tail.
+- The lift-off point anchors the word's end: a candidate whose final letter sits away from
+  where the finger lifted pays for the drift.
 - The one exception is a word-final double letter (feel, കൊള്ളാം): its second letter cannot
   claim a distinct sample, so it is admitted at a small fixed cost and flagged so ranking
   does not classify it as a correction.
