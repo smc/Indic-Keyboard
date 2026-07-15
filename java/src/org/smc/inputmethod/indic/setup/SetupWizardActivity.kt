@@ -16,21 +16,11 @@
 
 package org.smc.inputmethod.indic.setup
 
-import android.Manifest
 import android.content.Intent
-import android.content.SharedPreferences
-import android.graphics.LinearGradient
-import android.graphics.Shader
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.provider.Settings
-import android.util.TypedValue
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.view.inputmethod.InputMethodSubtype
-import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -43,41 +33,28 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 
 import com.android.inputmethod.compat.PreferenceManagerCompat
-import com.android.inputmethod.keyboard.KeyboardPreviewView
-import com.android.inputmethod.keyboard.KeyboardTheme
 import com.android.inputmethod.latin.R
-import com.android.inputmethod.latin.RichInputMethodManager
-import com.android.inputmethod.latin.common.LocaleUtils
 import com.android.inputmethod.latin.permissions.PermissionsManager
-import com.android.inputmethod.latin.permissions.PermissionsUtil
-import com.android.inputmethod.latin.utils.KeyboardLanguages
-import com.android.inputmethod.latin.utils.KeyboardLanguages.Language
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils
-import com.android.inputmethod.latin.utils.TextDrawable
 import com.android.inputmethod.latin.utils.UncachedInputMethodManagerUtils
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.materialswitch.MaterialSwitch
 
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-import org.smc.inputmethod.indic.languagepack.LanguagePackDownloadManager
-import org.smc.inputmethod.indic.languagepack.LanguagePackDownloadManager.Pack
 import org.smc.inputmethod.indic.settings.Settings as AppSettings
 import org.smc.inputmethod.indic.settings.SettingsActivity
-import org.smc.inputmethod.indic.varnam.VarnamIndicKeyboard
-
-import kotlin.math.roundToInt
 
 /**
  * Modern Material 3 onboarding for the keyboard. A single adaptive screen guides the user through
- * the three Android-mandated steps — enable the IME, switch to it, then choose languages — by
- * updating its title, description and primary action per step. The underlying step state machine
- * (which system screen to open, and detecting when the user returns) is unchanged.
+ * enabling the IME, switching to it, choosing languages/layouts, the optional personalize step
+ * and the language-pack download, by updating its title, description and primary action per step.
+ * This activity owns the step state machine and lifecycle; the steps' content and state live in
+ * [LanguageSelection], [SetupSelectionList], [PersonalizeStepController] and
+ * [PackDownloadController].
  */
-class SetupWizardActivity : AppCompatActivity(), LanguagePackDownloadManager.Listener,
-    PermissionsManager.PermissionsResultCallback {
+class SetupWizardActivity : AppCompatActivity() {
 
     /**
      * Wizard steps. [progressIndex] drives the "step N of M" indicator; the two transient states
@@ -107,7 +84,6 @@ class SetupWizardActivity : AppCompatActivity(), LanguagePackDownloadManager.Lis
     private lateinit var primaryAction: MaterialButton
     private lateinit var logo: View
     private lateinit var skip: MaterialButton
-    private lateinit var selectionList: LinearLayout
 
     private lateinit var backToPreviousStep: OnBackPressedCallback
     private lateinit var greeting: GreetingAnimator
@@ -117,24 +93,10 @@ class SetupWizardActivity : AppCompatActivity(), LanguagePackDownloadManager.Lis
     private var firstStep = Step.WELCOME
     private var needsToAdjustStepNumberToSystemState = false
 
-    private var selectionStateLoaded = false
-    private lateinit var languages: List<Language>
-    private lateinit var selectedLocales: MutableSet<String>
-    private lateinit var enabledKeys: MutableSet<String>
-
-    // Language-pack download step state.
-    private var packManager: LanguagePackDownloadManager? = null
-    private val packLangs = ArrayList<String>()              // language codes to fetch
-    private val packPending = HashSet<String>()              // still downloading
-    private val packStatus = HashMap<String, CharSequence>()
-    private val packReady = HashSet<String>()
-    private val packRows = HashMap<String, View>()
-    private var packStarted = false
-    private var packIndexLoaded = false
-
-    // Personalize step state.
-    private val companionSwitches = HashMap<String, MaterialSwitch>()
-    private var contactsSwitch: MaterialSwitch? = null
+    private val selection = LanguageSelection(this)
+    private lateinit var selectionList: SetupSelectionList
+    private lateinit var personalize: PersonalizeStepController
+    private lateinit var packs: PackDownloadController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -147,12 +109,19 @@ class SetupWizardActivity : AppCompatActivity(), LanguagePackDownloadManager.Lis
         welcomeWord = findViewById(R.id.setup_welcome_word)
         title = findViewById(R.id.setup_title)
         description = findViewById(R.id.setup_description)
-        selectionList = findViewById(R.id.setup_selection_list)
         progress = findViewById(R.id.setup_progress)
         primaryAction = findViewById(R.id.setup_primary_action)
         primaryAction.setOnClickListener { onPrimaryAction() }
         skip = findViewById(R.id.setup_skip)
         skip.setOnClickListener { onSkip() }
+
+        selectionList = SetupSelectionList(this, findViewById<LinearLayout>(R.id.setup_selection_list))
+        personalize = PersonalizeStepController(this, selection)
+        packs = PackDownloadController(this, selection) {
+            if (stepNumber == Step.DOWNLOAD) {
+                updateDownloadPrimary()
+            }
+        }
 
         backToPreviousStep = object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
@@ -204,7 +173,7 @@ class SetupWizardActivity : AppCompatActivity(), LanguagePackDownloadManager.Lis
             }
             Step.SWITCH -> invokeInputMethodPicker()
             Step.LANGUAGES -> {
-                if (!selectionStateLoaded || selectedLocales.isEmpty()) {
+                if (!selection.loaded || selection.selectedLocales.isEmpty()) {
                     Toast.makeText(this, R.string.su_select_a_language, Toast.LENGTH_SHORT).show()
                 } else {
                     stepNumber = Step.LAYOUTS
@@ -212,8 +181,9 @@ class SetupWizardActivity : AppCompatActivity(), LanguagePackDownloadManager.Lis
                 }
             }
             Step.LAYOUTS -> {
-                commitSelectedLayouts()
-                startPackDownloads()
+                selection.commitEnabledLayouts()
+                // Packs download in the background while the user is on the personalize step.
+                packs.start()
                 stepNumber = Step.PERSONALIZE
                 updateSetupStepView()
             }
@@ -267,8 +237,12 @@ class SetupWizardActivity : AppCompatActivity(), LanguagePackDownloadManager.Lis
     private fun determineSetupStepNumberFromLauncher(): Step {
         val step = determineSetupStepNumber()
         if (step == Step.ENABLE || step == Step.SWITCH) {
+            // Users who already finished setup once fix this from the settings status card
+            // instead of re-running onboarding.
             return if (isSetupCompleted()) Step.LAUNCHING_IME_SETTINGS else Step.WELCOME
         }
+        // The IME is enabled and current, so setup is de facto done — covers users who
+        // onboarded before the flag existed.
         markSetupCompleted()
         return Step.LAUNCHING_IME_SETTINGS
     }
@@ -334,8 +308,15 @@ class SetupWizardActivity : AppCompatActivity(), LanguagePackDownloadManager.Lis
     }
 
     override fun onDestroy() {
-        packManager?.setListener(null)  // downloads continue in the system DownloadManager
+        packs.detach()
         super.onDestroy()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        PermissionsManager.get(this).onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     private fun previousStep(step: Step): Step = when (step) {
@@ -417,7 +398,7 @@ class SetupWizardActivity : AppCompatActivity(), LanguagePackDownloadManager.Lis
             }
             else -> {  // Step.WELCOME
                 logo.visibility = View.VISIBLE
-                selectionList.visibility = View.GONE
+                selectionList.setVisible(false)
                 title.visibility = View.GONE
                 welcomeWord.visibility = View.VISIBLE
                 description.setText(R.string.su_welcome_subtitle)
@@ -434,25 +415,23 @@ class SetupWizardActivity : AppCompatActivity(), LanguagePackDownloadManager.Lis
         title.setText(titleRes)
         description.setText(descRes)
         primaryAction.setText(actionRes)
+        selectionList.setVisible(showList)
         if (showList) {
-            selectionList.visibility = View.VISIBLE
             when (stepNumber) {
                 Step.LANGUAGES -> {
-                    ensureSelectionStateLoaded()
+                    selection.ensureLoaded()
                     buildLanguageList()
                 }
                 Step.LAYOUTS -> buildLayoutList()
-                Step.PERSONALIZE -> buildPersonalizeList()
+                Step.PERSONALIZE -> personalize.buildList(selectionList)
                 else -> {
-                    if (!packStarted) {  // e.g. after a configuration change
-                        ensureSelectionStateLoaded()
-                        startPackDownloads()
+                    if (!packs.started) {  // e.g. after a configuration change
+                        selection.ensureLoaded()
+                        packs.start()
                     }
-                    buildDownloadList()
+                    packs.buildList(selectionList)
                 }
             }
-        } else {
-            selectionList.visibility = View.GONE
         }
         if (showProgress) {
             val total = (Step.DOWNLOAD.progressIndex - firstStep.progressIndex + 1).coerceAtLeast(1)
@@ -472,377 +451,41 @@ class SetupWizardActivity : AppCompatActivity(), LanguagePackDownloadManager.Lis
         }
     }
 
-    private fun ensureSelectionStateLoaded() {
-        if (selectionStateLoaded) {
-            return
-        }
-        selectionStateLoaded = true
-        RichInputMethodManager.init(this)
-        languages = KeyboardLanguages.getLanguages(this)
-        enabledKeys = HashSet(
-            AppSettings.readEnabledSubtypeKeys(PreferenceManagerCompat.getDeviceSharedPreferences(this))
-        )
-        selectedLocales = LinkedHashSet()
-        for (language in languages) {
-            for (layout in language.mLayouts) {
-                if (enabledKeys.contains(SubtypeLocaleUtils.getSubtypeKey(layout.mSubtype))) {
-                    selectedLocales.add(language.mLocale)
-                    break
-                }
-            }
-        }
-    }
-
-    /** Inflate one selection row and add it to the list, wiring its toggle when shown. */
-    private fun addSelectionRow(
-        rowTitle: CharSequence,
-        icon: Drawable? = null,
-        summary: CharSequence? = null,
-        showSwitch: Boolean = true,
-        checked: Boolean = false,
-        onToggle: (Boolean) -> Unit = {}
-    ): View {
-        val row = layoutInflater.inflate(R.layout.setup_selection_row, selectionList, false)
-        val iconView = row.findViewById<ImageView>(R.id.selection_icon)
-        if (icon != null) iconView.setImageDrawable(icon) else iconView.visibility = View.GONE
-        row.findViewById<TextView>(R.id.selection_title).text = rowTitle
-        if (summary != null) {
-            val summaryView = row.findViewById<TextView>(R.id.selection_summary)
-            summaryView.text = summary
-            summaryView.visibility = View.VISIBLE
-        }
-        val toggle = row.findViewById<MaterialSwitch>(R.id.selection_switch)
-        if (showSwitch) {
-            toggle.isChecked = checked
-            row.setOnClickListener {
-                val nowChecked = !toggle.isChecked
-                toggle.isChecked = nowChecked
-                onToggle(nowChecked)
-            }
-        } else {
-            toggle.visibility = View.GONE
-        }
-        selectionList.addView(row)
-        return row
-    }
-
-    /** A layout row whose header expands on tap to show a live preview; the switch toggles it. */
-    private fun addLayoutRow(
-        name: CharSequence,
-        subtype: InputMethodSubtype,
-        checked: Boolean,
-        onToggle: (Boolean) -> Unit
-    ) {
-        val row = layoutInflater.inflate(R.layout.setup_layout_row, selectionList, false)
-        row.findViewById<TextView>(R.id.selection_title).text = name
-        val toggle = row.findViewById<MaterialSwitch>(R.id.selection_switch)
-        toggle.isChecked = checked
-        toggle.setOnCheckedChangeListener { _, isChecked -> onToggle(isChecked) }
-        val chevron = row.findViewById<ImageView>(R.id.layout_expand_indicator)
-        val previewHolder = row.findViewById<FrameLayout>(R.id.layout_preview_holder)
-        previewHolder.clipToOutline = true
-        row.findViewById<View>(R.id.layout_row_header).setOnClickListener {
-            val expand = previewHolder.visibility != View.VISIBLE
-            chevron.rotation = if (expand) 180f else 0f
-            previewHolder.visibility = if (expand) View.VISIBLE else View.GONE
-            if (expand && previewHolder.tag !== subtype) {
-                previewHolder.removeAllViews()
-                previewHolder.addView(
-                    KeyboardPreviewView.create(this, KeyboardTheme.getKeyboardTheme(this), subtype),
-                    FrameLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT
-                    )
-                )
-                previewHolder.tag = subtype
-            }
-        }
-        selectionList.addView(row)
-    }
-
     private fun buildLanguageList() {
-        selectionList.removeAllViews()
-        for (language in sortedLanguages()) {
-            addSelectionRow(
-                formatName(language),
-                icon = createGlyphIcon(language),
-                checked = selectedLocales.contains(language.mLocale)
+        selectionList.clear()
+        for (language in selection.sorted()) {
+            selectionList.addRow(
+                selection.formatName(language),
+                icon = selectionList.glyphIcon(language),
+                checked = selection.selectedLocales.contains(language.mLocale)
             ) { checked ->
-                if (checked) selectedLocales.add(language.mLocale)
-                else selectedLocales.remove(language.mLocale)
+                if (checked) selection.selectedLocales.add(language.mLocale)
+                else selection.selectedLocales.remove(language.mLocale)
             }
         }
-    }
-
-    private fun addSectionHeader(text: CharSequence) {
-        val header = layoutInflater.inflate(
-            R.layout.setup_selection_header, selectionList, false
-        ) as TextView
-        header.text = text
-        selectionList.addView(header)
     }
 
     private fun buildLayoutList() {
-        reconcileEnabledWithSelection()
-        selectionList.removeAllViews()
-        for (language in sortedLanguages()) {
-            if (!selectedLocales.contains(language.mLocale)) {
-                continue
-            }
-            addSectionHeader(formatName(language))
+        selection.reconcileEnabledWithSelection()
+        selectionList.clear()
+        for (language in selection.sortedSelected()) {
+            selectionList.addHeader(selection.formatName(language))
             for (layout in language.mLayouts) {
                 val key = SubtypeLocaleUtils.getSubtypeKey(layout.mSubtype)
-                addLayoutRow(layout.mName, layout.mSubtype, enabledKeys.contains(key)) { checked ->
-                    if (checked) enabledKeys.add(key) else enabledKeys.remove(key)
+                selectionList.addLayoutRow(
+                    layout.mName, layout.mSubtype, selection.enabledKeys.contains(key)
+                ) { checked ->
+                    if (checked) selection.enabledKeys.add(key)
+                    else selection.enabledKeys.remove(key)
                 }
             }
         }
     }
-
-    private fun reconcileEnabledWithSelection() {
-        for (language in languages) {
-            val selected = selectedLocales.contains(language.mLocale)
-            val hasEnabled = language.mLayouts.any {
-                enabledKeys.contains(SubtypeLocaleUtils.getSubtypeKey(it.mSubtype))
-            }
-            if (selected && !hasEnabled && language.mLayouts.isNotEmpty()) {
-                enabledKeys.add(SubtypeLocaleUtils.getSubtypeKey(language.mLayouts[0].mSubtype))
-            } else if (!selected && hasEnabled) {
-                for (layout in language.mLayouts) {
-                    enabledKeys.remove(SubtypeLocaleUtils.getSubtypeKey(layout.mSubtype))
-                }
-            }
-        }
-    }
-
-    private fun commitSelectedLayouts() {
-        reconcileEnabledWithSelection()
-        RichInputMethodManager.init(this)
-        RichInputMethodManager.getInstance().setEnabledSubtypeKeys(enabledKeys)
-    }
-
-    // ---- Personalize step ----
-
-    private fun buildPersonalizeList() {
-        ensureSelectionStateLoaded()
-        selectionList.removeAllViews()
-        val prefs = PreferenceManagerCompat.getDeviceSharedPreferences(this)
-        addCompanionRows(prefs)
-        addContactsRow(prefs)
-    }
-
-    private fun languageCode(language: Language): String =
-        LocaleUtils.constructLocaleFromString(language.mLocale).language
-
-    /** Selected languages with a Varnam scheme; empty unless English is also selected, since
-     *  companion suggestions only appear on the English keyboard. */
-    private fun companionCandidates(): List<Language> {
-        val selected = sortedLanguages().filter { selectedLocales.contains(it.mLocale) }
-        if (selected.none { languageCode(it) == "en" }) {
-            return emptyList()
-        }
-        return selected.filter {
-            VarnamIndicKeyboard.schemes.containsKey("varnam-${languageCode(it)}")
-        }
-    }
-
-    private fun addCompanionRows(prefs: SharedPreferences) {
-        val candidates = companionCandidates()
-        if (candidates.isEmpty()) {
-            return
-        }
-        var companion = AppSettings.readCompanionLanguage(prefs)
-        // A lone candidate starts on the first time through; once the key exists, later runs
-        // respect whatever the user chose.
-        if (candidates.size == 1 && !prefs.contains(AppSettings.PREF_COMPANION_LANGUAGE)) {
-            companion = languageCode(candidates[0])
-            prefs.edit().putString(AppSettings.PREF_COMPANION_LANGUAGE, companion).apply()
-        }
-        addSectionHeader(getString(R.string.su_section_companion))
-        companionSwitches.clear()
-        for (language in candidates) {
-            val code = languageCode(language)
-            val row = addSelectionRow(
-                getString(R.string.su_companion_row_title, language.mEnglishName),
-                icon = createGlyphIcon(language),
-                summary = getString(
-                    R.string.companion_language_suggestions_summary, language.mAutonym
-                ),
-                checked = code == companion
-            ) { checked ->
-                prefs.edit()
-                    .putString(AppSettings.PREF_COMPANION_LANGUAGE, if (checked) code else "")
-                    .apply()
-                if (checked) {
-                    // The pref holds a single language: checking one row unchecks the rest.
-                    for ((otherCode, otherSwitch) in companionSwitches) {
-                        if (otherCode != code) otherSwitch.isChecked = false
-                    }
-                }
-            }
-            companionSwitches[code] = row.findViewById(R.id.selection_switch)
-        }
-    }
-
-    private fun addContactsRow(prefs: SharedPreferences) {
-        addSectionHeader(getString(R.string.su_section_suggestions))
-        val granted = PermissionsUtil.checkAllPermissionsGranted(
-            this, Manifest.permission.READ_CONTACTS
-        )
-        val row = addSelectionRow(
-            getString(R.string.use_contacts_dict),
-            summary = getString(R.string.use_contacts_dict_summary),
-            checked = granted && prefs.getBoolean(AppSettings.PREF_KEY_USE_CONTACTS_DICT, true)
-        ) { checked ->
-            prefs.edit().putBoolean(AppSettings.PREF_KEY_USE_CONTACTS_DICT, checked).apply()
-            if (checked && !PermissionsUtil.checkAllPermissionsGranted(
-                    this, Manifest.permission.READ_CONTACTS
-                )
-            ) {
-                PermissionsManager.get(this)
-                    .requestPermissions(this, this, Manifest.permission.READ_CONTACTS)
-            }
-        }
-        contactsSwitch = row.findViewById(R.id.selection_switch)
-    }
-
-    override fun onRequestPermissionsResult(allGranted: Boolean) {
-        if (!allGranted) {
-            contactsSwitch?.isChecked = false
-            PreferenceManagerCompat.getDeviceSharedPreferences(this).edit()
-                .putBoolean(AppSettings.PREF_KEY_USE_CONTACTS_DICT, false).apply()
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<out String>, grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        PermissionsManager.get(this).onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
-
-    // ---- Language-pack download step ----
-
-    private fun startPackDownloads() {
-        if (packStarted) {
-            return
-        }
-        packStarted = true
-        packLangs.clear()
-        for (language in languages) {
-            if (!selectedLocales.contains(language.mLocale)) {
-                continue
-            }
-            val code = LocaleUtils.constructLocaleFromString(language.mLocale).language
-            // English ships with the app and has no downloadable pack — don't list it.
-            if ("en" == code || packLangs.contains(code)) {
-                continue
-            }
-            packLangs.add(code)
-            packStatus[code] = getString(R.string.su_pack_waiting)
-        }
-        if (packLangs.isEmpty()) {
-            packIndexLoaded = true
-            return
-        }
-        packManager = LanguagePackDownloadManager(this).also {
-            it.setListener(this)
-            it.loadIndex()  // schemes arrive in onIndexLoaded, then we download
-        }
-    }
-
-    private fun buildDownloadList() {
-        selectionList.removeAllViews()
-        packRows.clear()
-        for (code in packLangs) {
-            val row = addSelectionRow(downloadRowText(code), showSwitch = false)
-            packRows[code] = row
-            updatePackRow(code)
-        }
-    }
-
-    private fun downloadRowText(code: String): CharSequence =
-        if (packReady.contains(code)) langDisplayName(code)
-        else "${langDisplayName(code)} · ${packStatus[code] ?: ""}"
-
-    private fun updatePackRow(code: String) {
-        val row = packRows[code] ?: return
-        row.findViewById<TextView>(R.id.selection_title).text = downloadRowText(code)
-        row.findViewById<ImageView>(R.id.selection_status_icon).visibility =
-            if (packReady.contains(code)) View.VISIBLE else View.GONE
-    }
-
-    private fun langDisplayName(code: String): CharSequence {
-        for (language in languages) {
-            if (code == LocaleUtils.constructLocaleFromString(language.mLocale).language) {
-                return language.mEnglishName
-            }
-        }
-        return code
-    }
-
-    private fun setPackStatus(code: String, status: CharSequence, ready: Boolean = false) {
-        packStatus[code] = status
-        if (ready) packReady.add(code)
-        updatePackRow(code)
-    }
-
-    private fun allPacksDone(): Boolean = packIndexLoaded && packPending.isEmpty()
 
     private fun updateDownloadPrimary() {
-        val done = allPacksDone()
+        val done = packs.allDone()
         primaryAction.isEnabled = done
         primaryAction.setText(if (done) R.string.su_done_action else R.string.su_downloading_action)
-    }
-
-    // ---- LanguagePackDownloadManager.Listener ----
-
-    override fun onIndexLoaded(schemes: List<Pack>) {
-        packIndexLoaded = true
-        for (code in packLangs) {
-            val pack = schemes.firstOrNull { code == it.lang }
-            when {
-                pack == null -> setPackStatus(code, getString(R.string.su_pack_unavailable))
-                packManager!!.ensureDownloaded(pack) -> {
-                    packPending.add(code)
-                    setPackStatus(code, getString(R.string.su_pack_waiting))
-                }
-                else -> setPackStatus(code, getString(R.string.su_pack_ready), ready = true)
-            }
-        }
-        if (stepNumber == Step.DOWNLOAD) {
-            updateDownloadPrimary()
-        }
-    }
-
-    override fun onProgress(lang: String, percent: Int) {
-        if (!packLangs.contains(lang)) return
-        packPending.add(lang)
-        if (percent == LanguagePackDownloadManager.INSTALLING) {
-            setPackStatus(lang, getString(R.string.language_pack_installing))
-        } else {
-            setPackStatus(lang, getString(R.string.language_pack_downloading, percent))
-        }
-        if (stepNumber == Step.DOWNLOAD) {
-            updateDownloadPrimary()
-        }
-    }
-
-    override fun onInstalled(lang: String) {
-        if (!packLangs.contains(lang)) return
-        packPending.remove(lang)
-        setPackStatus(lang, getString(R.string.su_pack_ready), ready = true)
-        if (stepNumber == Step.DOWNLOAD) {
-            updateDownloadPrimary()
-        }
-    }
-
-    override fun onError(lang: String?, message: String?) {
-        if (lang == null || !packLangs.contains(lang)) return
-        packPending.remove(lang)
-        setPackStatus(lang, getString(R.string.su_pack_failed))
-        if (stepNumber == Step.DOWNLOAD) {
-            updateDownloadPrimary()
-        }
     }
 
     // ---- IME-enabled polling ----
@@ -863,83 +506,6 @@ class SetupWizardActivity : AppCompatActivity(), LanguagePackDownloadManager.Lis
         pollingJob = null
     }
 
-    private fun sortedLanguages(): List<Language> = languages.sortedWith { a, b ->
-        val aEn = a.mLocale.startsWith("en")
-        val bEn = b.mLocale.startsWith("en")
-        when {
-            aEn != bEn -> if (aEn) -1 else 1
-            else -> a.mEnglishName.compareTo(b.mEnglishName, ignoreCase = true)
-        }
-    }
-
-    private fun createGlyphIcon(language: Language): Drawable {
-        val value = TypedValue()
-        theme.resolveAttribute(androidx.appcompat.R.attr.colorPrimary, value, true)
-        val size = (40 * resources.displayMetrics.density).roundToInt()
-        return TextDrawable(language.mGlyph, value.data, 0 /* no background */, size)
-    }
-
-    /** Cross-fades through the localized greetings on the welcome step, painting each with a
-     *  horizontal gradient sized to the rendered text. */
-    private class GreetingAnimator(
-        private val word: TextView, private val greetings: Array<String>
-    ) {
-        private var index = 0
-        private val cycler = object : Runnable {
-            override fun run() {
-                index = (index + 1) % greetings.size
-                crossFadeTo(index)
-                word.postDelayed(this, GREETING_HOLD_MS + GREETING_FADE_MS * 2)
-            }
-        }
-
-        init {
-            word.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ -> applyGradient() }
-        }
-
-        fun start() {
-            index = 0
-            word.animate().cancel()
-            word.alpha = 1f
-            word.text = greetings[0]
-            applyGradient()
-            word.removeCallbacks(cycler)
-            if (greetings.size > 1) {
-                word.postDelayed(cycler, GREETING_HOLD_MS + GREETING_FADE_MS)
-            }
-        }
-
-        fun stop() {
-            word.removeCallbacks(cycler)
-            word.animate().cancel()
-        }
-
-        private fun crossFadeTo(i: Int) {
-            word.animate().alpha(0f).setDuration(GREETING_FADE_MS).withEndAction {
-                word.text = greetings[i]
-                applyGradient()
-                word.animate().alpha(1f).setDuration(GREETING_FADE_MS).start()
-            }.start()
-        }
-
-        private fun applyGradient() {
-            val text = word.text
-            if (text.isNullOrEmpty() || word.width == 0) {
-                return
-            }
-            val textWidth = word.paint.measureText(text.toString())
-            if (textWidth <= 0f) {
-                return
-            }
-            val available = word.width - word.paddingLeft - word.paddingRight
-            val start = word.paddingLeft + ((available - textWidth) / 2f).coerceAtLeast(0f)
-            word.paint.shader = LinearGradient(
-                start, 0f, start + textWidth, 0f, GREETING_GRADIENT, null, Shader.TileMode.CLAMP
-            )
-            word.invalidate()
-        }
-    }
-
     companion object {
         const val EXTRA_FORCE_SETUP = "force_setup"
 
@@ -949,18 +515,7 @@ class SetupWizardActivity : AppCompatActivity(), LanguagePackDownloadManager.Lis
 
         private const val IME_SETTINGS_POLLING_INTERVAL = 200L
 
-        private val GREETING_GRADIENT = intArrayOf(0xFF00BFA5.toInt(), 0xFF2979FF.toInt(), 0xFF7C4DFF.toInt())
-        private const val GREETING_HOLD_MS = 1500L
-        private const val GREETING_FADE_MS = 450L
-
         private fun stepOf(name: String?): Step? =
             name?.let { runCatching { Step.valueOf(it) }.getOrNull() }
-
-        private fun formatName(language: Language): CharSequence =
-            if (language.mEnglishName.equals(language.mAutonym, ignoreCase = true)) {
-                language.mEnglishName
-            } else {
-                "${language.mEnglishName} (${language.mAutonym})"
-            }
     }
 }
