@@ -45,6 +45,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
@@ -2351,18 +2352,24 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             container.addView(createHeaderRow(context, imeLabel));
             final List<InputMethodSubtype> imeSubtypes =
                     imm.getEnabledInputMethodSubtypeList(imi, true /* allowsImplicit */);
-            if (imeSubtypes.isEmpty()) {
-                container.addView(createPickerRow(context, imeLabel, false /* checked */,
-                        true /* indented */,
-                        new SubtypeSwitcher(dialog, token, imi.getId(), null /* no subtype */)));
-                continue;
-            }
+            // Subtypes without a display name can't be told apart, so they collapse into a
+            // single row that switches to the IME and lets it pick the subtype.
+            boolean addedSubtypeRow = false;
             for (final InputMethodSubtype subtype : imeSubtypes) {
                 final CharSequence name = subtype.getDisplayName(
                         context, imi.getPackageName(), imi.getServiceInfo().applicationInfo);
+                if (TextUtils.isEmpty(name) || name.toString().trim().isEmpty()) {
+                    continue;
+                }
                 container.addView(createPickerRow(context, name, false /* checked */,
                         true /* indented */,
                         new SubtypeSwitcher(dialog, token, imi.getId(), subtype)));
+                addedSubtypeRow = true;
+            }
+            if (!addedSubtypeRow) {
+                container.addView(createPickerRow(context, imeLabel, false /* checked */,
+                        true /* indented */,
+                        new SubtypeSwitcher(dialog, token, imi.getId(), null /* no subtype */)));
             }
         }
     }
