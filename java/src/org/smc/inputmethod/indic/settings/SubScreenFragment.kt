@@ -103,6 +103,7 @@ abstract class SubScreenFragment : PreferenceFragmentCompat(), OnSharedPreferenc
     ): RecyclerView {
         val recyclerView = super.onCreateRecyclerView(inflater, parent, savedInstanceState)
         recyclerView.addItemDecoration(CardedPreferenceGroupAdapter.CardDivider(requireActivity()))
+        recyclerView.isVerticalScrollBarEnabled = false
         return recyclerView
     }
 
