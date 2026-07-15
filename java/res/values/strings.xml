@@ -80,9 +80,9 @@
     <!-- Summary for the app license entry [CHAR LIMIT=40] -->
     <string name="about_app_license_summary">Apache License 2.0</string>
     <!-- Project website URL -->
-    <string name="about_website_url" translatable="false">https://indicproject.org</string>
+    <string name="about_website_url" translatable="false">https://indic.app</string>
     <!-- Source code repository URL -->
-    <string name="about_source_url" translatable="false">https://gitlab.com/indicproject/indic-keyboard</string>
+    <string name="about_source_url" translatable="false">https://github.com/smc/indic-keyboard</string>
     <!-- Contributors list URL -->
     <string name="about_contributors_url" translatable="false">https://github.com/smc/Indic-Keyboard/graphs/contributors?all=1</string>
     <!-- Author (copyright) URL -->
