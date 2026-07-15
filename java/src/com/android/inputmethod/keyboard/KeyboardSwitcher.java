@@ -17,6 +17,7 @@
 package com.android.inputmethod.keyboard;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -72,6 +73,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private final KeyboardTextsSet mKeyboardTextsSet = new KeyboardTextsSet();
 
     private KeyboardTheme mKeyboardTheme;
+    private int mThemeNightMode = Configuration.UI_MODE_NIGHT_UNDEFINED;
     private Context mThemeContext;
 
     private static final KeyboardSwitcher sInstance = new KeyboardSwitcher();
@@ -111,9 +113,13 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     private boolean updateKeyboardThemeAndContextThemeWrapper(final Context context,
             final KeyboardTheme keyboardTheme) {
+        final int nightMode = context.getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK;
         if (mThemeContext == null || !keyboardTheme.equals(mKeyboardTheme)
+                || nightMode != mThemeNightMode
                 || !mThemeContext.getResources().equals(context.getResources())) {
             mKeyboardTheme = keyboardTheme;
+            mThemeNightMode = nightMode;
             mThemeContext = new ContextThemeWrapper(context, keyboardTheme.mStyleId);
             KeyboardLayoutSet.onKeyboardThemeChanged();
             return true;
