@@ -19,24 +19,11 @@
 -->
 
 <merge xmlns:latin="http://schemas.android.com/apk/res-auto">
-    <!-- U+00A3: "£" POUND SIGN
-         U+20AC: "€" EURO SIGN
-         U+00A2: "¢" CENT SIGN -->
+    <!-- U+20B9: INDIAN RUPEE;
+         $ U+00A2 CENT, U+20AC EURO, U+00A3 POUND, U+00A5 YEN, U+20B1 PESO, U+20BD RUBLE,
+         U+20BA LIRA, U+20A9 WON, U+0E3F BAHT, U+20AB DONG, U+20B4 HRYVNIA, U+20AA SHEQEL -->
     <key-style
         latin:styleName="currencyKeyStyle"
-        latin:keySpec="&#x20b9;"
-        latin:moreKeys="!text/morekeys_currency_generic" />
-    <key-style
-        latin:styleName="moreCurrency1KeyStyle"
-        latin:keySpec="&#x00A3;" />
-    <key-style
-        latin:styleName="moreCurrency2KeyStyle"
-        latin:keySpec="&#x20AC;" />
-    <key-style
-        latin:styleName="moreCurrency3KeyStyle"
-        latin:keySpec="$"
-        latin:moreKeys="&#x00A2;" />
-    <key-style
-        latin:styleName="moreCurrency4KeyStyle"
-        latin:keySpec="&#x00A2;" />
+        latin:keySpec="&#x20B9;"
+        latin:moreKeys="$,&#x00A2;,&#x20AC;,&#x00A3;,&#x00A5;,&#x20B1;,&#x20BD;,&#x20BA;,&#x20A9;,&#x0E3F;,&#x20AB;,&#x20B4;,&#x20AA;" />
 </merge>

@@ -23,10 +23,12 @@
          U+00A2: "¢" CENT SIGN
          U+20AC: "€" EURO SIGN
          U+00A5: "¥" YEN SIGN -->
+    <!-- U+20B9: INDIAN RUPEE leads the long-press list; the primary stays "$" because
+         password fields are ASCII. Then the same all-currency set as the rupee key. -->
     <key-style
         latin:styleName="currencyKeyStyle"
         latin:keySpec="$"
-        latin:moreKeys="!text/morekeys_currency_dollar" />
+        latin:moreKeys="&#x20B9;,&#x00A2;,&#x20AC;,&#x00A3;,&#x00A5;,&#x20B1;,&#x20BD;,&#x20BA;,&#x20A9;,&#x0E3F;,&#x20AB;,&#x20B4;,&#x20AA;" />
     <key-style
         latin:styleName="moreCurrency1KeyStyle"
         latin:keySpec="&#x00A3;" />
