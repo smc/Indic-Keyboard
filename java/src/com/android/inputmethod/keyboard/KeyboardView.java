@@ -87,6 +87,8 @@ public class KeyboardView extends View {
     // Currently only "alignHintLabelToBottom" is supported.
     private final int mDefaultKeyLabelFlags;
     private final float mKeyHintLetterPadding;
+    private final float mNumberKeyHintLetterPadding;
+    private float mActiveKeyHintLetterPadding;
     private final String mKeyPopupHintLetter;
     private final float mKeyPopupHintLetterPadding;
     private final float mKeyShiftedLetterHintPadding;
@@ -163,6 +165,9 @@ public class KeyboardView extends View {
                 R.styleable.KeyboardView_spacebarIconWidthRatio, 1.0f);
         mKeyHintLetterPadding = keyboardViewAttr.getDimension(
                 R.styleable.KeyboardView_keyHintLetterPadding, 0.0f);
+        mNumberKeyHintLetterPadding = keyboardViewAttr.getDimension(
+                R.styleable.KeyboardView_keyHintLetterPaddingNumber, mKeyHintLetterPadding);
+        mActiveKeyHintLetterPadding = mKeyHintLetterPadding;
         mKeyPopupHintLetter = keyboardViewAttr.getString(
                 R.styleable.KeyboardView_keyPopupHintLetter);
         mKeyPopupHintLetterPadding = keyboardViewAttr.getDimension(
@@ -214,6 +219,8 @@ public class KeyboardView extends View {
         mActiveKeyBackground = numberLayout ? mNumberKeyBackground : mKeyBackground;
         mActiveFunctionalKeyBackground = numberLayout
                 ? mNumberFunctionalKeyBackground : mFunctionalKeyBackground;
+        mActiveKeyHintLetterPadding = numberLayout
+                ? mNumberKeyHintLetterPadding : mKeyHintLetterPadding;
         final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mKeyDrawParams.updateParams(keyHeight, mKeyVisualAttributes);
         mKeyDrawParams.updateParams(keyHeight, keyboard.mKeyVisualAttributes);
@@ -309,7 +316,9 @@ public class KeyboardView extends View {
 
         // Null until the IME loads settings; settings-activity previews render before that.
         final SettingsValues settingsValues = Settings.getInstance().getCurrent();
-        mShowsHints = settingsValues == null || settingsValues.mShowsHints;
+        // The numeric pad relies on its hints to advertise long-press math symbols.
+        mShowsHints = settingsValues == null || settingsValues.mShowsHints
+                || keyboard.mId.mElementId == KeyboardId.ELEMENT_NUMERIC_PAD;
         final Paint paint = mPaint;
         final Drawable background = getBackground();
         // Calculate clip region and set.
@@ -500,9 +509,10 @@ public class KeyboardView extends View {
                 // The hint letter is placed at top-right corner of the key. Used mainly on phone.
                 final float hintDigitWidth = TypefaceUtils.getReferenceDigitWidth(paint);
                 final float hintLabelWidth = TypefaceUtils.getStringWidth(hintLabel, paint);
-                hintX = keyWidth - mKeyHintLetterPadding
+                hintX = keyWidth - mActiveKeyHintLetterPadding
                         - Math.max(hintDigitWidth, hintLabelWidth) / 2.0f;
-                hintBaseline = -paint.ascent();
+                hintBaseline = -paint.ascent()
+                        + (mActiveKeyHintLetterPadding - mKeyHintLetterPadding);
                 paint.setTextAlign(Align.CENTER);
             }
             final float adjustmentY = params.mHintLabelVerticalAdjustment * labelCharHeight;

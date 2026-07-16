@@ -8,6 +8,7 @@
         <item name="spacebarBackground">@drawable/btn_keyboard_key_functional_md3</item>
         <item name="keyBackgroundNumber">@drawable/btn_keyboard_key_number_md3</item>
         <item name="functionalKeyBackgroundNumber">@drawable/btn_keyboard_key_functional_number_md3</item>
+        <item name="keyHintLetterPaddingNumber">5dp</item>
         <item name="keyTextColor">?attr/md3OnSurface</item>
         <item name="keyTextInactivatedColor">?attr/md3OnSurfaceVariant</item>
         <item name="functionalTextColor">?attr/md3OnSurfaceVariant</item>
@@ -49,6 +50,8 @@
         <item name="android:background">@drawable/md3_popup_background</item>
         <item name="android:elevation">6dp</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_popup_md3</item>
+        <item name="keyBackgroundNumber">@drawable/btn_keyboard_key_popup_md3</item>
+        <item name="functionalKeyBackgroundNumber">@drawable/btn_keyboard_key_popup_md3</item>
         <item name="keyFocusedTextColor">?attr/md3Surface</item>
         <item name="keyHoverHighlight">@drawable/md3_hover_circle</item>
         <item name="keyHoverHighlightRect">@drawable/md3_hover_rect</item>

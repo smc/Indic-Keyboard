@@ -52,6 +52,7 @@ public final class KeyboardState {
         public void setAlphabetShiftLockShiftedKeyboard();
         public void setEmojiKeyboard();
         public void setClipboardKeyboard();
+        public void setNumericPadKeyboard();
         public void setSymbolsKeyboard();
         public void setSymbolsShiftedKeyboard();
 
@@ -81,6 +82,7 @@ public final class KeyboardState {
     private static final int SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL = 3;
     private static final int SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE = 4;
     private static final int SWITCH_STATE_MOMENTARY_ALPHA_SHIFT = 5;
+    private static final int SWITCH_STATE_NUMERIC_PAD = 6;
     private int mSwitchState = SWITCH_STATE_ALPHA;
 
     // TODO: Consolidate these two mode booleans into one integer to distinguish between alphabet,
@@ -88,6 +90,7 @@ public final class KeyboardState {
     private boolean mIsAlphabetMode;
     private boolean mIsEmojiMode;
     private boolean mIsClipboardMode;
+    private boolean mIsNumericPadMode;
     private AlphabetShiftState mAlphabetShiftState = new AlphabetShiftState();
     private boolean mIsSymbolShifted;
     private boolean mPrevMainKeyboardWasShiftLocked;
@@ -155,14 +158,15 @@ public final class KeyboardState {
 
     public void onSaveKeyboardState() {
         final SavedKeyboardState state = mSavedKeyboardState;
-        // The clipboard panel is transient; save it as the alphabet keyboard it will return to.
-        state.mIsAlphabetMode = mIsAlphabetMode || mIsClipboardMode;
+        // The clipboard panel and the numeric pad are transient; save them as the alphabet
+        // keyboard they will return to.
+        state.mIsAlphabetMode = mIsAlphabetMode || mIsClipboardMode || mIsNumericPadMode;
         state.mIsEmojiMode = mIsEmojiMode;
         if (mIsAlphabetMode) {
             state.mIsAlphabetShiftLocked = mAlphabetShiftState.isShiftLocked();
             state.mShiftMode = mAlphabetShiftState.isAutomaticShifted() ? AUTOMATIC_SHIFT
                     : (mAlphabetShiftState.isShiftedOrShiftLocked() ? MANUAL_SHIFT : UNSHIFT);
-        } else if (mIsClipboardMode) {
+        } else if (mIsClipboardMode || mIsNumericPadMode) {
             state.mIsAlphabetShiftLocked = mPrevMainKeyboardWasShiftLocked;
             state.mShiftMode = UNSHIFT;
         } else {
@@ -313,6 +317,7 @@ public final class KeyboardState {
         mIsAlphabetMode = true;
         mIsEmojiMode = false;
         mIsClipboardMode = false;
+        mIsNumericPadMode = false;
         mIsSymbolShifted = false;
         mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
         mSwitchState = SWITCH_STATE_ALPHA;
@@ -325,6 +330,7 @@ public final class KeyboardState {
         }
         mSwitchActions.setSymbolsKeyboard();
         mIsAlphabetMode = false;
+        mIsNumericPadMode = false;
         mIsSymbolShifted = false;
         mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
         // Reset alphabet shift state.
@@ -338,6 +344,7 @@ public final class KeyboardState {
         }
         mSwitchActions.setSymbolsShiftedKeyboard();
         mIsAlphabetMode = false;
+        mIsNumericPadMode = false;
         mIsSymbolShifted = true;
         mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
         // Reset alphabet shift state.
@@ -356,6 +363,7 @@ public final class KeyboardState {
         mIsAlphabetMode = false;
         mIsEmojiMode = true;
         mIsClipboardMode = false;
+        mIsNumericPadMode = false;
         mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
         // Remember caps lock mode and reset alphabet shift state.
         mPrevMainKeyboardWasShiftLocked = mAlphabetShiftState.isShiftLocked();
@@ -370,11 +378,28 @@ public final class KeyboardState {
         mIsAlphabetMode = false;
         mIsEmojiMode = false;
         mIsClipboardMode = true;
+        mIsNumericPadMode = false;
         mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
         // Remember caps lock mode and reset alphabet shift state.
         mPrevMainKeyboardWasShiftLocked = mAlphabetShiftState.isShiftLocked();
         mAlphabetShiftState.setShiftLocked(false);
         mSwitchActions.setClipboardKeyboard();
+    }
+
+    private void setNumericPadKeyboard() {
+        if (DEBUG_INTERNAL_ACTION) {
+            Log.d(TAG, "setNumericPadKeyboard");
+        }
+        mIsAlphabetMode = false;
+        mIsEmojiMode = false;
+        mIsClipboardMode = false;
+        mIsNumericPadMode = true;
+        mRecapitalizeMode = RecapitalizeStatus.NOT_A_RECAPITALIZE_MODE;
+        // Remember caps lock mode and reset alphabet shift state.
+        mPrevMainKeyboardWasShiftLocked = mAlphabetShiftState.isShiftLocked();
+        mAlphabetShiftState.setShiftLocked(false);
+        mSwitchState = SWITCH_STATE_NUMERIC_PAD;
+        mSwitchActions.setNumericPadKeyboard();
     }
 
     public void onPressKey(final int code, final boolean isSinglePointer, final int autoCapsFlags,
@@ -690,6 +715,9 @@ public final class KeyboardState {
                 mPrevSymbolsKeyboardWasShifted = false;
             }
             break;
+        case SWITCH_STATE_NUMERIC_PAD:
+            // Sticky: leaving the numeric pad takes an explicit ABC tap.
+            break;
         }
 
         // If the code is a letter, update keyboard shift state.
@@ -702,6 +730,10 @@ public final class KeyboardState {
         } else if (code == Constants.CODE_CLIPBOARD) {
             setClipboardKeyboard();
         } else if (code == Constants.CODE_ALPHA_FROM_CLIPBOARD) {
+            setAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
+        } else if (code == Constants.CODE_NUMERIC_PAD) {
+            setNumericPadKeyboard();
+        } else if (code == Constants.CODE_ALPHA_FROM_NUMERIC_PAD) {
             setAlphabetKeyboard(autoCapsFlags, recapitalizeMode);
         }
     }
@@ -723,6 +755,7 @@ public final class KeyboardState {
         case SWITCH_STATE_MOMENTARY_ALPHA_AND_SYMBOL: return "MOMENTARY-ALPHA-SYMBOL";
         case SWITCH_STATE_MOMENTARY_SYMBOL_AND_MORE: return "MOMENTARY-SYMBOL-MORE";
         case SWITCH_STATE_MOMENTARY_ALPHA_SHIFT: return "MOMENTARY-ALPHA_SHIFT";
+        case SWITCH_STATE_NUMERIC_PAD: return "NUMERIC-PAD";
         default: return null;
         }
     }

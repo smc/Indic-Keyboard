@@ -56,6 +56,8 @@ public final class KeyboardCodesSet {
         "key_clipboard",
         "key_alpha_from_clipboard",
         "key_function_menu",
+        "key_numeric_pad",
+        "key_alpha_from_numeric_pad",
         "key_unspecified",
     };
 
@@ -80,6 +82,8 @@ public final class KeyboardCodesSet {
         Constants.CODE_CLIPBOARD,
         Constants.CODE_ALPHA_FROM_CLIPBOARD,
         Constants.CODE_FUNCTION_MENU,
+        Constants.CODE_NUMERIC_PAD,
+        Constants.CODE_ALPHA_FROM_NUMERIC_PAD,
         Constants.CODE_UNSPECIFIED,
     };
 

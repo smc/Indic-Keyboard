@@ -145,6 +145,11 @@
         latin:moreKeys="!noPanelAutoMoreKey!,!icon/emoji_normal_key|!code/key_emoji"
         latin:parentStyle="baseForLayoutSwitchKeyStyle" />
     <key-style
+        latin:styleName="toNumericPadKeyStyle"
+        latin:keySpec="!icon/numeric_pad_key|!code/key_numeric_pad"
+        latin:backgroundType="functional"
+        latin:keyActionFlags="noKeyPreview" />
+    <key-style
         latin:styleName="toMoreSymbolKeyStyle"
         latin:keySpec="!text/keylabel_to_more_symbol|!code/key_shift"
         latin:parentStyle="baseForLayoutSwitchKeyStyle" />

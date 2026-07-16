@@ -764,6 +764,11 @@ public final class InputLogic {
                 // Note: Switching to and from the clipboard history keyboard is being
                 // handled in {@link KeyboardState#onEvent(Event,int)}.
                 break;
+            case Constants.CODE_NUMERIC_PAD:
+            case Constants.CODE_ALPHA_FROM_NUMERIC_PAD:
+                // Note: Switching to and from the numeric pad is being handled in
+                // {@link KeyboardState#onEvent(Event,int)}.
+                break;
             case Constants.CODE_SHIFT_ENTER:
                 final Event tmpEvent = Event.createSoftwareKeypressEvent(Constants.CODE_ENTER,
                         event.mKeyCode, event.mX, event.mY, event.isKeyRepeat());

@@ -286,6 +286,15 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     // Implements {@link KeyboardState.SwitchActions}.
     @Override
+    public void setNumericPadKeyboard() {
+        if (DEBUG_ACTION) {
+            Log.d(TAG, "setNumericPadKeyboard");
+        }
+        setKeyboard(KeyboardId.ELEMENT_NUMERIC_PAD, KeyboardSwitchState.OTHER);
+    }
+
+    // Implements {@link KeyboardState.SwitchActions}.
+    @Override
     public void setSymbolsShiftedKeyboard() {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setSymbolsShiftedKeyboard");

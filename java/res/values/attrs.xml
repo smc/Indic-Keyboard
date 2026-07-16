@@ -81,6 +81,7 @@
         <attr name="spacebarIconWidthRatio" format="float" />
         <!-- Right padding of hint letter to the edge of the key.-->
         <attr name="keyHintLetterPadding" format="dimension" />
+        <attr name="keyHintLetterPaddingNumber" format="dimension" />
         <!-- Popup hint letter string-->
         <attr name="keyPopupHintLetter" format="string" />
         <!-- Bottom padding of popup hint letter to the edge of the key.-->
@@ -321,6 +322,7 @@
         <attr name="iconEmojiNormalKey" format="reference" />
         <attr name="iconFunctionMenuKey" format="reference" />
         <attr name="iconClipboardKey" format="reference" />
+        <attr name="iconNumericPadKey" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_GridRows">

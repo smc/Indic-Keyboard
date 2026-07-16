@@ -1,0 +1,24 @@
+<!--
+    Copyright 2026, Jishnu Mohan <jishnu7@gmail.com>
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!-- Material Symbols (Rounded) "123" - wght 400, generated from fonts.google.com -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="44dp"
+    android:height="44dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path android:fillColor="?attr/md3OnSurfaceVariant"
+        android:pathData="M5.5,10.5H4.75q-0.33,0-0.54-0.21T4,9.75Q4,9.42 4.21,9.21T4.75,9h1.5Q6.58,9 6.79,9.21T7,9.75v4.5q0,0.32-0.21,0.54T6.25,15T5.71,14.79T5.5,14.25V10.5ZM9,14.25V12.5q0-0.43 0.29-0.71Q9.58,11.5 10,11.5h2v-1H9.75q-0.32,0-0.54-0.21T9,9.75Q9,9.42 9.21,9.21T9.75,9H12.5q0.43,0 0.71,0.29T13.5,10v1.5q0,0.42-0.29,0.71T12.5,12.5h-2v1h2.25q0.33,0 0.54,0.21q0.21,0.21 0.21,0.54t-0.21,0.54T12.75,15h-3q-0.32,0-0.54-0.21T9,14.25ZM18.5,15H15.75q-0.32,0-0.54-0.21T15,14.25t0.21-0.54t0.54-0.21H18v-1H16.5q-0.2,0-0.35-0.15T16,12t0.15-0.35T16.5,11.5H18v-1H15.75q-0.32,0-0.54-0.21T15,9.75q0-0.33 0.21-0.54T15.75,9H18.5q0.43,0 0.71,0.29T19.5,10v4q0,0.42-0.29,0.71T18.5,15Z"/>
+</vector>

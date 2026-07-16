@@ -70,6 +70,7 @@ public final class KeyboardId {
     public static final int ELEMENT_EMOJI_CATEGORY14 = 24;
     public static final int ELEMENT_EMOJI_CATEGORY15 = 25;
     public static final int ELEMENT_EMOJI_CATEGORY16 = 26;
+    public static final int ELEMENT_NUMERIC_PAD = 27;
 
     public final RichInputMethodSubtype mSubtype;
     public final int mWidth;
@@ -160,7 +161,7 @@ public final class KeyboardId {
 
     public boolean isNumberLayout() {
         return mElementId == ELEMENT_PHONE || mElementId == ELEMENT_PHONE_SYMBOLS
-                || mElementId == ELEMENT_NUMBER;
+                || mElementId == ELEMENT_NUMBER || mElementId == ELEMENT_NUMERIC_PAD;
     }
 
     public boolean navigateNext() {
@@ -243,6 +244,7 @@ public final class KeyboardId {
         case ELEMENT_PHONE: return "phone";
         case ELEMENT_PHONE_SYMBOLS: return "phoneSymbols";
         case ELEMENT_NUMBER: return "number";
+        case ELEMENT_NUMERIC_PAD: return "numericPad";
         case ELEMENT_EMOJI_RECENTS: return "emojiRecents";
         case ELEMENT_EMOJI_CATEGORY1: return "emojiCategory1";
         case ELEMENT_EMOJI_CATEGORY2: return "emojiCategory2";

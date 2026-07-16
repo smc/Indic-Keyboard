@@ -200,8 +200,14 @@ public final class KeyboardLayoutSet {
         ElementParams elementParams = mParams.mKeyboardLayoutSetElementIdToParamsMap.get(
                 keyboardLayoutSetElementId);
         if (elementParams == null) {
-            elementParams = mParams.mKeyboardLayoutSetElementIdToParamsMap.get(
-                    KeyboardId.ELEMENT_ALPHABET);
+            if (keyboardLayoutSetElementId == KeyboardId.ELEMENT_NUMERIC_PAD) {
+                elementParams = new ElementParams();
+                elementParams.mKeyboardXmlId = R.xml.kbd_numeric_pad;
+                elementParams.mAllowRedundantMoreKeys = true;
+            } else {
+                elementParams = mParams.mKeyboardLayoutSetElementIdToParamsMap.get(
+                        KeyboardId.ELEMENT_ALPHABET);
+            }
         }
         // Note: The keyboard for each shift state, and mode are represented as an elementName
         // attribute in a keyboard_layout_set XML file.  Also each keyboard layout XML resource is

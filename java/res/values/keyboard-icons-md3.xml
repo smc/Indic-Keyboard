@@ -31,5 +31,6 @@
         <item name="iconEmojiNormalKey">@drawable/ic_kb_emoji</item>
         <item name="iconFunctionMenuKey">@drawable/ic_kb_option_key</item>
         <item name="iconClipboardKey">@drawable/ic_kb_clipboard</item>
+        <item name="iconNumericPadKey">@drawable/ic_kb_numeric</item>
     </style>
 </resources>

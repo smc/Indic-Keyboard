@@ -63,6 +63,7 @@ public final class KeyboardIconsSet {
     public static final String NAME_BACK_ARROW = "back_arrow";
     public static final String NAME_CLIPBOARD_KEY = "clipboard_key";
     public static final String NAME_FUNCTION_MENU_KEY = "function_menu_key";
+    public static final String NAME_NUMERIC_PAD_KEY = "numeric_pad_key";
 
     private static final SparseIntArray ATTR_ID_TO_ICON_ID = new SparseIntArray();
 
@@ -97,6 +98,7 @@ public final class KeyboardIconsSet {
         NAME_BACK_ARROW,                  R.styleable.Keyboard_iconBackToKeyboardKey,
         NAME_CLIPBOARD_KEY,               R.styleable.Keyboard_iconClipboardKey,
         NAME_FUNCTION_MENU_KEY,           R.styleable.Keyboard_iconFunctionMenuKey,
+        NAME_NUMERIC_PAD_KEY,             R.styleable.Keyboard_iconNumericPadKey,
     };
 
     private static int NUM_ICONS = NAMES_AND_ATTR_IDS.length / 2;
