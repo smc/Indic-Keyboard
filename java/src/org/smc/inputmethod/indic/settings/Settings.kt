@@ -174,6 +174,9 @@ class Settings private constructor() : SharedPreferences.OnSharedPreferenceChang
         // Language whose Varnam transliterations are suggested while typing on the English
         // keyboard; empty = feature off.
         const val PREF_COMPANION_LANGUAGE = "pref_companion_language"
+        // Gates companion suggestions without forgetting the chosen language; toggled
+        // from the suggestion-strip toolbox.
+        const val PREF_COMPANION_ENABLED = "pref_companion_enabled"
         // Clipboard
         const val PREF_CLIPBOARD_ENABLED = "pref_clipboard_enabled"
         const val PREF_CLIPBOARD_RECENT_CHIP = "pref_clipboard_recent_chip"
@@ -385,6 +388,15 @@ class Settings private constructor() : SharedPreferences.OnSharedPreferenceChang
         @JvmStatic
         fun readCompanionLanguage(prefs: SharedPreferences): String =
             prefs.getString(PREF_COMPANION_LANGUAGE, "")!!
+
+        @JvmStatic
+        fun readCompanionEnabled(prefs: SharedPreferences): Boolean =
+            prefs.getBoolean(PREF_COMPANION_ENABLED, true)
+
+        @JvmStatic
+        fun writeCompanionEnabled(prefs: SharedPreferences, enabled: Boolean) {
+            prefs.edit { putBoolean(PREF_COMPANION_ENABLED, enabled) }
+        }
 
         @JvmStatic
         fun readClipboardExpiryMillis(prefs: SharedPreferences): Long =

@@ -771,6 +771,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                         "qwerty".equals(currentSubtype.getExtraValueOf(
                                 Constants.Subtype.ExtraValue.KEYBOARD_LAYOUT_SET)));
                 mInputLogic.disableCompanionVarnam(getApplicationContext());
+                if (mSuggestionStripView != null) {
+                    mSuggestionStripView.setCompanionKeyState(false, "", false);
+                }
                 Log.d("IndicKeyboard", "-------------transliteration enabled-----------");
                 return true;
             } catch (Exception e) {
@@ -787,12 +790,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void updateCompanionVarnam(final Locale locale) {
-        final String lang = Settings.readCompanionLanguage(
-                PreferenceManagerCompat.getDeviceSharedPreferences(this));
-        if (!lang.isEmpty() && "en".equals(locale.getLanguage())) {
+        final SharedPreferences prefs = PreferenceManagerCompat.getDeviceSharedPreferences(this);
+        final String lang = Settings.readCompanionLanguage(prefs);
+        final boolean enabled = Settings.readCompanionEnabled(prefs);
+        final boolean englishLayout = "en".equals(locale.getLanguage());
+        if (!lang.isEmpty() && enabled && englishLayout) {
             mInputLogic.enableCompanionVarnam(lang, getApplicationContext());
         } else {
             mInputLogic.disableCompanionVarnam(getApplicationContext());
+        }
+        if (mSuggestionStripView != null) {
+            mSuggestionStripView.setCompanionKeyState(englishLayout, lang, enabled);
         }
     }
 
@@ -1101,18 +1109,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // also wouldn't be consuming gesture data.
         mGestureConsumer = GestureConsumer.NULL_GESTURE_CONSUMER;
         mRichImm.refreshSubtypeCaches();
-        // The companion language pref can change in settings while the IME stays alive, so
-        // re-evaluate on every field focus; enableCompanionVarnam no-ops when unchanged.
-        if (!mRichImm.getCurrentSubtype().getRawSubtype()
-                .containsExtraValueKey(TRANSLITERATION_METHOD)) {
-            updateCompanionVarnam(mRichImm.getCurrentSubtypeLocale());
-        }
         if (!restarting) {
             mRichImm.ensureCurrentSubtypeEnabled(
                     getWindow().getWindow().getAttributes().token);
         }
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         switcher.updateKeyboardTheme(mDisplayContext);
+        // The companion language pref can change in settings while the IME stays alive, so
+        // re-evaluate on every field focus; enableCompanionVarnam no-ops when unchanged.
+        if (!mRichImm.getCurrentSubtype().getRawSubtype()
+                .containsExtraValueKey(TRANSLITERATION_METHOD)) {
+            updateCompanionVarnam(mRichImm.getCurrentSubtypeLocale());
+        }
         final MainKeyboardView mainKeyboardView = switcher.getMainKeyboardView();
         // If we are starting input in a different text field from before, we'll have to reload
         // settings, so currentSettingsValues can't be final.
@@ -2232,6 +2240,30 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         final Intent intent = new Intent();
         intent.setClass(LatinIME.this, SettingsActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
+                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivityOnTheSameDisplay(intent);
+    }
+
+    @Override
+    public void onCompanionToggleClicked() {
+        final SharedPreferences prefs = PreferenceManagerCompat.getDeviceSharedPreferences(this);
+        Settings.writeCompanionEnabled(prefs, !Settings.readCompanionEnabled(prefs));
+        updateCompanionVarnam(mRichImm.getCurrentSubtypeLocale());
+    }
+
+    @Override
+    public void launchCompanionSettings() {
+        mInputLogic.commitTyped(mSettings.getCurrent(), LastComposedWord.NOT_A_SEPARATOR);
+        requestHideSelf(0);
+        final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
+        if (mainKeyboardView != null) {
+            mainKeyboardView.closing();
+        }
+        final Intent intent = new Intent(LatinIME.this, SettingsActivity.class);
+        intent.putExtra(SettingsActivity.EXTRA_SHOW_FRAGMENT,
+                LanguageSettingsFragment.class.getName());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
                 | Intent.FLAG_ACTIVITY_CLEAR_TOP);

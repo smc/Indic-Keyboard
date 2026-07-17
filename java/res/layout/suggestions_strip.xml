@@ -194,6 +194,20 @@
             android:padding="6dp"
             android:contentDescription="@string/spoken_description_emoji" />
         <View
+            android:id="@+id/toolbox_companion_spacer"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:visibility="gone" />
+        <ImageButton
+            android:id="@+id/toolbox_companion_key"
+            android:layout_width="64dp"
+            android:layout_height="32dp"
+            android:scaleType="fitCenter"
+            android:padding="6dp"
+            android:visibility="gone"
+            android:contentDescription="@string/companion_toggle_description" />
+        <View
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="0dp" />

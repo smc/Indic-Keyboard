@@ -75,6 +75,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         public void onCodeInput(int primaryCode, int x, int y, boolean isKeyRepeat);
         public void onClipboardChipClicked(ClipboardHistoryEntry entry);
         public void launchSettings();
+        public void onCompanionToggleClicked();
+        public void launchCompanionSettings();
     }
 
     static final boolean DBG = DebugFlags.DEBUG_ENABLED;
@@ -102,6 +104,12 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private final View mToolboxSettingsKey;
     private final View mToolboxClipboardKey;
     private final View mToolboxEmojiKey;
+    private final ImageButton mToolboxCompanionKey;
+    private final View mToolboxCompanionSpacer;
+    private final CompanionKeyDrawable mCompanionKeyDrawable;
+    private boolean mCompanionKeyVisible;
+    private String mCompanionLangCode = "";
+    private boolean mCompanionEnabled;
     private final View mClipboardChipPill;
     private final View mClipboardChipOpenHistory;
     private final android.widget.ImageView mClipboardChipImage;
@@ -265,6 +273,12 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mToolboxEmojiKey = findViewById(R.id.toolbox_emoji_key);
         mToolboxEmojiKey.setOnClickListener(this);
         mToolboxEmojiKey.setBackground(createToolboxButtonBackground(context));
+        mToolboxCompanionSpacer = findViewById(R.id.toolbox_companion_spacer);
+        mToolboxCompanionKey = (ImageButton)findViewById(R.id.toolbox_companion_key);
+        mToolboxCompanionKey.setOnClickListener(this);
+        mToolboxCompanionKey.setBackground(createToolboxButtonBackground(context));
+        mCompanionKeyDrawable = new CompanionKeyDrawable(context);
+        mToolboxCompanionKey.setImageDrawable(mCompanionKeyDrawable);
         mStripVisibilityGroup = new StripVisibilityGroup(this, mSuggestionsStrip,
                 mImportantNoticeStrip, mClipboardChipStrip, mInlineSuggestionsStrip,
                 mToolboxStrip);
@@ -416,6 +430,18 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         } else {
             mStripVisibilityGroup.showSuggestionsStrip();
         }
+    }
+
+    public void setCompanionKeyState(final boolean visible, final String langCode,
+            final boolean enabled) {
+        mCompanionKeyVisible = visible;
+        mCompanionLangCode = langCode == null ? "" : langCode;
+        mCompanionEnabled = enabled;
+        final int visibility = mCompanionKeyVisible ? VISIBLE : GONE;
+        mToolboxCompanionKey.setVisibility(visibility);
+        mToolboxCompanionSpacer.setVisibility(visibility);
+        mCompanionKeyDrawable.setState(mCompanionLangCode,
+                mCompanionEnabled && !mCompanionLangCode.isEmpty());
     }
 
     private static Drawable createToolboxButtonBackground(final Context context) {
@@ -928,6 +954,14 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             mListener.onCodeInput(Constants.CODE_EMOJI,
                     Constants.SUGGESTION_STRIP_COORDINATE, Constants.SUGGESTION_STRIP_COORDINATE,
                     false /* isKeyRepeat */);
+            return;
+        }
+        if (view == mToolboxCompanionKey) {
+            if (mCompanionLangCode.isEmpty()) {
+                mListener.launchCompanionSettings();
+            } else {
+                mListener.onCompanionToggleClicked();
+            }
             return;
         }
         if (view == mMoreSuggestionsKey) {

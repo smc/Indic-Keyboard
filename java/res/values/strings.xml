@@ -203,6 +203,8 @@
     <string name="companion_language_suggestions">Use as companion language</string>
     <!-- Summary; %1$s is the language's own name [CHAR LIMIT=100] -->
     <string name="companion_language_suggestions_summary">Suggest %1$s words while typing in English</string>
+    <!-- Content description for the toolbox key that pauses/resumes companion suggestions [CHAR LIMIT=33] -->
+    <string name="companion_toggle_description">Companion suggestions</string>
 
     <!--  Option for enabling or disabling the split keyboard layout. [CHAR LIMIT=65]-->
     <string name="enable_split_keyboard">Enable split keyboard</string>

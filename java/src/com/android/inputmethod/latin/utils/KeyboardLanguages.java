@@ -19,6 +19,7 @@ package com.android.inputmethod.latin.utils;
 import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodSubtype;
 
@@ -38,9 +39,45 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public final class KeyboardLanguages {
     private static final String TRANSLITERATION_METHOD = "TransliterationMethod";
+
+    private static volatile Map<String, String> sGlyphByLanguage;
+
+    /** Glyph from keyboard_languages.xml for a bare language code ("ml"), or null if unknown.
+     *  Unlike {@link #getLanguages}, safe for the IME path: one lightweight parse, then cached. */
+    @Nullable
+    public static String glyphForLanguage(final Context context, final String langCode) {
+        if (langCode == null || langCode.isEmpty()) {
+            return null;
+        }
+        Map<String, String> glyphs = sGlyphByLanguage;
+        if (glyphs == null) {
+            glyphs = new HashMap<>();
+            final XmlResourceParser parser = context.getResources().getXml(
+                    R.xml.keyboard_languages);
+            try {
+                int event;
+                while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
+                    if (event == XmlPullParser.START_TAG && "language".equals(parser.getName())) {
+                        final String locale = parser.getAttributeValue(null, "locale");
+                        final String glyph = parser.getAttributeValue(null, "glyph");
+                        if (locale != null && glyph != null) {
+                            glyphs.put(locale.split("_")[0], glyph);
+                        }
+                    }
+                }
+            } catch (final XmlPullParserException | IOException e) {
+                Log.w("KeyboardLanguages", "Failed to parse glyphs", e);
+            } finally {
+                parser.close();
+            }
+            sGlyphByLanguage = glyphs;
+        }
+        return glyphs.get(langCode);
+    }
 
     public static final class Layout {
         public final InputMethodSubtype mSubtype;
