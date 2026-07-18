@@ -1745,6 +1745,10 @@ public final class InputLogic {
         final int expectedCursorPosition = mConnection.getExpectedSelectionStart();
         if (!mConnection.isCursorTouchingWord(settingsValues.mSpacingAndPunctuations,
                     true /* checkTextAfter */)) {
+            if (forStartInput) {
+                mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+                return;
+            }
             // Show predictions.
             mWordComposer.setCapitalizedModeAtStartComposingTime(WordComposer.CAPS_MODE_OFF);
             mLatinIME.mHandler.postUpdateSuggestionStrip(SuggestedWords.INPUT_STYLE_RECORRECTION);

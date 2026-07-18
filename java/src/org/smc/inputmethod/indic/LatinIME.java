@@ -1871,13 +1871,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return null != mSuggestionStripView;
     }
 
-    private void setSuggestedWords(final SuggestedWords suggestedWords) {
+    private void setSuggestedWords(final SuggestedWords suggestedWordsArg) {
         // While emoji search is active the controller owns the strip (query results / recents).
         // Suppress normal suggestion updates so a committed emoji's async update can't clobber it.
         if (mEmojiSearchController != null && mEmojiSearchController.isActive()) {
             return;
         }
         final SettingsValues currentSettingsValues = mSettings.getCurrent();
+        SuggestedWords suggestedWords = suggestedWordsArg;
+        final Keyboard currentKeyboard = mKeyboardSwitcher.getKeyboard();
+        if (currentKeyboard != null && !currentKeyboard.mId.isAlphabetKeyboard()
+                && !suggestedWords.isEmpty() && !suggestedWords.isPunctuationSuggestions()
+                && !currentSettingsValues.isApplicationSpecifiedCompletionsOn()) {
+            suggestedWords = SuggestedWords.getEmptyInstance();
+        }
         mInputLogic.setSuggestedWords(suggestedWords);
         // TODO: Modify this when we support suggestions with hard keyboard
         if (!hasSuggestionStripView()) {
@@ -1965,6 +1972,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void clearSuggestionStrip() {
         if (mSuggestionStripView != null) {
             mSuggestionStripView.setSuggestions(SuggestedWords.getEmptyInstance(), false);
+        }
+    }
+
+    public void onKeyboardAlphabetnessChanged(final boolean isAlphabetKeyboard) {
+        if (isAlphabetKeyboard) {
+            mHandler.postResumeSuggestions(true /* shouldDelay */);
+        } else {
+            clearSuggestionStrip();
         }
     }
 
