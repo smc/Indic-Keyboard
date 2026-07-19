@@ -2243,7 +2243,7 @@ public final class InputLogic {
             // reasons (there are race conditions with commits) but some applications are
             // relying on this behavior so we continue to support it for older apps.
             sendDownUpKeyEvent(KeyEvent.KEYCODE_ENTER);
-        } else if (transliteration && isIndic) {
+        } else if (transliteration && isIndic && !Character.isDigit(codePoint)) {
             mConnection.applyTransliteration(StringUtils.newSingleCodePointString(codePoint), 1);
         } else {
             mConnection.commitText(StringUtils.newSingleCodePointString(codePoint), 1);
