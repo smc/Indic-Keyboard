@@ -38,6 +38,8 @@ class LicenseTextFragment : Fragment() {
             "gpl" -> R.raw.license_gpl_3_0
             "mit" -> R.raw.license_mit
             "jqueryime" -> R.raw.license_jqueryime
+            "odbl" -> R.raw.license_odbl_1_0
+            "ccbysa4" -> R.raw.license_cc_by_sa_4_0
             else -> R.raw.license_apache_2_0
         }
         val text = resources.openRawResource(rawRes).bufferedReader().use { it.readText() }

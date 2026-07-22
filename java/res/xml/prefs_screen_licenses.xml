@@ -74,5 +74,23 @@
             <extra android:name="title" android:value="Material Design Icons &amp; Symbols" />
             <extra android:name="license" android:value="apache" />
         </Preference>
+        <Preference android:key="lic_olam_datuk"
+            android:fragment="org.smc.inputmethod.indic.settings.LicenseTextFragment"
+            android:title="Olam – Datuk Malayalam corpus" android:persistent="false">
+            <extra android:name="title" android:value="Olam – Datuk Malayalam corpus" />
+            <extra android:name="license" android:value="odbl" />
+        </Preference>
+        <Preference android:key="lic_olam_ekkurup"
+            android:fragment="org.smc.inputmethod.indic.settings.LicenseTextFragment"
+            android:title="Olam – E.K. Kurup corpus" android:persistent="false">
+            <extra android:name="title" android:value="Olam – E.K. Kurup corpus" />
+            <extra android:name="license" android:value="ccbysa4" />
+        </Preference>
+        <Preference android:key="lic_alar"
+            android:fragment="org.smc.inputmethod.indic.settings.LicenseTextFragment"
+            android:title="Alar – Kannada dictionary" android:persistent="false">
+            <extra android:name="title" android:value="Alar – Kannada dictionary" />
+            <extra android:name="license" android:value="odbl" />
+        </Preference>
     </PreferenceCategory>
 </PreferenceScreen>
