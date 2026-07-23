@@ -181,6 +181,8 @@ class Settings private constructor() : SharedPreferences.OnSharedPreferenceChang
         const val PREF_CLIPBOARD_ENABLED = "pref_clipboard_enabled"
         const val PREF_CLIPBOARD_RECENT_CHIP = "pref_clipboard_recent_chip"
         const val PREF_CLIPBOARD_EXPIRY_SECONDS = "pref_clipboard_expiry_seconds"
+        // Physical keyboard
+        const val PREF_PHYSICAL_KEYBOARD = "pref_physical_keyboard"
         // Emoji
         const val PREF_EMOJI_RECENT_KEYS = "emoji_recent_keys"
         const val PREF_EMOJI_CATEGORY_LAST_TYPED_ID = "emoji_category_last_typed_id"
@@ -384,6 +386,10 @@ class Settings private constructor() : SharedPreferences.OnSharedPreferenceChang
         @JvmStatic
         fun readClipboardEnabled(prefs: SharedPreferences): Boolean =
             prefs.getBoolean(PREF_CLIPBOARD_ENABLED, true)
+
+        @JvmStatic
+        fun readPhysicalKeyboardEnabled(prefs: SharedPreferences): Boolean =
+            prefs.getBoolean(PREF_PHYSICAL_KEYBOARD, true)
 
         @JvmStatic
         fun readCompanionLanguage(prefs: SharedPreferences): String =

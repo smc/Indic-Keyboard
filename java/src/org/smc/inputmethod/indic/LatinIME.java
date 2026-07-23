@@ -87,6 +87,7 @@ import com.android.inputmethod.event.Event;
 import com.android.inputmethod.event.HardwareEventDecoder;
 import com.android.inputmethod.event.HardwareKeyboardEventDecoder;
 import com.android.inputmethod.event.InputTransaction;
+import com.android.inputmethod.keyboard.HardwareInscriptMap;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
@@ -111,7 +112,6 @@ import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.CoordinateUtils;
 import com.android.inputmethod.latin.common.InputPointers;
 import com.android.inputmethod.latin.define.DebugFlags;
-import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.permissions.PermissionsManager;
 import com.android.inputmethod.latin.touchinputconsumer.GestureConsumer;
 import com.android.inputmethod.latin.utils.ApplicationUtils;
@@ -214,6 +214,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @UsedForTesting final KeyboardSwitcher mKeyboardSwitcher;
     private final SubtypeState mSubtypeState = new SubtypeState();
     private EmojiAltPhysicalKeyDetector mEmojiAltPhysicalKeyDetector;
+    private HardwareInscriptMap mHardwareInscriptMap;
     private StatsUtilsManager mStatsUtilsManager;
     // Working variable for {@link #startShowingInputView()} and
     // {@link #onEvaluateInputViewShown()}.
@@ -942,6 +943,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // have a change in hardware keyboard configuration.
             loadSettings();
             settingsValues = mSettings.getCurrent();
+            mKeyboardSwitcher.setHardwareKeyboardExpanded(false);
+            pushHardwareToggleState();
             if (isImeSuppressedByHardwareKeyboard()) {
                 // We call cleanupInternalStateForFinishInput() because it's the right thing to do;
                 // however, it seems at the moment the framework is passing us a seemingly valid
@@ -1115,6 +1118,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         switcher.updateKeyboardTheme(mDisplayContext);
+        pushHardwareToggleState();
         // The companion language pref can change in settings while the IME stays alive, so
         // re-evaluate on every field focus; enableCompanionVarnam no-ops when unchanged.
         if (!mRichImm.getCurrentSubtype().getRawSubtype()
@@ -1467,6 +1471,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mInsetsUpdater.setInsets(outInsets);
             return;
         }
+        // In the hardware-keyboard strip-only bar, visibleKeyboardView (the key grid) is GONE
+        // rather than shown-and-empty: a GONE view keeps its last-measured size instead of
+        // collapsing to zero, so its own getWidth()/getHeight() can't be trusted here. Treat its
+        // footprint as zero, but keep the nav-bar clearance that would normally be baked into the
+        // grid's own bottom padding — that clearance now lives on the grid's parent frame (see
+        // InputView#applyInsets) since the strip must keep its full fixed height.
+        final boolean keyboardGridShown = visibleKeyboardView.isShown();
+        final int keyboardHeight = keyboardGridShown
+                ? visibleKeyboardView.getHeight()
+                : ((View) visibleKeyboardView.getParent()).getPaddingBottom();
         final int suggestionsHeight = (!mKeyboardSwitcher.isShowingEmojiPalettes()
                 && !mKeyboardSwitcher.isShowingClipboardHistory()
                 && mSuggestionStripView.getVisibility() == View.VISIBLE)
@@ -1478,18 +1492,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 && mEmojiSuggestionStrip.getVisibility() == View.VISIBLE)
                 ? mEmojiSuggestionStrip.getHeight() : 0;
         final int bottomInset = mInputView.getPaddingBottom();
-        final int visibleTopY = inputHeight - bottomInset - visibleKeyboardView.getHeight()
+        final int visibleTopY = inputHeight - bottomInset - keyboardHeight
                 - suggestionsHeight - searchBarHeight - emojiSuggestionsHeight;
         mSuggestionStripView.setMoreSuggestionsHeight(visibleTopY);
-        // Need to set expanded touchable region only if a keyboard view is being shown.
-        if (visibleKeyboardView.isShown()) {
-            final int touchLeft = 0;
-            final int touchTop = mKeyboardSwitcher.isShowingMoreKeysPanel() ? 0 : visibleTopY;
-            final int touchRight = visibleKeyboardView.getWidth();
-            final int touchBottom = inputHeight;
-            outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_REGION;
-            outInsets.touchableRegion.set(touchLeft, touchTop, touchRight, touchBottom);
-        }
+        final int touchLeft = 0;
+        final int touchTop = mKeyboardSwitcher.isShowingMoreKeysPanel() ? 0 : visibleTopY;
+        final int touchRight = keyboardGridShown
+                ? visibleKeyboardView.getWidth() : mInputView.getWidth();
+        final int touchBottom = inputHeight;
+        outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_REGION;
+        outInsets.touchableRegion.set(touchLeft, touchTop, touchRight, touchBottom);
         outInsets.contentTopInsets = visibleTopY;
         outInsets.visibleTopInsets = visibleTopY;
         mInsetsUpdater.setInsets(outInsets);
@@ -1523,14 +1535,23 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (mIsExecutingStartShowingInputView) {
             return true;
         }
+        final SettingsValues settingsValues = mSettings.getCurrent();
+        if (settingsValues != null && settingsValues.mPhysicalKeyboardEnabled
+                && settingsValues.mHasHardwareKeyboard) {
+            // The framework hides the input view when a hardware keyboard is active; we keep
+            // it up as the suggestion-strip bar.
+            return true;
+        }
         return super.onEvaluateInputViewShown();
     }
 
     @Override
     public boolean onEvaluateFullscreenMode() {
         final SettingsValues settingsValues = mSettings.getCurrent();
-        if (isImeSuppressedByHardwareKeyboard()) {
-            // If there is a hardware keyboard, disable full screen mode.
+        if (settingsValues.mHasHardwareKeyboard) {
+            // Never go fullscreen with a hardware keyboard attached: isImeSuppressedByHardwareKeyboard()
+            // is false in strip-only mode (the input view is deliberately kept shown), so it can't be
+            // used as the fullscreen guard here.
             return false;
         }
         // Reread resource value here, because this method is called by the framework as needed.
@@ -2082,6 +2103,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         setSuggestedWords(neutralSuggestions);
     }
 
+    public void invalidateHardwareInscriptMap() {
+        mHardwareInscriptMap = null;
+    }
+
     // Outside LatinIME, only used by the {@link InputTestsBase} test suite.
     @UsedForTesting
     void loadKeyboard() {
@@ -2194,19 +2219,40 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     getApplicationContext().getResources());
         }
         mEmojiAltPhysicalKeyDetector.onKeyDown(keyEvent);
-        if (!ProductionFlags.IS_HARDWARE_KEYBOARD_SUPPORTED) {
+        if (!mSettings.getCurrent().mPhysicalKeyboardEnabled) {
             return super.onKeyDown(keyCode, keyEvent);
         }
-        final Event event = getHardwareKeyEventDecoder(
+        if (keyCode == KeyEvent.KEYCODE_SPACE && keyEvent.isCtrlPressed()) {
+            switchToNextSubtype();
+            return true;
+        }
+        Event event = getHardwareKeyEventDecoder(
                 keyEvent.getDeviceId()).decodeHardwareKey(keyEvent);
+        final String layoutSet = mRichImm.getCurrentSubtype().getKeyboardLayoutSetName();
+        if (layoutSet != null && layoutSet.contains("inscript")
+                && event.mCodePoint > 0 && keyCode != KeyEvent.KEYCODE_ENTER
+                && !keyEvent.isCtrlPressed() && !keyEvent.isAltPressed()) {
+            if (mHardwareInscriptMap == null) {
+                mHardwareInscriptMap = new HardwareInscriptMap(
+                        mKeyboardSwitcher.getKeyboardForAlphabetElement(),
+                        mKeyboardSwitcher.getKeyboardForShiftedElement());
+            }
+            final int mapped = mHardwareInscriptMap.map(keyCode, keyEvent.isShiftPressed());
+            if (mapped != Event.NOT_A_CODE_POINT) {
+                event = Event.createHardwareKeypressEvent(mapped, keyCode, null /* next */,
+                        keyEvent.getRepeatCount() != 0);
+            }
+        }
         // If the event is not handled by LatinIME, we just pass it to the parent implementation.
         // If it's handled, we return true because we did handle it.
         if (event.isHandled()) {
-            mInputLogic.onCodeInput(mSettings.getCurrent(), event,
-                    mKeyboardSwitcher.getKeyboardShiftMode(),
-                    // TODO: this is not necessarily correct for a hardware keyboard right now
-                    mKeyboardSwitcher.getCurrentKeyboardScriptId(),
-                    mHandler);
+            final InputTransaction completeInputTransaction =
+                    mInputLogic.onCodeInput(mSettings.getCurrent(), event,
+                            mKeyboardSwitcher.getKeyboardShiftMode(),
+                            // TODO: this is not necessarily correct for a hardware keyboard right now
+                            mKeyboardSwitcher.getCurrentKeyboardScriptId(),
+                            mHandler);
+            updateStateAfterInputTransaction(completeInputTransaction);
             return true;
         }
         return super.onKeyDown(keyCode, keyEvent);
@@ -2219,7 +2265,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     getApplicationContext().getResources());
         }
         mEmojiAltPhysicalKeyDetector.onKeyUp(keyEvent);
-        if (!ProductionFlags.IS_HARDWARE_KEYBOARD_SUPPORTED) {
+        if (!mSettings.getCurrent().mPhysicalKeyboardEnabled) {
             return super.onKeyUp(keyCode, keyEvent);
         }
         final long keyIdentifier = keyEvent.getDeviceId() << 32 + keyEvent.getKeyCode();
@@ -2266,6 +2312,26 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final SharedPreferences prefs = PreferenceManagerCompat.getDeviceSharedPreferences(this);
         Settings.writeCompanionEnabled(prefs, !Settings.readCompanionEnabled(prefs));
         updateCompanionVarnam(mRichImm.getCurrentSubtypeLocale());
+    }
+
+    @Override
+    public void onHardwareKeyboardToggleClicked() {
+        final boolean expanded = !mKeyboardSwitcher.isHardwareKeyboardExpanded();
+        mKeyboardSwitcher.setHardwareKeyboardExpanded(expanded);
+        mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(), mSettings.getCurrent(),
+                getCurrentAutoCapsState(), getCurrentRecapitalizeState());
+        pushHardwareToggleState();
+    }
+
+    private void pushHardwareToggleState() {
+        if (mSuggestionStripView == null) {
+            return;
+        }
+        final SettingsValues settingsValues = mSettings.getCurrent();
+        final boolean visible = settingsValues.mPhysicalKeyboardEnabled
+                && settingsValues.mHasHardwareKeyboard;
+        mSuggestionStripView.setHardwareToggleState(
+                visible, mKeyboardSwitcher.isHardwareKeyboardExpanded());
     }
 
     @Override

@@ -62,6 +62,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private LatinIME mLatinIME;
     private RichInputMethodManager mRichImm;
     private boolean mIsHardwareAcceleratedDrawingEnabled;
+    private boolean mHardwareKeyboardExpanded;
 
     public boolean isEmojiSearch = false; // True while the in-keyboard emoji search is showing.
     private KeyboardLayoutSet mSavedKeyboardLayoutSet;
@@ -142,7 +143,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         builder.setNumberRowEnabled(mLatinIME.shouldShowNumberRow());
         builder.setSplitLayoutEnabledByUser(ProductionFlags.IS_SPLIT_KEYBOARD_SUPPORTED
                 && settingsValues.mIsSplitKeyboardEnabled);
-        mKeyboardLayoutSet = builder.build();
+        setKeyboardLayoutSet(builder.build());
         try {
             mState.onLoadKeyboard(currentAutoCapsState, currentRecapitalizeState);
             mKeyboardTextsSet.setLocale(mRichImm.getCurrentSubtypeLocale(), mThemeContext);
@@ -213,6 +214,25 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         return null;
     }
 
+    public Keyboard getKeyboardForAlphabetElement() {
+        if (mKeyboardLayoutSet == null) {
+            return null;
+        }
+        return mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET);
+    }
+
+    public Keyboard getKeyboardForShiftedElement() {
+        if (mKeyboardLayoutSet == null) {
+            return null;
+        }
+        return mKeyboardLayoutSet.getKeyboard(KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED);
+    }
+
+    private void setKeyboardLayoutSet(final KeyboardLayoutSet keyboardLayoutSet) {
+        mKeyboardLayoutSet = keyboardLayoutSet;
+        mLatinIME.invalidateHardwareInscriptMap();
+    }
+
     // TODO: Remove this method. Come up with a more comprehensive way to reset the keyboard layout
     // when a keyboard layout set doesn't get reloaded in LatinIME.onStartInputViewInternal().
     public void resetKeyboardStateToAlphabet(final int currentAutoCapsState,
@@ -241,7 +261,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setAlphabetKeyboard");
         }
-        setKeyboard(KeyboardId.ELEMENT_ALPHABET, KeyboardSwitchState.OTHER);
+        setKeyboard(KeyboardId.ELEMENT_ALPHABET, KeyboardSwitchState.HIDDEN);
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
@@ -250,7 +270,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setAlphabetManualShiftedKeyboard");
         }
-        setKeyboard(KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED, KeyboardSwitchState.OTHER);
+        setKeyboard(KeyboardId.ELEMENT_ALPHABET_MANUAL_SHIFTED, KeyboardSwitchState.HIDDEN);
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
@@ -259,7 +279,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setAlphabetAutomaticShiftedKeyboard");
         }
-        setKeyboard(KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED, KeyboardSwitchState.OTHER);
+        setKeyboard(KeyboardId.ELEMENT_ALPHABET_AUTOMATIC_SHIFTED, KeyboardSwitchState.HIDDEN);
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
@@ -268,7 +288,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setAlphabetShiftLockedKeyboard");
         }
-        setKeyboard(KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED, KeyboardSwitchState.OTHER);
+        setKeyboard(KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCKED, KeyboardSwitchState.HIDDEN);
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
@@ -277,7 +297,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setAlphabetShiftLockShiftedKeyboard");
         }
-        setKeyboard(KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED, KeyboardSwitchState.OTHER);
+        setKeyboard(KeyboardId.ELEMENT_ALPHABET_SHIFT_LOCK_SHIFTED, KeyboardSwitchState.HIDDEN);
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
@@ -286,7 +306,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setSymbolsKeyboard");
         }
-        setKeyboard(KeyboardId.ELEMENT_SYMBOLS, KeyboardSwitchState.OTHER);
+        setKeyboard(KeyboardId.ELEMENT_SYMBOLS, KeyboardSwitchState.HIDDEN);
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
@@ -295,7 +315,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         if (DEBUG_ACTION) {
             Log.d(TAG, "setNumericPadKeyboard");
         }
-        setKeyboard(KeyboardId.ELEMENT_NUMERIC_PAD, KeyboardSwitchState.OTHER);
+        setKeyboard(KeyboardId.ELEMENT_NUMERIC_PAD, KeyboardSwitchState.HIDDEN);
     }
 
     // Implements {@link KeyboardState.SwitchActions}.
@@ -307,23 +327,32 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         setKeyboard(KeyboardId.ELEMENT_SYMBOLS_SHIFTED, KeyboardSwitchState.SYMBOLS_SHIFTED);
     }
 
+    public void setHardwareKeyboardExpanded(final boolean expanded) {
+        mHardwareKeyboardExpanded = expanded;
+    }
+
+    public boolean isHardwareKeyboardExpanded() {
+        return mHardwareKeyboardExpanded;
+    }
+
     public boolean isImeSuppressedByHardwareKeyboard(
             @Nonnull final SettingsValues settingsValues,
             @Nonnull final KeyboardSwitchState toggleState) {
-        return settingsValues.mHasHardwareKeyboard && toggleState == KeyboardSwitchState.HIDDEN;
+        return settingsValues.mHasHardwareKeyboard && !mHardwareKeyboardExpanded
+                && toggleState == KeyboardSwitchState.HIDDEN;
     }
 
     private void setMainKeyboardFrame(
             @Nonnull final SettingsValues settingsValues,
             @Nonnull final KeyboardSwitchState toggleState) {
         final boolean wasShowingPanel = isShowingEmojiPalettes() || isShowingClipboardHistory();
-        final int visibility =  isImeSuppressedByHardwareKeyboard(settingsValues, toggleState)
-                ? View.GONE : View.VISIBLE;
-        mKeyboardView.setVisibility(visibility);
-        // The visibility of {@link #mKeyboardView} must be aligned with {@link #MainKeyboardFrame}.
-        // @see #getVisibleKeyboardView() and
-        // @see LatinIME#onComputeInset(android.inputmethodservice.InputMethodService.Insets)
-        mMainKeyboardFrame.setVisibility(visibility);
+        // {@link #mMainKeyboardFrame} also contains the suggestion strip (see
+        // main_keyboard_frame.xml), so it must stay VISIBLE here even when the hardware-keyboard
+        // suppression hides {@link #mKeyboardView} alone; only setEmojiKeyboard()/
+        // setClipboardKeyboard() take the whole frame GONE, when an alternate panel replaces it.
+        mMainKeyboardFrame.setVisibility(View.VISIBLE);
+        mKeyboardView.setVisibility(isImeSuppressedByHardwareKeyboard(settingsValues, toggleState)
+                ? View.GONE : View.VISIBLE);
         mEmojiPalettesView.setVisibility(View.GONE);
         mEmojiPalettesView.stopEmojiPalettes();
         mClipboardHistoryView.setVisibility(View.GONE);
@@ -390,7 +419,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     public void setEmojiSearchKeyboard() {
         if (!isEmojiSearch) {
             mSavedKeyboardLayoutSet = mKeyboardLayoutSet;
-            mKeyboardLayoutSet = buildEmojiSearchLayoutSet();
+            setKeyboardLayoutSet(buildEmojiSearchLayoutSet());
             isEmojiSearch = true;
             if (mKeyboardView != null) {
                 mKeyboardView.setGestureHandlingEnabledByUser(false /* inputEnabled */,
@@ -403,7 +432,7 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
 
     public void restoreFromEmojiSearch() {
         if (isEmojiSearch) {
-            mKeyboardLayoutSet = mSavedKeyboardLayoutSet;
+            setKeyboardLayoutSet(mSavedKeyboardLayoutSet);
             mSavedKeyboardLayoutSet = null;
             isEmojiSearch = false;
             final SettingsValues settingsValues = Settings.getInstance().getCurrent();

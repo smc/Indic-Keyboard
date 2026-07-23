@@ -77,6 +77,7 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         public void launchSettings();
         public void onCompanionToggleClicked();
         public void launchCompanionSettings();
+        public void onHardwareKeyboardToggleClicked();
     }
 
     static final boolean DBG = DebugFlags.DEBUG_ENABLED;
@@ -110,6 +111,8 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
     private boolean mCompanionKeyVisible;
     private String mCompanionLangCode = "";
     private boolean mCompanionEnabled;
+    private final ImageButton mToolboxHwToggleKey;
+    private final View mToolboxHwSpacer;
     private final View mClipboardChipPill;
     private final View mClipboardChipOpenHistory;
     private final android.widget.ImageView mClipboardChipImage;
@@ -279,6 +282,10 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mToolboxCompanionKey.setBackground(createToolboxButtonBackground(context));
         mCompanionKeyDrawable = new CompanionKeyDrawable(context);
         mToolboxCompanionKey.setImageDrawable(mCompanionKeyDrawable);
+        mToolboxHwSpacer = findViewById(R.id.toolbox_hw_spacer);
+        mToolboxHwToggleKey = (ImageButton)findViewById(R.id.toolbox_hw_toggle_key);
+        mToolboxHwToggleKey.setOnClickListener(this);
+        mToolboxHwToggleKey.setBackground(createToolboxButtonBackground(context));
         mStripVisibilityGroup = new StripVisibilityGroup(this, mSuggestionsStrip,
                 mImportantNoticeStrip, mClipboardChipStrip, mInlineSuggestionsStrip,
                 mToolboxStrip);
@@ -442,6 +449,14 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
         mToolboxCompanionSpacer.setVisibility(visibility);
         mCompanionKeyDrawable.setState(mCompanionLangCode,
                 mCompanionEnabled && !mCompanionLangCode.isEmpty());
+    }
+
+    public void setHardwareToggleState(final boolean visible, final boolean expanded) {
+        final int visibility = visible ? VISIBLE : GONE;
+        mToolboxHwToggleKey.setVisibility(visibility);
+        mToolboxHwSpacer.setVisibility(visibility);
+        mToolboxHwToggleKey.setImageResource(
+                expanded ? R.drawable.ic_kb_hw_collapse : R.drawable.ic_kb_hw_expand);
     }
 
     private static Drawable createToolboxButtonBackground(final Context context) {
@@ -962,6 +977,10 @@ public final class SuggestionStripView extends RelativeLayout implements OnClick
             } else {
                 mListener.onCompanionToggleClicked();
             }
+            return;
+        }
+        if (view == mToolboxHwToggleKey) {
+            mListener.onHardwareKeyboardToggleClicked();
             return;
         }
         if (view == mMoreSuggestionsKey) {

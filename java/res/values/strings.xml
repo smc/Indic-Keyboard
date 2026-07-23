@@ -136,6 +136,9 @@
     <string name="clipboard_turned_off">Clipboard history is turned off</string>
     <!-- Button in the clipboard panel that turns the feature on [CHAR LIMIT=33] -->
     <string name="clipboard_turn_on">Turn on</string>
+    <!-- Preference title/summary for typing with an external hardware keyboard [CHAR LIMIT=33] -->
+    <string name="physical_keyboard">Physical keyboard</string>
+    <string name="physical_keyboard_summary">Type through Indic Keyboard\'s engines and suggestions on an external keyboard</string>
     <!-- Title of the privacy settings screen [CHAR LIMIT=33] -->
     <string name="settings_screen_privacy">Privacy</string>
     <!-- Statement shown at the top of the privacy settings screen -->
@@ -205,6 +208,8 @@
     <string name="companion_language_suggestions_summary">Suggest %1$s words while typing in English</string>
     <!-- Content description for the toolbox key that pauses/resumes companion suggestions [CHAR LIMIT=33] -->
     <string name="companion_toggle_description">Companion suggestions</string>
+    <!-- Content description for the toolbox key that expands/collapses the on-screen keyboard when a hardware keyboard is attached [CHAR LIMIT=33] -->
+    <string name="hw_toggle_description">Show or hide keyboard</string>
 
     <!--  Option for enabling or disabling the split keyboard layout. [CHAR LIMIT=65]-->
     <string name="enable_split_keyboard">Enable split keyboard</string>

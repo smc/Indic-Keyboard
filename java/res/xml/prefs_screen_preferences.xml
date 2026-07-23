@@ -65,6 +65,13 @@
             android:title="@string/prefs_keyboard_height_scale"
             latin:minValue="50"
             latin:maxValue="120" /> <!-- percentage -->
+
+        <CheckBoxPreference
+            android:key="pref_physical_keyboard"
+            android:title="@string/physical_keyboard"
+            android:summary="@string/physical_keyboard_summary"
+            android:defaultValue="true"
+            android:persistent="true" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_category_key_press">

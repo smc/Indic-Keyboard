@@ -51,6 +51,7 @@ open class SettingsValues(
     // From configuration:
     @JvmField val mLocale: Locale
     @JvmField val mHasHardwareKeyboard: Boolean
+    @JvmField val mPhysicalKeyboardEnabled: Boolean
     @JvmField val mDisplayOrientation: Int
     // From preferences, in the same order as xml/prefs.xml:
     @JvmField val mAutoCap: Boolean
@@ -163,6 +164,7 @@ open class SettingsValues(
         mDoubleSpacePeriodTimeout =
             res.getInteger(R.integer.config_double_space_period_timeout).toLong()
         mHasHardwareKeyboard = Settings.readHasHardwareKeyboard(res.configuration)
+        mPhysicalKeyboardEnabled = Settings.readPhysicalKeyboardEnabled(prefs)
         mEnableMetricsLogging = prefs.getBoolean(Settings.PREF_ENABLE_METRICS_LOGGING, true)
         mIsSplitKeyboardEnabled = prefs.getBoolean(Settings.PREF_ENABLE_SPLIT_KEYBOARD, false)
         mScreenMetrics = Settings.readScreenMetrics(res)

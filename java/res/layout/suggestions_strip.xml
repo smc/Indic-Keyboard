@@ -208,6 +208,21 @@
             android:visibility="gone"
             android:contentDescription="@string/companion_toggle_description" />
         <View
+            android:id="@+id/toolbox_hw_spacer"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:visibility="gone" />
+        <ImageButton
+            android:id="@+id/toolbox_hw_toggle_key"
+            android:layout_width="64dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_kb_hw_expand"
+            android:scaleType="fitCenter"
+            android:padding="6dp"
+            android:visibility="gone"
+            android:contentDescription="@string/hw_toggle_description" />
+        <View
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="0dp" />

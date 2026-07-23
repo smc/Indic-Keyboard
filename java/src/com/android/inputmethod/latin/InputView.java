@@ -37,6 +37,7 @@ import org.smc.inputmethod.indic.suggestions.SuggestionStripView;
 public final class InputView extends FrameLayout {
     private final Rect mInputViewRect = new Rect();
     private MainKeyboardView mMainKeyboardView;
+    private View mMainKeyboardFrame;
     private View mEmojiPalettesView;
     private ClipboardHistoryView mClipboardHistoryView;
     private KeyboardTopPaddingForwarder mKeyboardTopPaddingForwarder;
@@ -51,6 +52,7 @@ public final class InputView extends FrameLayout {
     protected void onFinishInflate() {
         final SuggestionStripView suggestionStripView =
                 (SuggestionStripView)findViewById(R.id.suggestion_strip_view);
+        mMainKeyboardFrame = findViewById(R.id.main_keyboard_frame);
         mMainKeyboardView = (MainKeyboardView)findViewById(R.id.keyboard_view);
         mEmojiPalettesView = findViewById(R.id.emoji_palettes_view);
         mClipboardHistoryView = (ClipboardHistoryView)findViewById(R.id.clipboard_history_view);
@@ -105,7 +107,17 @@ public final class InputView extends FrameLayout {
                 || getPaddingBottom() != 0) {
             setPadding(bars.left, 0, bars.right, 0);
         }
-        applyBottomClearance(mMainKeyboardView, bars.bottom);
+        // The strip-only hardware-keyboard bar (KeyboardSwitcher#setMainKeyboardFrame) hides
+        // mMainKeyboardView while leaving its parent frame (and the suggestion strip inside it)
+        // visible. A GONE view's own bottom padding no longer contributes to the frame's height,
+        // so the clearance has to move somewhere else that stays visible. It must not land as
+        // internal padding on the strip itself: that view has a fixed
+        // config_suggestions_strip_height, so padding eats into its content box instead of adding
+        // height and clips the candidates. Putting it on the wrapping frame instead grows the
+        // frame by bars.bottom, so the strip keeps its full height and simply sits higher.
+        final boolean gridShown = mMainKeyboardView.getVisibility() == View.VISIBLE;
+        applyBottomClearance(mMainKeyboardView, gridShown ? bars.bottom : 0);
+        applyBottomClearance(mMainKeyboardFrame, gridShown ? 0 : bars.bottom);
         applyBottomClearance(mEmojiPalettesView, bars.bottom);
         if (mClipboardHistoryView != null) {
             mClipboardHistoryView.setNavigationBarInset(bars.bottom);
