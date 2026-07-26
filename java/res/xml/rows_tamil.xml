@@ -34,20 +34,20 @@
         </Row>
       </case>
     </switch>
-    <Row
+    <Row latin:keyLabelFlags="autoXScale"
         latin:keyWidth="10%p"
     >
         <include
             latin:keyboardLayout="@xml/rowkeys_tamil1" />
     </Row>
-    <Row
+    <Row latin:keyLabelFlags="autoXScale"
         latin:keyWidth="10%p"
     >
         <include
             latin:keyboardLayout="@xml/rowkeys_tamil2"
             latin:keyXPos="0.25%p" />
     </Row>
-    <Row
+    <Row latin:keyLabelFlags="autoXScale"
         latin:keyWidth="10%p"
     >
         <Key

@@ -31,18 +31,18 @@
         </Row>
       </case>
     </switch>
-    <Row latin:keyWidth="8.9%p" >
+    <Row latin:keyLabelFlags="autoXScale" latin:keyWidth="8.9%p" >
         <include
             latin:keyboardLayout="@xml/rowkeys_probhat1"
             latin:keyXPos="1%p" />
     </Row>
-    <Row latin:keyWidth="8.7%p" >
+    <Row latin:keyLabelFlags="autoXScale" latin:keyWidth="8.7%p" >
         <include
             latin:keyboardLayout="@xml/rowkeys_probhat2"
             latin:keyXPos="2%p"
          />
     </Row>
-    <Row latin:keyWidth="8.5%p" >
+    <Row latin:keyLabelFlags="autoXScale" latin:keyWidth="8.5%p" >
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="12%p"

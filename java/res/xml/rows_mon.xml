@@ -32,17 +32,17 @@
         </Row>
       </case>
     </switch>
-    <Row latin:keyWidth="8.2%p" >
+    <Row latin:keyLabelFlags="autoXScale" latin:keyWidth="8.2%p" >
         <include latin:keyboardLayout="@xml/rowkeys_mon1" latin:keyXPos="1%p" />
     </Row>
-    <Row latin:keyWidth="8.7%p" >
+    <Row latin:keyLabelFlags="autoXScale" latin:keyWidth="8.7%p" >
         <include latin:keyboardLayout="@xml/rowkeys_mon2" latin:keyXPos="1%p" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight"
             latin:visualInsetsLeft="0.5%p" />
     </Row>
-    <Row latin:keyWidth="8.7%p" >
+    <Row latin:keyLabelFlags="autoXScale" latin:keyWidth="8.7%p" >
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="12%p"

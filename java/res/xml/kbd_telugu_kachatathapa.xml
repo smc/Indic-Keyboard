@@ -21,6 +21,7 @@
 
 <Keyboard
     xmlns:latin="http://schemas.android.com/apk/res-auto"
+    latin:keyLetterSize="@fraction/config_key_letter_ratio_11col"
 >
     <include
         latin:keyboardLayout="@xml/rows_telugu_kachatathapa" />

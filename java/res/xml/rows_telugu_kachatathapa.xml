@@ -31,16 +31,16 @@
         </Row>
       </case>
     </switch>
-    <Row latin:keyWidth="9%p" >
+    <Row latin:keyLabelFlags="autoXScale" latin:keyWidth="9%p" >
         <include latin:keyboardLayout="@xml/rowkeys_telugu_kachatathapa1"
             latin:keyXPos="0.5%p" />
     </Row>
-    <Row latin:keyWidth="9%p" >
+    <Row latin:keyLabelFlags="autoXScale" latin:keyWidth="9%p" >
         <include
             latin:keyboardLayout="@xml/rowkeys_telugu_kachatathapa2"
             latin:keyXPos="0.5%p" />
     </Row>
-    <Row latin:keyWidth="9%p" >
+    <Row latin:keyLabelFlags="autoXScale" latin:keyWidth="9%p" >
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="14.5%p"

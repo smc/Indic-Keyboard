@@ -65,6 +65,7 @@
     <fraction name="config_key_letter_ratio_13col">42%</fraction>
     <fraction name="config_key_letter_ratio_13col_wide">34%</fraction>
     <fraction name="config_key_letter_ratio_11col">50%</fraction>
+    <fraction name="config_key_letter_ratio_12col">46%</fraction>
     <fraction name="config_key_large_letter_ratio_holo">65%</fraction>
     <fraction name="config_key_large_letter_ratio_lxx">65%</fraction>
     <fraction name="config_key_label_ratio_holo">34%</fraction>
