@@ -2445,7 +2445,8 @@ public final class InputLogic {
             Log.d(TAG, "commitChosenWord() : NgramContext = " + ngramContext);
             startTimeMillis = System.currentTimeMillis();
         }
-        mConnection.commitText(chosenWordWithSuggestions, 1);
+        mConnection.commitText(chosenWordWithSuggestions, 1,
+                LastComposedWord.COMMIT_TYPE_MANUAL_PICK == commitType);
         if (DebugFlags.DEBUG_ENABLED) {
             long runTimeMillis = System.currentTimeMillis() - startTimeMillis;
             Log.d(TAG, "commitChosenWord() : " + runTimeMillis + " ms to run "

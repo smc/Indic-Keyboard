@@ -31,6 +31,7 @@ import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
+import android.view.inputmethod.TextAttribute;
 
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.UnicodeSurrogate;
@@ -354,6 +355,11 @@ public final class RichInputConnection implements PrivateCommandPerformer {
      * @param newCursorPosition The new cursor position around the text.
      */
     public void commitText(final CharSequence text, final int newCursorPosition) {
+        commitText(text, newCursorPosition, false /* suggestionSelected */);
+    }
+
+    public void commitText(final CharSequence text, final int newCursorPosition,
+            final boolean suggestionSelected) {
         if (DEBUG_BATCH_NESTING) checkBatchEdit();
         if (DEBUG_PREVIOUS_TEXT) checkConsistencyForDebug();
         mCommittedTextBeforeComposingText.append(text);
@@ -385,7 +391,13 @@ public final class RichInputConnection implements PrivateCommandPerformer {
                     }
                 }
             }
-            mIC.commitText(mTempObjectForCommitText, newCursorPosition);
+            if (suggestionSelected
+                    && Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN) {
+                mIC.commitText(mTempObjectForCommitText, newCursorPosition,
+                        new TextAttribute.Builder().setTextSuggestionSelected(true).build());
+            } else {
+                mIC.commitText(mTempObjectForCommitText, newCursorPosition);
+            }
         }
     }
 

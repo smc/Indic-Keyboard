@@ -19,10 +19,12 @@ import android.util.TypedValue
 import android.view.WindowInsets
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import android.view.inputmethod.InputConnectionWrapper
 import android.view.inputmethod.InputContentInfo
+import android.view.inputmethod.TextAttribute
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -164,12 +166,36 @@ class MainActivity : Activity() {
             setTextColor(Color.parseColor("#888888"))
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
         })
-        addView(EditText(context).apply {
+        addView(loggingEditText().apply {
             layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
             inputType = type
             imeOptions = ime
             hint = label
         })
+    }
+
+    // Logs what the IME commits, including the TextAttribute it attaches. Use it to check that
+    // picking a suggestion arrives with suggestionSelected=true, which is what screen readers key
+    // off: adb logcat -s InputTest
+    private fun loggingEditText() = object : EditText(this) {
+        override fun onCreateInputConnection(outAttrs: EditorInfo): InputConnection? {
+            val target = super.onCreateInputConnection(outAttrs) ?: return null
+            return object : InputConnectionWrapper(target, false) {
+                override fun commitText(text: CharSequence, newCursorPosition: Int): Boolean {
+                    Log.i("InputTest", "commitText \"$text\" — no TextAttribute")
+                    return super.commitText(text, newCursorPosition)
+                }
+
+                override fun commitText(text: CharSequence, newCursorPosition: Int,
+                        attribute: TextAttribute?): Boolean {
+                    val selected = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN) {
+                        attribute?.isTextSuggestionSelected.toString()
+                    } else "unavailable below API 37"
+                    Log.i("InputTest", "commitText \"$text\" — suggestionSelected=$selected")
+                    return super.commitText(text, newCursorPosition, attribute)
+                }
+            }
+        }
     }
 
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
