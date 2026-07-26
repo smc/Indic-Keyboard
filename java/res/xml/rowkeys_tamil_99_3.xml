@@ -61,14 +61,6 @@
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
-                latin:keySpec="&lt;"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
-
-            <Key
-                latin:keySpec="&gt;"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
-
-            <Key
                 latin:keySpec="\?"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </case>
@@ -107,14 +99,6 @@
             <!--m ர TAMIL LETTER RA-->
             <Key
                 latin:keySpec="&#x0BB0;"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
-
-            <Key
-                latin:keySpec=","
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
-
-            <Key
-                latin:keySpec="."
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--/ ழ TAMIL LETTER LLLA-->
