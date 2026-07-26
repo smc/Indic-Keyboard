@@ -21,60 +21,60 @@
 
 <merge xmlns:latin="http://schemas.android.com/apk/res-auto">
     <switch>
-        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted" >
+        <case latin:keyboardLayoutSetElement="alphabet|alphabetAutomaticShifted" >
             <Key
-                latin:keySpec="&#x0CCA;"
+                latin:keySpec="&#x094A;"
                 latin:moreKeys="`"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="!text/keyspec_symbols_1"
+                latin:keySpec="&#x0967;"
                 latin:additionalMoreKeys="!text/additional_morekeys_symbols_1"
-                latin:moreKeys="!text/morekeys_symbols_1"
+                latin:moreKeys="1, !text/morekeys_symbols_1"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="!text/keyspec_symbols_2"
+                latin:keySpec="&#x0968;"
                 latin:additionalMoreKeys="!text/additional_morekeys_symbols_2"
-                latin:moreKeys="!text/morekeys_symbols_2"
+                latin:moreKeys="2, !text/morekeys_symbols_2"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="!text/keyspec_symbols_3"
+                latin:keySpec="&#x0969;"
                 latin:additionalMoreKeys="!text/additional_morekeys_symbols_3"
-                latin:moreKeys="!text/morekeys_symbols_3"
+                latin:moreKeys="3, !text/morekeys_symbols_3"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="!text/keyspec_symbols_4"
+                latin:keySpec="&#x096A;"
                 latin:additionalMoreKeys="!text/additional_morekeys_symbols_4"
-                latin:moreKeys="!text/morekeys_symbols_4"
+                latin:moreKeys="4, !text/morekeys_symbols_4"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="!text/keyspec_symbols_5"
+                latin:keySpec="&#x096B;"
                 latin:additionalMoreKeys="!text/additional_morekeys_symbols_5"
-                latin:moreKeys="!text/morekeys_symbols_5"
+                latin:moreKeys="5, !text/morekeys_symbols_5"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="!text/keyspec_symbols_6"
+                latin:keySpec="&#x096C;"
                 latin:additionalMoreKeys="!text/additional_morekeys_symbols_6"
-                latin:moreKeys="!text/morekeys_symbols_6"
+                latin:moreKeys="6, !text/morekeys_symbols_6"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="!text/keyspec_symbols_7"
+                latin:keySpec="&#x096D;"
                 latin:additionalMoreKeys="!text/additional_morekeys_symbols_7"
-                latin:moreKeys="!text/morekeys_symbols_7"
+                latin:moreKeys="7, !text/morekeys_symbols_7"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="!text/keyspec_symbols_8"
+                latin:keySpec="&#x096E;"
                 latin:additionalMoreKeys="!text/additional_morekeys_symbols_8"
-                latin:moreKeys="!text/morekeys_symbols_8"
+                latin:moreKeys="8, !text/morekeys_symbols_8"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="!text/keyspec_symbols_9"
+                latin:keySpec="&#x096F;"
                 latin:additionalMoreKeys="!text/additional_morekeys_symbols_9"
-                latin:moreKeys="!text/morekeys_symbols_9"
+                latin:moreKeys="9, !text/morekeys_symbols_9"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="!text/keyspec_symbols_0"
+                latin:keySpec="&#x0966;"
                 latin:additionalMoreKeys="!text/additional_morekeys_symbols_0"
-                latin:moreKeys="!text/morekeys_symbols_0"
+                latin:moreKeys="0, !text/morekeys_symbols_0"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key
@@ -82,20 +82,22 @@
                 latin:moreKeys="&#x2013;,&#x2014;,&#x00B7;"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x0CC3;"
+                latin:keySpec="&#x0943;"
                 latin:moreKeys="="
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </case>
         <default>
             <Key
-                latin:keySpec="&#x0C92;"
+                latin:keySpec="&#x0912;"
                 latin:moreKeys="~"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="!"
+                latin:keySpec="&#x090D;"
+                latin:moreKeys="!"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="\@"
+                latin:keySpec="&#x0945;"
+                latin:moreKeys="\@"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
                 latin:keySpec="\#"
@@ -104,16 +106,20 @@
                 latin:keySpec="&#x20b9;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="%"
+                latin:keySpec="&#x091C;&#x094D;&#x091E;"
+                latin:moreKeys="%"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="^"
+                latin:keySpec="&#x0924;&#x094D;&#x0930;"
+                latin:moreKeys="^"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="&amp;"
+                latin:keySpec="&#x0915;&#x094D;&#x0937;"
+                latin:moreKeys="&amp;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="*"
+                latin:keySpec="&#x0936;&#x094D;&#x0930;"
+                latin:moreKeys="*"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
                 latin:keySpec="("
@@ -122,11 +128,11 @@
                 latin:keySpec=")"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="&#x0C83;"
+                latin:keySpec="&#x0903;"
                 latin:moreKeys="_"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="&#x0CC3;"
+                latin:keySpec="&#x090B;"
                 latin:moreKeys="+, &#x00B1;,&#x00D7;,&#x00F7;,&#x221A;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </default>
