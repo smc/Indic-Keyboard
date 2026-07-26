@@ -30,13 +30,13 @@
         </Row>
       </case>
     </switch>
-    <Row latin:keyWidth="9.09%p" >
+    <Row latin:keyWidth="9.09%p" latin:keyLabelFlags="autoXScale" >
         <include latin:keyboardLayout="@xml/rowkeys_kannada_anysoft_inscript1" />
     </Row>
-    <Row latin:keyWidth="9.09%p" >
+    <Row latin:keyWidth="9.09%p" latin:keyLabelFlags="autoXScale" >
         <include latin:keyboardLayout="@xml/rowkeys_kannada_anysoft_inscript2" />
     </Row>
-    <Row latin:keyWidth="9.09%p" >
+    <Row latin:keyWidth="9.09%p" latin:keyLabelFlags="autoXScale" >
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="9.09%p"

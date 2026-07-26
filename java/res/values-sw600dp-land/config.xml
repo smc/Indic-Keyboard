@@ -33,6 +33,12 @@
 
     <fraction name="config_key_letter_ratio_holo">50%</fraction>
     <fraction name="config_key_letter_ratio_lxx">50%</fraction>
+    <!-- Indic layouts pack 13 columns into the width qwerty uses for 10, so their
+         letters need a proportionally smaller share of the key height to stay in
+         proportion. -->
+    <fraction name="config_key_letter_ratio_13col">38%</fraction>
+    <fraction name="config_key_letter_ratio_13col_wide">31%</fraction>
+    <fraction name="config_key_letter_ratio_11col">45%</fraction>
     <fraction name="config_key_large_letter_ratio_holo">48%</fraction>
     <fraction name="config_key_large_letter_ratio_lxx">60%</fraction>
     <fraction name="config_key_label_ratio_holo">32%</fraction>
@@ -45,11 +51,6 @@
     <fraction name="config_key_shifted_letter_hint_ratio_lxx">29%</fraction>
     <fraction name="config_language_on_spacebar_text_ratio">30.0%</fraction>
     <dimen name="config_key_shifted_letter_hint_padding">4dp</dimen>
-
-    <!-- For 5-row keyboard -->
-    <fraction name="config_key_vertical_gap_5row">3.20%p</fraction>
-    <fraction name="config_key_letter_ratio_5row">62%</fraction>
-    <fraction name="config_key_shifted_letter_hint_ratio_5row">36%</fraction>
 
     <dimen name="config_suggestions_strip_height">44dp</dimen>
     <dimen name="config_suggestions_strip_horizontal_margin">54dp</dimen>
