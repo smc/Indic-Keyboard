@@ -57,6 +57,7 @@ import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.common.Constants;
 import com.android.inputmethod.latin.common.CoordinateUtils;
 import org.smc.inputmethod.indic.settings.DebugSettings;
+import com.android.inputmethod.latin.utils.KeyboardLanguages;
 import com.android.inputmethod.latin.utils.LanguageOnSpacebarUtils;
 import com.android.inputmethod.latin.utils.TypefaceUtils;
 
@@ -886,14 +887,20 @@ public final class MainKeyboardView extends KeyboardView implements DrawingProxy
     // Layout language name on spacebar.
     private String layoutLanguageOnSpacebar(final Paint paint,
             final RichInputMethodSubtype subtype, final int width) {
+        if (mLanguageOnSpacebarFormatType == LanguageOnSpacebarUtils.FORMAT_TYPE_EMOJI) {
+            return "Emoji";
+        }
+        final String autonym =
+                KeyboardLanguages.autonymFor(getContext(), subtype.getRawSubtype());
+        if (autonym != null && fitsTextIntoWidth(width, autonym, paint)) {
+            return autonym;
+        }
         // Choose appropriate language name to fit into the width.
         if (mLanguageOnSpacebarFormatType == LanguageOnSpacebarUtils.FORMAT_TYPE_FULL_LOCALE) {
             final String fullText = subtype.getFullDisplayName();
             if (fitsTextIntoWidth(width, fullText, paint)) {
                 return fullText;
             }
-        } else if (mLanguageOnSpacebarFormatType == LanguageOnSpacebarUtils.FORMAT_TYPE_EMOJI) {
-            return "Emoji";
         }
 
         final String middleText = subtype.getMiddleDisplayName();

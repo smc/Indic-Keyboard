@@ -61,7 +61,7 @@
         <layout name="Varnam" layoutSet="qwerty" translit="varnam-kn" />
     </language>
     <language locale="ks_IN" englishName="Kashmiri" autonym="کٲشُر" glyph="ک">
-        <layout name="Inscript" layoutSet="kashmiri_inscript" />
+        <layout name="Inscript" autonym="कॉशुर" layoutSet="kashmiri_inscript" />
         <layout name="Transliteration" layoutSet="qwerty" translit="ks-Kbd" />
     </language>
     <language locale="mai_IN" englishName="Maithili" autonym="मैथिली" glyph="मै">

@@ -79,13 +79,76 @@ public final class KeyboardLanguages {
         return glyphs.get(langCode);
     }
 
+    private static volatile Map<String, String> sAutonyms;
+
+    @Nullable
+    public static String autonymFor(final Context context, final InputMethodSubtype subtype) {
+        if (subtype == null) {
+            return null;
+        }
+        Map<String, String> autonyms = sAutonyms;
+        if (autonyms == null) {
+            autonyms = new HashMap<>();
+            final XmlResourceParser parser = context.getResources().getXml(
+                    R.xml.keyboard_languages);
+            try {
+                String locale = null;
+                int event;
+                while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
+                    if (event != XmlPullParser.START_TAG) {
+                        continue;
+                    }
+                    if ("language".equals(parser.getName())) {
+                        locale = parser.getAttributeValue(null, "locale");
+                        final String autonym = parser.getAttributeValue(null, "autonym");
+                        if (locale != null && autonym != null) {
+                            autonyms.put(locale, autonym);
+                            autonyms.put(locale.split("_")[0], autonym);
+                        }
+                    } else if ("layout".equals(parser.getName())) {
+                        final String autonym = parser.getAttributeValue(null, "autonym");
+                        if (autonym != null) {
+                            autonyms.put(layoutKey(locale,
+                                    parser.getAttributeValue(null, "layoutSet"),
+                                    parser.getAttributeValue(null, "translit")), autonym);
+                        }
+                    }
+                }
+            } catch (final XmlPullParserException | IOException e) {
+                Log.w("KeyboardLanguages", "Failed to parse autonyms", e);
+            } finally {
+                parser.close();
+            }
+            sAutonyms = autonyms;
+        }
+        final String locale = subtype.getLocale();
+        final String byLayout = autonyms.get(layoutKey(locale,
+                SubtypeLocaleUtils.getKeyboardLayoutSetName(subtype),
+                subtype.getExtraValueOf(TRANSLITERATION_METHOD)));
+        if (byLayout != null) {
+            return byLayout;
+        }
+        final String byLocale = autonyms.get(locale);
+        return (byLocale != null) ? byLocale
+                : autonyms.get(locale == null ? "" : locale.split("_")[0]);
+    }
+
+    private static String layoutKey(final String locale, final String layoutSet,
+            final String translit) {
+        return locale + "|" + layoutSet + "|" + translit;
+    }
+
     public static final class Layout {
         public final InputMethodSubtype mSubtype;
         public final String mName;
+        @Nullable
+        public final String mAutonym;
 
-        Layout(final InputMethodSubtype subtype, final String name) {
+        Layout(final InputMethodSubtype subtype, final String name,
+                @Nullable final String autonym) {
             mSubtype = subtype;
             mName = name;
+            mAutonym = autonym;
         }
     }
 
@@ -143,9 +206,11 @@ public final class KeyboardLanguages {
             final Map<String, DisplayNames> cache = new HashMap<>();
             for (final Language language : getLanguages(context)) {
                 for (final Layout layout : language.mLayouts) {
+                    final String autonym = (layout.mAutonym != null)
+                            ? layout.mAutonym : language.mAutonym;
                     cache.put(SubtypeLocaleUtils.getSubtypeKey(layout.mSubtype),
                             new DisplayNames(language.mEnglishName + " · " + layout.mName,
-                                    language.mAutonym + " · " + layout.mName));
+                                    autonym + " · " + layout.mName));
                 }
             }
             sDisplayNameCache = cache;
@@ -182,7 +247,8 @@ public final class KeyboardLanguages {
                             parser.getAttributeValue(null, "layoutSet"),
                             parser.getAttributeValue(null, "translit"));
                     if (subtype != null) {
-                        layouts.add(new Layout(subtype, parser.getAttributeValue(null, "name")));
+                        layouts.add(new Layout(subtype, parser.getAttributeValue(null, "name"),
+                                parser.getAttributeValue(null, "autonym")));
                         matched.add(subtype);
                     }
                 } else if (event == XmlPullParser.END_TAG && "language".equals(parser.getName())
@@ -191,7 +257,8 @@ public final class KeyboardLanguages {
                     for (final InputMethodSubtype subtype : localeSubtypes) {
                         if (!matched.contains(subtype)) {
                             layouts.add(new Layout(subtype,
-                                    SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(subtype)));
+                                    SubtypeLocaleUtils.getSubtypeDisplayNameInSystemLocale(subtype),
+                                    null /* autonym */));
                         }
                     }
                     if (!layouts.isEmpty()) {
