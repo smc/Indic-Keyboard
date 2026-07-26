@@ -30,7 +30,7 @@
             <key-style
                 latin:styleName="settingsMoreKeysStyle"
                 latin:keyLabelFlags="hasPopupHint"
-                latin:additionalMoreKeys="!text/keyspec_clipboard"
+                latin:additionalMoreKeys="!icon/emoji_normal_key|!code/key_emoji,!text/keyspec_clipboard"
                 latin:backgroundType="functional"
                 latin:parentStyle="baseSettingsMoreKeysStyle" />
         </case>
@@ -39,13 +39,11 @@
             <key-style
                 latin:styleName="settingsMoreKeysStyle"
                 latin:keyLabelFlags="hasPopupHint"
-                latin:additionalMoreKeys="!text/keyspec_clipboard,!text/keyspec_settings"
+                latin:additionalMoreKeys="!icon/emoji_normal_key|!code/key_emoji,!text/keyspec_clipboard,!text/keyspec_settings"
                 latin:backgroundType="functional"
                 latin:parentStyle="baseSettingsMoreKeysStyle" />
         </default>
     </switch>
-    <!-- Function key for pc-style (inscript) layouts: tapping shows the same popover the
-         comma key offers on long press elsewhere, with emoji folded in. -->
     <switch>
         <case
             latin:clobberSettingsKey="true"
