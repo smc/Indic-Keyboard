@@ -5,6 +5,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:9.2.1'
+        classpath 'org.jetbrains.kotlin:compose-compiler-gradle-plugin:2.2.10'
     }
 }
 
@@ -16,6 +17,7 @@ allprojects {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.plugin.compose'
 
 android {
     namespace = 'org.smc.inputtest'
@@ -23,6 +25,10 @@ android {
 
     kotlin {
         jvmToolchain(17)
+    }
+
+    buildFeatures {
+        compose = true
     }
 
     defaultConfig {
@@ -38,4 +44,9 @@ dependencies {
     // Only for TestAutofillService's inline-presentation slices.
     implementation 'androidx.autofill:autofill:1.1.0'
     implementation 'androidx.annotation:annotation:1.5.0'
+    // Compose text fields drive a different InputConnection implementation than the platform
+    // widgets, which is what most modern app composers (ChatGPT, chat apps) actually use.
+    implementation 'androidx.activity:activity-compose:1.10.1'
+    implementation 'androidx.compose.foundation:foundation:1.7.6'
+    implementation 'androidx.compose.ui:ui:1.7.6'
 }
