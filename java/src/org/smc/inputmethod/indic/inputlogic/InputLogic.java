@@ -1031,7 +1031,8 @@ public final class InputLogic {
             inputTransaction.setRequiresUpdateSuggestions();
             StatsUtils.onDoubleSpacePeriod();
         } else if (swapWeakSpace && trySwapSwapperAndSpace(event, inputTransaction)) {
-            mSpaceState = SpaceState.SWAP_PUNCTUATION;
+            mSpaceState = SpaceState.AUTO == inputTransaction.mSpaceState
+                    ? SpaceState.AUTO : SpaceState.SWAP_PUNCTUATION;
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
         } else if (Constants.CODE_SPACE == codePoint) {
             if (!mSuggestedWords.isPunctuationSuggestions()) {
