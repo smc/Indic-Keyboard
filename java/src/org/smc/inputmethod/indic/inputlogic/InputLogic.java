@@ -1773,6 +1773,12 @@ public final class InputLogic {
         if (numberOfCharsInWordBeforeCursor > expectedCursorPosition) return;
         final String typedWordString = range.mWord.toString();
 
+        if (!TextUtils.equals(mConnection.getTextBeforeCursor(numberOfCharsInWordBeforeCursor, 0),
+                typedWordString.substring(0, numberOfCharsInWordBeforeCursor))) {
+            mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
+            return;
+        }
+
         if (!isResumableWord(settingsValues, typedWordString)) {
             mSuggestionStripViewAccessor.setNeutralSuggestionStrip();
             return;
