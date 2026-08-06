@@ -957,7 +957,8 @@ public final class InputLogic {
             }
         }
         if (isVarnam) {
-            restartSuggestionsOnWordTouchedByCursor(settingsValues, true, ScriptUtils.SCRIPT_LATIN);
+            restartSuggestionsOnWordTouchedByCursor(settingsValues, false,
+                    ScriptUtils.SCRIPT_LATIN);
         } else {
             inputTransaction.setRequiresUpdateSuggestions();
         }
@@ -1816,6 +1817,9 @@ public final class InputLogic {
         if (isVarnam) {
             getVarnamSuggestions(typedWordString, new VarnamCallback() {
                 public void onResult(String input, Suggestion[] sugs) {
+                    if (sugs == null || !mWordComposer.getTypedWord().equals(input)) {
+                        return;
+                    }
                     restartSuggestionsOnWordTouchedByCursorUpdateSuggestions(typedWordInfo,
                             varnamSugsToSugsWordInfo(sugs));
                 }
