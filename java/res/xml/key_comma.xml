@@ -52,6 +52,15 @@
                 latin:keySpec="\@"
                 latin:keyStyle="settingsMoreKeysStyle" />
         </case>
+        <case
+            latin:languageCode="bn"
+            latin:keyboardLayoutSet="qwerty">
+            <Key
+                latin:keySpec="!text/keyspec_comma"
+                latin:moreKeys="\\,,%,%,%"
+                latin:keyLabelFlags="hasPopupHint"
+                latin:keyStyle="settingsMoreKeysStyle" />
+        </case>
         <default>
             <Key
                 latin:keySpec="!text/keyspec_comma"
