@@ -81,6 +81,8 @@
         <layout name="Inscript" layoutSet="manipuri_inscript" />
     </language>
     <language locale="mr_IN" englishName="Marathi" autonym="मराठी" glyph="म">
+        <layout name="Standard" layoutSet="marathi" />
+        <layout name="Inscript" layoutSet="hindi_inscript" />
         <layout name="अक्षरांतरण" layoutSet="qwerty" translit="mr-transliteration" />
         <layout name="Varnam" layoutSet="qwerty" translit="varnam-mr" />
     </language>
