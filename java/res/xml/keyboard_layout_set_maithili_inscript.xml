@@ -23,7 +23,7 @@
     xmlns:latin="http://schemas.android.com/apk/res-auto">
     <Element
         latin:elementName="alphabet"
-        latin:elementKeyboard="@xml/kbd_maithili_inscript"
+        latin:elementKeyboard="@xml/kbd_devanagari_inscript"
         latin:enableProximityCharsCorrection="true" />
     <Element
         latin:elementName="phone"

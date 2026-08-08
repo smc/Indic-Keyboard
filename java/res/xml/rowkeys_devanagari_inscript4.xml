@@ -76,9 +76,20 @@
         </case>
 
         <default>
-            <Key
-                latin:keySpec="&#x0946;"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <switch>
+                <case latin:languageCode="mai">
+                    <!--z ʼ MODIFIER LETTER APOSTROPHE-->
+                    <Key
+                        latin:keySpec="&#x02BC;"
+                        latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+                </case>
+                <default>
+                    <!--z ॆ DEVANAGARI VOWEL SIGN SHORT E-->
+                    <Key
+                        latin:keySpec="&#x0946;"
+                        latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+                </default>
+            </switch>
 
             <!--x ं DEVANAGARI SIGN ANUSVARA-->
             <Key
