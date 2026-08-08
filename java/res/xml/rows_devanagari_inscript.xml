@@ -24,14 +24,14 @@
 >
     <include latin:keyboardLayout="@xml/key_styles_common" />
     <Row latin:keyLabelFlags="autoXScale" latin:keyWidth="7.692%p" >
-        <include latin:keyboardLayout="@xml/rowkeys_hindi_inscript1" />
+        <include latin:keyboardLayout="@xml/rowkeys_devanagari_inscript1" />
     </Row>
     <Row latin:keyLabelFlags="autoXScale" latin:keyWidth="7.692%p" >
-        <include latin:keyboardLayout="@xml/rowkeys_hindi_inscript2" />
+        <include latin:keyboardLayout="@xml/rowkeys_devanagari_inscript2" />
     </Row>
     <Row latin:keyLabelFlags="autoXScale" latin:keyWidth="7.692%p" >
         <include
-            latin:keyboardLayout="@xml/rowkeys_hindi_inscript3"
+            latin:keyboardLayout="@xml/rowkeys_devanagari_inscript3"
             latin:keyXPos="3.846%p" />
         <Key
             latin:keyStyle="deleteKeyStyle"
@@ -43,7 +43,7 @@
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="11.538%p"
             latin:visualInsetsRight="1%p" />
-        <include latin:keyboardLayout="@xml/rowkeys_hindi_inscript4" />
+        <include latin:keyboardLayout="@xml/rowkeys_devanagari_inscript4" />
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="fillRight"

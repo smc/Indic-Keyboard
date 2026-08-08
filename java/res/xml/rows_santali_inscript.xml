@@ -27,7 +27,7 @@
         <include latin:keyboardLayout="@xml/rowkeys_santali_inscript1" />
     </Row>
     <Row latin:keyLabelFlags="autoXScale" latin:keyWidth="7.692%p" >
-        <include latin:keyboardLayout="@xml/rowkeys_hindi_inscript2" />
+        <include latin:keyboardLayout="@xml/rowkeys_devanagari_inscript2" />
     </Row>
     <Row latin:keyLabelFlags="autoXScale" latin:keyWidth="7.692%p" >
         <include

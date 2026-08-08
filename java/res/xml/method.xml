@@ -220,7 +220,7 @@
             android:label="@string/keyboard_name_mr_inscript"
             android:imeSubtypeLocale="mr_IN"
             android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=hindi_inscript,EmojiCapable" />
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=marathi_inscript,EmojiCapable" />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_mr_transliteration"
             android:imeSubtypeLocale="mr_IN"

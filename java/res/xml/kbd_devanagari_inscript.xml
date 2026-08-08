@@ -26,5 +26,5 @@
     latin:touchPositionCorrectionData="@array/touch_position_correction_data_default"
 >
     <include
-        latin:keyboardLayout="@xml/rows_hindi_inscript" />
+        latin:keyboardLayout="@xml/rows_devanagari_inscript" />
 </Keyboard>

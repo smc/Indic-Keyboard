@@ -86,11 +86,22 @@
                 latin:moreKeys="~"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <!--! ऍ DEVANAGARI LETTER CANDRA E-->
-            <Key
-                latin:keySpec="&#x090D;"
-                latin:moreKeys="!"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+            <switch>
+                <case latin:languageCode="mr">
+                    <!--\! ॲ DEVANAGARI LETTER CANDRA A-->
+                    <Key
+                        latin:keySpec="&#x0972;"
+                        latin:moreKeys="&#x090D;,!"
+                        latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+                </case>
+                <default>
+                    <!--! ऍ DEVANAGARI LETTER CANDRA E-->
+                    <Key
+                        latin:keySpec="&#x090D;"
+                        latin:moreKeys="&#x0972;,!"
+                        latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+                </default>
+            </switch>
 
             <!--\@ ॅ DEVANAGARI VOWEL SIGN CANDRA E-->
             <Key
