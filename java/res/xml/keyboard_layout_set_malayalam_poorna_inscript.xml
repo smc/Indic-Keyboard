@@ -26,6 +26,12 @@
         latin:elementKeyboard="@xml/kbd_malayalam_poorna_inscript"
         latin:enableProximityCharsCorrection="true" />
     <Element
+        latin:elementName="symbols"
+        latin:elementKeyboard="@xml/kbd_inscript_symbols" />
+    <Element
+        latin:elementName="symbolsShifted"
+        latin:elementKeyboard="@xml/kbd_inscript_symbols" />
+    <Element
         latin:elementName="phone"
         latin:elementKeyboard="@xml/kbd_phone" />
     <Element
