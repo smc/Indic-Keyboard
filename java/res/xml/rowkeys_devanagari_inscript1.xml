@@ -111,12 +111,14 @@
 
             <!--\# ्र  -->
             <Key
-                latin:keySpec="\#"
+                latin:keySpec="&#x094D;&#x0930;"
+                latin:moreKeys="\#"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--\$ र्  -->
             <Key
-                latin:keySpec="&#x20b9;"
+                latin:keySpec="&#x0930;&#x094D;"
+                latin:moreKeys="&#x20B9;,\$"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--\% ज्ञ  -->
@@ -147,13 +149,13 @@
             <Key
                 latin:keySpec="!icon/zwj_key|&#x200D;"
                 latin:moreKeys="("
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|hasPopupHint" />
 
             <!--\) ‌ ZERO WIDTH NON-JOINER-->
             <Key
                 latin:keySpec="!icon/zwnj_key|&#x200C;"
                 latin:moreKeys=")"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|hasPopupHint" />
 
             <!--_ ः DEVANAGARI SIGN VISARGA-->
             <Key
