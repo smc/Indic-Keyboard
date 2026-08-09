@@ -27,7 +27,7 @@
         >
             <Key
                 latin:keySpec="q"
-                latin:moreKeys="!text/morekeys_q,%"
+                latin:moreKeys="!text/morekeys_q,%,%,%"
                 latin:backgroundType="normal"
                 latin:keyStyle="settingsMoreKeysStyle" />
         </case>
@@ -57,7 +57,7 @@
             latin:keyboardLayoutSet="qwerty">
             <Key
                 latin:keySpec="!text/keyspec_comma"
-                latin:moreKeys="\\,,%,%,%"
+                latin:moreKeys="!fixedColumnOrder!4,\\,,%,%,%"
                 latin:keyLabelFlags="hasPopupHint"
                 latin:keyStyle="settingsMoreKeysStyle" />
         </case>

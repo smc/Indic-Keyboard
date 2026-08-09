@@ -28,8 +28,9 @@
             latin:clobberSettingsKey="true"
         >
             <key-style
-                latin:styleName="settingsMoreKeysStyle"
+                latin:styleName="optionMenuMoreKeysStyle"
                 latin:keyLabelFlags="hasPopupHint"
+                latin:moreKeys="!fixedColumnOrder!4,%,%"
                 latin:additionalMoreKeys="!icon/emoji_normal_key|!code/key_emoji,!text/keyspec_clipboard"
                 latin:backgroundType="functional"
                 latin:parentStyle="baseSettingsMoreKeysStyle" />
@@ -37,34 +38,20 @@
         <!-- clobberSettingsKey="false" -->
         <default>
             <key-style
-                latin:styleName="settingsMoreKeysStyle"
+                latin:styleName="optionMenuMoreKeysStyle"
                 latin:keyLabelFlags="hasPopupHint"
+                latin:moreKeys="!fixedColumnOrder!4,%,%,%"
                 latin:additionalMoreKeys="!icon/emoji_normal_key|!code/key_emoji,!text/keyspec_clipboard,!text/keyspec_settings"
                 latin:backgroundType="functional"
                 latin:parentStyle="baseSettingsMoreKeysStyle" />
         </default>
     </switch>
-    <switch>
-        <case
-            latin:clobberSettingsKey="true"
-        >
-            <key-style
-                latin:styleName="functionMenuKeyStyle"
-                latin:keySpec="!icon/function_menu_key|!code/key_function_menu"
-                latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="!icon/emoji_normal_key|!code/key_emoji,!text/keyspec_clipboard"
-                latin:keyActionFlags="noKeyPreview"
-                latin:backgroundType="functional" />
-        </case>
-        <!-- clobberSettingsKey="false" -->
-        <default>
-            <key-style
-                latin:styleName="functionMenuKeyStyle"
-                latin:keySpec="!icon/function_menu_key|!code/key_function_menu"
-                latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="!icon/emoji_normal_key|!code/key_emoji,!text/keyspec_clipboard,!text/keyspec_settings"
-                latin:keyActionFlags="noKeyPreview"
-                latin:backgroundType="functional" />
-        </default>
-    </switch>
+    <key-style
+        latin:styleName="settingsMoreKeysStyle"
+        latin:parentStyle="optionMenuMoreKeysStyle" />
+    <key-style
+        latin:styleName="functionMenuKeyStyle"
+        latin:keySpec="!icon/function_menu_key|!code/key_function_menu"
+        latin:keyActionFlags="noKeyPreview"
+        latin:parentStyle="optionMenuMoreKeysStyle" />
 </merge>
