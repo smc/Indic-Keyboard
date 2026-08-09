@@ -121,11 +121,13 @@
                 latin:keySpec="&#x0938;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <include
-                latin:keyboardLayout="@xml/key_comma" />
+            <Key
+                latin:keySpec="!text/keyspec_comma" />
 
-            <include
-                latin:keyboardLayout="@xml/key_period" />
+            <Key
+                latin:keySpec="!text/keyspec_period"
+                latin:keyLabelFlags="hasPopupHint"
+                latin:moreKeys="!text/morekeys_period" />
 
             <!--/ य DEVANAGARI LETTER YA-->
             <Key
