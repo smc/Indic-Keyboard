@@ -49,7 +49,7 @@
             <Key
                 latin:keySpec="&#x09AB;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
-            <Key latin:keySpec="&#x0020;" />
+            <Key latin:keySpec="!icon/undefined|!code/key_unspecified" />
             <!--K খ BENGALI LETTER KHA-->
             <Key
                 latin:keySpec="&#x0996;"

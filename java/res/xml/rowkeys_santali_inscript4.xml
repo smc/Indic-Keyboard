@@ -26,7 +26,7 @@
         <case
             latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted"
         >
-            <Key latin:keySpec="&#x0020;" />
+            <Key latin:keySpec="!icon/undefined|!code/key_unspecified" />
 
             <!--X ँ DEVANAGARI SIGN CANDRABINDU-->
             <Key
@@ -38,10 +38,10 @@
                 latin:keySpec="&#x0923;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keySpec="&#x0020;" />
-            <Key latin:keySpec="&#x0020;" />
-            <Key latin:keySpec="&#x0020;" />
-            <Key latin:keySpec="&#x0020;" />
+            <Key latin:keySpec="!icon/undefined|!code/key_unspecified" />
+            <Key latin:keySpec="!icon/undefined|!code/key_unspecified" />
+            <Key latin:keySpec="!icon/undefined|!code/key_unspecified" />
+            <Key latin:keySpec="!icon/undefined|!code/key_unspecified" />
 
             <Key
                 latin:keySpec="&lt;"
@@ -57,7 +57,7 @@
         </case>
 
         <default>
-            <Key latin:keySpec="&#x0020;" />
+            <Key latin:keySpec="!icon/undefined|!code/key_unspecified" />
 
             <!--x ं DEVANAGARI SIGN ANUSVARA-->
             <Key

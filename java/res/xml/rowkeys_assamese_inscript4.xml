@@ -36,9 +36,9 @@
                 latin:keySpec="&#x09A3;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key latin:keySpec="&#x0020;" />
-            <Key latin:keySpec="&#x0020;" />
-            <Key latin:keySpec="&#x0020;" />
+            <Key latin:keySpec="!icon/undefined|!code/key_unspecified" />
+            <Key latin:keySpec="!icon/undefined|!code/key_unspecified" />
+            <Key latin:keySpec="!icon/undefined|!code/key_unspecified" />
 
             <!--M শ BENGALI LETTER SHA-->
             <Key
