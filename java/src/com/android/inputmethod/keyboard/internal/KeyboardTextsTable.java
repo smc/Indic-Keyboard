@@ -823,7 +823,6 @@ public final class KeyboardTextsTable {
         null, null, null, null, null, null, null, null, null, null, null, null,
         /* ~ keyspec_currency */
         // U+0915 U+0916 U+0917: Devanagari letters ka, kha, ga (Maithili)
-        // U+0964: "।" DEVANAGARI DANDA
         /* keyspec_period */ "\u0964",
     };
 
@@ -945,7 +944,6 @@ public final class KeyboardTextsTable {
         // U+0915: "क" DEVANAGARI LETTER KA
         // U+0916: "ख" DEVANAGARI LETTER KHA
         // U+0917: "ग" DEVANAGARI LETTER GA
-        // U+0964: "।" DEVANAGARI DANDA
         /* keyspec_period */ "\u0964",
     };
 

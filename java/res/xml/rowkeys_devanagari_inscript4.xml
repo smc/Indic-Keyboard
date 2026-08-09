@@ -28,6 +28,7 @@
         >
             <Key
                 latin:keySpec="&#x090E;"
+                latin:moreKeys="&#x0973;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--X ँ DEVANAGARI SIGN CANDRABINDU-->
@@ -87,6 +88,7 @@
                     <!--z ॆ DEVANAGARI VOWEL SIGN SHORT E-->
                     <Key
                         latin:keySpec="&#x0946;"
+                        latin:moreKeys="&#x093A;"
                         latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
                 </default>
             </switch>

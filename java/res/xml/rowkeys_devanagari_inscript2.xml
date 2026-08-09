@@ -28,6 +28,7 @@
             <!--Q औ DEVANAGARI LETTER AU-->
             <Key
                 latin:keySpec="&#x0914;"
+                latin:moreKeys="&#x0975;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--W ऐ DEVANAGARI LETTER AI-->
@@ -48,6 +49,7 @@
             <!--T ऊ DEVANAGARI LETTER UU-->
             <Key
                 latin:keySpec="&#x090A;"
+                latin:moreKeys="&#x0977;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--Y भ DEVANAGARI LETTER BHA-->
@@ -90,17 +92,16 @@
             <!--\| ऑ DEVANAGARI LETTER CANDRA O-->
             <Key
                 latin:keySpec="&#x0911;"
+                latin:moreKeys="|"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
-            <Key
-                latin:keySpec="|"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
         </case>
 
         <default>
             <!--q ौ DEVANAGARI VOWEL SIGN AU-->
             <Key
                 latin:keySpec="&#x094C;"
+                latin:moreKeys="&#x094F;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--w ै DEVANAGARI VOWEL SIGN AI-->
@@ -121,6 +122,7 @@
             <!--t ू DEVANAGARI VOWEL SIGN UU-->
             <Key
                 latin:keySpec="&#x0942;"
+                latin:moreKeys="&#x0957;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--y ब DEVANAGARI LETTER BA-->
@@ -163,10 +165,7 @@
             <!--\\ ॉ DEVANAGARI VOWEL SIGN CANDRA O-->
             <Key
                 latin:keySpec="&#x0949;"
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
-
-            <Key
-                latin:keySpec="\\"
+                latin:moreKeys="\\"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
          </default>
     </switch>

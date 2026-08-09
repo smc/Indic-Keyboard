@@ -28,6 +28,7 @@
             <!--A ओ DEVANAGARI LETTER O-->
             <Key
                 latin:keySpec="&#x0913;"
+                latin:moreKeys="&#x0974;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--S ए DEVANAGARI LETTER E-->
@@ -48,6 +49,7 @@
             <!--G उ DEVANAGARI LETTER U-->
             <Key
                 latin:keySpec="&#x0909;"
+                latin:moreKeys="&#x0976;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--H फ DEVANAGARI LETTER PHA-->
@@ -86,6 +88,7 @@
             <!--a ो DEVANAGARI VOWEL SIGN O-->
             <Key
                 latin:keySpec="&#x094B;"
+                latin:moreKeys="&#x093B;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--s े DEVANAGARI VOWEL SIGN E-->
@@ -106,6 +109,7 @@
             <!--g ु DEVANAGARI VOWEL SIGN U-->
             <Key
                 latin:keySpec="&#x0941;"
+                latin:moreKeys="&#x0956;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--h प DEVANAGARI LETTER PA-->
