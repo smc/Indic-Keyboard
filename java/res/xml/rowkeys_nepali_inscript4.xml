@@ -85,8 +85,9 @@
                 latin:keySpec=","
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="."
-                latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
+                latin:keySpec="!text/keyspec_period"
+                latin:keyLabelFlags="fontNormal|followKeyLetterRatio|hasPopupHint"
+                latin:moreKeys=".,!text/morekeys_period" />
             <!--/ य DEVANAGARI LETTER YA-->
             <Key
                 latin:keySpec="&#x092F;"

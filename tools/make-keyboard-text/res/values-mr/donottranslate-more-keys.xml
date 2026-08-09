@@ -22,6 +22,7 @@
          U+0915: "क" DEVANAGARI LETTER KA
          U+0916: "ख" DEVANAGARI LETTER KHA
          U+0917: "ग" DEVANAGARI LETTER GA -->
+    <string name="keyspec_period">&#x0964;</string>
     <string name="keylabel_to_alpha">&#x0915;&#x0916;&#x0917;</string>
     <!-- U+0967: "१" DEVANAGARI DIGIT ONE -->
     <string name="keyspec_symbols_1">&#x0967;</string>

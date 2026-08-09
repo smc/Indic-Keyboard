@@ -127,7 +127,7 @@
             <Key
                 latin:keySpec="!text/keyspec_period"
                 latin:keyLabelFlags="hasPopupHint"
-                latin:moreKeys="!text/morekeys_period" />
+                latin:moreKeys=".,!text/morekeys_period" />
 
             <!--/ य DEVANAGARI LETTER YA-->
             <Key
