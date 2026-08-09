@@ -78,54 +78,54 @@
                 latin:keyHintLabel="`"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x1C51;"
-                latin:moreKeys="!,1"
-                latin:keyHintLabel="!"
+                latin:keySpec="!text/keyspec_symbols_1"
+                latin:additionalMoreKeys="!text/additional_morekeys_symbols_1"
+                latin:moreKeys="!text/morekeys_symbols_1"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x1C52;"
-                latin:moreKeys="\@,2"
-                latin:keyHintLabel="\@"
+                latin:keySpec="!text/keyspec_symbols_2"
+                latin:additionalMoreKeys="!text/additional_morekeys_symbols_2"
+                latin:moreKeys="!text/morekeys_symbols_2"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x1C53;"
-                latin:moreKeys="\#,3"
-                latin:keyHintLabel="\#"
+                latin:keySpec="!text/keyspec_symbols_3"
+                latin:additionalMoreKeys="!text/additional_morekeys_symbols_3"
+                latin:moreKeys="!text/morekeys_symbols_3"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x1C54;"
-                latin:moreKeys="$,&#x20B9;,4"
-                latin:keyHintLabel="&#x20B9;"
+                latin:keySpec="!text/keyspec_symbols_4"
+                latin:additionalMoreKeys="!text/additional_morekeys_symbols_4"
+                latin:moreKeys="!text/morekeys_symbols_4"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x1C55;"
-                latin:moreKeys="%,5"
-                latin:keyHintLabel="%"
+                latin:keySpec="!text/keyspec_symbols_5"
+                latin:additionalMoreKeys="!text/additional_morekeys_symbols_5"
+                latin:moreKeys="!text/morekeys_symbols_5"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x1C56;"
-                latin:moreKeys="^,6"
-                latin:keyHintLabel="^"
+                latin:keySpec="!text/keyspec_symbols_6"
+                latin:additionalMoreKeys="!text/additional_morekeys_symbols_6"
+                latin:moreKeys="!text/morekeys_symbols_6"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x1C57;"
-                latin:moreKeys="&amp;,7"
-                latin:keyHintLabel="&amp;"
+                latin:keySpec="!text/keyspec_symbols_7"
+                latin:additionalMoreKeys="!text/additional_morekeys_symbols_7"
+                latin:moreKeys="!text/morekeys_symbols_7"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x1C58;"
-                latin:moreKeys="*,8"
-                latin:keyHintLabel="*"
+                latin:keySpec="!text/keyspec_symbols_8"
+                latin:additionalMoreKeys="!text/additional_morekeys_symbols_8"
+                latin:moreKeys="!text/morekeys_symbols_8"
                 latin:keyLabelFlags="fontNormal" />
             <Key
-                latin:keySpec="&#x1C59;"
-                latin:moreKeys="(,9"
-                latin:keyHintLabel="("
+                latin:keySpec="!text/keyspec_symbols_9"
+                latin:additionalMoreKeys="!text/additional_morekeys_symbols_9"
+                latin:moreKeys="!text/morekeys_symbols_9"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="&#x1C50;"
-                latin:moreKeys="),0"
-                latin:keyHintLabel=")"
+                latin:keySpec="!text/keyspec_symbols_0"
+                latin:additionalMoreKeys="!text/additional_morekeys_symbols_0"
+                latin:moreKeys="!text/morekeys_symbols_0"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
                 latin:keySpec="&#x1C7C;"

@@ -52,54 +52,54 @@
         <default>
             <!-- U+1041: "၁" MYANMAR DIGIT ONE -->
             <Key
-                latin:keySpec="&#x1041;"
-                latin:keyHintLabel="1"
-                latin:additionalMoreKeys="1" />
+                latin:keySpec="!text/keyspec_symbols_1"
+                latin:additionalMoreKeys="!text/additional_morekeys_symbols_1"
+                latin:moreKeys="!text/morekeys_symbols_1" />
             <!-- U+1042: "၂" MYANMAR DIGIT TWO -->
             <Key
-                latin:keySpec="&#x1042;"
-                latin:keyHintLabel="2"
-                latin:additionalMoreKeys="2" />
+                latin:keySpec="!text/keyspec_symbols_2"
+                latin:additionalMoreKeys="!text/additional_morekeys_symbols_2"
+                latin:moreKeys="!text/morekeys_symbols_2" />
             <!-- U+1043: "၃" MYANMAR DIGIT THREE -->
             <Key
-                latin:keySpec="&#x1043;"
-                latin:keyHintLabel="3"
-                latin:additionalMoreKeys="3" />
+                latin:keySpec="!text/keyspec_symbols_3"
+                latin:additionalMoreKeys="!text/additional_morekeys_symbols_3"
+                latin:moreKeys="!text/morekeys_symbols_3" />
             <!-- U+1044: "၄" MYANMAR DIGIT FOUR -->
             <Key
-                latin:keySpec="&#x1044;"
-                latin:keyHintLabel="4"
-                latin:additionalMoreKeys="4" />
+                latin:keySpec="!text/keyspec_symbols_4"
+                latin:additionalMoreKeys="!text/additional_morekeys_symbols_4"
+                latin:moreKeys="!text/morekeys_symbols_4" />
             <!-- U+1045: "၅" MYANMAR DIGIT FIVE -->
             <Key
-                latin:keySpec="&#x1045;"
-                latin:keyHintLabel="5"
-                latin:additionalMoreKeys="5" />
+                latin:keySpec="!text/keyspec_symbols_5"
+                latin:additionalMoreKeys="!text/additional_morekeys_symbols_5"
+                latin:moreKeys="!text/morekeys_symbols_5" />
             <!-- U+1046: "၆" MYANMAR DIGIT SIX -->
             <Key
-                latin:keySpec="&#x1046;"
-                latin:keyHintLabel="6"
-                latin:additionalMoreKeys="6" />
+                latin:keySpec="!text/keyspec_symbols_6"
+                latin:additionalMoreKeys="!text/additional_morekeys_symbols_6"
+                latin:moreKeys="!text/morekeys_symbols_6" />
             <!-- U+1047: "၇" MYANMAR DIGIT SEVEN -->
             <Key
-                latin:keySpec="&#x1047;"
-                latin:keyHintLabel="7"
-                latin:additionalMoreKeys="7" />
+                latin:keySpec="!text/keyspec_symbols_7"
+                latin:additionalMoreKeys="!text/additional_morekeys_symbols_7"
+                latin:moreKeys="!text/morekeys_symbols_7" />
             <!-- U+1048: "၈" MYANMAR DIGIT EIGHT -->
             <Key
-                latin:keySpec="&#x1048;"
-                latin:keyHintLabel="8"
-                latin:additionalMoreKeys="8" />
+                latin:keySpec="!text/keyspec_symbols_8"
+                latin:additionalMoreKeys="!text/additional_morekeys_symbols_8"
+                latin:moreKeys="!text/morekeys_symbols_8" />
             <!-- U+1049: "၉" MYANMAR DIGIT NINE -->
             <Key
-                latin:keySpec="&#x1049;"
-                latin:keyHintLabel="9"
-                latin:additionalMoreKeys="9" />
+                latin:keySpec="!text/keyspec_symbols_9"
+                latin:additionalMoreKeys="!text/additional_morekeys_symbols_9"
+                latin:moreKeys="!text/morekeys_symbols_9" />
             <!-- U+1040: "၀" MYANMAR DIGIT ZERO -->
             <Key
-                latin:keySpec="&#x1040;"
-                latin:keyHintLabel="0"
-                latin:additionalMoreKeys="0" />
+                latin:keySpec="!text/keyspec_symbols_0"
+                latin:additionalMoreKeys="!text/additional_morekeys_symbols_0"
+                latin:moreKeys="!text/morekeys_symbols_0" />
         </default>
     </switch>
 </merge>

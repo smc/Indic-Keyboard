@@ -21,6 +21,7 @@ import android.content.SharedPreferences;
 
 import com.android.inputmethod.compat.PreferenceManagerCompat;
 import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.latin.utils.ScriptUtils;
 
 import java.util.Locale;
 
@@ -56,6 +57,33 @@ public final class NativeNumerals {
                 && Character.isDigit(text.codePointAt(0));
     }
 
+    private static String[] digitsForScript(final int scriptId) {
+        final int zero;
+        switch (scriptId) {
+        case ScriptUtils.SCRIPT_DEVANAGARI: zero = 0x0966; break;
+        case ScriptUtils.SCRIPT_BENGALI:    zero = 0x09E6; break;
+        case ScriptUtils.SCRIPT_GURMUKHI:   zero = 0x0A66; break;
+        case ScriptUtils.SCRIPT_GUJARATI:   zero = 0x0AE6; break;
+        case ScriptUtils.SCRIPT_ORIYA:      zero = 0x0B66; break;
+        case ScriptUtils.SCRIPT_TAMIL:      zero = 0x0BE6; break;
+        case ScriptUtils.SCRIPT_TELUGU:     zero = 0x0C66; break;
+        case ScriptUtils.SCRIPT_KANNADA:    zero = 0x0CE6; break;
+        case ScriptUtils.SCRIPT_MALAYALAM:  zero = 0x0D66; break;
+        case ScriptUtils.SCRIPT_MYANMAR:    zero = 0x1040; break;
+        case ScriptUtils.SCRIPT_KHMER:      zero = 0x17E0; break;
+        case ScriptUtils.SCRIPT_LAO:        zero = 0x0ED0; break;
+        case ScriptUtils.SCRIPT_THAI:       zero = 0x0E50; break;
+        case ScriptUtils.SCRIPT_OL_CHIKI:   zero = 0x1C50; break;
+        default: return null;
+        }
+        final String[] digits = new String[10];
+        for (int i = 0; i < 9; i++) {
+            digits[i] = String.valueOf((char) (zero + i + 1));
+        }
+        digits[9] = String.valueOf((char) zero);
+        return digits;
+    }
+
     /** The language's digits ordered 1..9,0, or null when the language has none. */
     public static String[] nativeDigits(final Locale locale) {
         final String[] table = KeyboardTextsTable.getTextsTable(locale);
@@ -82,12 +110,19 @@ public final class NativeNumerals {
         return prefs.getBoolean(prefKey(locale.getLanguage()), false);
     }
 
-    /** Applies the numeral split for the keyboard element being built. */
+    /**
+     * Applies the numeral split for the keyboard element being built.
+     */
     public static void apply(final Context context, final Locale locale,
-            final KeyboardTextsSet textsSet, final int elementId) {
-        final String[] nativeDigits = nativeDigits(locale);
+            final KeyboardTextsSet textsSet, final int elementId, final int scriptId) {
+        String[] nativeDigits = nativeDigits(locale);
         if (nativeDigits == null) {
             return;
+        }
+        final String[] scriptDigits = digitsForScript(scriptId);
+        if (scriptDigits != null
+                && !ScriptUtils.isLetterPartOfScript(nativeDigits[0].codePointAt(0), scriptId)) {
+            nativeDigits = scriptDigits;
         }
         final SharedPreferences prefs =
                 PreferenceManagerCompat.getDeviceSharedPreferences(context);

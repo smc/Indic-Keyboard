@@ -27,54 +27,54 @@
                 latin:moreKeys="`"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="&#x0967;"
+                latin:keySpec="!text/keyspec_symbols_1"
                 latin:additionalMoreKeys="!text/additional_morekeys_symbols_1"
-                latin:moreKeys="1, !text/morekeys_symbols_1"
+                latin:moreKeys="!text/morekeys_symbols_1"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="&#x0968;"
+                latin:keySpec="!text/keyspec_symbols_2"
                 latin:additionalMoreKeys="!text/additional_morekeys_symbols_2"
-                latin:moreKeys="2, !text/morekeys_symbols_2"
+                latin:moreKeys="!text/morekeys_symbols_2"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="&#x0969;"
+                latin:keySpec="!text/keyspec_symbols_3"
                 latin:additionalMoreKeys="!text/additional_morekeys_symbols_3"
-                latin:moreKeys="3, !text/morekeys_symbols_3"
+                latin:moreKeys="!text/morekeys_symbols_3"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="&#x096A;"
+                latin:keySpec="!text/keyspec_symbols_4"
                 latin:additionalMoreKeys="!text/additional_morekeys_symbols_4"
-                latin:moreKeys="4, !text/morekeys_symbols_4"
+                latin:moreKeys="!text/morekeys_symbols_4"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="&#x096B;"
+                latin:keySpec="!text/keyspec_symbols_5"
                 latin:additionalMoreKeys="!text/additional_morekeys_symbols_5"
-                latin:moreKeys="5, !text/morekeys_symbols_5"
+                latin:moreKeys="!text/morekeys_symbols_5"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="&#x096C;"
+                latin:keySpec="!text/keyspec_symbols_6"
                 latin:additionalMoreKeys="!text/additional_morekeys_symbols_6"
-                latin:moreKeys="6, !text/morekeys_symbols_6"
+                latin:moreKeys="!text/morekeys_symbols_6"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="&#x096D;"
+                latin:keySpec="!text/keyspec_symbols_7"
                 latin:additionalMoreKeys="!text/additional_morekeys_symbols_7"
-                latin:moreKeys="7, !text/morekeys_symbols_7"
+                latin:moreKeys="!text/morekeys_symbols_7"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="&#x096E;"
+                latin:keySpec="!text/keyspec_symbols_8"
                 latin:additionalMoreKeys="!text/additional_morekeys_symbols_8"
-                latin:moreKeys="8, !text/morekeys_symbols_8"
+                latin:moreKeys="!text/morekeys_symbols_8"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="&#x096F;"
+                latin:keySpec="!text/keyspec_symbols_9"
                 latin:additionalMoreKeys="!text/additional_morekeys_symbols_9"
-                latin:moreKeys="9, !text/morekeys_symbols_9"
+                latin:moreKeys="!text/morekeys_symbols_9"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
             <Key
-                latin:keySpec="&#x0966;"
+                latin:keySpec="!text/keyspec_symbols_0"
                 latin:additionalMoreKeys="!text/additional_morekeys_symbols_0"
-                latin:moreKeys="0, !text/morekeys_symbols_0"
+                latin:moreKeys="!text/morekeys_symbols_0"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <Key

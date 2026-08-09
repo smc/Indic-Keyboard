@@ -31,6 +31,7 @@ import com.android.inputmethod.annotations.UsedForTesting;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.keyboard.KeyboardLayoutSet;
 import com.android.inputmethod.keyboard.KeyboardTheme;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.common.Constants;
@@ -283,7 +284,9 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             params.mIconsSet.loadIcons(keyboardAttr);
             params.mTextsSet.setLocale(params.mId.getLocale(), mContext);
             NativeNumerals.apply(mContext, params.mId.getLocale(), params.mTextsSet,
-                    params.mId.mElementId);
+                    params.mId.mElementId,
+                    KeyboardLayoutSet.getScriptId(mResources,
+                            params.mId.mSubtype.getRawSubtype()));
 
             final int resourceId = keyboardAttr.getResourceId(
                     R.styleable.Keyboard_touchPositionCorrectionData, 0);

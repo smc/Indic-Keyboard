@@ -60,42 +60,55 @@
 
     <default>
       <Key
-        latin:keySpec="&#x1C51;"
-        latin:keyLabelFlags="fontNormal"/>
+        latin:keySpec="!text/keyspec_symbols_1"
+        latin:additionalMoreKeys="!text/additional_morekeys_symbols_1"
+        latin:moreKeys="!text/morekeys_symbols_1"
+        latin:keyLabelFlags="fontNormal" />
       <Key
-        latin:keySpec="&#x1C52;"
-        latin:keyLabelFlags="fontNormal"/>
+        latin:keySpec="!text/keyspec_symbols_2"
+        latin:additionalMoreKeys="!text/additional_morekeys_symbols_2"
+        latin:moreKeys="!text/morekeys_symbols_2"
+        latin:keyLabelFlags="fontNormal" />
       <Key
-        latin:keySpec="&#x1C53;"
-        latin:keyLabelFlags="fontNormal"
-        latin:additionalMoreKeys="#" />
+        latin:keySpec="!text/keyspec_symbols_3"
+        latin:additionalMoreKeys="!text/additional_morekeys_symbols_3"
+        latin:moreKeys="!text/morekeys_symbols_3"
+        latin:keyLabelFlags="fontNormal" />
       <Key
-        latin:keySpec="&#x1C54;"
-        latin:keyLabelFlags="fontNormal"
-        latin:additionalMoreKeys="$" />
+        latin:keySpec="!text/keyspec_symbols_4"
+        latin:additionalMoreKeys="!text/additional_morekeys_symbols_4"
+        latin:moreKeys="!text/morekeys_symbols_4"
+        latin:keyLabelFlags="fontNormal" />
       <Key
-        latin:keySpec="&#x1C55;"
-        latin:keyLabelFlags="fontNormal"
-        latin:additionalMoreKeys="%" />
+        latin:keySpec="!text/keyspec_symbols_5"
+        latin:additionalMoreKeys="!text/additional_morekeys_symbols_5"
+        latin:moreKeys="!text/morekeys_symbols_5"
+        latin:keyLabelFlags="fontNormal" />
       <Key
-        latin:keySpec="&#x1C56;"
-        latin:keyLabelFlags="fontNormal"
-        latin:additionalMoreKeys="^" />
+        latin:keySpec="!text/keyspec_symbols_6"
+        latin:additionalMoreKeys="!text/additional_morekeys_symbols_6"
+        latin:moreKeys="!text/morekeys_symbols_6"
+        latin:keyLabelFlags="fontNormal" />
       <Key
-        latin:keySpec="&#x1C57;"
-        latin:keyLabelFlags="fontNormal"/>
+        latin:keySpec="!text/keyspec_symbols_7"
+        latin:additionalMoreKeys="!text/additional_morekeys_symbols_7"
+        latin:moreKeys="!text/morekeys_symbols_7"
+        latin:keyLabelFlags="fontNormal" />
       <Key
-        latin:keySpec="&#x1C58;"
-        latin:keyLabelFlags="fontNormal"
-        latin:additionalMoreKeys="*" />
+        latin:keySpec="!text/keyspec_symbols_8"
+        latin:additionalMoreKeys="!text/additional_morekeys_symbols_8"
+        latin:moreKeys="!text/morekeys_symbols_8"
+        latin:keyLabelFlags="fontNormal" />
       <Key
-        latin:keySpec="&#x1C59;"
-        latin:keyLabelFlags="fontNormal"
-        latin:additionalMoreKeys="(" />
+        latin:keySpec="!text/keyspec_symbols_9"
+        latin:additionalMoreKeys="!text/additional_morekeys_symbols_9"
+        latin:moreKeys="!text/morekeys_symbols_9"
+        latin:keyLabelFlags="fontNormal" />
       <Key
-        latin:keySpec="&#x1C50;"
-        latin:keyLabelFlags="fontNormal"
-        latin:additionalMoreKeys=")" />
+        latin:keySpec="!text/keyspec_symbols_0"
+        latin:additionalMoreKeys="!text/additional_morekeys_symbols_0"
+        latin:moreKeys="!text/morekeys_symbols_0"
+        latin:keyLabelFlags="fontNormal" />
     </default>
   </switch>
 </merge>
