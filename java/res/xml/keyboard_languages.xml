@@ -112,6 +112,9 @@
         <layout name="Transliteration" layoutSet="qwerty" translit="sa-transliteration" />
         <layout name="Varnam" layoutSet="qwerty" translit="varnam-sa" />
     </language>
+    <language locale="sd_IN" englishName="Sindhi" autonym="सिन्धी" glyph="ॻ">
+        <layout name="Inscript" layoutSet="sindhi_inscript" />
+    </language>
     <language locale="sat_IN" englishName="Santali" autonym="ᱥᱟᱱᱛᱟᱲᱤ" glyph="ᱟ">
         <layout name="Inscript" layoutSet="santali_inscript" />
         <layout name="Ol Chiki" layoutSet="santali_olck" />

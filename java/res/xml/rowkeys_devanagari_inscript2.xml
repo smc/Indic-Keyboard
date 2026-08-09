@@ -128,6 +128,7 @@
             <!--y ब DEVANAGARI LETTER BA-->
             <Key
                 latin:keySpec="&#x092C;"
+                latin:moreKeys="&#x097F;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--u ह DEVANAGARI LETTER HA-->
@@ -138,6 +139,7 @@
             <!--i ग DEVANAGARI LETTER GA-->
             <Key
                 latin:keySpec="&#x0917;"
+                latin:moreKeys="&#x097B;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--o द DEVANAGARI LETTER DA-->
@@ -148,12 +150,13 @@
             <!--p ज DEVANAGARI LETTER JA-->
             <Key
                 latin:keySpec="&#x091C;"
+                latin:moreKeys="&#x097C;"
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--\[ ड DEVANAGARI LETTER DDA-->
             <Key
                 latin:keySpec="&#x0921;"
-                latin:moreKeys="["
+                latin:moreKeys="&#x097E;,["
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <!--\] ़ DEVANAGARI SIGN NUKTA-->

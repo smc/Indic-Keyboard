@@ -226,6 +226,11 @@
             android:imeSubtypeLocale="mr_IN"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=mr-transliteration" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_sd_inscript"
+            android:imeSubtypeLocale="sd_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=sindhi_inscript,EmojiCapable" />
 
     <!-- Mon -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"

@@ -83,30 +83,30 @@ public final class KeyboardTextsTable {
 
     private static final String[] NAMES = {
     //  /* index:histogram */ "name",
-        /*   0:24 */ "keylabel_to_alpha",
-        /*   1:23 */ "additional_morekeys_symbols_1",
-        /*   2:23 */ "additional_morekeys_symbols_2",
-        /*   3:23 */ "additional_morekeys_symbols_3",
-        /*   4:23 */ "additional_morekeys_symbols_4",
-        /*   5:23 */ "additional_morekeys_symbols_5",
-        /*   6:23 */ "additional_morekeys_symbols_6",
-        /*   7:23 */ "additional_morekeys_symbols_7",
-        /*   8:23 */ "additional_morekeys_symbols_8",
-        /*   9:23 */ "additional_morekeys_symbols_9",
-        /*  10:23 */ "additional_morekeys_symbols_0",
-        /*  11:12 */ "keylabel_to_symbol",
-        /*  12:11 */ "keyspec_symbols_1",
-        /*  13:11 */ "keyspec_symbols_2",
-        /*  14:11 */ "keyspec_symbols_3",
-        /*  15:11 */ "keyspec_symbols_4",
-        /*  16:11 */ "keyspec_symbols_5",
-        /*  17:11 */ "keyspec_symbols_6",
-        /*  18:11 */ "keyspec_symbols_7",
-        /*  19:11 */ "keyspec_symbols_8",
-        /*  20:11 */ "keyspec_symbols_9",
-        /*  21:11 */ "keyspec_symbols_0",
-        /*  22: 6 */ "keyspec_currency",
-        /*  23: 5 */ "keyspec_period",
+        /*   0:25 */ "keylabel_to_alpha",
+        /*   1:24 */ "additional_morekeys_symbols_1",
+        /*   2:24 */ "additional_morekeys_symbols_2",
+        /*   3:24 */ "additional_morekeys_symbols_3",
+        /*   4:24 */ "additional_morekeys_symbols_4",
+        /*   5:24 */ "additional_morekeys_symbols_5",
+        /*   6:24 */ "additional_morekeys_symbols_6",
+        /*   7:24 */ "additional_morekeys_symbols_7",
+        /*   8:24 */ "additional_morekeys_symbols_8",
+        /*   9:24 */ "additional_morekeys_symbols_9",
+        /*  10:24 */ "additional_morekeys_symbols_0",
+        /*  11:13 */ "keylabel_to_symbol",
+        /*  12:12 */ "keyspec_symbols_1",
+        /*  13:12 */ "keyspec_symbols_2",
+        /*  14:12 */ "keyspec_symbols_3",
+        /*  15:12 */ "keyspec_symbols_4",
+        /*  16:12 */ "keyspec_symbols_5",
+        /*  17:12 */ "keyspec_symbols_6",
+        /*  18:12 */ "keyspec_symbols_7",
+        /*  19:12 */ "keyspec_symbols_8",
+        /*  20:12 */ "keyspec_symbols_9",
+        /*  21:12 */ "keyspec_symbols_0",
+        /*  22: 7 */ "keyspec_currency",
+        /*  23: 6 */ "keyspec_period",
         /*  24: 4 */ "keyspec_comma",
         /*  25: 4 */ "morekeys_period",
         /*  26: 3 */ "keyspec_tablet_period",
@@ -1130,6 +1130,50 @@ public final class KeyboardTextsTable {
         /* additional_morekeys_symbols_0 */ "\u1C50",
     };
 
+    /* Locale sd: Sindhi */
+    private static final String[] TEXTS_sd = {
+        /* keylabel_to_alpha */ "\u0915\u0916\u0917",
+        /* additional_morekeys_symbols_1 */ "1",
+        /* additional_morekeys_symbols_2 */ "2",
+        /* additional_morekeys_symbols_3 */ "3",
+        /* additional_morekeys_symbols_4 */ "4",
+        /* additional_morekeys_symbols_5 */ "5",
+        /* additional_morekeys_symbols_6 */ "6",
+        /* additional_morekeys_symbols_7 */ "7",
+        /* additional_morekeys_symbols_8 */ "8",
+        /* additional_morekeys_symbols_9 */ "9",
+        /* additional_morekeys_symbols_0 */ "0",
+        // Label for "switch to symbols" key.
+        /* keylabel_to_symbol */ "?\u0967\u0968\u0969",
+        // U+0967: "१" DEVANAGARI DIGIT ONE
+        /* keyspec_symbols_1 */ "\u0967",
+        // U+0968: "२" DEVANAGARI DIGIT TWO
+        /* keyspec_symbols_2 */ "\u0968",
+        // U+0969: "३" DEVANAGARI DIGIT THREE
+        /* keyspec_symbols_3 */ "\u0969",
+        // U+096A: "४" DEVANAGARI DIGIT FOUR
+        /* keyspec_symbols_4 */ "\u096A",
+        // U+096B: "५" DEVANAGARI DIGIT FIVE
+        /* keyspec_symbols_5 */ "\u096B",
+        // U+096C: "६" DEVANAGARI DIGIT SIX
+        /* keyspec_symbols_6 */ "\u096C",
+        // U+096D: "७" DEVANAGARI DIGIT SEVEN
+        /* keyspec_symbols_7 */ "\u096D",
+        // U+096E: "८" DEVANAGARI DIGIT EIGHT
+        /* keyspec_symbols_8 */ "\u096E",
+        // U+096F: "९" DEVANAGARI DIGIT NINE
+        /* keyspec_symbols_9 */ "\u096F",
+        // U+0966: "०" DEVANAGARI DIGIT ZERO
+        /* keyspec_symbols_0 */ "\u0966",
+        // U+20B9: "₹" INDIAN RUPEE SIGN
+        /* keyspec_currency */ "\u20B9",
+        // Label for "switch to alphabetic" key.
+        // U+0915: "क" DEVANAGARI LETTER KA
+        // U+0916: "ख" DEVANAGARI LETTER KHA
+        // U+0917: "ग" DEVANAGARI LETTER GA
+        /* keyspec_period */ "\u0964",
+    };
+
     /* Locale si: Sinhala */
     private static final String[] TEXTS_si = {
         // U+0D85: Sinhala letter Ayanna
@@ -1427,6 +1471,7 @@ public final class KeyboardTextsTable {
         "pa_IN"  , TEXTS_pa_IN, /*  22/ 22 Punjabi (India) */
         "sa"     , TEXTS_sa,    /*  11/ 11 Sanskrit */
         "sat"    , TEXTS_sat,   /*  11/ 11 Santali */
+        "sd"     , TEXTS_sd,    /*  24/ 24 Sindhi */
         "si"     , TEXTS_si,    /*   1/  1 Sinhala */
         "ta_IN"  , TEXTS_ta_IN, /*  12/ 12 Tamil (India) */
         "ta_LK"  , TEXTS_ta_LK, /*  12/ 23 Tamil (Sri Lanka) */
