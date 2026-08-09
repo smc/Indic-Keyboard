@@ -632,11 +632,15 @@
             <enum name="lao" value="10" />
             <enum name="latin" value="11" />
             <enum name="malayalam" value="12" />
-            <!-- Myanmar is disabled. <enum name="myanmar" value="13" /> -->
+            <enum name="myanmar" value="13" />
             <enum name="sinhala" value="14" />
             <enum name="tamil" value="15" />
             <enum name="telugu" value="16" />
             <enum name="thai" value="17" />
+            <enum name="gujarati" value="18" />
+            <enum name="oriya" value="19" />
+            <enum name="gurmukhi" value="20" />
+            <enum name="ol_chiki" value="21" />
         </attr>
     </declare-styleable>
 

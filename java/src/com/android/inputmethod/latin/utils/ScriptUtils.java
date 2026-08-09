@@ -45,6 +45,10 @@ public class ScriptUtils {
     public static final int SCRIPT_TAMIL = 15;
     public static final int SCRIPT_TELUGU = 16;
     public static final int SCRIPT_THAI = 17;
+    public static final int SCRIPT_GUJARATI = 18;
+    public static final int SCRIPT_ORIYA = 19;
+    public static final int SCRIPT_GURMUKHI = 20;
+    public static final int SCRIPT_OL_CHIKI = 21;
 
     private static final TreeMap<String, Integer> mLanguageCodeToScriptCode;
 
@@ -54,6 +58,21 @@ public class ScriptUtils {
         mLanguageCodeToScriptCode.put("ar", SCRIPT_ARABIC);
         mLanguageCodeToScriptCode.put("hy", SCRIPT_ARMENIAN);
         mLanguageCodeToScriptCode.put("bn", SCRIPT_BENGALI);
+        mLanguageCodeToScriptCode.put("as", SCRIPT_BENGALI);
+        mLanguageCodeToScriptCode.put("mni", SCRIPT_BENGALI);
+        mLanguageCodeToScriptCode.put("hi", SCRIPT_DEVANAGARI);
+        mLanguageCodeToScriptCode.put("mr", SCRIPT_DEVANAGARI);
+        mLanguageCodeToScriptCode.put("ne", SCRIPT_DEVANAGARI);
+        mLanguageCodeToScriptCode.put("mai", SCRIPT_DEVANAGARI);
+        mLanguageCodeToScriptCode.put("ks", SCRIPT_DEVANAGARI);
+        mLanguageCodeToScriptCode.put("kn", SCRIPT_KANNADA);
+        mLanguageCodeToScriptCode.put("gu", SCRIPT_GUJARATI);
+        mLanguageCodeToScriptCode.put("or", SCRIPT_ORIYA);
+        mLanguageCodeToScriptCode.put("pa", SCRIPT_GURMUKHI);
+        mLanguageCodeToScriptCode.put("sat", SCRIPT_OL_CHIKI);
+        mLanguageCodeToScriptCode.put("sa", SCRIPT_DEVANAGARI);
+        mLanguageCodeToScriptCode.put("ur", SCRIPT_ARABIC);
+        mLanguageCodeToScriptCode.put("mnw", SCRIPT_MYANMAR);
         mLanguageCodeToScriptCode.put("bg", SCRIPT_CYRILLIC);
         mLanguageCodeToScriptCode.put("sr", SCRIPT_CYRILLIC);
         mLanguageCodeToScriptCode.put("ru", SCRIPT_CYRILLIC);
@@ -170,6 +189,18 @@ public class ScriptUtils {
         case SCRIPT_THAI:
             // Thai unicode block is U+0E00..U+0E7F
             return (codePoint >= 0xE00 && codePoint <= 0xE7F);
+        case SCRIPT_GUJARATI:
+            // Gujarati unicode block is U+0A80..U+0AFF
+            return (codePoint >= 0xA80 && codePoint <= 0xAFF);
+        case SCRIPT_ORIYA:
+            // Oriya unicode block is U+0B00..U+0B7F
+            return (codePoint >= 0xB00 && codePoint <= 0xB7F);
+        case SCRIPT_GURMUKHI:
+            // Gurmukhi unicode block is U+0A00..U+0A7F
+            return (codePoint >= 0xA00 && codePoint <= 0xA7F);
+        case SCRIPT_OL_CHIKI:
+            // Ol Chiki unicode block is U+1C50..U+1C7F
+            return (codePoint >= 0x1C50 && codePoint <= 0x1C7F);
         case SCRIPT_UNKNOWN:
             return true;
         default:
