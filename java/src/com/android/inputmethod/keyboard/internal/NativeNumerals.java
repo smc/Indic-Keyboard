@@ -113,16 +113,24 @@ public final class NativeNumerals {
     /**
      * Applies the numeral split for the keyboard element being built.
      */
-    public static void apply(final Context context, final Locale locale,
-            final KeyboardTextsSet textsSet, final int elementId, final int scriptId) {
-        String[] nativeDigits = nativeDigits(locale);
+    public static String[] effectiveDigits(final Locale locale, final int scriptId) {
+        final String[] nativeDigits = nativeDigits(locale);
         if (nativeDigits == null) {
-            return;
+            return null;
         }
         final String[] scriptDigits = digitsForScript(scriptId);
         if (scriptDigits != null
                 && !ScriptUtils.isLetterPartOfScript(nativeDigits[0].codePointAt(0), scriptId)) {
-            nativeDigits = scriptDigits;
+            return scriptDigits;
+        }
+        return nativeDigits;
+    }
+
+    public static void apply(final Context context, final Locale locale,
+            final KeyboardTextsSet textsSet, final int elementId, final int scriptId) {
+        final String[] nativeDigits = effectiveDigits(locale, scriptId);
+        if (nativeDigits == null) {
+            return;
         }
         final SharedPreferences prefs =
                 PreferenceManagerCompat.getDeviceSharedPreferences(context);

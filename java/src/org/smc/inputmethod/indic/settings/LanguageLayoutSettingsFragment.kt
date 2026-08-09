@@ -139,21 +139,34 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
             category.addPreference(buildCompanionPref(context, target))
         }
         if (digits != null) {
-            category.addPreference(buildNumeralsPref(context, locale, digits))
+            category.addPreference(buildNumeralsPref(context, locale, target))
         }
     }
 
+    private fun numeralSystems(context: Context, locale: Locale, target: Language): List<Array<String>> {
+        val seen = LinkedHashMap<String, Array<String>>()
+        for (layout in target.mLayouts) {
+            val scriptId = KeyboardLayoutSet.getScriptId(context.resources, layout.mSubtype)
+            val digits = NativeNumerals.effectiveDigits(locale, scriptId) ?: continue
+            seen.putIfAbsent(digits[0], digits)
+        }
+        if (seen.isEmpty()) {
+            NativeNumerals.nativeDigits(locale)?.let { seen[it[0]] = it }
+        }
+        return seen.values.toList()
+    }
+
     private fun buildNumeralsPref(
-        context: Context, locale: Locale, digits: Array<String>
+        context: Context, locale: Locale, target: Language
     ): SwitchPreferenceCompat {
         val pref = OneLineSwitchPreference(context)
         pref.widgetLayoutResource = R.layout.preference_material_switch
         pref.isPersistent = false
         pref.isIconSpaceReserved = false
         pref.setTitle(R.string.native_numerals)
-        pref.summary = getString(
-            R.string.native_numerals_summary, "${digits[0]} ${digits[1]} ${digits[2]}"
-        )
+        val sample = numeralSystems(context, locale, target)
+            .joinToString(" \u00b7 ") { "${it[0]} ${it[1]} ${it[2]}" }
+        pref.summary = getString(R.string.native_numerals_summary, sample)
         pref.isChecked = NativeNumerals.readUseNative(sharedPreferences, locale)
         pref.setOnPreferenceChangeListener { _, newValue ->
             sharedPreferences.edit {
