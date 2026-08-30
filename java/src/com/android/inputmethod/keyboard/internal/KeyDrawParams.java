@@ -47,7 +47,6 @@ public final class KeyDrawParams {
 
     public float mHintLabelVerticalAdjustment;
     public float mLabelOffCenterRatio;
-    public float mHintLabelOffCenterRatio;
 
     public int mAnimAlpha;
 
@@ -76,7 +75,6 @@ public final class KeyDrawParams {
 
         mHintLabelVerticalAdjustment = copyFrom.mHintLabelVerticalAdjustment;
         mLabelOffCenterRatio = copyFrom.mLabelOffCenterRatio;
-        mHintLabelOffCenterRatio = copyFrom.mHintLabelOffCenterRatio;
 
         mAnimAlpha = copyFrom.mAnimAlpha;
     }
@@ -117,8 +115,6 @@ public final class KeyDrawParams {
                 attr.mHintLabelVerticalAdjustment, mHintLabelVerticalAdjustment);
         mLabelOffCenterRatio = selectFloatIfNonZero(
                 attr.mLabelOffCenterRatio, mLabelOffCenterRatio);
-        mHintLabelOffCenterRatio = selectFloatIfNonZero(
-                attr.mHintLabelOffCenterRatio, mHintLabelOffCenterRatio);
     }
 
     @Nonnull

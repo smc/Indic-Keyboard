@@ -16,6 +16,7 @@
 
 package org.smc.inputtest
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
@@ -77,6 +78,32 @@ internal fun Context.fieldLabel(text: String) = TextView(this).apply {
     setTextColor(LABEL_GREY)
     setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
 }
+
+internal fun field(label: String, type: Int, ime: Int = EditorInfo.IME_ACTION_UNSPECIFIED) =
+    Triple(label, type, ime)
+
+internal fun Context.fieldView(label: String, type: Int, ime: Int) = LinearLayout(this).apply {
+    orientation = LinearLayout.VERTICAL
+    layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+        .apply { bottomMargin = dp(12) }
+    addView(fieldLabel(label))
+    addView(loggingEditText().apply {
+        layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+        inputType = type
+        imeOptions = ime
+        hint = label
+    })
+}
+
+internal fun Activity.groupedFieldPage(groups: List<Pair<String, List<Triple<String, Int, Int>>>>) =
+    pageColumn {
+        groups.forEachIndexed { index, (title, fields) ->
+            addView(sectionHeader(title, topGap = if (index == 0) dp(8) else dp(24)))
+            addView(card().apply {
+                fields.forEach { (label, type, ime) -> addView(fieldView(label, type, ime)) }
+            })
+        }
+    }
 
 // Logs what the IME commits, including the TextAttribute it attaches. Use it to check that
 // picking a suggestion arrives with suggestionSelected=true, which is what screen readers key

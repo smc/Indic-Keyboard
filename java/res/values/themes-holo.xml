@@ -36,7 +36,6 @@
         <item name="keyLargeLetterRatio">@fraction/config_key_large_letter_ratio_holo</item>
         <item name="keyLabelOffCenterRatio">-175%</item>
         <item name="keyHintLabelRatio">@fraction/config_key_hint_label_ratio_holo</item>
-        <item name="keyHintLabelOffCenterRatio">200%</item>
         <!-- U+2026: "…" HORIZONTAL ELLIPSIS -->
         <item name="keyPopupHintLetter">&#x2026;</item>
     </style>

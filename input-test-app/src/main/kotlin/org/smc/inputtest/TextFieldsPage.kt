@@ -17,25 +17,18 @@
 package org.smc.inputtest
 
 import android.app.Activity
-import android.content.Context
 import android.text.InputType.*
 import android.view.View
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.inputmethod.EditorInfo
-import android.widget.LinearLayout
 
 /**
- * An [android.widget.EditText] for every [android.text.InputType] variant (and a few IME-action
- * variants) Indic Keyboard cares about, grouped by kind. To add a field, drop a [field] entry into
- * the relevant group below.
+ * An [android.widget.EditText] for every text-ish [android.text.InputType] variant (and a few
+ * IME-action variants) Indic Keyboard cares about, grouped by kind. To add a field, drop a [field]
+ * entry into the relevant group below. The number pads live on [NumberPadsPage].
  */
 object TextFieldsPage : Page {
     override val id = "text"
     override val title = "Text inputs"
-
-    private fun field(label: String, type: Int, ime: Int = EditorInfo.IME_ACTION_UNSPECIFIED) =
-        Triple(label, type, ime)
 
     private val groups = listOf(
         "Text" to listOf(
@@ -65,16 +58,6 @@ object TextFieldsPage : Page {
             field("Password", TYPE_CLASS_TEXT or TYPE_TEXT_VARIATION_PASSWORD),
             field("Visible password", TYPE_CLASS_TEXT or TYPE_TEXT_VARIATION_VISIBLE_PASSWORD),
             field("Web password", TYPE_CLASS_TEXT or TYPE_TEXT_VARIATION_WEB_PASSWORD),
-            field("Number password", TYPE_CLASS_NUMBER or TYPE_NUMBER_VARIATION_PASSWORD),
-        ),
-        "Numbers, phone & date-time" to listOf(
-            field("Number", TYPE_CLASS_NUMBER),
-            field("Number signed", TYPE_CLASS_NUMBER or TYPE_NUMBER_FLAG_SIGNED),
-            field("Number decimal", TYPE_CLASS_NUMBER or TYPE_NUMBER_FLAG_DECIMAL),
-            field("Phone", TYPE_CLASS_PHONE),
-            field("Datetime", TYPE_CLASS_DATETIME or TYPE_DATETIME_VARIATION_NORMAL),
-            field("Date", TYPE_CLASS_DATETIME or TYPE_DATETIME_VARIATION_DATE),
-            field("Time", TYPE_CLASS_DATETIME or TYPE_DATETIME_VARIATION_TIME),
         ),
         "Other" to listOf(
             field("Null (raw key events)", TYPE_NULL),
@@ -90,25 +73,5 @@ object TextFieldsPage : Page {
         ),
     )
 
-    override fun createView(host: Activity): View = host.pageColumn {
-        groups.forEachIndexed { index, (title, fields) ->
-            addView(host.sectionHeader(title, topGap = if (index == 0) host.dp(8) else host.dp(24)))
-            addView(host.card().apply {
-                fields.forEach { (label, type, ime) -> addView(host.fieldView(label, type, ime)) }
-            })
-        }
-    }
-
-    private fun Context.fieldView(label: String, type: Int, ime: Int) = LinearLayout(this).apply {
-        orientation = LinearLayout.VERTICAL
-        layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-            .apply { bottomMargin = dp(12) }
-        addView(fieldLabel(label))
-        addView(loggingEditText().apply {
-            layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-            inputType = type
-            imeOptions = ime
-            hint = label
-        })
-    }
+    override fun createView(host: Activity): View = host.groupedFieldPage(groups)
 }

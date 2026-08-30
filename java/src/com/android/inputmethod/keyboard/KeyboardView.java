@@ -69,7 +69,6 @@ import javax.annotation.Nullable;
  * @attr ref android.R.styleable#Keyboard_Key_keyShiftedLetterHintRatio
  * @attr ref android.R.styleable#Keyboard_Key_keyHintLabelRatio
  * @attr ref android.R.styleable#Keyboard_Key_keyLabelOffCenterRatio
- * @attr ref android.R.styleable#Keyboard_Key_keyHintLabelOffCenterRatio
  * @attr ref android.R.styleable#Keyboard_Key_keyPreviewTextRatio
  * @attr ref android.R.styleable#Keyboard_Key_keyTextColor
  * @attr ref android.R.styleable#Keyboard_Key_keyTextColorDisabled
@@ -490,15 +489,16 @@ public class KeyboardView extends View {
             final float labelCharWidth = TypefaceUtils.getReferenceCharWidth(paint);
             final float hintX, hintBaseline;
             if (key.hasHintLabel()) {
-                // The hint label is placed just right of the key label. Used mainly on
-                // "phone number" layout.
-                hintX = labelX + params.mHintLabelOffCenterRatio * labelCharWidth;
+                // The dialpad letters sit at the right edge of the key rather than at a fixed
+                // offset from the label: the digit is centered, so anchoring the hint off it
+                // pushes the longer hints ("PQRS", "WXYZ") past the key edge.
+                hintX = keyWidth - mActiveKeyHintLetterPadding;
                 if (key.isAlignHintLabelToBottom(mDefaultKeyLabelFlags)) {
                     hintBaseline = labelBaseline;
                 } else {
                     hintBaseline = centerY + labelCharHeight / 2.0f;
                 }
-                paint.setTextAlign(Align.LEFT);
+                paint.setTextAlign(Align.RIGHT);
             } else if (key.hasShiftedLetterHint()) {
                 // The hint label is placed at top-right corner of the key. Used mainly on tablet.
                 hintX = keyWidth - mKeyShiftedLetterHintPadding - labelCharWidth / 2.0f;
