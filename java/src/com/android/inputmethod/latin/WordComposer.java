@@ -69,6 +69,8 @@ public final class WordComposer {
     private String mRejectedBatchModeSuggestion;
 
     private InputMethod mTransliterationMethod;
+    private final StringBuilder mTransliterationKeys = new StringBuilder();
+    private String mTransliterationPrefix = "";
 
     // Cache these values for performance
     private CharSequence mTypedWordCache;
@@ -125,6 +127,9 @@ public final class WordComposer {
     public void reset() {
         mCombinerChain.reset();
         mEvents.clear();
+        context = "";
+        mTransliterationKeys.setLength(0);
+        mTransliterationPrefix = "";
         mAutoCorrection = null;
         mCapsCount = 0;
         mDigitsCount = 0;
@@ -187,39 +192,89 @@ public final class WordComposer {
     }
 
     private String context = "";
-    public void applyTransliteration(final Event event) {
-        final int primaryCode = event.mCodePoint;
 
-        refreshTypedWordCache();
+    /**
+     * Apply one keystroke to an already transliterated string, and return the new string.
+     *
+     * Rules match against the tail of the output, not against the raw keys, so only the last
+     * maxKeyLength characters plus the new key are offered to them; whatever prefix of
+     * that the rule left alone stays put.
+     */
+    private String transliterateStep(final String output, final String key, final String ctx) {
+        final String combined = output + key;
+        final int maxKeyLength = mTransliterationMethod.getMaxKeyLength();
+        final int startPos = combined.length() - 1 > maxKeyLength
+                ? combined.length() - maxKeyLength - 1 : 0;
+        final String input = combined.substring(startPos);
+        final String replacement = mTransliterationMethod.transliterate(input, ctx, false);
+        final int divIndex = firstDivergence(input, replacement);
+        return combined.substring(0, startPos + divIndex) + replacement.substring(divIndex);
+    }
 
-        String mTypedWord = mTypedWordCache.toString();
-
-        Log.d("IndicKeyboard", "applyProcessedEvent: " + primaryCode);
-
-        /* if we've a transliteration method set, use that. Else just append the code and get on with life */
-        if(mTransliterationMethod != null && Constants.CODE_DELETE != event.mKeyCode) {
-            Log.d("IndicKeyboard", "transliteration...: " + mTypedWord);
-            String current = new String(Character.toChars(primaryCode));
-            Log.d("IndicKeyboard", "typed length: " + Integer.toString(mTypedWord.length()) + ", maxkeyLength: " + Integer.toString(mTransliterationMethod.getMaxKeyLength()));
-            int startPos = mTypedWord.length() - 1 > mTransliterationMethod.getMaxKeyLength() ? mTypedWord.length() - mTransliterationMethod.getMaxKeyLength() - 1: 0;
-            String input = mTypedWord.subSequence(startPos, mTypedWord.length()).toString();
-            String replacement = mTransliterationMethod.transliterate(input, context, false);
-
-            Log.d("IndicKeyboard", "input: " + input + ", Replacement: " + replacement);
-
-            int divIndex = firstDivergence(input, replacement);
-            replacement = replacement.substring(divIndex);
-
-            //mTypedWordCache = mTypedWord.replace(input, replacement);
-            Log.d("IndicKeyboard", "out: " + mTypedWordCache + ", first: " + replacement);
-            Log.d("IndicKeyboard", "--------");
-            mCombinerChain.replace(startPos + divIndex, mTypedWord.length(), replacement);
-
-            context += current;
-            if(context.length() > mTransliterationMethod.getContextLength()) {
-                context = context.substring(context.length() - mTransliterationMethod.getContextLength());
+    /**
+     * Replay every recorded keystroke over the opaque prefix.
+     */
+    private String replayTransliteration() {
+        final int keep = mTransliterationMethod.getContextLength();
+        String output = mTransliterationPrefix;
+        String ctx = "";
+        for (int i = 0; i < mTransliterationKeys.length(); ) {
+            final int codePoint = mTransliterationKeys.codePointAt(i);
+            final String key = new String(Character.toChars(codePoint));
+            output = transliterateStep(output, key, ctx);
+            ctx += key;
+            if (ctx.length() > keep) {
+                ctx = ctx.substring(ctx.length() - keep);
             }
+            i += Character.charCount(codePoint);
         }
+        context = ctx;
+        return output;
+    }
+
+    /**
+     * Rebuild the composing word after a deletion, by dropping the last keystroke and replaying
+     * the rest.
+     */
+    private void applyTransliterationDelete() {
+        if (null == mTransliterationMethod) {
+            return;
+        }
+        refreshTypedWordCache();
+        if (0 == mTransliterationKeys.length()) {
+            mTransliterationPrefix = mTypedWordCache.toString();
+            context = "";
+            return;
+        }
+        final int length = mTransliterationKeys.length();
+        final int lastCodePoint = mTransliterationKeys.codePointBefore(length);
+        mTransliterationKeys.setLength(length - Character.charCount(lastCodePoint));
+        mCombinerChain.replace(0, mTypedWordCache.length(), replayTransliteration());
+    }
+
+    private String contextFromKeys() {
+        final int keep = mTransliterationMethod.getContextLength();
+        final int length = mTransliterationKeys.length();
+        return length <= keep ? mTransliterationKeys.toString()
+                : mTransliterationKeys.substring(length - keep);
+    }
+
+    public void applyTransliteration(final Event event) {
+        if (Constants.CODE_DELETE == event.mKeyCode) {
+            applyTransliterationDelete();
+            return;
+        }
+        if (null == mTransliterationMethod) {
+            return;
+        }
+        refreshTypedWordCache();
+        final String typedWord = mTypedWordCache.toString();
+        final String current = new String(Character.toChars(event.mCodePoint));
+        final String base = typedWord.length() < current.length() ? ""
+                : typedWord.substring(0, typedWord.length() - current.length());
+        mCombinerChain.replace(0, typedWord.length(), transliterateStep(base, current, context));
+        mTransliterationKeys.append(current);
+        context = contextFromKeys();
     }
 
     /**
@@ -231,13 +286,19 @@ public final class WordComposer {
      * @param event the event to apply. Must not be null.
      */
     public void applyProcessedEvent(final Event event) {
+        applyProcessedEvent(event, true /* transliterate */);
+    }
+
+    private void applyProcessedEvent(final Event event, final boolean transliterate) {
         mCombinerChain.applyProcessedEvent(event);
         final int primaryCode = event.mCodePoint;
         final int keyX = event.mX;
         final int keyY = event.mY;
         final int newIndex = size();
 
-        applyTransliteration(event);
+        if (transliterate) {
+            applyTransliteration(event);
+        }
 
         refreshTypedWordCache();
         mCursorPositionWithinWord = mCodePointSize;
@@ -365,8 +426,10 @@ public final class WordComposer {
                     processEvent(Event.createEventForCodePointFromAlreadyTypedText(codePoints[i],
                     CoordinateUtils.xFromArray(coordinates, i),
                     CoordinateUtils.yFromArray(coordinates, i)));
-            applyProcessedEvent(processedEvent);
+            applyProcessedEvent(processedEvent, false);
         }
+        refreshTypedWordCache();
+        mTransliterationPrefix = mTypedWordCache.toString();
         mIsResumed = true;
     }
 

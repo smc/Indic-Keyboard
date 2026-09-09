@@ -103,6 +103,7 @@ import com.android.inputmethod.latin.DictionaryFacilitatorProvider;
 import com.android.inputmethod.latin.InputAttributes;
 import com.android.inputmethod.latin.LastComposedWord;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.RichInputConnection;
 import com.android.inputmethod.latin.RichInputMethodManager;
 import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.Suggest.OnGetSuggestedWordsCallback;
@@ -1658,11 +1659,52 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
-    public void onMovePointer(int steps) {
-        for (; steps < 0; steps++)
-            mInputLogic.sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT);
-        for (; steps > 0; steps--)
-            mInputLogic.sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT);
+    public void onMovePointer(final int steps) {
+        if (0 == steps) {
+            return;
+        }
+        mInputLogic.finishInput();
+        final RichInputConnection connection = mInputLogic.mConnection;
+        final int selectionStart = connection.getExpectedSelectionStart();
+        final int selectionEnd = connection.getExpectedSelectionEnd();
+        if (selectionStart < 0 || selectionEnd < 0) {
+            for (int i = steps; i < 0; i++) {
+                mInputLogic.sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_LEFT);
+            }
+            for (int i = steps; i > 0; i--) {
+                mInputLogic.sendDownUpKeyEvent(KeyEvent.KEYCODE_DPAD_RIGHT);
+            }
+            return;
+        }
+        final int origin = steps < 0 ? selectionStart : selectionEnd;
+        final int position = origin + charactersForSteps(connection, steps);
+        connection.setSelection(position, position);
+    }
+
+    private static int charactersForSteps(final RichInputConnection connection, final int steps) {
+        final int count = Math.abs(steps);
+        int offset = 0;
+        if (steps < 0) {
+            final CharSequence before = connection.getTextBeforeCursor(count * 2, 0);
+            if (null == before) {
+                return steps;
+            }
+            for (int i = 0; i < count && offset < before.length(); i++) {
+                final int last = before.length() - offset - 1;
+                offset += (last > 0 && Character.isSurrogatePair(
+                        before.charAt(last - 1), before.charAt(last))) ? 2 : 1;
+            }
+            return -offset;
+        }
+        final CharSequence after = connection.getTextAfterCursor(count * 2, 0);
+        if (null == after) {
+            return steps;
+        }
+        for (int i = 0; i < count && offset < after.length(); i++) {
+            offset += (offset + 1 < after.length() && Character.isSurrogatePair(
+                    after.charAt(offset), after.charAt(offset + 1))) ? 2 : 1;
+        }
+        return offset;
     }
 
     @Override
