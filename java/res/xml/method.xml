@@ -50,6 +50,11 @@
             android:imeSubtypeLocale="as_IN"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=as-transliteration" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_as_phonetic"
+            android:imeSubtypeLocale="as_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=assamese_phonetic,EmojiCapable" />
 
     <!-- Bengali -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
@@ -118,6 +123,11 @@
             android:imeSubtypeLocale="hi_IN"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=hi-transliteration" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_hi_compact"
+            android:imeSubtypeLocale="hi_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=hindi_compact,EmojiCapable" />
 
     <!-- Kannada -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
@@ -227,6 +237,11 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=mr-transliteration" />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_mr_phonetic"
+            android:imeSubtypeLocale="mr_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=marathi_phonetic,EmojiCapable" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_sd_inscript"
             android:imeSubtypeLocale="sd_IN"
             android:imeSubtypeMode="keyboard"
@@ -279,6 +294,11 @@
             android:imeSubtypeLocale="or_IN"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=or-lekhani" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_or_phonetic"
+            android:imeSubtypeLocale="or_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=odia_phonetic,EmojiCapable" />
 
     <!-- Punjabi -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
@@ -327,6 +347,11 @@
             android:imeSubtypeLocale="si"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=qwerty,TransliterationMethod=si-singlish" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_si_wijesekara"
+            android:imeSubtypeLocale="si"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=sinhala,EmojiCapable" />
 
     <!-- Tamil -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"

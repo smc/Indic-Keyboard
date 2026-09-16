@@ -24,6 +24,7 @@
     <language locale="as_IN" englishName="Assamese" autonym="অসমীয়া" glyph="অ">
         <layout name="Inscript" layoutSet="assamese_inscript" />
         <layout name="প্ৰতিৰূপান্তৰণ" layoutSet="qwerty" translit="as-transliteration" />
+        <layout name="Phonetic" layoutSet="assamese_phonetic" />
         <layout name="Varnam" layoutSet="qwerty" translit="varnam-as" />
     </language>
     <language locale="bn_IN" englishName="Bangla" autonym="বাংলা" glyph="আ">
@@ -50,6 +51,7 @@
         <layout name="Inscript" layoutSet="hindi_inscript" />
         <layout name="Soni" layoutSet="qwerty" translit="hi-soni" />
         <layout name="लिप्यंतरण" layoutSet="qwerty" translit="hi-transliteration" />
+        <layout name="Compact" layoutSet="hindi_compact" />
         <layout name="Varnam" layoutSet="qwerty" translit="varnam-hi" />
     </language>
     <language locale="kn_IN" englishName="Kannada" autonym="ಕನ್ನಡ" glyph="ಅ">
@@ -84,6 +86,7 @@
         <layout name="Standard" layoutSet="marathi" />
         <layout name="Inscript" layoutSet="marathi_inscript" />
         <layout name="अक्षरांतरण" layoutSet="qwerty" translit="mr-transliteration" />
+        <layout name="फोनेटिक" layoutSet="marathi_phonetic" />
         <layout name="Varnam" layoutSet="qwerty" translit="varnam-mr" />
     </language>
     <language locale="mnw" englishName="Mon" autonym="ဘာသာမန်" glyph="ဘ">
@@ -100,6 +103,7 @@
         <layout name="Inscript" layoutSet="oriya_inscript" />
         <layout name="Transliteration" layoutSet="qwerty" translit="or-transliteration" />
         <layout name="Lekhani" layoutSet="qwerty" translit="or-lekhani" />
+        <layout name="ଫୋନେଟିକ" layoutSet="odia_phonetic" />
         <layout name="Varnam" layoutSet="qwerty" translit="varnam-or" />
     </language>
     <language locale="pa_IN" englishName="Punjabi" autonym="ਪੰਜਾਬੀ" glyph="ਅ">
@@ -122,6 +126,7 @@
     </language>
     <language locale="si" englishName="Sinhala" autonym="සිංහල" glyph="අ">
         <layout name="Singlish" layoutSet="qwerty" translit="si-singlish" />
+        <layout name="Wijesekara" layoutSet="sinhala" />
     </language>
     <language locale="ta_IN" englishName="Tamil" autonym="தமிழ்" glyph="அ">
         <layout name="Standard" layoutSet="tamil" />

@@ -3,6 +3,7 @@
     <string name="keyboard_name_ar">العَرَبِيةُ‎‎</string>
     <string name="keyboard_name_as_inscript">অসমীয়া - Inscript</string>
     <string name="keyboard_name_as_transliteration">অসমীয়া - প্ৰতিৰূপান্তৰণ</string>
+    <string name="keyboard_name_as_phonetic">অসমীয়া - Phonetic</string>
     <string name="keyboard_name_bn">বাংলা</string>
     <string name="keyboard_name_bn_avro">বাংলা - Avro</string>
     <string name="keyboard_name_bn_inscript">বাংলা - Inscript</string>
@@ -15,6 +16,7 @@
     <string name="keyboard_name_hi_inscript">देवनागरी - Inscript</string>
     <string name="keyboard_name_hi_soni">हिन्दी - Soni</string>
     <string name="keyboard_name_hi_transliteration">हिन्दी - लिप्यंतरण</string>
+    <string name="keyboard_name_hi_compact">हिन्दी - Compact</string>
     <string name="keyboard_name_kn">ಕನ್ನಡ</string>
     <string name="keyboard_name_kn_compact">ಕನ್ನಡ - Compact</string>
     <string name="keyboard_name_kn_inscript">ಕನ್ನಡ - Inscript</string>
@@ -35,6 +37,7 @@
     <string name="keyboard_name_mr">मराठी</string>
     <string name="keyboard_name_mr_inscript">मराठी - Inscript</string>
     <string name="keyboard_name_mr_transliteration">मराठी - अक्षरांतरण</string>
+    <string name="keyboard_name_mr_phonetic">मराठी - फोनेटिक</string>
     <string name="keyboard_name_my">Burmese - ဗမာ</string>
     <string name="keyboard_name_ne">नेपाली</string>
     <string name="keyboard_name_ne_inscript">नेपाली - Inscript</string>
@@ -43,6 +46,7 @@
     <string name="keyboard_name_or_inscript">ଓଡ଼ିଆ - Inscript</string>
     <string name="keyboard_name_or_transliteration">ଓଡ଼ିଆ - Transliteration</string>
     <string name="keyboard_name_or_lekhani">ଓଡ଼ିଆ - Lekhani</string>
+    <string name="keyboard_name_or_phonetic">ଓଡ଼ିଆ - ଫୋନେଟିକ</string>
     <string name="keyboard_name_pa">ਪੰਜਾਬੀ</string>
     <string name="keyboard_name_pa_inscript">ਪੰਜਾਬੀ - Inscript</string>
     <string name="keyboard_name_pa_transliteration">ਪੰਜਾਬੀ - Transliteration</string>
@@ -52,6 +56,7 @@
     <string name="keyboard_name_sat_olck">Santali - ᱥᱟᱱᱛᱟᱲᱤ</string>
     <string name="keyboard_name_sat_olck_compact">Santali Compact - ᱥᱟᱱᱛᱟᱲᱤ</string>
     <string name="keyboard_name_si_singlish">සිංහල - Singlish</string>
+    <string name="keyboard_name_si_wijesekara">සිංහල - Wijesekara</string>
     <string name="keyboard_name_ta">தமிழ் </string>
     <string name="keyboard_name_ta_99">தமிழ் 99</string>
     <string name="keyboard_name_ta_compact">தமிழ்  - Compact </string>
