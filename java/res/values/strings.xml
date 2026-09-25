@@ -152,7 +152,7 @@
     <!-- Summary of the learned-from-typing option [CHAR LIMIT=65] -->
     <string name="privacy_learned_typing_summary">Picked up as you type and select suggestions</string>
     <!-- Confirmation dialog message before deleting words learned from typing -->
-    <string name="privacy_learned_typing_confirm">Every word the keyboard learned from your typing will be deleted from this device, including the words Varnam learned. Dictionaries and word packs that came with a language pack are not affected.</string>
+    <string name="privacy_learned_typing_confirm">Every word the keyboard learned from your typing will be deleted from this device, including what Predictive Transliteration learned. Dictionaries and word packs that came with a language pack are not affected.</string>
     <!-- Option to clear the recently used emojis [CHAR LIMIT=40] -->
     <string name="privacy_clear_emojis">Clear recent emojis</string>
     <!-- Summary of the clear recent emojis option [CHAR LIMIT=65] -->
@@ -775,10 +775,8 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
     <string name="prefs_gray_out_suggestions_incognito_title">Dim suggestions in incognito</string>
     <string name="prefs_gray_out_suggestions_incognito_summary">Gray out the suggestion strip when not learning from your typing</string>
 
-    <string name="varnam_vst_missing">Varnam data for "%1$s" is not downloaded yet. Open Settings → Advanced → Varnam to download it.</string>
-    <string name="varnam_engine_missing">Varnam engine is unavailable in this build.</string>
-    <string name="settings_screen_varnam">Varnam</string>
-    <string name="settings_screen_varnam_summary">Intelligent word-by-word transliteration. Download the language data to use it.</string>
+    <string name="varnam_vst_missing">Predictive Transliteration needs the %1$s language pack. Install it from Settings → Languages → %1$s.</string>
+    <string name="varnam_engine_missing">The Predictive Transliteration engine is unavailable in this build.</string>
     <string name="language_pack_downloading">Downloading… %d%%</string>
     <string name="language_pack_installing">Installing…</string>
     <string name="language_pack_status_available">%1$s · v%2$d</string>

@@ -2719,7 +2719,8 @@ public final class InputLogic {
                 isVarnam = false;
                 Log.e("varnam-init-error", err);
                 if (Varnam.ERROR_VST_MISSING.equals(err)) {
-                    err = context.getString(R.string.varnam_vst_missing, schemeID);
+                    err = context.getString(R.string.varnam_vst_missing,
+                            new Locale(schemeID).getDisplayName());
                 } else if (Varnam.ERROR_ENGINE_MISSING.equals(err)) {
                     err = context.getString(R.string.varnam_engine_missing);
                 }
