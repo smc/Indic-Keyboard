@@ -34,39 +34,36 @@
         android:icon="@drawable/ic_settings_source"
         android:persistent="false" />
 
-    <PreferenceCategory
-        android:title="@string/about_section_credits"
-        app:iconSpaceReserved="false">
-        <Preference
-            android:key="about_copyright"
-            android:title="@string/about_copyright"
-            android:persistent="false" />
-        <Preference
-            android:key="about_logo_credit"
-            android:title="@string/about_logo_credit"
-            android:persistent="false" />
-        <Preference
-            android:key="about_contributors"
-            android:title="@string/about_contributors"
-            android:persistent="false" />
-    </PreferenceCategory>
+    <org.smc.inputmethod.indic.settings.FlatPreference
+        android:key="about_made_by"
+        android:title="@string/about_made_by"
+        android:layout="@layout/settings_statement"
+        android:selectable="false"
+        android:persistent="false" />
+    <org.smc.inputmethod.indic.settings.FlatPreference
+        android:key="about_built_with"
+        android:title="@string/about_built_with"
+        android:layout="@layout/settings_statement"
+        android:selectable="false"
+        android:persistent="false" />
 
-    <PreferenceCategory
-        android:title="@string/about_section_legal"
-        app:iconSpaceReserved="false">
-        <Preference
-            android:key="about_open_source_licenses"
-            android:fragment="org.smc.inputmethod.indic.settings.LicensesFragment"
-            android:title="@string/about_open_source_licenses"
-            android:persistent="false" />
-        <Preference
-            android:key="about_app_license"
-            android:fragment="org.smc.inputmethod.indic.settings.LicenseTextFragment"
-            android:title="@string/about_app_license"
-            android:summary="@string/about_app_license_summary"
-            android:persistent="false">
-            <extra android:name="title" android:value="Indic Keyboard" />
-            <extra android:name="license" android:value="apache" />
-        </Preference>
-    </PreferenceCategory>
+    <org.smc.inputmethod.indic.settings.FlatPreference
+        android:key="about_contributors"
+        android:title="@string/about_contributors"
+        android:layout="@layout/settings_flat_row"
+        android:persistent="false" />
+    <org.smc.inputmethod.indic.settings.FlatPreference
+        android:key="about_open_source_licenses"
+        android:fragment="org.smc.inputmethod.indic.settings.LicensesFragment"
+        android:title="@string/about_open_source_licenses"
+        android:layout="@layout/settings_flat_row"
+        android:persistent="false" />
+
+    <org.smc.inputmethod.indic.settings.FlatPreference
+        android:key="about_footer"
+        android:title="@string/about_footer"
+        android:layout="@layout/about_colophon_footer"
+        android:selectable="false"
+        android:persistent="false" />
+
 </PreferenceScreen>

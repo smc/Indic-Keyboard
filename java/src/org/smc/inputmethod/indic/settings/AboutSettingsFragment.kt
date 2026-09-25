@@ -21,6 +21,7 @@ import android.net.Uri
 import android.os.Bundle
 
 import androidx.annotation.StringRes
+import androidx.preference.Preference
 
 import com.android.inputmethod.latin.R
 
@@ -31,9 +32,10 @@ class AboutSettingsFragment : SubScreenFragment() {
         addPreferencesFromResource(R.xml.prefs_screen_about)
         openUrlOnClick("about_website", R.string.about_website_url)
         openUrlOnClick("about_source", R.string.about_source_url)
-        openUrlOnClick("about_copyright", R.string.about_copyright_url)
-        openUrlOnClick("about_logo_credit", R.string.about_logo_credit_url)
         openUrlOnClick("about_contributors", R.string.about_contributors_url)
+
+        requirePreference<Preference>("about_made_by").title =
+            getText(R.string.about_made_by)
     }
 
     override fun onResume() {
@@ -42,7 +44,7 @@ class AboutSettingsFragment : SubScreenFragment() {
     }
 
     private fun openUrlOnClick(key: String, @StringRes urlRes: Int) {
-        findPreference<androidx.preference.Preference>(key)?.setOnPreferenceClickListener {
+        findPreference<Preference>(key)?.setOnPreferenceClickListener {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(getString(urlRes))))
             true
         }

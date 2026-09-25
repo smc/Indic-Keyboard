@@ -22,9 +22,12 @@
     android:title="@string/settings_screen_privacy"
     android:key="screen_privacy">
 
-    <PreferenceCategory
-        android:layout="@layout/privacy_statement"
-        android:selectable="false" />
+    <org.smc.inputmethod.indic.settings.FlatPreference
+        android:key="privacy_statement"
+        android:title="@string/privacy_statement"
+        android:layout="@layout/settings_statement"
+        android:selectable="false"
+        android:persistent="false" />
 
     <PreferenceCategory
         android:title="@string/privacy_section_learned"

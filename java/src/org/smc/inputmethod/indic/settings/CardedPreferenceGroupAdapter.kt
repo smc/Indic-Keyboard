@@ -35,6 +35,8 @@ import com.google.android.material.color.MaterialColors
 /** Preferences whose layout draws its own card surface; the adapter leaves their background alone. */
 interface SelfContainedCard
 
+interface FlatRow
+
 /**
  * Groups consecutive preferences between section headers into a single rounded Material 3 "card",
  * giving each item a position-aware background (top / middle / bottom / single) so a section reads
@@ -76,6 +78,10 @@ class CardedPreferenceGroupAdapter(preferenceGroup: PreferenceGroup) :
                 lp.bottomMargin = 0
                 styleCategoryTitle(holder)
             }
+        } else if (getItem(position) is FlatRow) {
+            item.background = null
+            lp.topMargin = 0
+            lp.bottomMargin = 0
         } else if (getItem(position) is SelfContainedCard) {
             lp.topMargin = gap
             lp.bottomMargin = 0
@@ -90,7 +96,7 @@ class CardedPreferenceGroupAdapter(preferenceGroup: PreferenceGroup) :
     }
 
     private fun isCardBoundary(position: Int): Boolean =
-        getItem(position).let { it is PreferenceCategory || it is SelfContainedCard }
+        getItem(position).let { it is PreferenceCategory || it is SelfContainedCard || it is FlatRow }
 
     private fun isCardTop(position: Int): Boolean =
         position == 0 || isCardBoundary(position - 1)
