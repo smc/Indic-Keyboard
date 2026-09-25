@@ -42,6 +42,7 @@ import com.google.android.material.chip.ChipGroup
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 import org.smc.inputmethod.indic.personalization.PersonalizationHelper
+import org.smc.inputmethod.indic.varnam.VarnamIndicKeyboard
 
 import java.text.Collator
 import java.util.Locale
@@ -100,6 +101,7 @@ class LearnedWordsFragment : Fragment() {
             .setMessage(R.string.privacy_learned_typing_confirm)
             .setPositiveButton(R.string.privacy_delete) { _, _ ->
                 PersonalizationHelper.removeAllUserHistoryDictionaries(requireContext())
+                VarnamIndicKeyboard.clearLearnings(requireContext())
                 buildLanguageChips()
             }
             .setNegativeButton(android.R.string.cancel, null)

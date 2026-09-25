@@ -152,13 +152,7 @@
     <!-- Summary of the learned-from-typing option [CHAR LIMIT=65] -->
     <string name="privacy_learned_typing_summary">Picked up as you type and select suggestions</string>
     <!-- Confirmation dialog message before deleting words learned from typing -->
-    <string name="privacy_learned_typing_confirm">Words the keyboard learned from your typing will be deleted from this device. Dictionaries from language packs are not affected.</string>
-    <!-- Option to delete words the Varnam transliteration engine learned [CHAR LIMIT=40] -->
-    <string name="privacy_learned_varnam">Words learned by Varnam</string>
-    <!-- Summary of the Varnam learned-words option [CHAR LIMIT=65] -->
-    <string name="privacy_learned_varnam_summary">Learned by the transliteration engine as you type</string>
-    <!-- Confirmation dialog message before deleting Varnam learned words -->
-    <string name="privacy_learned_varnam_confirm">Words Varnam learned from your typing will be deleted. Word packs downloaded with the language pack are kept.</string>
+    <string name="privacy_learned_typing_confirm">Every word the keyboard learned from your typing will be deleted from this device, including the words Varnam learned. Dictionaries and word packs that came with a language pack are not affected.</string>
     <!-- Option to clear the recently used emojis [CHAR LIMIT=40] -->
     <string name="privacy_clear_emojis">Clear recent emojis</string>
     <!-- Summary of the clear recent emojis option [CHAR LIMIT=65] -->

@@ -26,22 +26,12 @@ import com.android.inputmethod.latin.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 import org.smc.inputmethod.indic.clipboard.ClipboardHistoryManager
-import org.smc.inputmethod.indic.languagepack.LanguagePackDownloadManager
-import org.smc.inputmethod.indic.varnam.VarnamIndicKeyboard
 
-/**
- * "Privacy" settings sub screen: deletes what the keyboard has learned or remembered — user
- * history dictionaries, Varnam learnings, recent emojis and clipboard history.
- */
 class PrivacySettingsFragment : SubScreenFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
         addPreferencesFromResource(R.xml.prefs_screen_privacy)
 
-        confirmOnClick(
-            "pref_privacy_delete_varnam", R.string.privacy_learned_varnam_confirm,
-            R.string.privacy_delete, ::deleteVarnamLearnings
-        )
         confirmOnClick(
             "pref_privacy_clear_emojis", R.string.privacy_clear_emojis_confirm,
             R.string.clipboard_clear_all, ::clearRecentEmojis
@@ -72,18 +62,6 @@ class PrivacySettingsFragment : SubScreenFragment() {
                 .show()
             true
         }
-    }
-
-    private fun deleteVarnamLearnings() {
-        for (scheme in VarnamIndicKeyboard.schemes.values) {
-            val dir = LanguagePackDownloadManager.packDir(requireContext(), scheme.lang)
-            dir.listFiles { _, name -> name.startsWith(scheme.lang + ".learnings") }
-                ?.forEach { it.delete() }
-            // Without the marker the engine re-imports the downloaded .vlf word packs into the
-            // fresh learnings DB, so only the user's own words are lost.
-            LanguagePackDownloadManager.importMarker(requireContext(), scheme.lang).delete()
-        }
-        VarnamIndicKeyboard.onLearningsCleared()
     }
 
     private fun clearRecentEmojis() {

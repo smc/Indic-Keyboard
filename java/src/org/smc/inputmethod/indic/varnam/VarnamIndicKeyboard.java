@@ -8,6 +8,9 @@ package org.smc.inputmethod.indic.varnam;
 import android.content.Context;
 import android.util.Log;
 
+import org.smc.inputmethod.indic.languagepack.LanguagePackDownloadManager;
+
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,6 +26,21 @@ public class VarnamIndicKeyboard {
 
     public static int learningsGeneration() {
         return sLearningsGeneration;
+    }
+
+    public static void clearLearnings(final Context context) {
+        for (final Scheme scheme : schemes.values()) {
+            final File dir = LanguagePackDownloadManager.packDir(context, scheme.lang);
+            final File[] learnings = dir.listFiles(
+                    (unused, name) -> name.startsWith(scheme.lang + ".learnings"));
+            if (learnings != null) {
+                for (final File f : learnings) {
+                    f.delete();
+                }
+            }
+            LanguagePackDownloadManager.importMarker(context, scheme.lang).delete();
+        }
+        onLearningsCleared();
     }
 
     /**
