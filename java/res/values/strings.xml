@@ -292,6 +292,10 @@
 
     <!-- Option name for enabling the use by the keyboards of sent/received messages, e-mail and typing history to improve suggestion accuracy [CHAR LIMIT=25] -->
     <string name="use_personalized_dicts">Personalized suggestions</string>
+    <!-- Option to keep learning new words even with auto-correction switched off [CHAR LIMIT=40] -->
+    <string name="learn_from_typing">Learn new words</string>
+    <!-- Summary of the learn-new-words option [CHAR LIMIT=65] -->
+    <string name="learn_from_typing_summary">Remember words you type, even with auto-correction off</string>
 
     <!-- Option to enable sending usage statistics -->
     <string name="enable_metrics_logging">"Improve <xliff:g id="APPLICATION_NAME" example="Android Keyboard">%s</xliff:g>"</string>

@@ -57,6 +57,12 @@
             android:defaultValue="true"
             android:persistent="true" />
         <CheckBoxPreference
+            android:key="pref_key_learn_from_typing"
+            android:title="@string/learn_from_typing"
+            android:summary="@string/learn_from_typing_summary"
+            android:defaultValue="true"
+            android:persistent="true" />
+        <CheckBoxPreference
             android:key="next_word_prediction"
             android:title="@string/bigram_prediction"
             android:summary="@string/bigram_prediction_summary"

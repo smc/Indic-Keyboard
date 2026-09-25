@@ -138,7 +138,6 @@ public final class InputLogic {
     private final StringBuilder rawLatinInput = new StringBuilder();
 
     private Varnam varnam;
-    private boolean varnamSettingLearn = true; // Should varnam learn words
     private int varnamTransliterationTaskID = 0; // For IDying parallel varnam suggestion fetch task
     private String varnamInlineWord; // Transliteration currently rendered in the composing region
 
@@ -913,8 +912,8 @@ public final class InputLogic {
         // We only start composing if this is a word code point. Essentially that means it's a
         // a letter or a word connector.
                 && settingsValues.isWordCodePoint(codePoint)
-        // We never go into composing state if suggestions are not requested. Varnam is exempt:
-                && (settingsValues.needsToLookupSuggestions() || isVarnam) &&
+                && (settingsValues.needsToLookupSuggestions()
+                        || (isVarnam && settingsValues.mInputAttributes.mShouldShowSuggestions)) &&
         // In languages with spaces, we only start composing a word when we are not already
         // touching a word. In languages without spaces, the above conditions are sufficient.
         // NOTE: If the InputConnection is slow, we skip the text-after-cursor check since it
@@ -1513,16 +1512,11 @@ public final class InputLogic {
             final String suggestion, @Nonnull final NgramContext ngramContext) {
         if (TextUtils.isEmpty(suggestion)) return;
 
-        if (isVarnam && varnamSettingLearn) {
-            // For error logging in learn
-            varnam.learn(suggestion);
-            return;
-        }
+        if (!settingsValues.mLearnFromTyping || settingsValues.mIncognitoModeEnabled) return;
 
-        // If correction is not enabled, we don't add words to the user history dictionary.
-        // That's to avoid unintended additions in some sensitive fields, or fields that
-        // expect to receive non-words.
-        if (!settingsValues.mAutoCorrectionEnabledPerUserSettings || settingsValues.mIncognitoModeEnabled) return;
+        if (isVarnam) {
+            varnam.learn(suggestion);
+        }
         if (mConnection.hasSlowInputConnection()) {
             // Since we don't unlearn when the user backspaces on a slow InputConnection,
             // turn off learning to guard against adding typos that the user later deletes.
@@ -2714,11 +2708,10 @@ public final class InputLogic {
     public void enableVarnam (String schemeID, Context context) {
         varnam = VarnamIndicKeyboard.makeVarnam(schemeID, context, new VarnamCallback() {
             @Override
-            public void onResult(boolean settingLearn) {
+            public void onResult() {
                 varnam.setDictionarySuggestionsLimit(4);
                 varnam.setTokenizerSuggestionsLimit(4);
                 isVarnam = true;
-                varnamSettingLearn = settingLearn;
             }
 
             @Override
@@ -2759,7 +2752,7 @@ public final class InputLogic {
         companionVarnamGeneration = VarnamIndicKeyboard.learningsGeneration();
         companionVarnam = VarnamIndicKeyboard.makeVarnam(lang, context, new VarnamCallback() {
             @Override
-            public void onResult(final boolean settingLearn) {
+            public void onResult() {
                 if (companionVarnam == null) {
                     return;
                 }

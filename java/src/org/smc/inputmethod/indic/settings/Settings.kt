@@ -130,6 +130,7 @@ class Settings private constructor() : SharedPreferences.OnSharedPreferenceChang
         const val PREF_SHOW_SUGGESTIONS = "show_suggestions"
         const val PREF_KEY_USE_CONTACTS_DICT = "pref_key_use_contacts_dict"
         const val PREF_KEY_USE_PERSONALIZED_DICTS = "pref_key_use_personalized_dicts"
+        const val PREF_KEY_LEARN_FROM_TYPING = "pref_key_learn_from_typing"
         const val PREF_KEY_USE_DOUBLE_SPACE_PERIOD = "pref_key_use_double_space_period"
         const val PREF_BLOCK_POTENTIALLY_OFFENSIVE = "pref_key_block_potentially_offensive"
         const val ENABLE_SHOW_LANGUAGE_SWITCH_KEY_SETTINGS = true

@@ -67,6 +67,7 @@ open class SettingsValues(
     @JvmField val mGrayOutSuggestionsInIncognito: Boolean
     @JvmField val mUseContactsDict: Boolean
     @JvmField val mUsePersonalizedDicts: Boolean
+    @JvmField val mLearnFromTyping: Boolean
     @JvmField val mUseDoubleSpacePeriod: Boolean
     @JvmField val mBlockPotentiallyOffensive: Boolean
     @JvmField val mSpaceTrackpadEnabled: Boolean
@@ -152,6 +153,7 @@ open class SettingsValues(
             prefs.getBoolean(Settings.PREF_GRAY_OUT_SUGGESTIONS_INCOGNITO, false)
         mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true)
         mUsePersonalizedDicts = prefs.getBoolean(Settings.PREF_KEY_USE_PERSONALIZED_DICTS, true)
+        mLearnFromTyping = prefs.getBoolean(Settings.PREF_KEY_LEARN_FROM_TYPING, true)
         mUseDoubleSpacePeriod = prefs.getBoolean(Settings.PREF_KEY_USE_DOUBLE_SPACE_PERIOD, true) &&
             inputAttributes.mIsGeneralTextInput
         mBlockPotentiallyOffensive = Settings.readBlockPotentiallyOffensive(prefs, res)
@@ -326,6 +328,7 @@ open class SettingsValues(
         append("\n   mShowsLanguageSwitchKey = $mShowsLanguageSwitchKey")
         append("\n   mUseContactsDict = $mUseContactsDict")
         append("\n   mUsePersonalizedDicts = $mUsePersonalizedDicts")
+        append("\n   mLearnFromTyping = $mLearnFromTyping")
         append("\n   mUseDoubleSpacePeriod = $mUseDoubleSpacePeriod")
         append("\n   mBlockPotentiallyOffensive = $mBlockPotentiallyOffensive")
         append("\n   mBigramPredictionEnabled = $mBigramPredictionEnabled")

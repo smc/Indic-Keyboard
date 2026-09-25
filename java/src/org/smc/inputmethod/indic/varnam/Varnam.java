@@ -75,7 +75,7 @@ public class Varnam {
             engine = new com.varnamproject.govarnam.Varnam(vst.getAbsolutePath(),
                     learnings.getAbsolutePath());
             importLearnings(dir);
-            post(() -> cb.onResult(true /* settingLearn */));
+            post(cb::onResult);
         } catch (final UnsatisfiedLinkError e) {
             Log.e(TAG, "govarnam native library missing", e);
             post(() -> cb.onError(ERROR_ENGINE_MISSING));

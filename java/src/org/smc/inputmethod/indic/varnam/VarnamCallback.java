@@ -6,7 +6,6 @@ import com.varnamproject.govarnam.Suggestion;
 
 interface VarnamCallbackInterface {
     void onResult(String input, Suggestion[] sugs);
-    void onResult(boolean settingLearn); // Init result
     void onResult();
     void onError(String er);
 }
@@ -14,9 +13,6 @@ interface VarnamCallbackInterface {
 public class VarnamCallback implements VarnamCallbackInterface {
     @Override
     public void onResult(String input, Suggestion[] sugs) { }
-
-    @Override
-    public void onResult(boolean settingLearn) { }
 
     @Override
     public void onResult() { }
