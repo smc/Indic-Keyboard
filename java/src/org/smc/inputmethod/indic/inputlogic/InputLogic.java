@@ -140,6 +140,7 @@ public final class InputLogic {
     private Varnam varnam;
     private boolean varnamSettingLearn = true; // Should varnam learn words
     private int varnamTransliterationTaskID = 0; // For IDying parallel varnam suggestion fetch task
+    private String varnamInlineWord; // Transliteration currently rendered in the composing region
 
     // Companion engine: blends high-confidence transliterations of the configured language into
     // the Latin suggestion strip while the user types on the plain English keyboard.
@@ -912,8 +913,8 @@ public final class InputLogic {
         // We only start composing if this is a word code point. Essentially that means it's a
         // a letter or a word connector.
                 && settingsValues.isWordCodePoint(codePoint)
-        // We never go into composing state if suggestions are not requested.
-                && settingsValues.needsToLookupSuggestions() &&
+        // We never go into composing state if suggestions are not requested. Varnam is exempt:
+                && (settingsValues.needsToLookupSuggestions() || isVarnam) &&
         // In languages with spaces, we only start composing a word when we are not already
         // touching a word. In languages without spaces, the above conditions are sufficient.
         // NOTE: If the InputConnection is slow, we skip the text-after-cursor check since it
@@ -945,7 +946,7 @@ public final class InputLogic {
             if (mWordComposer.isSingleLetter()) {
                 mWordComposer.setCapitalizedModeAtStartComposingTime(inputTransaction.mShiftState);
             }
-            setComposingTextInternal(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
+            setComposingTextInternal(composingTextToRender(), 1);
         } else {
             final boolean swapWeakSpace = tryStripSpaceAndReturnWhetherShouldSwapInstead(event,
                     inputTransaction);
@@ -956,12 +957,7 @@ public final class InputLogic {
                 sendKeyCodePoint(settingsValues, codePoint, isTransliteration);
             }
         }
-        if (isVarnam) {
-            restartSuggestionsOnWordTouchedByCursor(settingsValues, false,
-                    ScriptUtils.SCRIPT_LATIN);
-        } else {
-            inputTransaction.setRequiresUpdateSuggestions();
-        }
+        inputTransaction.setRequiresUpdateSuggestions();
     }
 
     /**
@@ -1116,7 +1112,7 @@ public final class InputLogic {
                 StatsUtils.onBackspacePressed(1);
             }
             if (mWordComposer.isComposingWord()) {
-                setComposingTextInternal(getTextWithUnderline(mWordComposer.getTypedWord()), 1);
+                setComposingTextInternal(composingTextToRender(), 1);
             } else {
                 mConnection.commitText("", 1);
             }
@@ -1592,6 +1588,7 @@ public final class InputLogic {
                             SuggestedWords.INDEX_OF_AUTO_CORRECTION
                     );
                     mSuggestionStripViewAccessor.showSuggestionStrip(suggestedWords);
+                    showVarnamInline(typedWord, varnamSugsToSugsWordInfo(sugs));
                 }
             });
             return;
@@ -1731,8 +1728,7 @@ public final class InputLogic {
         // Recorrection is not supported in languages without spaces because we don't know
         // how to segment them yet.
                 || !settingsValues.mSpacingAndPunctuations.mCurrentLanguageHasSpaces
-        // If no suggestions are requested, don't try restarting suggestions.
-                || !settingsValues.needsToLookupSuggestions()
+                || (!settingsValues.needsToLookupSuggestions() && !isVarnam)
         // If we are currently in a batch input, we must not resume suggestions, or the result
         // of the batch input will replace the new composition. This may happen in the corner case
         // that the app moves the cursor on its own accord during a batch input.
@@ -1827,8 +1823,10 @@ public final class InputLogic {
                     if (sugs == null || !mWordComposer.getTypedWord().equals(input)) {
                         return;
                     }
+                    final ArrayList<SuggestedWordInfo> varnamSugs = varnamSugsToSugsWordInfo(sugs);
                     restartSuggestionsOnWordTouchedByCursorUpdateSuggestions(typedWordInfo,
-                            varnamSugsToSugsWordInfo(sugs));
+                            varnamSugs);
+                    showVarnamInline(input, varnamSugs);
                 }
             });
         } else {
@@ -2148,6 +2146,7 @@ public final class InputLogic {
      * @param alsoResetLastComposedWord whether to also reset the last composed word.
      */
     private void resetComposingState(final boolean alsoResetLastComposedWord) {
+        varnamInlineWord = null;
         mWordComposer.reset();
         if (alsoResetLastComposedWord) {
             mLastComposedWord = LastComposedWord.NOT_A_COMPOSED_WORD;
@@ -3041,6 +3040,26 @@ public final class InputLogic {
                 false /* isObsoleteSuggestions */,
                 latinSuggestedWords.mInputStyle,
                 latinSuggestedWords.mSequenceNumber);
+    }
+
+    private CharSequence composingTextToRender() {
+        if (isVarnam && varnamInlineWord != null) {
+            return varnamInlineWord;
+        }
+        return getTextWithUnderline(mWordComposer.getTypedWord());
+    }
+
+    private void showVarnamInline(final String latinWord,
+            final ArrayList<SuggestedWordInfo> suggestions) {
+        if (suggestions.isEmpty() || !latinWord.equals(mWordComposer.getTypedWord())) {
+            return;
+        }
+        final String inline = suggestions.get(0).mWord;
+        if (inline.equals(varnamInlineWord)) {
+            return;
+        }
+        varnamInlineWord = inline;
+        setComposingTextInternal(inline, 1);
     }
 
     private ArrayList<SuggestedWordInfo> varnamSugsToSugsWordInfo(Suggestion[] sugs) {

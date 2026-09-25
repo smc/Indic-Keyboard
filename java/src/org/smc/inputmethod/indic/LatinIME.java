@@ -1984,6 +1984,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         if (currentSettingsValues.isSuggestionsEnabledPerUserSettings()
                 || currentSettingsValues.isApplicationSpecifiedCompletionsOn()
+                || mInputLogic.isVarnamActive()
                 // We should clear the contextual strip if there is no suggestion from dictionaries.
                 || noSuggestionsFromDictionaries) {
             mSuggestionStripView.setSuggestions(suggestedWords,
