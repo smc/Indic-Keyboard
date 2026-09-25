@@ -62,10 +62,12 @@ public class ScriptUtils {
         mLanguageCodeToScriptCode.put("mni", SCRIPT_BENGALI);
         mLanguageCodeToScriptCode.put("hi", SCRIPT_DEVANAGARI);
         mLanguageCodeToScriptCode.put("mr", SCRIPT_DEVANAGARI);
+        mLanguageCodeToScriptCode.put("gom", SCRIPT_DEVANAGARI);
         mLanguageCodeToScriptCode.put("ne", SCRIPT_DEVANAGARI);
         mLanguageCodeToScriptCode.put("mai", SCRIPT_DEVANAGARI);
         mLanguageCodeToScriptCode.put("ks", SCRIPT_DEVANAGARI);
         mLanguageCodeToScriptCode.put("kn", SCRIPT_KANNADA);
+        mLanguageCodeToScriptCode.put("tcy", SCRIPT_KANNADA);
         mLanguageCodeToScriptCode.put("gu", SCRIPT_GUJARATI);
         mLanguageCodeToScriptCode.put("or", SCRIPT_ORIYA);
         mLanguageCodeToScriptCode.put("pa", SCRIPT_GURMUKHI);

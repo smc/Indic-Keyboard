@@ -121,7 +121,7 @@ public final class AndroidSpellCheckerService extends SpellCheckerService
         case ScriptUtils.SCRIPT_HEBREW:
             return "hebrew";
         default:
-            throw new RuntimeException("Wrong script supplied: " + script);
+            return "qwerty";
         }
     }
 

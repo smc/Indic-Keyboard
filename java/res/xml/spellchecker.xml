@@ -35,4 +35,105 @@
             android:label="@string/subtype_generic"
             android:subtypeLocale="en_GB"
     />
+
+    <!-- Assamese -->
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="as"
+    />
+    <!-- Bangla -->
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="bn"
+    />
+    <!-- Konkani -->
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="gom"
+    />
+    <!-- Gujarati -->
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="gu"
+    />
+    <!-- Hindi -->
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="hi"
+    />
+    <!-- Kannada -->
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="kn"
+    />
+    <!-- Kashmiri -->
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="ks"
+    />
+    <!-- Maithili -->
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="mai"
+    />
+    <!-- Malayalam -->
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="ml"
+    />
+    <!-- Marathi -->
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="mr"
+    />
+    <!-- Nepali -->
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="ne"
+    />
+    <!-- Odia -->
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="or"
+    />
+    <!-- Punjabi -->
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="pa"
+    />
+    <!-- Sanskrit -->
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="sa"
+    />
+    <!-- Santali -->
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="sat"
+    />
+    <!-- Sindhi -->
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="sd"
+    />
+    <!-- Tamil -->
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="ta"
+    />
+    <!-- Tulu -->
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="tcy"
+    />
+    <!-- Telugu -->
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="te"
+    />
+    <!-- Urdu -->
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="ur"
+    />
 </spell-checker>
