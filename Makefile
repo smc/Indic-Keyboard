@@ -9,11 +9,12 @@
 #   make build ABI=armeabi-v7a
 #   make install DEVICE=adb-XXXX._adb-tls-connect._tcp
 #   make build-native NDK_VERSION=30.0.12345678
-ifeq (,$(wildcard .env))
-$(error No .env found — copy the template and edit it:  cp .env.sample .env)
-endif
-include .env
+-include .env
 export
+
+ifeq (,$(wildcard .env))
+$(warning No .env found; device and build targets need it: cp .env.sample .env)
+endif
 
 NDK_HOME := $(ANDROID_SDK)/ndk/$(NDK_VERSION)
 
@@ -35,7 +36,7 @@ ABI      ?= arm64-v8a
 
 PKG         := org.smc.inputmethod.indic
 ADB_BASE    := $(ANDROID_SDK)/platform-tools/adb
-PHYS_DEVICE  = $(shell $(ADB_BASE) devices | awk -F'\t' 'NR>1 && $$2=="device" && $$1 !~ /^emulator-/ {print $$1; exit}')
+PHYS_DEVICE  = $(shell test -x $(ADB_BASE) && $(ADB_BASE) devices | awk -F'\t' 'NR>1 && $$2=="device" && $$1 !~ /^emulator-/ {print $$1; exit}')
 ADB          = $(ADB_BASE) -s "$(or $(DEVICE),$(PHYS_DEVICE))"
 GRADLEW     := JAVA_HOME="$(JAVA_HOME)" ./gradlew
 DEBUG_APK   := java/build/outputs/apk/online/debug/IndicKeyboard-online-$(ABI)-debug.apk
@@ -137,10 +138,12 @@ release-install: release device-check ## Build and install the release APK
 OFFLINE_ASSETS_DIR      := java/offline/assets/langpacks
 OFFLINE_RELEASE_APK_DIR := java/build/outputs/apk/offline/release
 DICT_DIST               := dictionaries-indic/dist
+DICT_JAR                := dictionaries-indic/tools/dicttool_aosp.jar
 
-offline-assets: ## Copy dictionaries-indic/dist packs into the offline flavor's assets
+offline-assets: ## Build language packs, then copy them into the offline flavor's assets
 	@ls $(DICT_DIST)/*.zip >/dev/null 2>&1 || { \
-		echo "No packs in $(DICT_DIST). Run 'make -C dictionaries-indic all' first."; exit 1; }
+		test -f $(DICT_JAR) || $(MAKE) -C dictionaries-indic dicttool; \
+		$(MAKE) -C dictionaries-indic all; }
 	rm -rf $(OFFLINE_ASSETS_DIR)
 	mkdir -p $(OFFLINE_ASSETS_DIR)
 	cp $(DICT_DIST)/*.zip $(DICT_DIST)/index.json $(OFFLINE_ASSETS_DIR)/
@@ -299,7 +302,9 @@ KBD_TEXT_TABLE      := java/src/com/android/inputmethod/keyboard/internal/Keyboa
 
 DICTTOOL_BUILD := tools/dicttool/build
 DICTTOOL_JAR   := $(DICTTOOL_BUILD)/dicttool.jar
-JSR305_JAR      = $(shell find $(HOME)/.gradle/caches/modules-2 -name "jsr305-3.0.2.jar" 2>/dev/null | head -1)
+JSR305_JAR     ?= $(shell find $(HOME)/.gradle/caches/modules-2 -name "jsr305-3.0.2.jar" 2>/dev/null | head -1)
+JAVAC           = $(if $(JAVA_HOME),$(JAVA_HOME)/bin/javac,javac)
+JAR             = $(if $(JAVA_HOME),$(JAVA_HOME)/bin/jar,jar)
 DICTTOOL_RUN    = "$(JAVA_HOME)/bin/java" -cp "$(DICTTOOL_JAR):$(JSR305_JAR)" \
 		com.android.inputmethod.latin.dicttool.Dicttool
 
@@ -309,7 +314,7 @@ dicttool: ## Build tools/dicttool into tools/dicttool/build/dicttool.jar
 	@test -n "$(JSR305_JAR)" || { \
 		echo "jsr305 jar not found in the gradle cache. Run 'make build' once first."; exit 1; }
 	rm -rf $(DICTTOOL_BUILD)/classes && mkdir -p $(DICTTOOL_BUILD)/classes
-	"$(JAVA_HOME)/bin/javac" -nowarn --release 11 -cp "$(JSR305_JAR)" \
+	"$(JAVAC)" -nowarn -encoding UTF-8 --release 11 -cp "$(JSR305_JAR)" \
 		-d $(DICTTOOL_BUILD)/classes \
 		$$(find tools/dicttool/src tools/dicttool/compat \
 			java/src/com/android/inputmethod/latin/makedict \
@@ -321,14 +326,13 @@ dicttool: ## Build tools/dicttool into tools/dicttool/build/dicttool.jar
 		java/src/com/android/inputmethod/latin/Dictionary.java \
 		java/src/com/android/inputmethod/latin/NgramContext.java \
 		java/src/com/android/inputmethod/latin/SuggestedWords.java \
-		java/src/org/smc/inputmethod/indic/settings/SettingsValuesForSuggestion.java \
 		java/src/com/android/inputmethod/latin/utils/BinaryDictionaryUtils.java \
 		java/src/com/android/inputmethod/latin/utils/CombinedFormatUtils.java \
 		java/src/com/android/inputmethod/latin/utils/JniUtils.java \
 		java/src/com/android/inputmethod/latin/define/DebugFlags.java \
 		java/src/com/android/inputmethod/latin/define/DecoderSpecificConstants.java \
 		tests/src/com/android/inputmethod/latin/utils/ByteArrayDictBuffer.java
-	"$(JAVA_HOME)/bin/jar" cfe $(DICTTOOL_JAR) \
+	"$(JAR)" cfe $(DICTTOOL_JAR) \
 		com.android.inputmethod.latin.dicttool.Dicttool -C $(DICTTOOL_BUILD)/classes .
 	@echo "Built $(DICTTOOL_JAR)"
 
