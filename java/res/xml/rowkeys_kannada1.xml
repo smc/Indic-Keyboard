@@ -98,14 +98,14 @@
                  Vowels and Consonats  -->
             <Key
                 latin:keySpec="&#x0CC6;"
-                latin:moreKeys="&#x0C8E;"
+                latin:moreKeys="&#x0C8E;,&#x0C8F;"
                 latin:keyHintLabel="&#x0C8E;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- R: ra, vocalic R matra, vocalic R, RRA
                  Vowels and Consonats  -->
             <Key
                 latin:keySpec="&#x0CB0;"
-                latin:moreKeys="&#x0C8B;"
+                latin:moreKeys="&#x0C8B;,&#x0CB1;"
                 latin:keyHintLabel="&#x0C8B;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- T: dental ta, tha -->
@@ -121,19 +121,19 @@
             <!-- // U: matras, u, uu -->
             <Key
                 latin:keySpec="&#x0CC1;"
-                latin:moreKeys="&#x0C89;"
+                latin:moreKeys="&#x0C89;,&#x0C8A;"
                 latin:keyHintLabel="&#x0C89;"
                 latin:keyLabelFlags="fontNormal" />
             <!-- // // I: matras, i, ii -->
             <Key
                 latin:keySpec="&#x0CBF;"
-                latin:moreKeys="&#x0C87;"
+                latin:moreKeys="&#x0C87;,&#x0C88;"
                 latin:keyHintLabel="&#x0C87;"
                 latin:keyLabelFlags="fontNormal" />
             <!--  // O: matras, short o, long o -->
             <Key
                 latin:keySpec="&#x0CCA;"
-                latin:moreKeys="&#x0C92;"
+                latin:moreKeys="&#x0C92;,&#x0C93;"
                 latin:keyHintLabel="&#x0C92;"
                 latin:keyLabelFlags="fontNormal|autoXScale" />
             <!--  // O: P: pa, pha -->

@@ -103,7 +103,7 @@
             <!-- M: ma, anusvara, avagraha, Devanagari OM -->
             <Key
                 latin:keySpec="&#x0CAE;"
-                latin:moreKeys="&#x0CBD;"
+                latin:moreKeys="&#x0CBD;,&#x0950;"
                 latin:keyHintLabel="&#x0CBD;"
                 latin:keyLabelFlags="fontNormal" />
         </default>

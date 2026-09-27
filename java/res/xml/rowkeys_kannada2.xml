@@ -111,7 +111,7 @@
             <!-- H: ha, visarga, jihvanuliya, upadhmaniya -->
             <Key
                 latin:keySpec="&#x0CB9;"
-                latin:moreKeys="&#x0CF1;"
+                latin:moreKeys="&#x0CF1;,&#x0CF2;"
                 latin:keyHintLabel="&#x0CF1;"
                 latin:keyLabelFlags="fontNormal" />
 
@@ -128,7 +128,7 @@
             <!-- L: la, lla, vocalic L matra, vocalic L -->
             <Key
                 latin:keySpec="&#x0CB2;"
-                latin:moreKeys="&#x0CE2;"
+                latin:moreKeys="&#x0CE2;,&#x0C8C;"
                 latin:keyHintLabel="&#x0CE2;"
                 latin:keyLabelFlags="fontNormal" />
         </default>

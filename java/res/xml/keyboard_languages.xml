@@ -55,7 +55,7 @@
         <layout name="Compact" layoutSet="hindi_compact" />
     </language>
     <language locale="kn_IN" englishName="Kannada" autonym="ಕನ್ನಡ" glyph="ಅ">
-        <layout name="Standard" layoutSet="kannada" />
+        <layout name="KaGaPa" layoutSet="kannada" />
         <layout name="Predictive Transliteration" layoutSet="qwerty" translit="varnam-kn" />
         <layout name="ಲಿಪ್ಯಂತರಣ" layoutSet="qwerty" translit="kn-transliteration" />
         <layout name="Inscript" layoutSet="kannada_inscript" />
