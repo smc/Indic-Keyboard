@@ -326,6 +326,11 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=punjabi_inscript,EmojiCapable" />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_pa_jhelum"
+            android:imeSubtypeLocale="pa_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=punjabi_jhelum,EmojiCapable" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_pa_transliteration"
             android:imeSubtypeLocale="pa_IN"
             android:imeSubtypeMode="keyboard"

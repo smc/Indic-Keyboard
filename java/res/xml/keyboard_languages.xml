@@ -117,6 +117,7 @@
         <layout name="Predictive Transliteration" layoutSet="qwerty" translit="varnam-pa" />
         <layout name="Transliteration" layoutSet="qwerty" translit="pa-transliteration" />
         <layout name="Inscript" layoutSet="punjabi_inscript" />
+        <layout name="Jhelum" layoutSet="punjabi_jhelum" />
     </language>
     <language locale="sa_IN" englishName="Sanskrit" autonym="संस्कृतम्" glyph="स">
         <layout name="Predictive Transliteration" layoutSet="qwerty" translit="varnam-sa" />
