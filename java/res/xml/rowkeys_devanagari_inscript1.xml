@@ -97,7 +97,7 @@
                 latin:keyLabelFlags="fontNormal|followKeyLetterRatio" />
 
             <switch>
-                <case latin:languageCode="mr">
+                <case latin:languageCode="mr|gom">
                     <!--\! ॲ DEVANAGARI LETTER CANDRA A-->
                     <Key
                         latin:keySpec="&#x0972;"
