@@ -83,28 +83,28 @@ public final class KeyboardTextsTable {
 
     private static final String[] NAMES = {
     //  /* index:histogram */ "name",
-        /*   0:26 */ "keylabel_to_alpha",
-        /*   1:25 */ "additional_morekeys_symbols_1",
-        /*   2:25 */ "additional_morekeys_symbols_2",
-        /*   3:25 */ "additional_morekeys_symbols_3",
-        /*   4:25 */ "additional_morekeys_symbols_4",
-        /*   5:25 */ "additional_morekeys_symbols_5",
-        /*   6:25 */ "additional_morekeys_symbols_6",
-        /*   7:25 */ "additional_morekeys_symbols_7",
-        /*   8:25 */ "additional_morekeys_symbols_8",
-        /*   9:25 */ "additional_morekeys_symbols_9",
-        /*  10:25 */ "additional_morekeys_symbols_0",
-        /*  11:14 */ "keylabel_to_symbol",
-        /*  12:13 */ "keyspec_symbols_1",
-        /*  13:13 */ "keyspec_symbols_2",
-        /*  14:13 */ "keyspec_symbols_3",
-        /*  15:13 */ "keyspec_symbols_4",
-        /*  16:13 */ "keyspec_symbols_5",
-        /*  17:13 */ "keyspec_symbols_6",
-        /*  18:13 */ "keyspec_symbols_7",
-        /*  19:13 */ "keyspec_symbols_8",
-        /*  20:13 */ "keyspec_symbols_9",
-        /*  21:13 */ "keyspec_symbols_0",
+        /*   0:27 */ "keylabel_to_alpha",
+        /*   1:26 */ "additional_morekeys_symbols_1",
+        /*   2:26 */ "additional_morekeys_symbols_2",
+        /*   3:26 */ "additional_morekeys_symbols_3",
+        /*   4:26 */ "additional_morekeys_symbols_4",
+        /*   5:26 */ "additional_morekeys_symbols_5",
+        /*   6:26 */ "additional_morekeys_symbols_6",
+        /*   7:26 */ "additional_morekeys_symbols_7",
+        /*   8:26 */ "additional_morekeys_symbols_8",
+        /*   9:26 */ "additional_morekeys_symbols_9",
+        /*  10:26 */ "additional_morekeys_symbols_0",
+        /*  11:15 */ "keylabel_to_symbol",
+        /*  12:14 */ "keyspec_symbols_1",
+        /*  13:14 */ "keyspec_symbols_2",
+        /*  14:14 */ "keyspec_symbols_3",
+        /*  15:14 */ "keyspec_symbols_4",
+        /*  16:14 */ "keyspec_symbols_5",
+        /*  17:14 */ "keyspec_symbols_6",
+        /*  18:14 */ "keyspec_symbols_7",
+        /*  19:14 */ "keyspec_symbols_8",
+        /*  20:14 */ "keyspec_symbols_9",
+        /*  21:14 */ "keyspec_symbols_0",
         /*  22: 8 */ "keyspec_currency",
         /*  23: 7 */ "keyspec_period",
         /*  24: 4 */ "keyspec_comma",
@@ -1313,6 +1313,32 @@ public final class KeyboardTextsTable {
         /* additional_morekeys_symbols_0 */ "\u0BE6",
     };
 
+    /* Locale tcy: Tulu */
+    private static final String[] TEXTS_tcy = {
+        /* keylabel_to_alpha */ "\u0C85",
+        /* additional_morekeys_symbols_1 */ "1",
+        /* additional_morekeys_symbols_2 */ "2",
+        /* additional_morekeys_symbols_3 */ "3",
+        /* additional_morekeys_symbols_4 */ "4",
+        /* additional_morekeys_symbols_5 */ "5",
+        /* additional_morekeys_symbols_6 */ "6",
+        /* additional_morekeys_symbols_7 */ "7",
+        /* additional_morekeys_symbols_8 */ "8",
+        /* additional_morekeys_symbols_9 */ "9",
+        /* additional_morekeys_symbols_0 */ "0",
+        /* keylabel_to_symbol */ "\u0CE7\u0CE8\u0CE9",
+        /* keyspec_symbols_1 */ "\u0CE7",
+        /* keyspec_symbols_2 */ "\u0CE8",
+        /* keyspec_symbols_3 */ "\u0CE9",
+        /* keyspec_symbols_4 */ "\u0CEA",
+        /* keyspec_symbols_5 */ "\u0CEB",
+        /* keyspec_symbols_6 */ "\u0CEC",
+        /* keyspec_symbols_7 */ "\u0CED",
+        /* keyspec_symbols_8 */ "\u0CEE",
+        /* keyspec_symbols_9 */ "\u0CEF",
+        /* keyspec_symbols_0 */ "\u0CE6",
+    };
+
     /* Locale te: Telugu */
     private static final String[] TEXTS_te = {
         /* keylabel_to_alpha */ "\u0C05",
@@ -1521,6 +1547,7 @@ public final class KeyboardTextsTable {
         "ta_IN"  , TEXTS_ta_IN, /*  12/ 12 Tamil (India) */
         "ta_LK"  , TEXTS_ta_LK, /*  12/ 23 Tamil (Sri Lanka) */
         "ta_SG"  , TEXTS_ta_SG, /*  11/ 11 Tamil (Singapore) */
+        "tcy"    , TEXTS_tcy,   /*  22/ 22 Tulu */
         "te"     , TEXTS_te,    /*  22/ 22 Telugu */
         "ur"     , TEXTS_ur,    /*  11/ 11 Urdu */
         "zz"     , TEXTS_zz,    /*  19/ 48 Alphabet */

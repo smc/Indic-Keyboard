@@ -183,6 +183,13 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=konkani_inscript,EmojiCapable" />
 
+    <!-- Tulu -->
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_tcy_inscript"
+            android:imeSubtypeLocale="tcy_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=tulu_inscript,EmojiCapable" />
+
     <!-- Malayalam -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_ml_lalitha"

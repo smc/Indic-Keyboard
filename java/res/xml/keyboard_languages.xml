@@ -72,6 +72,9 @@
     <language locale="gom_IN" englishName="Konkani" autonym="कोंकणी" glyph="को">
         <layout name="Inscript" layoutSet="konkani_inscript" />
     </language>
+    <language locale="tcy_IN" englishName="Tulu" autonym="ತುಳು" glyph="ತು">
+        <layout name="Inscript" layoutSet="tulu_inscript" />
+    </language>
     <language locale="ml_IN" englishName="Malayalam" autonym="മലയാളം" glyph="അ">
         <layout name="Lalitha" layoutSet="malayalam" />
         <layout name="Swanalekha" layoutSet="qwerty" translit="ml-swanalekha" />
