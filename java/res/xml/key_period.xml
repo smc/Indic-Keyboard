@@ -49,6 +49,26 @@
                 latin:backgroundType="functional" />
         </case>
         <case
+            latin:keyboardLayoutSet="kaithi"
+        >
+            <!-- 𑃀 KAITHI DANDA, 𑃁 KAITHI DOUBLE DANDA -->
+            <Key
+                latin:keySpec="&#x110C0;"
+                latin:keyLabelFlags="hasPopupHint|fontNormal"
+                latin:moreKeys="!autoColumnOrder!9,&#x110C1;,\\,,.,?,!,#,),(,/,;,',@,:,-,&quot;,+,\\%,&amp;"
+                latin:backgroundType="functional" />
+        </case>
+        <case
+            latin:keyboardLayoutSet="sharada"
+        >
+            <!-- 𑇅 SHARADA DANDA, 𑇆 SHARADA DOUBLE DANDA -->
+            <Key
+                latin:keySpec="&#x111C5;"
+                latin:keyLabelFlags="hasPopupHint|fontNormal"
+                latin:moreKeys="!autoColumnOrder!9,&#x111C6;,\\,,.,?,!,#,),(,/,;,',@,:,-,&quot;,+,\\%,&amp;"
+                latin:backgroundType="functional" />
+        </case>
+        <case
             latin:keyboardLayoutSet="dvorak"
         >
             <Key
