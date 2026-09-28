@@ -79,6 +79,16 @@
                 latin:backgroundType="functional" />
         </case>
         <case
+            latin:keyboardLayoutSet="meetei_mayek"
+        >
+            <!-- ꯫ MEETEI MAYEK CHEIKHEI, ꯬ LUM IYEK -->
+            <Key
+                latin:keySpec="&#xABEB;"
+                latin:keyLabelFlags="hasPopupHint|fontNormal"
+                latin:moreKeys="!autoColumnOrder!9,&#xABEC;,\\,,.,?,!,#,),(,/,;,',@,:,-,&quot;,+,\\%,&amp;"
+                latin:backgroundType="functional" />
+        </case>
+        <case
             latin:keyboardLayoutSet="dvorak"
         >
             <Key

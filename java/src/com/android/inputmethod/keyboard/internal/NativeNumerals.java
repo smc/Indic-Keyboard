@@ -74,6 +74,7 @@ public final class NativeNumerals {
         case ScriptUtils.SCRIPT_LAO:        zero = 0x0ED0; break;
         case ScriptUtils.SCRIPT_THAI:       zero = 0x0E50; break;
         case ScriptUtils.SCRIPT_OL_CHIKI:   zero = 0x1C50; break;
+        case ScriptUtils.SCRIPT_MEETEI_MAYEK: zero = 0xABF0; break;
         default: return null;
         }
         final String[] digits = new String[10];

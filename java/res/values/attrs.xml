@@ -641,6 +641,7 @@
             <enum name="kaithi" value="23" />
             <enum name="saurashtra" value="24" />
             <enum name="hanifi_rohingya" value="25" />
+            <enum name="meetei_mayek" value="26" />
         </attr>
     </declare-styleable>
 

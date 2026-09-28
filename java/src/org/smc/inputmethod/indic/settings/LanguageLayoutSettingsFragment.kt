@@ -213,7 +213,10 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
         "Beng" -> "Bengali"
         "Deva" -> "Devanagari"
         "Kthi" -> "Kaithi"
+        "Mtei" -> "Meetei Mayek"
         "Olck" -> "Ol Chiki"
+        "Rohg" -> "Hanifi"
+        "Saur" -> "Saurashtra"
         "Shrd" -> "Sharada"
         else -> variant
     }

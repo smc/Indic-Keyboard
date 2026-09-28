@@ -191,6 +191,13 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=sharada,EmojiCapable" />
 
+    <!-- Meetei Mayek -->
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_mni_mayek"
+            android:imeSubtypeLocale="mni_IN_Mtei"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=meetei_mayek,EmojiCapable" />
+
     <!-- Rohingya -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_rhg"

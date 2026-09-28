@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+** Copyright 2026, Jishnu Mohan <jishnu7@gmail.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted">
+            <!-- ꯥ MEETEI MAYEK VOWEL SIGN ANAP -->
+            <Key
+                latin:keySpec="&#x25CC;&#xABE5;|&#xABE5;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꯓ MEETEI MAYEK LETTER JHAM -->
+            <Key
+                latin:keySpec="&#xABD3;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꯙ MEETEI MAYEK LETTER DHOU -->
+            <Key
+                latin:keySpec="&#xABD9;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꯚ MEETEI MAYEK LETTER BHAM -->
+            <Key
+                latin:keySpec="&#xABDA;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꯘ MEETEI MAYEK LETTER GHOU -->
+            <Key
+                latin:keySpec="&#xABD8;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꯪ MEETEI MAYEK VOWEL SIGN NUNG -->
+            <Key
+                latin:keySpec="&#x25CC;&#xABEA;|&#xABEA;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꯓ MEETEI MAYEK LETTER JHAM -->
+            <Key
+                latin:keySpec="&#xABD3;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꯛ MEETEI MAYEK LETTER KOK LONSUM -->
+            <Key
+                latin:keySpec="&#xABDB;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꯜ MEETEI MAYEK LETTER LAI LONSUM -->
+            <Key
+                latin:keySpec="&#xABDC;"
+                latin:keyLabelFlags="fontNormal" />
+
+        </case>
+        <default>
+            <!-- ꯑ MEETEI MAYEK LETTER ATIYA -->
+            <Key
+                latin:keySpec="&#xABD1;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꯁ MEETEI MAYEK LETTER SAM -->
+            <Key
+                latin:keySpec="&#xABC1;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꯗ MEETEI MAYEK LETTER DIL -->
+            <Key
+                latin:keySpec="&#xABD7;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꯐ MEETEI MAYEK LETTER PHAM -->
+            <Key
+                latin:keySpec="&#xABD0;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꯒ MEETEI MAYEK LETTER GOK -->
+            <Key
+                latin:keySpec="&#xABD2;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꯍ MEETEI MAYEK LETTER HUK -->
+            <Key
+                latin:keySpec="&#xABCD;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꯖ MEETEI MAYEK LETTER JIL -->
+            <Key
+                latin:keySpec="&#xABD6;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꯀ MEETEI MAYEK LETTER KOK -->
+            <Key
+                latin:keySpec="&#xABC0;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꯂ MEETEI MAYEK LETTER LAI -->
+            <Key
+                latin:keySpec="&#xABC2;"
+                latin:keyLabelFlags="fontNormal" />
+
+        </default>
+    </switch>
+</merge>

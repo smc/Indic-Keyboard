@@ -91,8 +91,9 @@
         <layout name="Mobile Inscript" layoutSet="malayalam_mobile_inscript" />
         <layout name="Compact" layoutSet="malayalam_compact" />
     </language>
-    <language locale="mni_IN" englishName="Manipuri" autonym="মৈতৈলোন্" glyph="ম">
+    <language locale="mni_IN" englishName="Manipuri" autonym="মৈতৈলোন্" heroText="মৈতৈলোন্&#10;ꯃꯩꯇꯩꯂꯣꯟ" glyph="ম">
         <layout name="Inscript" layoutSet="manipuri_inscript" />
+        <layout name="Meetei Mayek" autonym="ꯃꯩꯇꯩꯂꯣꯟ" locale="mni_IN_Mtei" layoutSet="meetei_mayek" />
     </language>
     <language locale="mr_IN" englishName="Marathi" autonym="मराठी" glyph="म">
         <layout name="Standard" layoutSet="marathi" />
