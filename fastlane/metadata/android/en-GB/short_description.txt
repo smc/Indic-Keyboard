@@ -1,1 +1,1 @@
-AOSP Keyboard with Indic language support
+The first Android keyboard for Indian languages. Open source, no ads.

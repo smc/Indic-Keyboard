@@ -1,59 +1,62 @@
-Indic Keyboard is a versatile keyboard for Android users who wish to use Indic and Indian languages to type messages, compose emails and generally prefer to use them in addition to English on their phone. You can use this application to type anywhere in your phone that you would normally type in English.
+Indic Keyboard is the first Android keyboard for Indian languages, now rebuilt from the ground up. Type in your language anywhere you would type in English: messages, email, search and more.
 
-- 23 languages supported NOW!!
-- Learns the common words you use and provides suggestions.
-- Provides compact, convenient keyboard layouts for the casual users as well as the language lovers
-- Transliteration - You type using English, the app will convert it into your language. Eg: Typing "namaste" will give you नमस्ते
-- Fully integrates with native Android look and feel
-- Free and Open Source - Made for the people, by the people. YOU can make it better.
+- 31 languages, 96 layouts, 20 scripts
+- Gesture typing, even on transliteration layouts - a first for any keyboard
+- Companion typing: type your language from the English keyboard, no switching
+- Predictive transliteration: type "namaste", get नमस्ते
+- Next-word prediction in 20 languages, spell check
+- Clipboard history and password manager autofill
+- Physical keyboard support
+- Material You themes, emoji search
+- Free and open source. No ads, no tracking.
 
-Will my phone support it ?
+What languages are supported?
 
-Indic keyboard supports Android version 4.1 and above (Jellybean, Kitkat and Lollipop). If you can see your language in its native script below you should be able to install and use it.
-
-Some phones may not support all the languages listed since the phone's maker shipped fonts only for some of these languages. Even then, rendering for some of the languages is not perfect on Android
-
-What languages are supported ?
-
-- Assamese Keyboard (অসমীয়া) - Inscript, Transliteration
-- Arabic Keyboard (العَرَبِيةُ‎‎)
-- Bengali / Bangla Keyboard (বাংলা) - Probhat, Avro, Inscript, Compact
-- Burmese Keyboard (ဗမာ) / Myanmar - xkb
+- Arabic Keyboard (العربية)
+- Assamese Keyboard (অসমীয়া) - Inscript, Transliteration, Phonetic, Predictive Transliteration
+- Bengali Keyboard (বাংলা) - Probhat, Inscript, Avro, Predictive Transliteration
+- Bhojpuri Keyboard (भोजपुरी) - Inscript, Kaithi
+- Burmese Keyboard (ဗမာ)
 - English
-- Gujarati Keyboard (ગુજરાતી) - Phonetic, Inscript, Transliteration
-- Hindi Keyboard (हिन्दी) - Inscript, Transliteration
-- Kannada Keyboard (ಕನ್ನಡ) - Phonetic, Inscript, Transliteration (Baraha), Compact, Anysoft
-- Kashmiri Keyboard (کأشُر) - Inscript, Transliteration
-- Malayalam Keyboard (മലയാളം) - Phonetic, Inscript, Transliteration (Mozhi), Swanalekha
-- Manipuri Keyboard / Methei Keyboard (মৈতৈলোন্) - Inscript
-- Maithili Keyboard (मैथिली) - Inscript
-- Marathi Keyboard (मराठी) - Transliteration
-- Mon Keyboard (ဘာသာ မန်;)
-- Nepali Keyboard (नेपाली) - Phonetic, Traditional, Transliteration, Inscript
-- Oriya Keyboard (ଓଡ଼ିଆ) - Inscript, Transliteration, Lekhani
-- Punjabi / Gurmukhi Keyboard (ਪੰਜਾਬੀ) - Phonetic, Inscript, Transliteration
-- Sanskrit Keyboard (संस्कृत) - Transliteration
-- Santali Keyboard-(संताली) - Inscript (Devanagari script)
-- Sinhala Keyboard / Sinhalese (සිංහල) - Transliteration
-- Tamil Keyboard (தமிழ்) - Tamil 99, Inscript, Phonetic, Compact, Transliteration
-- Telugu Keyboard (తెలుగు) - Phonetic, Inscript, Transliteration, KaChaTaThaPa, Compact
-- Urdu Keyboard (اردو) - Transliteration
+- Gujarati Keyboard (ગુજરાતી) - Phonetic, Inscript, Transliteration, Predictive Transliteration
+- Hindi Keyboard (हिन्दी) - Inscript, Soni, Transliteration, Compact, Predictive Transliteration
+- Ho Keyboard (𑢹𑣉𑣉 𑣎𑣋𑣜) - Warang Citi
+- Kannada Keyboard (ಕನ್ನಡ) - KaGaPa, Inscript, Compact, Inscript Mobile, Transliteration, Predictive Transliteration
+- Kashmiri Keyboard (کأشُر) - Transliteration, Inscript, Sharada
+- Konkani Keyboard (कोंकणी) - Inscript
+- Maithili Keyboard (मैथिली) - Kaithi, Inscript
+- Malayalam Keyboard (മലയാളം) - Lalitha, Compact, Inscript, Poorna Inscript, Mobile Inscript, Transliteration, Swanalekha, Predictive Transliteration
+- Manipuri Keyboard (মৈতৈলোন্) - Meetei Mayek, Inscript
+- Marathi Keyboard (मराठी) - Inscript, Transliteration, Phonetic, Predictive Transliteration
+- Mon Keyboard (ဘာသာ မန်)
+- Nepali Keyboard (नेपाली) - Romanized, Traditional, Transliteration, Inscript, Predictive Transliteration
+- Odia Keyboard (ଓଡ଼ିଆ) - Inscript, Transliteration, Lekhani, Phonetic, Predictive Transliteration
+- Punjabi Keyboard (ਪੰਜਾਬੀ) - Phonetic, Inscript, Jhelum, Transliteration, Predictive Transliteration
+- Rohingya Keyboard (𐴌𐴟𐴇𐴝𐴙𐴚𐴒𐴙𐴝) - Hanifi Rohingya
+- Sanskrit Keyboard (संस्कृतम्) - Transliteration, Predictive Transliteration
+- Santali Keyboard (ᱥᱟᱱᱛᱟᱲᱤ) - Inscript, Ol Chiki, Ol Chiki Compact
+- Saurashtra Keyboard (ꢱꣃꢬꢵꢰ꣄ꢜ꣄ꢬ)
+- Sindhi Keyboard (सिन्धी) - Inscript
+- Sinhala Keyboard (සිංහල) - Singlish, Wijesekara
+- Sylheti Keyboard (ꠍꠤꠟꠐꠤ) - Syloti Nagri
+- Tamil Keyboard (தமிழ்) - Phonetic, Tamil 99, Compact, Inscript, Transliteration, Predictive Transliteration
+- Telugu Keyboard (తెలుగు) - Phonetic, KaChaTaThaPa, Apple, Compact, Inscript, Transliteration, Predictive Transliteration
+- Tulu Keyboard (ತುಳು) - Inscript
+- Urdu Keyboard (اردو) - Navees, Windows, Transliteration
 
-# How do I enable it ?
-Indic keyboard has a wizard that will walk you through the process of setting it up so that you can use it comfortably.
+# How do I enable it?
+A setup wizard walks you through turning on the keyboard and picking your languages and layouts.
 
-# When I try to enable the keyboard, I am getting a warning about "collecting data"?
-This message is a part of the Android operating system. It will appears whenever you try to enable a third party keyboard. Nothing to worry here.
+# I see a warning about "collecting data" when enabling the keyboard
+Android shows this for every third party keyboard. Indic Keyboard does not collect anything you type.
 
-# What is a keyboard layout ?
-Indic keyboard provides multiple "keyboard layouts". This means that you will have different ways to type in your native language.
+# What is a keyboard layout?
+Each language offers different ways to type:
+- Transliteration: type in English letters and they turn into your script. "namaste" becomes नमस्ते.
+- Predictive Transliteration: transliteration that learns your words and suggests the right spelling.
+- Inscript: the Government of India standard layout. If you know it on desktop, it works here too.
+- Phonetic: letters sit where their English sound-alikes are.
+- Compact: no shift key. Long press a letter for more options.
 
-Transliteration allows you to type out words using English characters, but will automatically transform the words to your native language. For example, if you type "namaste" in English while using Devanagari transliteration keyboard, it will transform it to नमस्ते correctly
-
-Inscript layout is the standardized keyboard that Government of India came up with to cater for the majority of the languages in India. We support the full specification, and if you are already familiar with Inscript on your Desktop, it will work on the phone too.
-
-Phonetic keyboard is similar to Transliteration scheme - you can type what the words sound like using English characters and it will be automatically transformed into your language.
-
-Compact Keyboard allows to type Indian languages without the shift key. You can long press on the letters to get more options.
-
-Find out more at : https://indic.app
+Find out more at: https://indic.app
+Privacy Policy: https://indic.app/privacy.html
