@@ -642,6 +642,7 @@
             <enum name="saurashtra" value="24" />
             <enum name="hanifi_rohingya" value="25" />
             <enum name="meetei_mayek" value="26" />
+            <enum name="syloti_nagri" value="27" />
         </attr>
     </declare-styleable>
 

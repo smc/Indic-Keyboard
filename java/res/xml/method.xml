@@ -191,6 +191,13 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=sharada,EmojiCapable" />
 
+    <!-- Sylheti -->
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_syl"
+            android:imeSubtypeLocale="syl"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=syloti_nagri,EmojiCapable" />
+
     <!-- Meetei Mayek -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_mni_mayek"

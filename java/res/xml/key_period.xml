@@ -89,6 +89,16 @@
                 latin:backgroundType="functional" />
         </case>
         <case
+            latin:keyboardLayoutSet="syloti_nagri"
+        >
+            <!-- । DEVANAGARI DANDA, ॥ double danda, ꠨-꠫ poetry marks -->
+            <Key
+                latin:keySpec="&#x0964;"
+                latin:keyLabelFlags="hasPopupHint|fontNormal"
+                latin:moreKeys="!autoColumnOrder!9,&#x0965;,&#xA828;,&#xA829;,&#xA82A;,&#xA82B;,\\,,.,?,!,),(,/,;,',@,:,-,&quot;"
+                latin:backgroundType="functional" />
+        </case>
+        <case
             latin:keyboardLayoutSet="dvorak"
         >
             <Key

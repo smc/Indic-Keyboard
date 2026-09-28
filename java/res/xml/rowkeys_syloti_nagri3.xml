@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+** Copyright 2026, Jishnu Mohan <jishnu7@gmail.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted">
+            <!-- ꠓ SYLOTI NAGRI LETTER DDHO -->
+            <Key
+                latin:keySpec="&#xA813;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꠑ SYLOTI NAGRI LETTER TTHO -->
+            <Key
+                latin:keySpec="&#xA811;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꠍ SYLOTI NAGRI LETTER CHO -->
+            <Key
+                latin:keySpec="&#xA80D;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <Key latin:keySpec="!icon/undefined|!code/key_unspecified" />
+
+            <!-- ꠜ SYLOTI NAGRI LETTER BHO -->
+            <Key
+                latin:keySpec="&#xA81C;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <Key latin:keySpec="!icon/undefined|!code/key_unspecified" />
+
+            <!-- ꠋ SYLOTI NAGRI SIGN ANUSVARA -->
+            <Key
+                latin:keySpec="&#x25CC;&#xA80B;|&#xA80B;"
+                latin:keyLabelFlags="fontNormal" />
+
+        </case>
+        <default>
+            <!-- ꠒ SYLOTI NAGRI LETTER DDO -->
+            <Key
+                latin:keySpec="&#xA812;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꠐ SYLOTI NAGRI LETTER TTO -->
+            <Key
+                latin:keySpec="&#xA810;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꠌ SYLOTI NAGRI LETTER CO -->
+            <Key
+                latin:keySpec="&#xA80C;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <Key latin:keySpec="!icon/undefined|!code/key_unspecified" />
+
+            <!-- ꠛ SYLOTI NAGRI LETTER BO -->
+            <Key
+                latin:keySpec="&#xA81B;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꠘ SYLOTI NAGRI LETTER NO -->
+            <Key
+                latin:keySpec="&#xA818;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꠝ SYLOTI NAGRI LETTER MO -->
+            <Key
+                latin:keySpec="&#xA81D;"
+                latin:keyLabelFlags="fontNormal" />
+
+        </default>
+    </switch>
+</merge>

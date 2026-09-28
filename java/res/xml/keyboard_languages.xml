@@ -139,6 +139,9 @@
     <language locale="saz_IN" englishName="Saurashtra" autonym="ꢱꣃꢬꢵꢰ꣄ꢜ꣄ꢬ" glyph="ꢱ">
         <layout name="Saurashtra" layoutSet="saurashtra" />
     </language>
+    <language locale="syl" englishName="Sylheti" autonym="ꠍꠤꠟꠐꠤ" glyph="ꠍ">
+        <layout name="Syloti Nagri" layoutSet="syloti_nagri" />
+    </language>
     <language locale="sat_IN" englishName="Santali" autonym="ᱥᱟᱱᱛᱟᱲᱤ" glyph="ᱟ">
         <layout name="Inscript" layoutSet="santali_inscript" />
         <layout name="Ol Chiki" layoutSet="santali_olck" />

@@ -83,17 +83,17 @@ public final class KeyboardTextsTable {
 
     private static final String[] NAMES = {
     //  /* index:histogram */ "name",
-        /*   0:30 */ "keylabel_to_alpha",
-        /*   1:29 */ "additional_morekeys_symbols_1",
-        /*   2:29 */ "additional_morekeys_symbols_2",
-        /*   3:29 */ "additional_morekeys_symbols_3",
-        /*   4:29 */ "additional_morekeys_symbols_4",
-        /*   5:29 */ "additional_morekeys_symbols_5",
-        /*   6:29 */ "additional_morekeys_symbols_6",
-        /*   7:29 */ "additional_morekeys_symbols_7",
-        /*   8:29 */ "additional_morekeys_symbols_8",
-        /*   9:29 */ "additional_morekeys_symbols_9",
-        /*  10:29 */ "additional_morekeys_symbols_0",
+        /*   0:32 */ "keylabel_to_alpha",
+        /*   1:31 */ "additional_morekeys_symbols_1",
+        /*   2:31 */ "additional_morekeys_symbols_2",
+        /*   3:31 */ "additional_morekeys_symbols_3",
+        /*   4:31 */ "additional_morekeys_symbols_4",
+        /*   5:31 */ "additional_morekeys_symbols_5",
+        /*   6:31 */ "additional_morekeys_symbols_6",
+        /*   7:31 */ "additional_morekeys_symbols_7",
+        /*   8:31 */ "additional_morekeys_symbols_8",
+        /*   9:31 */ "additional_morekeys_symbols_9",
+        /*  10:31 */ "additional_morekeys_symbols_0",
         /*  11:16 */ "keylabel_to_symbol",
         /*  12:15 */ "keyspec_symbols_1",
         /*  13:15 */ "keyspec_symbols_2",
@@ -1328,6 +1328,32 @@ public final class KeyboardTextsTable {
         /* keylabel_to_alpha */ "\u0D85",
     };
 
+    /* Locale syl: syl */
+    private static final String[] TEXTS_syl = {
+        // U+A80D: Syloti Nagri letter CHO
+        /* keylabel_to_alpha */ "\uA80D",
+        // U+09E7: "১" BENGALI DIGIT ONE
+        /* additional_morekeys_symbols_1 */ "\u09E7",
+        // U+09E8: "২" BENGALI DIGIT TWO
+        /* additional_morekeys_symbols_2 */ "\u09E8",
+        // U+09E9: "৩" BENGALI DIGIT THREE
+        /* additional_morekeys_symbols_3 */ "\u09E9",
+        // U+09EA: "৪" BENGALI DIGIT FOUR
+        /* additional_morekeys_symbols_4 */ "\u09EA",
+        // U+09EB: "৫" BENGALI DIGIT FIVE
+        /* additional_morekeys_symbols_5 */ "\u09EB",
+        // U+09EC: "৬" BENGALI DIGIT SIX
+        /* additional_morekeys_symbols_6 */ "\u09EC",
+        // U+09ED: "৭" BENGALI DIGIT SEVEN
+        /* additional_morekeys_symbols_7 */ "\u09ED",
+        // U+09EE: "৮" BENGALI DIGIT EIGHT
+        /* additional_morekeys_symbols_8 */ "\u09EE",
+        // U+09EF: "৯" BENGALI DIGIT NINE
+        /* additional_morekeys_symbols_9 */ "\u09EF",
+        // U+09E6: "০" BENGALI DIGIT ZERO
+        /* additional_morekeys_symbols_0 */ "\u09E6",
+    };
+
     /* Locale ta_IN: Tamil (India) */
     private static final String[] TEXTS_ta_IN = {
         /* keylabel_to_alpha */ "\u0B85",
@@ -1651,6 +1677,7 @@ public final class KeyboardTextsTable {
         "saz"    , TEXTS_saz,   /*  11/ 11 Saurashtra */
         "sd"     , TEXTS_sd,    /*  24/ 24 Sindhi */
         "si"     , TEXTS_si,    /*   1/  1 Sinhala */
+        "syl"    , TEXTS_syl,   /*  11/ 11 syl */
         "ta_IN"  , TEXTS_ta_IN, /*  12/ 12 Tamil (India) */
         "ta_LK"  , TEXTS_ta_LK, /*  12/ 23 Tamil (Sri Lanka) */
         "ta_SG"  , TEXTS_ta_SG, /*  11/ 11 Tamil (Singapore) */

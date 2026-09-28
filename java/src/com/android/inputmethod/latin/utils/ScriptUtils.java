@@ -54,6 +54,7 @@ public class ScriptUtils {
     public static final int SCRIPT_SAURASHTRA = 24;
     public static final int SCRIPT_HANIFI_ROHINGYA = 25;
     public static final int SCRIPT_MEETEI_MAYEK = 26;
+    public static final int SCRIPT_SYLOTI_NAGRI = 27;
 
     private static final TreeMap<String, Integer> mLanguageCodeToScriptCode;
 
@@ -73,6 +74,7 @@ public class ScriptUtils {
         mLanguageCodeToScriptCode.put("ks", SCRIPT_ARABIC);
         mLanguageCodeToScriptCode.put("saz", SCRIPT_SAURASHTRA);
         mLanguageCodeToScriptCode.put("rhg", SCRIPT_HANIFI_ROHINGYA);
+        mLanguageCodeToScriptCode.put("syl", SCRIPT_SYLOTI_NAGRI);
         mLanguageCodeToScriptCode.put("kn", SCRIPT_KANNADA);
         mLanguageCodeToScriptCode.put("tcy", SCRIPT_KANNADA);
         mLanguageCodeToScriptCode.put("gu", SCRIPT_GUJARATI);
@@ -223,6 +225,9 @@ public class ScriptUtils {
         case SCRIPT_HANIFI_ROHINGYA:
             // Hanifi Rohingya unicode block is U+10D00..U+10D3F
             return (codePoint >= 0x10D00 && codePoint <= 0x10D3F);
+        case SCRIPT_SYLOTI_NAGRI:
+            // Syloti Nagri unicode block is U+A800..U+A82F
+            return (codePoint >= 0xA800 && codePoint <= 0xA82F);
         case SCRIPT_MEETEI_MAYEK:
             // Meetei Mayek is U+ABC0..U+ABFF, with the extensions block at U+AAE0..U+AAFF
             return (codePoint >= 0xABC0 && codePoint <= 0xABFF)
@@ -273,6 +278,7 @@ public class ScriptUtils {
         mScriptTagToScriptCode.put("Rohg", SCRIPT_HANIFI_ROHINGYA);
         mScriptTagToScriptCode.put("Saur", SCRIPT_SAURASHTRA);
         mScriptTagToScriptCode.put("Shrd", SCRIPT_SHARADA);
+        mScriptTagToScriptCode.put("Sylo", SCRIPT_SYLOTI_NAGRI);
         mScriptTagToScriptCode.put("Sinh", SCRIPT_SINHALA);
         mScriptTagToScriptCode.put("Taml", SCRIPT_TAMIL);
         mScriptTagToScriptCode.put("Telu", SCRIPT_TELUGU);
