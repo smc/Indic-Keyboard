@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+** Copyright 2026, Jishnu Mohan <jishnu7@gmail.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted">
+            <!-- 𐴀 HANIFI ROHINGYA LETTER A -->
+            <Key
+                latin:keySpec="&#x10D00;" />
+
+            <!-- 𐴐 HANIFI ROHINGYA LETTER SHA -->
+            <Key
+                latin:keySpec="&#x10D10;" />
+
+            <!-- 𐴋 HANIFI ROHINGYA LETTER DDA -->
+            <Key
+                latin:keySpec="&#x10D0B;" />
+
+            <Key latin:keySpec="!icon/undefined|!code/key_unspecified" />
+
+            <Key latin:keySpec="!icon/undefined|!code/key_unspecified" />
+
+            <Key latin:keySpec="!icon/undefined|!code/key_unspecified" />
+
+            <Key latin:keySpec="!icon/undefined|!code/key_unspecified" />
+
+            <Key latin:keySpec="!icon/undefined|!code/key_unspecified" />
+
+            <!-- 𐴣 HANIFI ROHINGYA MARK NA KHONNA -->
+            <Key
+                latin:keySpec="&#x10D23;" />
+
+        </case>
+        <default>
+            <!-- 𐴝 HANIFI ROHINGYA VOWEL A -->
+            <Key
+                latin:keySpec="&#x10D1D;"
+                latin:moreKeys="&#x10D24;" />
+
+            <!-- 𐴏 HANIFI ROHINGYA LETTER SA -->
+            <Key
+                latin:keySpec="&#x10D0F;" />
+
+            <!-- 𐴊 HANIFI ROHINGYA LETTER DA -->
+            <Key
+                latin:keySpec="&#x10D0A;" />
+
+            <!-- 𐴉 HANIFI ROHINGYA LETTER FA -->
+            <Key
+                latin:keySpec="&#x10D09;" />
+
+            <!-- 𐴒 HANIFI ROHINGYA LETTER GA -->
+            <Key
+                latin:keySpec="&#x10D12;" />
+
+            <!-- 𐴇 HANIFI ROHINGYA LETTER HA -->
+            <Key
+                latin:keySpec="&#x10D07;" />
+
+            <!-- 𐴅 HANIFI ROHINGYA LETTER JA -->
+            <Key
+                latin:keySpec="&#x10D05;" />
+
+            <!-- 𐴑 HANIFI ROHINGYA LETTER KA -->
+            <Key
+                latin:keySpec="&#x10D11;" />
+
+            <!-- 𐴓 HANIFI ROHINGYA LETTER LA -->
+            <Key
+                latin:keySpec="&#x10D13;" />
+
+        </default>
+    </switch>
+</merge>

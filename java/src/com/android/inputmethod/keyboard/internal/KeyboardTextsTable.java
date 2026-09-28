@@ -1174,6 +1174,32 @@ public final class KeyboardTextsTable {
         /* keyspec_symbols_0 */ "\u0A66",
     };
 
+    /* Locale rhg: Rohingya */
+    private static final String[] TEXTS_rhg = {
+        // U+10D00: Hanifi Rohingya letter A
+        /* keylabel_to_alpha */ "\uD803\uDD00",
+        // U+10D31: "𐴱" HANIFI ROHINGYA DIGIT ONE
+        /* additional_morekeys_symbols_1 */ "\uD803\uDD31",
+        // U+10D32: "𐴲" HANIFI ROHINGYA DIGIT TWO
+        /* additional_morekeys_symbols_2 */ "\uD803\uDD32",
+        // U+10D33: "𐴳" HANIFI ROHINGYA DIGIT THREE
+        /* additional_morekeys_symbols_3 */ "\uD803\uDD33",
+        // U+10D34: "𐴴" HANIFI ROHINGYA DIGIT FOUR
+        /* additional_morekeys_symbols_4 */ "\uD803\uDD34",
+        // U+10D35: "𐴵" HANIFI ROHINGYA DIGIT FIVE
+        /* additional_morekeys_symbols_5 */ "\uD803\uDD35",
+        // U+10D36: "𐴶" HANIFI ROHINGYA DIGIT SIX
+        /* additional_morekeys_symbols_6 */ "\uD803\uDD36",
+        // U+10D37: "𐴷" HANIFI ROHINGYA DIGIT SEVEN
+        /* additional_morekeys_symbols_7 */ "\uD803\uDD37",
+        // U+10D38: "𐴸" HANIFI ROHINGYA DIGIT EIGHT
+        /* additional_morekeys_symbols_8 */ "\uD803\uDD38",
+        // U+10D39: "𐴹" HANIFI ROHINGYA DIGIT NINE
+        /* additional_morekeys_symbols_9 */ "\uD803\uDD39",
+        // U+10D30: "𐴰" HANIFI ROHINGYA DIGIT ZERO
+        /* additional_morekeys_symbols_0 */ "\uD803\uDD30",
+    };
+
     /* Locale sa: Sanskrit */
     private static final String[] TEXTS_sa = {
         // U+0915 U+0916 U+0917: Devanagari letters ka, kha, ga (Sanskrit)
@@ -1619,6 +1645,7 @@ public final class KeyboardTextsTable {
         "ne"     , TEXTS_ne,    /*  27/ 28 Nepali */
         "or"     , TEXTS_or,    /*  23/ 26 Odia */
         "pa"     , TEXTS_pa,    /*  22/ 22 Punjabi */
+        "rhg"    , TEXTS_rhg,   /*  11/ 11 Rohingya */
         "sa"     , TEXTS_sa,    /*  11/ 11 Sanskrit */
         "sat"    , TEXTS_sat,   /*  11/ 11 Santali */
         "saz"    , TEXTS_saz,   /*  11/ 11 Saurashtra */

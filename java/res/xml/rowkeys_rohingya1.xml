@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+** Copyright 2026, Jishnu Mohan <jishnu7@gmail.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted">
+            <!-- 𐴧 HANIFI ROHINGYA SIGN TASSI -->
+            <Key
+                latin:keySpec="&#x10D27;" />
+
+            <!-- 𐴗 HANIFI ROHINGYA LETTER KINNA WA -->
+            <Key
+                latin:keySpec="&#x10D17;" />
+
+            <!-- 𐴥 HANIFI ROHINGYA SIGN TAHALA -->
+            <Key
+                latin:keySpec="&#x10D25;" />
+
+            <!-- 𐴍 HANIFI ROHINGYA LETTER RRA -->
+            <Key
+                latin:keySpec="&#x10D0D;" />
+
+            <!-- 𐴄 HANIFI ROHINGYA LETTER TTA -->
+            <Key
+                latin:keySpec="&#x10D04;" />
+
+            <!-- 𐴙 HANIFI ROHINGYA LETTER KINNA YA -->
+            <Key
+                latin:keySpec="&#x10D19;" />
+
+            <!-- 𐴦 HANIFI ROHINGYA SIGN TANA -->
+            <Key
+                latin:keySpec="&#x10D26;" />
+
+            <Key latin:keySpec="!icon/zwnj_key|&#x200C;" />
+
+            <Key latin:keySpec="!icon/zwj_key|&#x200D;" />
+
+            <!-- 𐴢 HANIFI ROHINGYA MARK SAKIN -->
+            <Key
+                latin:keySpec="&#x10D22;" />
+
+        </case>
+        <default>
+            <!-- 𐴤 HANIFI ROHINGYA SIGN HARBAHAY -->
+            <Key
+                latin:keySpec="&#x10D24;"
+                latin:moreKeys="&#x10D27;,&#x10D25;,&#x10D26;"
+                latin:keyHintLabel="&#x10D27;" />
+
+            <!-- 𐴖 HANIFI ROHINGYA LETTER WA -->
+            <Key
+                latin:keySpec="&#x10D16;" />
+
+            <!-- 𐴠 HANIFI ROHINGYA VOWEL E -->
+            <Key
+                latin:keySpec="&#x10D20;"
+                latin:moreKeys="&#x10D24;" />
+
+            <!-- 𐴌 HANIFI ROHINGYA LETTER RA -->
+            <Key
+                latin:keySpec="&#x10D0C;" />
+
+            <!-- 𐴃 HANIFI ROHINGYA LETTER TA -->
+            <Key
+                latin:keySpec="&#x10D03;" />
+
+            <!-- 𐴘 HANIFI ROHINGYA LETTER YA -->
+            <Key
+                latin:keySpec="&#x10D18;" />
+
+            <!-- 𐴟 HANIFI ROHINGYA VOWEL U -->
+            <Key
+                latin:keySpec="&#x10D1F;"
+                latin:moreKeys="&#x10D24;" />
+
+            <!-- 𐴞 HANIFI ROHINGYA VOWEL I -->
+            <Key
+                latin:keySpec="&#x10D1E;"
+                latin:moreKeys="&#x10D24;" />
+
+            <!-- 𐴡 HANIFI ROHINGYA VOWEL O -->
+            <Key
+                latin:keySpec="&#x10D21;"
+                latin:moreKeys="&#x10D24;" />
+
+            <!-- 𐴂 HANIFI ROHINGYA LETTER PA -->
+            <Key
+                latin:keySpec="&#x10D02;" />
+
+        </default>
+    </switch>
+</merge>
