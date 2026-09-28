@@ -149,7 +149,7 @@
         <layout name="లిప్యంతరీకరణ" layoutSet="qwerty" translit="te-transliteration" />
         <layout name="Inscript" layoutSet="telugu_inscript" />
         <layout name="Kachatathapa" layoutSet="telugu_kachatathapa" translit="te-kachatathapa" />
-        <layout name="Apple" layoutSet="telugu_apple" translit="te-apple" />
+        <layout name="Apple" layoutSet="telugu_apple" />
         <layout name="Compact" layoutSet="telugu_compact" />
     </language>
     <language locale="ur_IN" englishName="Urdu" autonym="اردو" glyph="ے">

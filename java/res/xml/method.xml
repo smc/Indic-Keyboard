@@ -414,7 +414,7 @@
             android:label="@string/keyboard_name_te_apple"
             android:imeSubtypeLocale="te_IN"
             android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="KeyboardLayoutSet=telugu_apple,TransliterationMethod=te-apple,EmojiCapable" />
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=telugu_apple,EmojiCapable" />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_te_compact"
             android:imeSubtypeLocale="te_IN"

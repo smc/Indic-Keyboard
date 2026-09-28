@@ -32,11 +32,15 @@
             <!--ఋ TELUGU LETTER VOCALIC R-->
             <Key
                 latin:keySpec="&#x0C0B;"
+                latin:moreKeys="&#x0C43;"
+                latin:keyHintLabel="&#x0C43;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--ౠ TELUGU LETTER VOCALIC RR-->
             <Key
                 latin:keySpec="&#x0C60;"
+                latin:moreKeys="&#x0C44;"
+                latin:keyHintLabel="&#x0C44;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--ఙ TELUGU LETTER NGA-->
@@ -84,50 +88,64 @@
             <!--ఈ TELUGU LETTER II-->
             <Key
                 latin:keySpec="&#x0C08;"
+                latin:moreKeys="&#x0C40;"
+                latin:keyHintLabel="&#x0C40;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--ఆ TELUGU LETTER AA-->
             <Key
                 latin:keySpec="&#x0C06;"
+                latin:moreKeys="&#x0C3E;"
+                latin:keyHintLabel="&#x0C3E;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--ఇ TELUGU LETTER I-->
             <Key
                 latin:keySpec="&#x0C07;"
-                latin:moreKeys="&#x0C61;"
-                latin:keyHintLabel="&#x0C61;"
+                latin:moreKeys="&#x0C3F;,&#x0C61;"
+                latin:keyHintLabel="&#x0C3F;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--ఒ TELUGU LETTER O-->
             <Key
                 latin:keySpec="&#x0C12;"
+                latin:moreKeys="&#x0C4A;"
+                latin:keyHintLabel="&#x0C4A;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--ఓ TELUGU LETTER OO-->
             <Key
                 latin:keySpec="&#x0C13;"
+                latin:moreKeys="&#x0C4B;"
+                latin:keyHintLabel="&#x0C4B;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--ఎ TELUGU LETTER E-->
             <Key
                 latin:keySpec="&#x0C0E;"
+                latin:moreKeys="&#x0C46;"
+                latin:keyHintLabel="&#x0C46;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--ఉ TELUGU LETTER U-->
             <Key
                 latin:keySpec="&#x0C09;"
+                latin:moreKeys="&#x0C41;"
+                latin:keyHintLabel="&#x0C41;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--ఏ TELUGU LETTER EE-->
             <Key
                 latin:keySpec="&#x0C0F;"
+                latin:moreKeys="&#x0C47;"
+                latin:keyHintLabel="&#x0C47;"
                 latin:keyLabelFlags="fontNormal" />
 
             <!--ఊ TELUGU LETTER UU-->
             <Key
                 latin:keySpec="&#x0C0A;"
-                latin:moreKeys="&#x0C59;"
-                latin:keyHintLabel="&#x0C59;"
+                latin:moreKeys="&#x0C42;,&#x0C59;"
+                latin:keyHintLabel="&#x0C42;"
                 latin:keyLabelFlags="fontNormal" />
 
         </default>
