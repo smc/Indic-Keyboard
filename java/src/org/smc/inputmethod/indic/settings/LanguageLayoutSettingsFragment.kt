@@ -59,9 +59,8 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
     private var langCode: String? = null
 
     private lateinit var packManager: LanguagePackDownloadManager
-    private var packPref: PackPreference? = null
-    private var pack: Pack? = null            // pack metadata from the index, or null until loaded
-    private var downloading = false           // a download for this language is in flight
+    private val packPrefs = LinkedHashMap<String, PackPreference>()
+    private val downloading = HashSet<String>()   // pack ids with a download in flight
     private var pendingEnable = false         // enable happened before the index was available
 
     private val toggleListener = Preference.OnPreferenceChangeListener { preference, newValue ->
@@ -121,10 +120,21 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
             layoutsCategory.addPreference(pref)
         }
 
-        addPackSection(context, screen)
+        addPackSection(context, screen, target)
 
-        pack = findPack(packManager.cachedPacks())
-        bindPack()
+        bindPacks()
+    }
+
+    private fun packSlots(target: Language): List<Pair<String, String>> {
+        val lang = langCode ?: return emptyList()
+        val seen = LinkedHashMap<String, String>()
+        for (layout in target.mLayouts) {
+            val loc = LocaleUtils.constructLocaleFromString(layout.mSubtype.locale)
+            val variant = loc.variant
+            val id = if (variant.isNullOrEmpty()) lang else "$lang-$variant"
+            seen.getOrPut(id) { scriptName(variant) }
+        }
+        return seen.entries.map { it.key to it.value }
     }
 
     /** The two per-language toggles (numerals, companion), grouped in one "Preferences" card. */
@@ -197,12 +207,29 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
         return pref
     }
 
-    private fun addPackSection(context: Context, screen: PreferenceScreen) {
+    private fun scriptName(variant: String?): String = when (variant) {
+        null, "" -> ""
+        "Arab" -> "Perso-Arabic"
+        "Beng" -> "Bengali"
+        "Deva" -> "Devanagari"
+        "Kthi" -> "Kaithi"
+        "Olck" -> "Ol Chiki"
+        "Shrd" -> "Sharada"
+        else -> variant
+    }
+
+    private fun addPackSection(context: Context, screen: PreferenceScreen, target: Language) {
+        val slots = packSlots(target)
+        if (slots.isEmpty()) return
         val category = screen.addCategory(context, R.string.language_pack_section)
-        val pref = PackPreference(context)
-        pref.setTitle(R.string.language_pack_section)
-        packPref = pref
-        category.addPreference(pref)
+        val name = englishName ?: return
+        for ((id, label) in slots) {
+            val pref = PackPreference(context)
+            pref.title = if (label.isEmpty()) name
+                         else getString(R.string.language_pack_for_script, name, label)
+            packPrefs[id] = pref
+            category.addPreference(pref)
+        }
     }
 
     override fun onResume() {
@@ -219,79 +246,80 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
 
     // ---- Pack download ----
 
-    private fun findPack(schemes: List<Pack>): Pack? {
-        val lang = langCode ?: return null
-        return schemes.firstOrNull { lang == it.lang }
-    }
+    /** The pack serving one script slot, or null when none is published for it. */
+    private fun findPack(schemes: List<Pack>, packId: String): Pack? =
+        schemes.firstOrNull { packId == it.id }
 
     private fun triggerPackDownload() {
-        val pack = pack
-        if (pack != null) {
-            if (packManager.ensureDownloaded(pack)) {
-                showDownloadingState()
-            }
-        } else {
-            // Index not cached yet — fetch it, then download once it arrives.
+        val cached = packManager.cachedPacks()
+        if (cached.isEmpty()) {
+            // Index not cached yet - fetch it, then download once it arrives.
             pendingEnable = true
             packManager.loadIndex()
+            return
+        }
+        for (id in packPrefs.keys) {
+            val pack = findPack(cached, id) ?: continue
+            if (packManager.ensureDownloaded(pack)) downloading.add(id)
+        }
+        bindPacks()
+    }
+
+    private fun startDownload(packId: String) {
+        val pack = findPack(packManager.cachedPacks(), packId) ?: return
+        packManager.download(pack)
+        downloading.add(packId)
+        packPrefs[packId]?.let {
+            it.setAction(null, 0, null)
+            it.summary = getString(R.string.language_pack_downloading, 0)
         }
     }
 
-    private fun startDownload() {
-        val pack = pack ?: return
-        packManager.download(pack)
-        showDownloadingState()
-    }
-
-    private fun showDownloadingState() {
-        downloading = true
-        packPref?.setAction(null, 0, null)
-        packPref?.summary = getString(R.string.language_pack_downloading, 0)
-    }
-
-    private fun confirmRemove() {
+    private fun confirmRemove(packId: String) {
         val ctx = context ?: return
-        val pack = pack ?: return
+        val pack = findPack(packManager.cachedPacks(), packId) ?: return
         MaterialAlertDialogBuilder(ctx)
             .setTitle(pack.name)
             .setMessage(R.string.language_pack_remove_confirm)
             .setPositiveButton(R.string.language_pack_remove) { _, _ ->
-                packManager.delete(langCode)
-                bindPack()
+                packManager.delete(packId)
+                bindPacks()
             }
             .setNegativeButton(android.R.string.cancel, null)
             .show()
     }
 
-    /** Render the pack row from current install state + index metadata. */
-    private fun bindPack() {
-        val pref = packPref ?: return
+    /** Render every pack row from current install state + index metadata. */
+    private fun bindPacks() {
         val ctx = context ?: return
-        if (downloading) return  // progress callbacks drive the summary while a download is in flight
-        val pack = pack
-        if (pack == null) {
-            pref.setSummary(R.string.language_pack_unavailable)
-            pref.icon = null
-            pref.isEnabled = false
-            pref.setAction(null, 0, null)
-            return
-        }
-        pref.isEnabled = true
-        pref.setIcon(R.drawable.ic_language_pack)
-        val installed = LanguagePackDownloadManager.installedVersion(ctx, langCode)
-        val size = formatSize(pack.size)
-        when {
-            installed < 0 -> {
-                pref.summary = getString(R.string.language_pack_status_available, size, pack.version)
-                pref.setAction(getString(R.string.language_pack_download), ACTION_ACCENT) { startDownload() }
+        val cached = packManager.cachedPacks()
+        for ((id, pref) in packPrefs) {
+            if (downloading.contains(id)) continue  // progress callbacks own the summary
+            val pack = findPack(cached, id)
+            if (pack == null) {
+                pref.setSummary(R.string.language_pack_unavailable)
+                pref.icon = null
+                pref.isEnabled = false
+                pref.setAction(null, 0, null)
+                continue
             }
-            pack.version > installed -> {
-                pref.summary = getString(R.string.language_pack_status_update, size, pack.version)
-                pref.setAction(getString(R.string.language_pack_update), ACTION_ACCENT) { startDownload() }
-            }
-            else -> {
-                pref.summary = getString(R.string.language_pack_status_installed, installed)
-                pref.setAction(getString(R.string.language_pack_remove), ACTION_DESTRUCTIVE) { confirmRemove() }
+            pref.isEnabled = true
+            pref.setIcon(R.drawable.ic_language_pack)
+            val installed = LanguagePackDownloadManager.installedVersion(ctx, id)
+            val size = formatSize(pack.size)
+            when {
+                installed < 0 -> {
+                    pref.summary = getString(R.string.language_pack_status_available, size, pack.version)
+                    pref.setAction(getString(R.string.language_pack_download), ACTION_ACCENT) { startDownload(id) }
+                }
+                pack.version > installed -> {
+                    pref.summary = getString(R.string.language_pack_status_update, size, pack.version)
+                    pref.setAction(getString(R.string.language_pack_update), ACTION_ACCENT) { startDownload(id) }
+                }
+                else -> {
+                    pref.summary = getString(R.string.language_pack_status_installed, installed)
+                    pref.setAction(getString(R.string.language_pack_remove), ACTION_DESTRUCTIVE) { confirmRemove(id) }
+                }
             }
         }
     }
@@ -299,21 +327,19 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
     // ---- LanguagePackDownloadManager.Listener ----
 
     override fun onIndexLoaded(schemes: List<Pack>) {
-        pack = findPack(schemes)
-        val p = pack
-        if (pendingEnable && p != null) {
+        if (pendingEnable) {
             pendingEnable = false
-            if (packManager.ensureDownloaded(p)) {
-                downloading = true
+            for (id in packPrefs.keys) {
+                val pack = findPack(schemes, id) ?: continue
+                if (packManager.ensureDownloaded(pack)) downloading.add(id)
             }
         }
-        bindPack()
+        bindPacks()
     }
 
     override fun onProgress(lang: String, percent: Int) {
-        val pref = packPref
-        if (!matches(lang) || pref == null) return
-        downloading = true
+        val pref = packPrefs[lang] ?: return
+        downloading.add(lang)
         if (percent == LanguagePackDownloadManager.INSTALLING) {
             pref.setSummary(R.string.language_pack_installing)
         } else {
@@ -322,22 +348,17 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
     }
 
     override fun onInstalled(lang: String) {
-        if (!matches(lang)) return
-        downloading = false
-        bindPack()
+        downloading.remove(lang)
+        bindPacks()
     }
 
     override fun onError(lang: String?, message: String?) {
-        if (lang != null && !matches(lang)) return
-        downloading = false
-        val pref = packPref ?: return
+        val id = lang ?: packPrefs.keys.firstOrNull() ?: return
+        downloading.remove(id)
+        val pref = packPrefs[id] ?: return
         pref.setSummary(R.string.language_pack_download_error)
-        if (pack != null) {
-            pref.setAction(getString(R.string.language_pack_download), ACTION_ACCENT) { startDownload() }
-        }
+        pref.setAction(getString(R.string.language_pack_download), ACTION_ACCENT) { startDownload(id) }
     }
-
-    private fun matches(lang: String?): Boolean = langCode != null && langCode == lang
 
     /** [SwitchPreferenceCompat] whose summary is clamped to a single ellipsised line. */
     private class OneLineSwitchPreference(context: Context) : SwitchPreferenceCompat(context) {

@@ -108,7 +108,9 @@ public final class KeyboardLanguages {
                     } else if ("layout".equals(parser.getName())) {
                         final String autonym = parser.getAttributeValue(null, "autonym");
                         if (autonym != null) {
-                            autonyms.put(layoutKey(locale,
+                            final String layoutLocale = parser.getAttributeValue(null, "locale");
+                            autonyms.put(layoutKey(
+                                    (layoutLocale != null) ? layoutLocale : locale,
                                     parser.getAttributeValue(null, "layoutSet"),
                                     parser.getAttributeValue(null, "translit")), autonym);
                         }
@@ -243,7 +245,10 @@ public final class KeyboardLanguages {
                     matched.clear();
                 } else if (event == XmlPullParser.START_TAG && "layout".equals(parser.getName())
                         && localeSubtypes != null) {
-                    final InputMethodSubtype subtype = findSubtype(localeSubtypes,
+                    final String layoutLocale = parser.getAttributeValue(null, "locale");
+                    final List<InputMethodSubtype> pool = (layoutLocale == null)
+                            ? localeSubtypes : layoutsByLocale.get(layoutLocale);
+                    final InputMethodSubtype subtype = (pool == null) ? null : findSubtype(pool,
                             parser.getAttributeValue(null, "layoutSet"),
                             parser.getAttributeValue(null, "translit"));
                     if (subtype != null) {

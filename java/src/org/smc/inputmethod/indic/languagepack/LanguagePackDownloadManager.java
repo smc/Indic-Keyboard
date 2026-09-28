@@ -75,6 +75,7 @@ public class LanguagePackDownloadManager {
     public static class Pack {
         public final String id;
         public final String lang;
+        public final String script;
         public final String name;
         public final String description;
         public final String url;
@@ -86,6 +87,7 @@ public class LanguagePackDownloadManager {
         Pack(JSONObject o) {
             id = o.optString("id");
             lang = o.optString("lang");
+            script = o.optString("script", null);
             name = o.optString("name");
             description = o.optString("description");
             url = o.optString("url");

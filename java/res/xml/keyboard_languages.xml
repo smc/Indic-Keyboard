@@ -54,9 +54,6 @@
         <layout name="Soni" layoutSet="qwerty" translit="hi-soni" />
         <layout name="Compact" layoutSet="hindi_compact" />
     </language>
-    <language locale="bho" englishName="Kaithi" autonym="𑂍𑂶𑂟𑂲" glyph="𑂍">
-        <layout name="Phonetic" layoutSet="kaithi" />
-    </language>
     <language locale="kn_IN" englishName="Kannada" autonym="ಕನ್ನಡ" glyph="ಅ">
         <layout name="KaGaPa" layoutSet="kannada" />
         <layout name="Predictive Transliteration" layoutSet="qwerty" translit="varnam-kn" />
@@ -67,13 +64,16 @@
     </language>
     <language locale="ks_IN" englishName="Kashmiri" autonym="کٲشُر" glyph="ک">
         <layout name="Transliteration" layoutSet="qwerty" translit="ks-Kbd" />
-        <layout name="Inscript" autonym="कॉशुर" layoutSet="kashmiri_inscript" />
-    </language>
-    <language locale="ks" englishName="Sharada" autonym="𑆯𑆳𑆫𑆢𑆳" glyph="𑆯">
-        <layout name="Phonetic" layoutSet="sharada" />
+        <layout name="Inscript" autonym="कॉशुर" locale="ks_IN_Deva" layoutSet="kashmiri_inscript" />
+        <layout name="Sharada" autonym="𑆯𑆳𑆫𑆢𑆳" locale="ks_IN_Shrd" layoutSet="sharada" />
     </language>
     <language locale="mai_IN" englishName="Maithili" autonym="मैथिली" glyph="मै">
         <layout name="Inscript" layoutSet="maithili_inscript" />
+        <layout name="Kaithi" autonym="𑂍𑂶𑂟𑂲" locale="mai_IN_Kthi" layoutSet="kaithi" />
+    </language>
+    <language locale="bho_IN" englishName="Bhojpuri" autonym="भोजपुरी" glyph="भ">
+        <layout name="Inscript" layoutSet="hindi_inscript" />
+        <layout name="Kaithi" autonym="𑂍𑂶𑂟𑂲" locale="bho_IN_Kthi" layoutSet="kaithi" />
     </language>
     <language locale="gom_IN" englishName="Konkani" autonym="कोंकणी" glyph="को">
         <layout name="Inscript" layoutSet="konkani_inscript" />

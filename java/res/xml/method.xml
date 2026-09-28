@@ -128,10 +128,20 @@
             android:imeSubtypeLocale="hi_IN"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=hindi_compact,EmojiCapable" />
-    <!-- Kaithi -->
+    <!-- Bhojpuri -->
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_hi_inscript"
+            android:imeSubtypeLocale="bho_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=hindi_inscript,EmojiCapable" />
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_bho_kaithi"
-            android:imeSubtypeLocale="bho"
+            android:imeSubtypeLocale="bho_IN_Kthi"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=kaithi,EmojiCapable" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_mai_kaithi"
+            android:imeSubtypeLocale="mai_IN_Kthi"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=kaithi,EmojiCapable" />
 
@@ -171,13 +181,13 @@
 
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_ks_inscript"
-            android:imeSubtypeLocale="ks_IN"
+            android:imeSubtypeLocale="ks_IN_Deva"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=kashmiri_inscript,EmojiCapable" />
     <!-- Sharada -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_ks_sharada"
-            android:imeSubtypeLocale="ks"
+            android:imeSubtypeLocale="ks_IN_Shrd"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=sharada,EmojiCapable" />
 

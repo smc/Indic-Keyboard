@@ -769,7 +769,8 @@ Tip: You can download and remove dictionaries by going to &lt;b>Languages&#160;&
     <string name="language_pack_download_error">Could not download the language data. Please try again.</string>
 
     <!-- Per-language pack download -->
-    <string name="language_pack_section">Language pack</string>
+    <string name="language_pack_section">Language packs</string>
+    <string name="language_pack_for_script">%1$s (%2$s)</string>
     <string name="language_pack_unavailable">No download available</string>
 
     <!-- Modern setup wizard -->

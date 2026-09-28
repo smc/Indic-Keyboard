@@ -67,7 +67,7 @@ public class ScriptUtils {
         mLanguageCodeToScriptCode.put("gom", SCRIPT_DEVANAGARI);
         mLanguageCodeToScriptCode.put("ne", SCRIPT_DEVANAGARI);
         mLanguageCodeToScriptCode.put("mai", SCRIPT_DEVANAGARI);
-        mLanguageCodeToScriptCode.put("ks", SCRIPT_DEVANAGARI);
+        mLanguageCodeToScriptCode.put("ks", SCRIPT_ARABIC);
         mLanguageCodeToScriptCode.put("kn", SCRIPT_KANNADA);
         mLanguageCodeToScriptCode.put("tcy", SCRIPT_KANNADA);
         mLanguageCodeToScriptCode.put("gu", SCRIPT_GUJARATI);
@@ -226,6 +226,10 @@ public class ScriptUtils {
      * {@see http://en.wikipedia.org/wiki/List_of_ISO_639-1_codes}
      */
     public static int getScriptFromSpellCheckerLocale(final Locale locale) {
+        final Integer fromVariant = mScriptTagToScriptCode.get(locale.getVariant());
+        if (fromVariant != null) {
+            return fromVariant;
+        }
         String language = locale.getLanguage();
         Integer script = mLanguageCodeToScriptCode.get(language);
         if (script == null) {
@@ -233,5 +237,26 @@ public class ScriptUtils {
             script = mLanguageCodeToScriptCode.get("");
         }
         return script;
+    }
+
+    private static final TreeMap<String, Integer> mScriptTagToScriptCode = new TreeMap<>(
+            String.CASE_INSENSITIVE_ORDER);
+
+    static {
+        mScriptTagToScriptCode.put("Arab", SCRIPT_ARABIC);
+        mScriptTagToScriptCode.put("Beng", SCRIPT_BENGALI);
+        mScriptTagToScriptCode.put("Deva", SCRIPT_DEVANAGARI);
+        mScriptTagToScriptCode.put("Gujr", SCRIPT_GUJARATI);
+        mScriptTagToScriptCode.put("Guru", SCRIPT_GURMUKHI);
+        mScriptTagToScriptCode.put("Knda", SCRIPT_KANNADA);
+        mScriptTagToScriptCode.put("Kthi", SCRIPT_KAITHI);
+        mScriptTagToScriptCode.put("Latn", SCRIPT_LATIN);
+        mScriptTagToScriptCode.put("Mlym", SCRIPT_MALAYALAM);
+        mScriptTagToScriptCode.put("Olck", SCRIPT_OL_CHIKI);
+        mScriptTagToScriptCode.put("Orya", SCRIPT_ORIYA);
+        mScriptTagToScriptCode.put("Shrd", SCRIPT_SHARADA);
+        mScriptTagToScriptCode.put("Sinh", SCRIPT_SINHALA);
+        mScriptTagToScriptCode.put("Taml", SCRIPT_TAMIL);
+        mScriptTagToScriptCode.put("Telu", SCRIPT_TELUGU);
     }
 }
