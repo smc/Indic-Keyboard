@@ -71,7 +71,8 @@
     <string name="keyboard_name_te_kachatathapa">తెలుగు  - కచటతప </string>
     <string name="keyboard_name_te_transliteration">తెలుగు - లిప్యంతరీకరణ</string>
     <string name="keyboard_name_te_apple">తెలుగు - ఆపిల్</string>
-    <string name="keyboard_name_ur_navees">اردو</string>
+    <string name="keyboard_name_ur_navees">اردو - Navees</string>
+    <string name="keyboard_name_ur_nla">اردو - Windows</string>
     <string name="keyboard_name_ur_transliteration">اردو - Transliteration</string>
 
     <string name="keyboard_name_as_varnam">অসমীয়া - Predictive Transliteration</string>

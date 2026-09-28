@@ -438,6 +438,11 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=urdu,EmojiCapable"/>
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_ur_nla"
+            android:imeSubtypeLocale="ur_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=urdu_nla,EmojiCapable" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_ur_transliteration"
             android:imeSubtypeLocale="ur_IN"
             android:imeSubtypeMode="keyboard"
