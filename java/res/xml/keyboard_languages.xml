@@ -54,6 +54,9 @@
         <layout name="Soni" layoutSet="qwerty" translit="hi-soni" />
         <layout name="Compact" layoutSet="hindi_compact" />
     </language>
+    <language locale="bho" englishName="Kaithi" autonym="𑂍𑂶𑂟𑂲" glyph="𑂍">
+        <layout name="Phonetic" layoutSet="kaithi" />
+    </language>
     <language locale="kn_IN" englishName="Kannada" autonym="ಕನ್ನಡ" glyph="ಅ">
         <layout name="KaGaPa" layoutSet="kannada" />
         <layout name="Predictive Transliteration" layoutSet="qwerty" translit="varnam-kn" />
@@ -65,7 +68,9 @@
     <language locale="ks_IN" englishName="Kashmiri" autonym="کٲشُر" glyph="ک">
         <layout name="Transliteration" layoutSet="qwerty" translit="ks-Kbd" />
         <layout name="Inscript" autonym="कॉशुर" layoutSet="kashmiri_inscript" />
-        <layout name="Sharada" autonym="𑆑𑆳𑆯𑆶𑆫𑇀" layoutSet="sharada" />
+    </language>
+    <language locale="ks" englishName="Sharada" autonym="𑆯𑆳𑆫𑆢𑆳" glyph="𑆯">
+        <layout name="Phonetic" layoutSet="sharada" />
     </language>
     <language locale="mai_IN" englishName="Maithili" autonym="मैथिली" glyph="मै">
         <layout name="Inscript" layoutSet="maithili_inscript" />

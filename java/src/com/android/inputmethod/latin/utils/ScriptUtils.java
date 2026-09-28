@@ -50,6 +50,7 @@ public class ScriptUtils {
     public static final int SCRIPT_GURMUKHI = 20;
     public static final int SCRIPT_OL_CHIKI = 21;
     public static final int SCRIPT_SHARADA = 22;
+    public static final int SCRIPT_KAITHI = 23;
 
     private static final TreeMap<String, Integer> mLanguageCodeToScriptCode;
 
@@ -208,6 +209,9 @@ public class ScriptUtils {
         case SCRIPT_SHARADA:
             // Sharada unicode block is U+11180..U+111DF
             return (codePoint >= 0x11180 && codePoint <= 0x111DF);
+        case SCRIPT_KAITHI:
+            // Kaithi unicode block is U+11080..U+110CF
+            return (codePoint >= 0x11080 && codePoint <= 0x110CF);
         case SCRIPT_UNKNOWN:
             return true;
         default:

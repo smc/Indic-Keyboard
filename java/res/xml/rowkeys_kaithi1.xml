@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+** Copyright 2026, Jishnu Mohan <jishnu7@gmail.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted">
+            <Key latin:keySpec="!icon/undefined|!code/key_unspecified" />
+            <Key latin:keySpec="!icon/undefined|!code/key_unspecified" />
+            <!-- 𑂶 KAITHI VOWEL SIGN AI -->
+            <Key
+                latin:keySpec="&#x110B6;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑃂 KAITHI VOWEL SIGN VOCALIC R -->
+            <Key
+                latin:keySpec="&#x110C2;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑂟 KAITHI LETTER THA -->
+            <Key
+                latin:keySpec="&#x1109F;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑂖 KAITHI LETTER NYA -->
+            <Key
+                latin:keySpec="&#x11096;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑂴 KAITHI VOWEL SIGN UU -->
+            <Key
+                latin:keySpec="&#x110B4;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑂲 KAITHI VOWEL SIGN II -->
+            <Key
+                latin:keySpec="&#x110B2;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑂸 KAITHI VOWEL SIGN AU -->
+            <Key
+                latin:keySpec="&#x110B8;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑂤 KAITHI LETTER PHA -->
+            <Key
+                latin:keySpec="&#x110A4;"
+                latin:keyLabelFlags="fontNormal" />
+
+        </case>
+        <default>
+            <Key
+                latin:keySpec="!icon/zwnj_key|&#x200C;"
+                latin:moreKeys="!icon/zwj_key|&#x200D;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑂫 KAITHI LETTER VA -->
+            <Key
+                latin:keySpec="&#x110AB;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑂵 KAITHI VOWEL SIGN E -->
+            <Key
+                latin:keySpec="&#x110B5;"
+                latin:moreKeys="&#x11089;,&#x1108A;"
+                latin:keyHintLabel="&#x11089;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑂩 KAITHI LETTER RA -->
+            <Key
+                latin:keySpec="&#x110A9;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑂞 KAITHI LETTER TA -->
+            <Key
+                latin:keySpec="&#x1109E;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑂨 KAITHI LETTER YA -->
+            <Key
+                latin:keySpec="&#x110A8;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑂳 KAITHI VOWEL SIGN U -->
+            <Key
+                latin:keySpec="&#x110B3;"
+                latin:moreKeys="&#x11087;,&#x11088;"
+                latin:keyHintLabel="&#x11087;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑂱 KAITHI VOWEL SIGN I -->
+            <Key
+                latin:keySpec="&#x110B1;"
+                latin:moreKeys="&#x11085;,&#x11086;"
+                latin:keyHintLabel="&#x11085;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑂷 KAITHI VOWEL SIGN O -->
+            <Key
+                latin:keySpec="&#x110B7;"
+                latin:moreKeys="&#x1108B;,&#x1108C;"
+                latin:keyHintLabel="&#x1108B;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑂣 KAITHI LETTER PA -->
+            <Key
+                latin:keySpec="&#x110A3;"
+                latin:keyLabelFlags="fontNormal" />
+
+        </default>
+    </switch>
+</merge>
