@@ -139,6 +139,9 @@
     <language locale="saz_IN" englishName="Saurashtra" autonym="ꢱꣃꢬꢵꢰ꣄ꢜ꣄ꢬ" glyph="ꢱ">
         <layout name="Saurashtra" layoutSet="saurashtra" />
     </language>
+    <language locale="hoc" englishName="Ho" autonym="𑢹𑣉𑣉 𑣎𑣋𑣜" glyph="𑢹">
+        <layout name="Warang Citi" layoutSet="warang_citi" />
+    </language>
     <language locale="syl" englishName="Sylheti" autonym="ꠍꠤꠟꠐꠤ" glyph="ꠍ">
         <layout name="Syloti Nagri" layoutSet="syloti_nagri" />
     </language>

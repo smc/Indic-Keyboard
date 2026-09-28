@@ -643,6 +643,7 @@
             <enum name="hanifi_rohingya" value="25" />
             <enum name="meetei_mayek" value="26" />
             <enum name="syloti_nagri" value="27" />
+            <enum name="warang_citi" value="28" />
         </attr>
     </declare-styleable>
 

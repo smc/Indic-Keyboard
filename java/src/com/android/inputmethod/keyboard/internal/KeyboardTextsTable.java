@@ -839,6 +839,32 @@ public final class KeyboardTextsTable {
         /* label_wait_key */ "Wait",
     };
 
+    /* Locale hoc: hoc */
+    private static final String[] TEXTS_hoc = {
+        // U+118C1: Warang Citi small letter A
+        /* keylabel_to_alpha */ "\uD806\uDCC1",
+        // U+118E1: "𑣡" WARANG CITI DIGIT ONE
+        /* additional_morekeys_symbols_1 */ "\uD806\uDCE1",
+        // U+118E2: "𑣢" WARANG CITI DIGIT TWO
+        /* additional_morekeys_symbols_2 */ "\uD806\uDCE2",
+        // U+118E3: "𑣣" WARANG CITI DIGIT THREE
+        /* additional_morekeys_symbols_3 */ "\uD806\uDCE3",
+        // U+118E4: "𑣤" WARANG CITI DIGIT FOUR
+        /* additional_morekeys_symbols_4 */ "\uD806\uDCE4",
+        // U+118E5: "𑣥" WARANG CITI DIGIT FIVE
+        /* additional_morekeys_symbols_5 */ "\uD806\uDCE5",
+        // U+118E6: "𑣦" WARANG CITI DIGIT SIX
+        /* additional_morekeys_symbols_6 */ "\uD806\uDCE6",
+        // U+118E7: "𑣧" WARANG CITI DIGIT SEVEN
+        /* additional_morekeys_symbols_7 */ "\uD806\uDCE7",
+        // U+118E8: "𑣨" WARANG CITI DIGIT EIGHT
+        /* additional_morekeys_symbols_8 */ "\uD806\uDCE8",
+        // U+118E9: "𑣩" WARANG CITI DIGIT NINE
+        /* additional_morekeys_symbols_9 */ "\uD806\uDCE9",
+        // U+118E0: "𑣠" WARANG CITI DIGIT ZERO
+        /* additional_morekeys_symbols_0 */ "\uD806\uDCE0",
+    };
+
     /* Locale kn: Kannada */
     private static final String[] TEXTS_kn = {
         /* keylabel_to_alpha */ "\u0C85",
@@ -1660,6 +1686,7 @@ public final class KeyboardTextsTable {
         "gu"     , TEXTS_gu,    /*  27/ 28 Gujarati */
         "hi"     , TEXTS_hi,    /*  27/ 28 Hindi */
         "hi_ZZ"  , TEXTS_hi_ZZ, /*   9/ 57 Hindi (Unknown Region) */
+        "hoc"    , TEXTS_hoc,   /*  11/ 11 hoc */
         "kn"     , TEXTS_kn,    /*  22/ 22 Kannada */
         "ks"     , TEXTS_ks,    /*  11/ 11 Kashmiri */
         "mai"    , TEXTS_mai,   /*  12/ 24 Maithili */

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+** Copyright 2026, Jishnu Mohan <jishnu7@gmail.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted">
+            <!-- 𑣿 WARANG CITI OM -->
+            <Key
+                latin:keySpec="&#x118FF;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑢽 WARANG CITI CAPITAL LETTER SSUU -->
+            <Key
+                latin:keySpec="&#x118BD;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑢯 WARANG CITI CAPITAL LETTER UC -->
+            <Key
+                latin:keySpec="&#x118AF;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑢠 WARANG CITI CAPITAL LETTER NGAA -->
+            <Key
+                latin:keySpec="&#x118A0;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑢷 WARANG CITI CAPITAL LETTER BU -->
+            <Key
+                latin:keySpec="&#x118B7;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑢳 WARANG CITI CAPITAL LETTER NUNG -->
+            <Key
+                latin:keySpec="&#x118B3;"
+                latin:moreKeys="&#x118B0;,&#x118AA;,&#x118AD;"
+                latin:keyHintLabel="&#x118B0;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑢶 WARANG CITI CAPITAL LETTER AM -->
+            <Key
+                latin:keySpec="&#x118B6;"
+                latin:keyLabelFlags="fontNormal" />
+
+        </case>
+        <default>
+            <!-- 𑣿 WARANG CITI OM -->
+            <Key
+                latin:keySpec="&#x118FF;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑣝 WARANG CITI SMALL LETTER SSUU -->
+            <Key
+                latin:keySpec="&#x118DD;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑣏 WARANG CITI SMALL LETTER UC -->
+            <Key
+                latin:keySpec="&#x118CF;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑣀 WARANG CITI SMALL LETTER NGAA -->
+            <Key
+                latin:keySpec="&#x118C0;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑣗 WARANG CITI SMALL LETTER BU -->
+            <Key
+                latin:keySpec="&#x118D7;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑣓 WARANG CITI SMALL LETTER NUNG -->
+            <Key
+                latin:keySpec="&#x118D3;"
+                latin:moreKeys="&#x118D0;,&#x118CA;,&#x118CD;"
+                latin:keyHintLabel="&#x118D0;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑣖 WARANG CITI SMALL LETTER AM -->
+            <Key
+                latin:keySpec="&#x118D6;"
+                latin:keyLabelFlags="fontNormal" />
+
+        </default>
+    </switch>
+</merge>

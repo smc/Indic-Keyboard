@@ -191,6 +191,13 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=sharada,EmojiCapable" />
 
+    <!-- Ho -->
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_hoc"
+            android:imeSubtypeLocale="hoc"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=warang_citi,EmojiCapable" />
+
     <!-- Sylheti -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
             android:label="@string/keyboard_name_syl"
