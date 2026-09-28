@@ -83,17 +83,17 @@ public final class KeyboardTextsTable {
 
     private static final String[] NAMES = {
     //  /* index:histogram */ "name",
-        /*   0:28 */ "keylabel_to_alpha",
-        /*   1:27 */ "additional_morekeys_symbols_1",
-        /*   2:27 */ "additional_morekeys_symbols_2",
-        /*   3:27 */ "additional_morekeys_symbols_3",
-        /*   4:27 */ "additional_morekeys_symbols_4",
-        /*   5:27 */ "additional_morekeys_symbols_5",
-        /*   6:27 */ "additional_morekeys_symbols_6",
-        /*   7:27 */ "additional_morekeys_symbols_7",
-        /*   8:27 */ "additional_morekeys_symbols_8",
-        /*   9:27 */ "additional_morekeys_symbols_9",
-        /*  10:27 */ "additional_morekeys_symbols_0",
+        /*   0:30 */ "keylabel_to_alpha",
+        /*   1:29 */ "additional_morekeys_symbols_1",
+        /*   2:29 */ "additional_morekeys_symbols_2",
+        /*   3:29 */ "additional_morekeys_symbols_3",
+        /*   4:29 */ "additional_morekeys_symbols_4",
+        /*   5:29 */ "additional_morekeys_symbols_5",
+        /*   6:29 */ "additional_morekeys_symbols_6",
+        /*   7:29 */ "additional_morekeys_symbols_7",
+        /*   8:29 */ "additional_morekeys_symbols_8",
+        /*   9:29 */ "additional_morekeys_symbols_9",
+        /*  10:29 */ "additional_morekeys_symbols_0",
         /*  11:16 */ "keylabel_to_symbol",
         /*  12:15 */ "keyspec_symbols_1",
         /*  13:15 */ "keyspec_symbols_2",
@@ -1226,6 +1226,32 @@ public final class KeyboardTextsTable {
         /* additional_morekeys_symbols_0 */ "\u1C50",
     };
 
+    /* Locale saz: Saurashtra */
+    private static final String[] TEXTS_saz = {
+        // U+A882: Saurashtra letter A
+        /* keylabel_to_alpha */ "\uA882",
+        // U+A8D1: "꣑" SAURASHTRA DIGIT ONE
+        /* additional_morekeys_symbols_1 */ "\uA8D1",
+        // U+A8D2: "꣒" SAURASHTRA DIGIT TWO
+        /* additional_morekeys_symbols_2 */ "\uA8D2",
+        // U+A8D3: "꣓" SAURASHTRA DIGIT THREE
+        /* additional_morekeys_symbols_3 */ "\uA8D3",
+        // U+A8D4: "꣔" SAURASHTRA DIGIT FOUR
+        /* additional_morekeys_symbols_4 */ "\uA8D4",
+        // U+A8D5: "꣕" SAURASHTRA DIGIT FIVE
+        /* additional_morekeys_symbols_5 */ "\uA8D5",
+        // U+A8D6: "꣖" SAURASHTRA DIGIT SIX
+        /* additional_morekeys_symbols_6 */ "\uA8D6",
+        // U+A8D7: "꣗" SAURASHTRA DIGIT SEVEN
+        /* additional_morekeys_symbols_7 */ "\uA8D7",
+        // U+A8D8: "꣘" SAURASHTRA DIGIT EIGHT
+        /* additional_morekeys_symbols_8 */ "\uA8D8",
+        // U+A8D9: "꣙" SAURASHTRA DIGIT NINE
+        /* additional_morekeys_symbols_9 */ "\uA8D9",
+        // U+A8D0: "꣐" SAURASHTRA DIGIT ZERO
+        /* additional_morekeys_symbols_0 */ "\uA8D0",
+    };
+
     /* Locale sd: Sindhi */
     private static final String[] TEXTS_sd = {
         /* keylabel_to_alpha */ "\u0915\u0916\u0917",
@@ -1595,6 +1621,7 @@ public final class KeyboardTextsTable {
         "pa"     , TEXTS_pa,    /*  22/ 22 Punjabi */
         "sa"     , TEXTS_sa,    /*  11/ 11 Sanskrit */
         "sat"    , TEXTS_sat,   /*  11/ 11 Santali */
+        "saz"    , TEXTS_saz,   /*  11/ 11 Saurashtra */
         "sd"     , TEXTS_sd,    /*  24/ 24 Sindhi */
         "si"     , TEXTS_si,    /*   1/  1 Sinhala */
         "ta_IN"  , TEXTS_ta_IN, /*  12/ 12 Tamil (India) */

@@ -132,6 +132,9 @@
     <language locale="sd_IN" englishName="Sindhi" autonym="सिन्धी" glyph="ॻ">
         <layout name="Inscript" layoutSet="sindhi_inscript" />
     </language>
+    <language locale="saz_IN" englishName="Saurashtra" autonym="ꢱꣃꢬꢵꢰ꣄ꢜ꣄ꢬ" glyph="ꢱ">
+        <layout name="Saurashtra" layoutSet="saurashtra" />
+    </language>
     <language locale="sat_IN" englishName="Santali" autonym="ᱥᱟᱱᱛᱟᱲᱤ" glyph="ᱟ">
         <layout name="Inscript" layoutSet="santali_inscript" />
         <layout name="Ol Chiki" layoutSet="santali_olck" />

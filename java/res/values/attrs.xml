@@ -639,6 +639,7 @@
             <enum name="ol_chiki" value="21" />
             <enum name="sharada" value="22" />
             <enum name="kaithi" value="23" />
+            <enum name="saurashtra" value="24" />
         </attr>
     </declare-styleable>
 

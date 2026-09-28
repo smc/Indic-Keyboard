@@ -51,6 +51,7 @@ public class ScriptUtils {
     public static final int SCRIPT_OL_CHIKI = 21;
     public static final int SCRIPT_SHARADA = 22;
     public static final int SCRIPT_KAITHI = 23;
+    public static final int SCRIPT_SAURASHTRA = 24;
 
     private static final TreeMap<String, Integer> mLanguageCodeToScriptCode;
 
@@ -68,6 +69,7 @@ public class ScriptUtils {
         mLanguageCodeToScriptCode.put("ne", SCRIPT_DEVANAGARI);
         mLanguageCodeToScriptCode.put("mai", SCRIPT_DEVANAGARI);
         mLanguageCodeToScriptCode.put("ks", SCRIPT_ARABIC);
+        mLanguageCodeToScriptCode.put("saz", SCRIPT_SAURASHTRA);
         mLanguageCodeToScriptCode.put("kn", SCRIPT_KANNADA);
         mLanguageCodeToScriptCode.put("tcy", SCRIPT_KANNADA);
         mLanguageCodeToScriptCode.put("gu", SCRIPT_GUJARATI);
@@ -212,6 +214,9 @@ public class ScriptUtils {
         case SCRIPT_KAITHI:
             // Kaithi unicode block is U+11080..U+110CF
             return (codePoint >= 0x11080 && codePoint <= 0x110CF);
+        case SCRIPT_SAURASHTRA:
+            // Saurashtra unicode block is U+A880..U+A8DF
+            return (codePoint >= 0xA880 && codePoint <= 0xA8DF);
         case SCRIPT_UNKNOWN:
             return true;
         default:
@@ -254,6 +259,7 @@ public class ScriptUtils {
         mScriptTagToScriptCode.put("Mlym", SCRIPT_MALAYALAM);
         mScriptTagToScriptCode.put("Olck", SCRIPT_OL_CHIKI);
         mScriptTagToScriptCode.put("Orya", SCRIPT_ORIYA);
+        mScriptTagToScriptCode.put("Saur", SCRIPT_SAURASHTRA);
         mScriptTagToScriptCode.put("Shrd", SCRIPT_SHARADA);
         mScriptTagToScriptCode.put("Sinh", SCRIPT_SINHALA);
         mScriptTagToScriptCode.put("Taml", SCRIPT_TAMIL);

@@ -69,6 +69,16 @@
                 latin:backgroundType="functional" />
         </case>
         <case
+            latin:keyboardLayoutSet="saurashtra"
+        >
+            <!-- ꣎ SAURASHTRA DANDA, ꣏ SAURASHTRA DOUBLE DANDA -->
+            <Key
+                latin:keySpec="&#xA8CE;"
+                latin:keyLabelFlags="hasPopupHint|fontNormal"
+                latin:moreKeys="!autoColumnOrder!9,&#xA8CF;,\\,,.,?,!,#,),(,/,;,',@,:,-,&quot;,+,\\%,&amp;"
+                latin:backgroundType="functional" />
+        </case>
+        <case
             latin:keyboardLayoutSet="dvorak"
         >
             <Key

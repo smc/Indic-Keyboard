@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+** Copyright 2026, Jishnu Mohan <jishnu7@gmail.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted">
+            <Key latin:keySpec="!icon/undefined|!code/key_unspecified" />
+
+            <!-- ꢴ SAURASHTRA CONSONANT SIGN HAARU -->
+            <Key
+                latin:keySpec="&#x25CC;&#xA8B4;|&#xA8B4;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꣀ SAURASHTRA VOWEL SIGN AI -->
+            <Key
+                latin:keySpec="&#x25CC;&#xA8C0;|&#xA8C0;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꢺ SAURASHTRA VOWEL SIGN VOCALIC R -->
+            <Key
+                latin:keySpec="&#x25CC;&#xA8BA;|&#xA8BA;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꢢ SAURASHTRA LETTER THA -->
+            <Key
+                latin:keySpec="&#xA8A2;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꢛ SAURASHTRA LETTER NYA -->
+            <Key
+                latin:keySpec="&#xA89B;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꢹ SAURASHTRA VOWEL SIGN UU -->
+            <Key
+                latin:keySpec="&#x25CC;&#xA8B9;|&#xA8B9;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꢷ SAURASHTRA VOWEL SIGN II -->
+            <Key
+                latin:keySpec="&#x25CC;&#xA8B7;|&#xA8B7;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꣃ SAURASHTRA VOWEL SIGN AU -->
+            <Key
+                latin:keySpec="&#x25CC;&#xA8C3;|&#xA8C3;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꢧ SAURASHTRA LETTER PHA -->
+            <Key
+                latin:keySpec="&#xA8A7;"
+                latin:keyLabelFlags="fontNormal" />
+
+        </case>
+        <default>
+            <Key
+                latin:keySpec="!icon/zwnj_key|&#x200C;"
+                latin:moreKeys="!icon/zwj_key|&#x200D;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꢮ SAURASHTRA LETTER VA -->
+            <Key
+                latin:keySpec="&#xA8AE;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꢾ SAURASHTRA VOWEL SIGN E -->
+            <Key
+                latin:keySpec="&#x25CC;&#xA8BE;|&#xA8BE;"
+                latin:moreKeys="&#xA88C;,&#xA88D;,&#xA88E;,&#x25CC;&#xA8BF;|&#xA8BF;"
+                latin:keyHintLabel="&#xA88C;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꢬ SAURASHTRA LETTER RA -->
+            <Key
+                latin:keySpec="&#xA8AC;"
+                latin:moreKeys="&#xA888;,&#xA889;,&#x25CC;&#xA8BB;|&#xA8BB;"
+                latin:keyHintLabel="&#xA888;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꢡ SAURASHTRA LETTER TA -->
+            <Key
+                latin:keySpec="&#xA8A1;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꢫ SAURASHTRA LETTER YA -->
+            <Key
+                latin:keySpec="&#xA8AB;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꢸ SAURASHTRA VOWEL SIGN U -->
+            <Key
+                latin:keySpec="&#x25CC;&#xA8B8;|&#xA8B8;"
+                latin:moreKeys="&#xA886;,&#xA887;"
+                latin:keyHintLabel="&#xA886;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꢶ SAURASHTRA VOWEL SIGN I -->
+            <Key
+                latin:keySpec="&#x25CC;&#xA8B6;|&#xA8B6;"
+                latin:moreKeys="&#xA884;,&#xA885;"
+                latin:keyHintLabel="&#xA884;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꣁ SAURASHTRA VOWEL SIGN O -->
+            <Key
+                latin:keySpec="&#x25CC;&#xA8C1;|&#xA8C1;"
+                latin:moreKeys="&#xA88F;,&#xA890;,&#xA891;,&#x25CC;&#xA8C2;|&#xA8C2;"
+                latin:keyHintLabel="&#xA88F;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- ꢦ SAURASHTRA LETTER PA -->
+            <Key
+                latin:keySpec="&#xA8A6;"
+                latin:keyLabelFlags="fontNormal" />
+
+        </default>
+    </switch>
+</merge>
