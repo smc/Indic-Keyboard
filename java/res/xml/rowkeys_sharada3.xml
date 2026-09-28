@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+** Copyright 2026, Jishnu Mohan <jishnu7@gmail.com>
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge xmlns:latin="http://schemas.android.com/apk/res-auto">
+    <switch>
+        <case latin:keyboardLayoutSetElement="alphabetManualShifted|alphabetShiftLocked|alphabetShiftLockShifted">
+            <!-- 𑆁 SHARADA SIGN ANUSVARA -->
+            <Key
+                latin:keySpec="&#x11181;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑆀 SHARADA SIGN CANDRABINDU -->
+            <Key
+                latin:keySpec="&#x11180;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑆗 SHARADA LETTER CHA -->
+            <Key
+                latin:keySpec="&#x11197;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑆞 SHARADA LETTER DDHA -->
+            <Key
+                latin:keySpec="&#x1119E;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑆨 SHARADA LETTER BHA -->
+            <Key
+                latin:keySpec="&#x111A8;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑆟 SHARADA LETTER NNA -->
+            <Key
+                latin:keySpec="&#x1119F;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑆕 SHARADA LETTER NGA -->
+            <Key
+                latin:keySpec="&#x11195;"
+                latin:keyLabelFlags="fontNormal" />
+
+        </case>
+        <default>
+            <!-- 𑆯 SHARADA LETTER SHA -->
+            <Key
+                latin:keySpec="&#x111AF;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑇀 SHARADA SIGN VIRAMA -->
+            <Key
+                latin:keySpec="&#x111C0;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑆖 SHARADA LETTER CA -->
+            <Key
+                latin:keySpec="&#x11196;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑆝 SHARADA LETTER DDA -->
+            <Key
+                latin:keySpec="&#x1119D;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑆧 SHARADA LETTER BA -->
+            <Key
+                latin:keySpec="&#x111A7;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑆤 SHARADA LETTER NA -->
+            <Key
+                latin:keySpec="&#x111A4;"
+                latin:keyLabelFlags="fontNormal" />
+
+            <!-- 𑆩 SHARADA LETTER MA -->
+            <Key
+                latin:keySpec="&#x111A9;"
+                latin:moreKeys="&#x111C1;"
+                latin:keyHintLabel="&#x111C1;"
+                latin:keyLabelFlags="fontNormal" />
+
+        </default>
+    </switch>
+</merge>

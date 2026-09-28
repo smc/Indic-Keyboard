@@ -65,6 +65,7 @@
     <language locale="ks_IN" englishName="Kashmiri" autonym="کٲشُر" glyph="ک">
         <layout name="Transliteration" layoutSet="qwerty" translit="ks-Kbd" />
         <layout name="Inscript" autonym="कॉशुर" layoutSet="kashmiri_inscript" />
+        <layout name="Sharada" autonym="𑆑𑆳𑆯𑆶𑆫𑇀" layoutSet="sharada" />
     </language>
     <language locale="mai_IN" englishName="Maithili" autonym="मैथिली" glyph="मै">
         <layout name="Inscript" layoutSet="maithili_inscript" />

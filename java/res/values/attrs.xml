@@ -637,6 +637,7 @@
             <enum name="oriya" value="19" />
             <enum name="gurmukhi" value="20" />
             <enum name="ol_chiki" value="21" />
+            <enum name="sharada" value="22" />
         </attr>
     </declare-styleable>
 

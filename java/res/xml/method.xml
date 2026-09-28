@@ -168,6 +168,11 @@
             android:imeSubtypeLocale="ks_IN"
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="KeyboardLayoutSet=kashmiri_inscript,EmojiCapable" />
+    <subtype android:icon="@drawable/ic_ime_switcher_dark"
+            android:label="@string/keyboard_name_ks_sharada"
+            android:imeSubtypeLocale="ks_IN"
+            android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="KeyboardLayoutSet=sharada,EmojiCapable" />
 
     <!-- Maithili -->
     <subtype android:icon="@drawable/ic_ime_switcher_dark"
