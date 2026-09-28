@@ -99,7 +99,7 @@ class LanguageLayoutSettingsFragment : SubScreenFragment(),
 
         val hero = Preference(context)
         hero.layoutResource = R.layout.language_hero_preference
-        hero.title = target.mAutonym
+        hero.title = target.mHeroText ?: target.mAutonym
         hero.isSelectable = false
         hero.isIconSpaceReserved = false
         screen.addPreference(hero)

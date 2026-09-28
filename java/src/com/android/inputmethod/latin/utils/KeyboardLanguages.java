@@ -158,14 +158,17 @@ public final class KeyboardLanguages {
         public final String mLocale;
         public final String mEnglishName;
         public final String mAutonym;
+        @Nullable
+        public final String mHeroText;
         public final String mGlyph;
         public final List<Layout> mLayouts;
 
         Language(final String locale, final String englishName, final String autonym,
-                final String glyph, final List<Layout> layouts) {
+                @Nullable final String heroText, final String glyph, final List<Layout> layouts) {
             mLocale = locale;
             mEnglishName = englishName;
             mAutonym = autonym;
+            mHeroText = heroText;
             mGlyph = glyph;
             mLayouts = Collections.unmodifiableList(layouts);
         }
@@ -231,6 +234,7 @@ public final class KeyboardLanguages {
         try {
             List<InputMethodSubtype> localeSubtypes = null;
             String locale = null, englishName = null, autonym = null, glyph = null;
+            String heroText = null;
             List<Layout> layouts = null;
             final Set<InputMethodSubtype> matched = new HashSet<>();
             int event;
@@ -239,6 +243,7 @@ public final class KeyboardLanguages {
                     locale = parser.getAttributeValue(null, "locale");
                     englishName = parser.getAttributeValue(null, "englishName");
                     autonym = parser.getAttributeValue(null, "autonym");
+                    heroText = parser.getAttributeValue(null, "heroText");
                     glyph = parser.getAttributeValue(null, "glyph");
                     localeSubtypes = layoutsByLocale.get(locale);
                     layouts = new ArrayList<>();
@@ -267,7 +272,9 @@ public final class KeyboardLanguages {
                         }
                     }
                     if (!layouts.isEmpty()) {
-                        languages.add(new Language(locale, englishName, autonym, glyph, layouts));
+                        languages.add(
+                                new Language(locale, englishName, autonym, heroText, glyph,
+                                        layouts));
                     }
                     localeSubtypes = null;
                 }

@@ -22,6 +22,8 @@
     android:layout_height="wrap_content"
     android:paddingTop="40dp"
     android:paddingBottom="40dp"
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
     android:gravity="center"
     android:textColor="?attr/colorPrimary"
     android:textSize="56sp" />
