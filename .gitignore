@@ -43,3 +43,6 @@ temp/
 java/offline/assets/
 
 native/host-harness/futo/
+
+# macOS
+.DS_Store

@@ -1,0 +1,29 @@
+New languages, scripts and layouts
+- Konkani and Tulu
+- Saurashtra
+- Sylheti, in Syloti Nagri
+- Ho, in Warang Citi
+- Rohingya, in Hanifi
+- Kashmiri, in Sharada
+- Manipuri, in Meetei Mayek
+- Bhojpuri and Maithili, in Kaithi
+- Assamese, Marathi and Odia Phonetic
+- Punjabi Jhelum, Telugu Apple, Urdu Windows
+- Kannada KaGaPa reworked
+
+Improvements
+- A language written in several scripts now has one page, with a dictionary pack per script
+- The language name is shown in each of its scripts
+- Varnam is now called Predictive Transliteration, and types inline
+- Edit a transliterated word after you have typed it
+- Word learning is now its own setting
+- Spell check enabled for Indic scripts
+- Native numerals per script, and the right danda on the full stop key
+- Clear-data actions gathered under Privacy
+- Redesigned About page
+
+Fixes
+- Missing glyph in Kannada Inscript
+- Reserved characters removed from Gujarati and Kannada Inscript
+- Gujarati and Sanskrit transliteration
+- Letter hint alignment on the number pad
