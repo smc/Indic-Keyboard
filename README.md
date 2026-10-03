@@ -24,12 +24,12 @@ Some phones may not support all the languages listed since the phone's maker shi
 - Assamese Keyboard (অসমীয়া) - Inscript, Transliteration
 - Arabic Keyboard (العَرَبِيةُ‎‎)
 - Bengali Keyboard (বাংলা)- (Probhat, Avro, Inscript, Compact
-- Burmese Keyboard (ဗမာ) xkb
+- Burmese Keyboard (မြန်မာ) xkb
 - English
 - Gujarati Keyboard (ગુજરાતી) - Phonetic, Inscript, Transliteration
 - Hindi Keyboard (हिन्दी)- Inscript, Transliteration
 - Kannada Keyboard (ಕನ್ನಡ) - Phonetic, Inscript, Transliteration (Baraha), Compact, Anysoft)
-- Kashmiri Keyboard (کأشُر) - Inscript, Transliteration
+- Kashmiri Keyboard (کٲشُر) - Inscript, Transliteration
 - Malayalam Keyboard (മലയാളം) - Phonetic, Inscript, Transliteration (Mozhi), Swanalekha, Mobile Inscript
 - Manipuri Keyboard / Methei Keyboard (মৈতৈলোন্) - Inscript
 - Maithili Keyboard (मैथिली)  - Inscript

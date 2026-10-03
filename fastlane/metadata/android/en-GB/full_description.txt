@@ -1,6 +1,6 @@
 Indic Keyboard is the first Android keyboard for Indian languages, now rebuilt from the ground up. Type in your language anywhere you would type in English: messages, email, search and more.
 
-- 31 languages, 96 layouts, 20 scripts
+- 31 languages, 96 layouts, 21 scripts
 - Gesture typing, even on transliteration layouts - a first for any keyboard
 - Companion typing: type your language from the English keyboard, no switching
 - Predictive transliteration: type "namaste", get नमस्ते
@@ -16,13 +16,13 @@ What languages are supported?
 - Assamese Keyboard (অসমীয়া) - Inscript, Transliteration, Phonetic, Predictive Transliteration
 - Bengali Keyboard (বাংলা) - Probhat, Inscript, Avro, Predictive Transliteration
 - Bhojpuri Keyboard (भोजपुरी) - Inscript, Kaithi
-- Burmese Keyboard (ဗမာ)
+- Burmese Keyboard (မြန်မာ)
 - English
 - Gujarati Keyboard (ગુજરાતી) - Phonetic, Inscript, Transliteration, Predictive Transliteration
 - Hindi Keyboard (हिन्दी) - Inscript, Soni, Transliteration, Compact, Predictive Transliteration
 - Ho Keyboard (𑢹𑣉𑣉 𑣎𑣋𑣜) - Warang Citi
 - Kannada Keyboard (ಕನ್ನಡ) - KaGaPa, Inscript, Compact, Inscript Mobile, Transliteration, Predictive Transliteration
-- Kashmiri Keyboard (کأشُر) - Transliteration, Inscript, Sharada
+- Kashmiri Keyboard (کٲشُر) - Transliteration, Inscript, Sharada
 - Konkani Keyboard (कोंकणी) - Inscript
 - Maithili Keyboard (मैथिली) - Kaithi, Inscript
 - Malayalam Keyboard (മലയാളം) - Lalitha, Compact, Inscript, Poorna Inscript, Mobile Inscript, Transliteration, Swanalekha, Predictive Transliteration

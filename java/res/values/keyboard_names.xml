@@ -27,7 +27,7 @@
     <string name="keyboard_name_kn_transliteration">ಕನ್ನಡ - ಲಿಪ್ಯಂತರಣ</string>
     <string name="keyboard_name_ks_inscript">कॉशुर - Inscript</string>
     <string name="keyboard_name_ks_sharada">𑆯𑆳𑆫𑆢𑆳 Sharada</string>
-    <string name="keyboard_name_ks_transliteration">کأشُر - Transliteration</string>
+    <string name="keyboard_name_ks_transliteration">کٲشُر - Transliteration</string>
     <string name="keyboard_name_mai_inscript">मैथिली</string>
     <string name="keyboard_name_gom_inscript">कोंकणी - Inscript</string>
     <string name="keyboard_name_tcy_inscript">ತುಳು - Inscript</string>
@@ -45,7 +45,7 @@
     <string name="keyboard_name_mr_inscript">मराठी - Inscript</string>
     <string name="keyboard_name_mr_transliteration">मराठी - अक्षरांतरण</string>
     <string name="keyboard_name_mr_phonetic">मराठी - फोनेटिक</string>
-    <string name="keyboard_name_my">Burmese - ဗမာ</string>
+    <string name="keyboard_name_my">Burmese - မြန်မာ</string>
     <string name="keyboard_name_ne">नेपाली</string>
     <string name="keyboard_name_ne_inscript">नेपाली - Inscript</string>
     <string name="keyboard_name_ne_traditional">नेपाली - Traditional</string>
