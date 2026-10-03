@@ -22,13 +22,33 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 public class PreferenceManagerCompat {
+    private static final String TAG = "Indic Keyboard";
+
+    private static final Set<String> sMigrated = Collections.synchronizedSet(new HashSet<>());
+
+    private static void migrateOnce(final Context context, final Context deviceContext,
+            final String name) {
+        if (sMigrated.contains(name) || UserManagerCompatUtils.getUserLockState(context)
+                == UserManagerCompatUtils.LOCK_STATE_LOCKED) {
+            return;
+        }
+        if (deviceContext.moveSharedPreferencesFrom(context, name)) {
+            sMigrated.add(name);
+        } else {
+            Log.w(TAG, "Failed to migrate shared preferences: " + name);
+        }
+    }
+
     public static Context getDeviceContext(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             final Context deviceContext = context.createDeviceProtectedStorageContext();
-            if (!deviceContext.moveSharedPreferencesFrom(context, PreferenceManager.getDefaultSharedPreferencesName(context))) {
-                Log.w("Indic Keyboard", "Failed to migrate shared preferences.");
-            }
+            migrateOnce(context, deviceContext,
+                    PreferenceManager.getDefaultSharedPreferencesName(context));
             return deviceContext;
         }
 
@@ -48,9 +68,7 @@ public class PreferenceManagerCompat {
             int mode) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             final Context deviceContext = context.createDeviceProtectedStorageContext();
-            if (!deviceContext.moveSharedPreferencesFrom(context, name)) {
-                Log.w("Indic Keyboard", "Failed to migrate shared preferences: " + name);
-            }
+            migrateOnce(context, deviceContext, name);
             return deviceContext.getSharedPreferences(name, mode);
         }
         return context.getSharedPreferences(name, mode);
