@@ -2815,18 +2815,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     public boolean shouldShowLanguageSwitchKey() {
-        // TODO: Revisit here to reorganize the settings. Probably we can/should use different
-        // strategy once the implementation of
-        // {@link InputMethodManager#shouldOfferSwitchingToNextInputMethod} is defined well.
-        final boolean fallbackValue = mSettings.getCurrent().isLanguageSwitchKeyEnabled();
-        if (!fallbackValue) {
-            return false;
-        }
-        final IBinder token = getWindow().getWindow().getAttributes().token;
-        if (token == null) {
-            return fallbackValue;
-        }
-        return mRichImm.shouldOfferSwitchingToNextInputMethod(token, fallbackValue);
+        return mSettings.getCurrent().isLanguageSwitchKeyEnabled();
     }
 
     public boolean shouldShowEmojiSwitchKey() {
