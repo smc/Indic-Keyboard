@@ -107,7 +107,7 @@ public final class KeyboardTextsTable {
         /*  21:15 */ "keyspec_symbols_0",
         /*  22: 9 */ "keyspec_currency",
         /*  23: 8 */ "keyspec_period",
-        /*  24: 5 */ "morekeys_period",
+        /*  24: 6 */ "morekeys_period",
         /*  25: 4 */ "keyspec_comma",
         /*  26: 4 */ "keyspec_tablet_period",
         /*  27: 4 */ "morekeys_tablet_period",
@@ -1065,7 +1065,8 @@ public final class KeyboardTextsTable {
         // U+0915: "क" DEVANAGARI LETTER KA
         // U+0916: "ख" DEVANAGARI LETTER KHA
         // U+0917: "ग" DEVANAGARI LETTER GA
-        /* keyspec_period */ "\u0964",
+        /* keyspec_period */ ".",
+        /* morekeys_period */ "!text/morekeys_punctuation,\u0964,\u0965",
     };
 
     /* Locale my: Burmese */
@@ -1693,7 +1694,7 @@ public final class KeyboardTextsTable {
         "ml"     , TEXTS_ml,    /*  11/ 11 Malayalam */
         "mni"    , TEXTS_mni,   /*  11/ 11 Manipuri */
         "mnw"    , TEXTS_mnw,   /*  11/ 11 mnw */
-        "mr"     , TEXTS_mr,    /*  24/ 24 Marathi */
+        "mr"     , TEXTS_mr,    /*  25/ 25 Marathi */
         "my"     , TEXTS_my,    /*  22/ 22 Burmese */
         "ne"     , TEXTS_ne,    /*  27/ 28 Nepali */
         "or"     , TEXTS_or,    /*  23/ 26 Odia */
